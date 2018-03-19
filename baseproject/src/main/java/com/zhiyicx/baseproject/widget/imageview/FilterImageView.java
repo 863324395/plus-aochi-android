@@ -7,10 +7,8 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Rect;
 import android.text.TextPaint;
 import android.util.AttributeSet;
-import android.widget.ImageView;
 
 import com.zhiyicx.baseproject.R;
 import com.zhiyicx.common.utils.SkinUtils;
@@ -22,21 +20,22 @@ import com.zhiyicx.common.utils.SkinUtils;
  * @Date 2017/2/29
  * @Contact master.jungle68@gmail.com
  */
-public class FilterImageView extends ImageView {
+public class FilterImageView extends android.support.v7.widget.AppCompatImageView {
     private static final int SHAPE_SQUARE = 0;
     private static final int SHAPE_CIRLCE = 1;
     private static final int DEFAULT_PRESSED_COLOR = 0x26000000; // cover：#000000 alpha 15%
-    private int mPressedColor = DEFAULT_PRESSED_COLOR;// pressed color
+    private int mPressedColor = DEFAULT_PRESSED_COLOR; // pressed color
     private int mShape = SHAPE_SQUARE;
     private Paint mPaint;
     private boolean isText;
-    private Rect mRect;
 
-    private Bitmap mBitmap;
+
+    private Bitmap mLongImageBitmap;
+    private Bitmap mGifImageBitmap;
+
     private boolean mIshowLongTag;
+    private boolean mIshowGifTag;
 
-    private boolean mUseNumberShadow;
-    private String mNumber;
 
     public FilterImageView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
@@ -45,12 +44,11 @@ public class FilterImageView extends ImageView {
 
 
     public FilterImageView(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        initAttrs(context, attrs);
+        this(context, attrs, 0);
     }
 
     public FilterImageView(Context context) {
-        super(context);
+        this(context, null);
     }
 
 
@@ -62,7 +60,7 @@ public class FilterImageView extends ImageView {
         mPaint = new TextPaint();
         mPaint.setColor(mPressedColor);
         mPaint.setAntiAlias(true);
-        mRect = new Rect();
+        setIshowGifTag(true);
     }
 
     @Override
@@ -89,8 +87,12 @@ public class FilterImageView extends ImageView {
             mPaint.setColor(Color.WHITE);
             canvas.drawText("匿", getWidth() / 2 - mPaint.measureText("匿") / 2, getHeight() / 2 - (mPaint.descent() + mPaint.ascent()) / 2, mPaint);
         }
-        if (mIshowLongTag && mBitmap != null) {
-            canvas.drawBitmap(mBitmap, getWidth() - mBitmap.getWidth(), getHeight() - mBitmap.getHeight(), null);
+        if (mIshowLongTag && mLongImageBitmap != null) {
+            canvas.drawBitmap(mLongImageBitmap, getWidth() - mLongImageBitmap.getWidth(), getHeight() - mLongImageBitmap.getHeight(), null);
+        }
+
+        if (mIshowGifTag && mGifImageBitmap != null) {
+            canvas.drawBitmap(mGifImageBitmap, (getWidth() - mGifImageBitmap.getWidth()) / 2, (getHeight() - mGifImageBitmap.getHeight()) / 2, null);
         }
     }
 
@@ -105,17 +107,21 @@ public class FilterImageView extends ImageView {
         postInvalidate();
     }
 
-    public void setUseNumberShadow(boolean useNumberShadow,int num) {
-        mUseNumberShadow = useNumberShadow;
-        mNumber=String.valueOf(num);
-        postInvalidate();
+    public void setIshowGifTag(boolean ishowGifTag) {
+        mIshowGifTag = ishowGifTag;
+        if (ishowGifTag) {
+            if (mGifImageBitmap == null) {
+                mGifImageBitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.detail_share_wechat);
+            }
+            postInvalidate();
+        }
     }
 
     public void showLongImageTag(boolean isShow) {
         this.mIshowLongTag = isShow;
         if (isShow) {
-            if (mBitmap == null) {
-                mBitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.pic_longpic);
+            if (mLongImageBitmap == null) {
+                mLongImageBitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.pic_longpic);
             }
             postInvalidate();
         }
