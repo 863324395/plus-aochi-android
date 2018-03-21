@@ -60,7 +60,6 @@ public class FilterImageView extends android.support.v7.widget.AppCompatImageVie
         mPaint = new TextPaint();
         mPaint.setColor(mPressedColor);
         mPaint.setAntiAlias(true);
-        setIshowGifTag(true);
     }
 
     @Override
