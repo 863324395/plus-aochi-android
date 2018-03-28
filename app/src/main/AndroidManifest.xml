@@ -723,6 +723,9 @@
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustNothing|stateAlwaysHidden"/>
+        <activity android:name=".modules.shortvideo.record.RecordActivity"/>
+        <activity android:name=".modules.shortvideo.videostore.VideoSelectActivity"/>
+        <activity android:name=".modules.shortvideo.preview.PreviewActivity"/>
         <!-- 开机自启动服务 -->
         <receiver android:name=".modules.chat.call.receiver.StartServiceReceiver">
             <intent-filter android:priority="1000">

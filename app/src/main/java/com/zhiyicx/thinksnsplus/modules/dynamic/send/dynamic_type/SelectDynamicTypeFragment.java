@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.dynamic.send.dynamic_type;
 
+import android.Manifest;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.Intent;
@@ -30,6 +31,8 @@ import com.zhiyicx.thinksnsplus.modules.dynamic.send.SendDynamicActivity;
 import com.zhiyicx.thinksnsplus.modules.information.publish.detail.EditeInfoDetailActivity;
 import com.zhiyicx.thinksnsplus.modules.markdown_editor.BaseMarkdownActivity;
 import com.zhiyicx.thinksnsplus.modules.q_a.publish.question.PublishQuestionActivity;
+import com.zhiyicx.thinksnsplus.modules.shortvideo.record.RecordActivity;
+import com.zhiyicx.thinksnsplus.modules.shortvideo.videostore.VideoSelectActivity;
 import com.zhiyicx.thinksnsplus.widget.IconTextView;
 
 import org.simple.eventbus.EventBus;
@@ -52,8 +55,8 @@ import static com.zhiyicx.thinksnsplus.modules.certification.input.Certification
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class SelectDynamicTypeFragment extends TSFragment<SelectDynamicTypeContract.Presenter> implements SelectDynamicTypeContract.View,
-        PhotoSelectorImpl.IPhotoBackListener {
+public class SelectDynamicTypeFragment extends TSFragment<SelectDynamicTypeContract.Presenter>
+        implements SelectDynamicTypeContract.View,PhotoSelectorImpl.IPhotoBackListener {
     public static final int DEFAULT_ANIMATE_DELAY_START = 80;
     public static final int DEFAULT_ANIMATE_DELAY = 80;
 
@@ -71,6 +74,8 @@ public class SelectDynamicTypeFragment extends TSFragment<SelectDynamicTypeContr
     IconTextView mSendWordsQuestion;
     @BindView(R.id.send_info)
     IconTextView mSendInfo;
+    @BindView(R.id.send_video)
+    IconTextView mSendVideo;
     @BindView(R.id.open_zhibo)
     IconTextView mOpenZhibo;
     @BindView(R.id.im_close_dynamic)
@@ -98,6 +103,11 @@ public class SelectDynamicTypeFragment extends TSFragment<SelectDynamicTypeContr
         if (getArguments() != null) {
             mType = getArguments().getInt(TYPE);
         }
+    }
+
+    @Override
+    protected boolean usePermisson() {
+        return true;
     }
 
     @Override
@@ -187,7 +197,7 @@ public class SelectDynamicTypeFragment extends TSFragment<SelectDynamicTypeContr
     }
 
     @OnClick({R.id.send_words_dynamic, R.id.send_image_dynamic, R.id.check_in, R.id.im_close_dynamic, R.id.send_words_question, R.id.open_zhibo, R
-            .id.send_info, R.id.send_circle_post})
+            .id.send_info, R.id.send_circle_post,R.id.send_video})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.send_words_dynamic:
@@ -230,6 +240,19 @@ public class SelectDynamicTypeFragment extends TSFragment<SelectDynamicTypeContr
                 // 投稿
                 // 发布提示 1、首先需要认证 2、需要付费
                 mPresenter.checkCertification();
+                break;
+            case R.id.send_video:
+                // 小视频
+                mRxPermissions.request(Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO)
+                        .subscribe(aBoolean -> {
+                            if (aBoolean) {
+//                                startActivity(new Intent(getActivity(), RecordActivity.class));
+                                startActivity(new Intent(getActivity(), VideoSelectActivity.class));
+                                closeActivity();
+                            } else {
+
+                            }
+                        });
                 break;
                 /*
                  发帖

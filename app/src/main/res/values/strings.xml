@@ -203,6 +203,7 @@
     <string name="send_question">提问</string>
     <string name="send_post">发帖</string>
     <string name="send_info">投稿</string>
+    <string name="send_vidoe">小视频</string>
     <string name="open_zhibo">直播</string>
     <string name="dynamic_title_hint">有标题更吸引人</string>
     <string name="dynamic_close_pay">暂时关闭发布付费内容</string>

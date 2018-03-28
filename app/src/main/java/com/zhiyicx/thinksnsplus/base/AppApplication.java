@@ -12,6 +12,7 @@ import com.github.tamir7.contacts.Contacts;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.pingplusplus.android.Pingpp;
+import com.tym.shortvideo.recodrender.ParamsManager;
 import com.zhiyicx.baseproject.base.TSActivity;
 import com.zhiyicx.baseproject.base.TSApplication;
 import com.zhiyicx.baseproject.config.ApiConfig;
@@ -117,6 +118,7 @@ public class AppApplication extends TSApplication {
         // 极光推送
         JPushInterface.setDebugMode(BuildConfig.USE_LOG);
         JPushInterface.init(this);
+        ParamsManager.context = this;
     }
 
     /**
