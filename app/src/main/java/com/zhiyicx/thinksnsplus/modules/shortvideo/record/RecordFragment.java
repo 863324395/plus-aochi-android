@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Handler;
 import android.support.v7.widget.LinearLayoutManager;
@@ -29,6 +30,7 @@ import com.tym.shortvideo.recordcore.VideoListManager;
 import com.tym.shortvideo.recordcore.multimedia.MediaEncoder;
 import com.tym.shortvideo.recordcore.multimedia.VideoCombineManager;
 import com.tym.shortvideo.recordcore.multimedia.VideoCombiner;
+import com.tym.shortvideo.utils.BitmapUtils;
 import com.tym.shortvideo.utils.CameraUtils;
 import com.tym.shortvideo.utils.FileUtils;
 import com.tym.shortvideo.utils.StringUtils;
@@ -46,8 +48,13 @@ import com.zhiyicx.thinksnsplus.modules.shortvideo.adapter.EffectFilterAdapter;
 import com.zhiyicx.thinksnsplus.modules.shortvideo.preview.PreviewActivity;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
@@ -113,11 +120,6 @@ public class RecordFragment extends TSFragment implements SurfaceHolder.Callback
     private static final int sFocusSize = 100;
 
     @Override
-    protected boolean showToolbar() {
-        return false;
-    }
-
-    @Override
     protected boolean showToolBarDivider() {
         return false;
     }
@@ -127,17 +129,15 @@ public class RecordFragment extends TSFragment implements SurfaceHolder.Callback
         return true;
     }
 
-    @Override
-    protected int getstatusbarAndToolbarHeight() {
-        if (setUseSatusbar()) {
-            return 0;
-        }
-        return super.getstatusbarAndToolbarHeight();
-    }
 
     @Override
     protected boolean setUseSatusbar() {
-        return true;
+        return false;
+    }
+
+    @Override
+    protected boolean showToolbar() {
+        return false;
     }
 
     @Override
@@ -181,6 +181,9 @@ public class RecordFragment extends TSFragment implements SurfaceHolder.Callback
     }
 
     private void initListener() {
+
+
+
         RxView.clicks(mBtnSwitch)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .compose(this.bindToLifecycle())
@@ -190,6 +193,7 @@ public class RecordFragment extends TSFragment implements SurfaceHolder.Callback
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .compose(this.bindToLifecycle())
                 .subscribe(aVoid -> takePicture());
+        mBtnTake.setGestureListener(this);
 
         RxView.clicks(mBtnBeauty)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
@@ -238,7 +242,7 @@ public class RecordFragment extends TSFragment implements SurfaceHolder.Callback
             mEffectList.setVisibility(View.GONE);
             return;
         }
-        super.onBackPressed();
+        mActivity.finish();
     }
 
     @Override
@@ -278,7 +282,38 @@ public class RecordFragment extends TSFragment implements SurfaceHolder.Callback
 
     @Override
     public void onFrameCallback(ByteBuffer buffer, int width, int height) {
-
+        mMainHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                String filePath = ParamsManager.ImagePath + "CainCamera_"
+                        + System.currentTimeMillis() + ".jpeg";
+                File file = new File(filePath);
+                if (!file.getParentFile().exists()) {
+                    file.getParentFile().mkdirs();
+                }
+                BufferedOutputStream bos = null;
+                try {
+                    bos = new BufferedOutputStream(new FileOutputStream(file));
+                    Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+                    bitmap.copyPixelsFromBuffer(buffer);
+                    bitmap = BitmapUtils.rotateBitmap(bitmap, 180, true);
+                    bitmap = BitmapUtils.flipBitmap(bitmap, true);
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bos);
+                    bitmap.recycle();
+                    bitmap = null;
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                } finally {
+                    if (bos != null) {
+                        try {
+                            bos.close();
+                        } catch (IOException e) {
+                            // do nothing
+                        }
+                    }
+                }
+            }
+        });
     }
 
     @Override
@@ -348,7 +383,7 @@ public class RecordFragment extends TSFragment implements SurfaceHolder.Callback
 
         // 隐藏删除按钮
         if (ParamsManager.sMGLType == GLType.VIDEO) {
-            mTymTest.setVisibility(View.GONE);
+            mBtnRecordDone.setVisibility(View.GONE);
             mBtnRecordDelete.setVisibility(View.GONE);
         }
         // 初始化倒计时
@@ -366,12 +401,22 @@ public class RecordFragment extends TSFragment implements SurfaceHolder.Callback
 
     @Override
     public void onStopRecord() {
-
+        // 停止录制
+        DrawerManager.getInstance().stopRecording();
+        // 停止倒计时
+        CountDownManager.getInstance().stopTimer();
     }
 
     @Override
     public void onProgressOver() {
-
+        // 如果最后一秒内点击停止录制，则仅仅关闭录制按钮，因为前面已经停止过了，不做跳转
+        // 如果最后一秒内没有停止录制，否则停止录制并跳转至预览页面
+        if (CountDownManager.getInstance().isLastSecondStop()) {
+            // 关闭录制按钮
+            mBtnTake.closeButton();
+        } else {
+            previewRecordVideo();
+        }
     }
 
     private void registerHomeReceiver() {
@@ -527,59 +572,14 @@ public class RecordFragment extends TSFragment implements SurfaceHolder.Callback
             // 销毁录制线程
             RecordManager.getInstance().destoryThread();
             mNeedToWaitStop = false;
-            combineVideo();
+//            combineVideo();
             // 隐藏删除和预览按钮
             mBtnRecordDone.setVisibility(View.GONE);
             mBtnRecordDelete.setVisibility(View.GONE);
+            ArrayList<String> arrayList=new ArrayList<>(VideoListManager.getInstance()
+                    .getSubVideoPathList());
+            PreviewActivity.startPreviewActivity(mActivity, arrayList);
         }
-    }
-
-    /**
-     * 合并视频
-     */
-    private void combineVideo() {
-        final String fileName = "CainCamera_" + System.currentTimeMillis() + ".mp4";
-        final String path = ParamsManager.AlbumPath
-                + fileName;
-        final File file = new File(path);
-        if (!file.getParentFile().exists()) {
-            file.getParentFile().mkdirs();
-        }
-        VideoCombineManager.getInstance()
-                .startVideoCombiner(VideoListManager.getInstance().getSubVideoPathList(),
-                        path, new VideoCombiner.VideoCombineListener() {
-                            @Override
-                            public void onCombineStart() {
-                                LogUtils.d(TAG, "开始合并");
-                                mActivity.runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        ToastUtils.showToast("开始合并");
-                                    }
-                                });
-
-                            }
-
-                            @Override
-                            public void onCombineProcessing(final int current, final int sum) {
-                                LogUtils.d(TAG, "当前视频： " + current + ", 合并视频总数： " + sum);
-
-                            }
-
-                            @Override
-                            public void onCombineFinished(final boolean success) {
-                                if (success) {
-                                    LogUtils.d(TAG, "合并成功");
-                                } else {
-                                    LogUtils.d(TAG, "合并失败");
-                                }
-                                VideoListManager.getInstance().removeAllSubVideo();
-                                // 更更新媒体库
-                                FileUtils.updateMediaStore(mActivity, path, fileName);
-                                // 跳转至视频编辑页面
-                                PreviewActivity.startPreviewActivity(mActivity, path);
-                            }
-                        });
     }
 
     /**

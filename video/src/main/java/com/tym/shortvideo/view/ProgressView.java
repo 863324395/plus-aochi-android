@@ -7,11 +7,11 @@ import android.graphics.Paint;
 import android.os.Handler;
 import android.os.Message;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 
 import com.tym.video.R;
 import com.tym.shortvideo.utils.DeviceUtils;
+import com.zhiyicx.common.utils.log.LogUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -84,9 +84,6 @@ public class ProgressView extends View {
 
     private void init() {
 
-        mMaxDuration = 4 * 1000;
-        mRecordTimeMin = 1 * 1000;
-
         mProgressPaint = new Paint();
         mActivePaint = new Paint();
         mPausePaint = new Paint();
@@ -135,14 +132,14 @@ public class ProgressView extends View {
         public void dispatchMessage(Message msg) {
             switch (msg.what) {
                 case HANDLER_INVALIDATE_ACTIVE:
-                    invalidate();
+                    postInvalidate();
                     mActiveState = !mActiveState;
                     if (!mStop) {
                         sendEmptyMessageDelayed(0, 300);
                     }
                     break;
                 case HANDLER_INVALIDATE_RECORDING:
-                    invalidate();
+                    postInvalidate();
                     if (mProgressChanged) {
                         sendEmptyMessageDelayed(0, 50);
                     }
@@ -161,8 +158,16 @@ public class ProgressView extends View {
         int left = 0, right = 0;
         right = left + (int) (width * mCurrentLenght);
 
+        LogUtils.d("left:"+left);
+        LogUtils.d("width:"+width);
+        LogUtils.d("mCurrentLenght:"+mCurrentLenght);
+        LogUtils.d("right:"+width * mCurrentLenght);
+        LogUtils.d("height:"+height);
+
         canvas.drawRect(left, 0.0F, width * mCurrentLenght, height,
                 mProgressPaint);
+
+
 
         if (isDeleteMode()) {
             if (mSplitList.size() > 0) {
@@ -212,7 +217,10 @@ public class ProgressView extends View {
     public void setProgress(float progress) {
         mProgress = progress;
         mCurrentLenght = progress / mMaxDuration;
-        invalidate();
+
+        postInvalidate();
+
+        LogUtils.d("setProgress:",mCurrentLenght);
         // 满进度回调
         if (mCurrentLenght >= 1) {
 
@@ -223,9 +231,9 @@ public class ProgressView extends View {
      * 设置段点
      */
     public void addSplitView() {
-        Log.d("addSplitView", "mGrithPro = " + mCurrentLenght);
+        LogUtils.d("addSplitView", "mGrithPro = " + mCurrentLenght);
         mSplitList.add(mCurrentLenght);
-        invalidate();
+        postInvalidate();
     }
 
     /**
@@ -235,7 +243,7 @@ public class ProgressView extends View {
         if (mDeleteMode && mSplitList.size() > 0) {
             mSplitList.remove(mSplitList.size() - 1);
             mDeleteMode = false;
-            invalidate();
+            postInvalidate();
         }
     }
 
@@ -245,7 +253,7 @@ public class ProgressView extends View {
     public void cleanSplitView() {
         if (mSplitList.size() > 0) {
             mSplitList.clear();
-            invalidate();
+            postInvalidate();
         }
     }
 
@@ -258,7 +266,7 @@ public class ProgressView extends View {
      */
     public void setDeleteMode(boolean deleteMode) {
         mDeleteMode = deleteMode;
-        invalidate();
+        postInvalidate();
     }
 
     /**

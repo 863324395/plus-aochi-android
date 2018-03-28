@@ -18,6 +18,7 @@ import android.view.View;
 
 
 import com.tym.video.R;
+import com.zhiyicx.common.utils.log.LogUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -348,7 +349,7 @@ public class ShutterButton extends View {
      * 设置段点
      */
     public void addSplitView() {
-        Log.d("addSplitView", "mGrithPro = " + mGirthPro);
+        LogUtils.d("addSplitView", "mGrithPro = " + mGirthPro);
         mSplitList.add(mGirthPro);
         // invalidate();
     }

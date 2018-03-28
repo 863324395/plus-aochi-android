@@ -723,7 +723,8 @@
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustNothing|stateAlwaysHidden"/>
-        <activity android:name=".modules.shortvideo.record.RecordActivity"/>
+        <activity android:name=".modules.shortvideo.record.RecordActivity"
+                  android:theme="@style/GalleryTheme"/>
         <activity android:name=".modules.shortvideo.videostore.VideoSelectActivity"/>
         <activity android:name=".modules.shortvideo.preview.PreviewActivity"/>
         <activity android:name=".modules.shortvideo.clipe.TrimmerActivity"/>

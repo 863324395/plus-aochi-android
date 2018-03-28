@@ -17,13 +17,19 @@ import com.tym.shortvideo.filter.helper.SlideGpuFilterGroup;
 import com.tym.shortvideo.media.MediaPlayerWrapper;
 import com.tym.shortvideo.media.VideoInfo;
 import com.tym.shortvideo.mediacodec.VideoClipper;
+import com.tym.shortvideo.recodrender.ParamsManager;
+import com.tym.shortvideo.recordcore.VideoListManager;
+import com.tym.shortvideo.recordcore.multimedia.VideoCombineManager;
+import com.tym.shortvideo.recordcore.multimedia.VideoCombiner;
 import com.tym.shortvideo.utils.FileUtils;
 import com.tym.shortvideo.view.VideoPreviewView;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.common.utils.ToastUtils;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.EmptySubscribe;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
@@ -130,35 +136,7 @@ public class PreviewFragment extends TSFragment implements MediaPlayerWrapper.IM
                     if (isLoading()) {
                         return;
                     }
-                    mVideoView.pause();
-                    showCenterLoading("视频处理中");
-                    isLoading = true;
-                    VideoClipper clipper = new VideoClipper();
-                    if (mBtnBeauty.isSelected()) {
-                        clipper.showBeauty();
-                    }
-                    clipper.setInputVideoPath(mActivity, mPath);
-                    final String fileName = "tym_" + System.currentTimeMillis() + ".mp4";
-                    mOutputPath = FileUtils.getPath("tym/tym/", fileName);
-                    clipper.setFilterType(mFilterType);
-                    clipper.setOutputVideoPath(mOutputPath);
-                    clipper.setOnVideoCutFinishListener(() -> mSubscription = Observable.empty()
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .subscribe(new EmptySubscribe<Object>() {
-                                @Override
-                                public void onCompleted() {
-                                    isLoading = false;
-                                    ToastUtils.showToast("视频保存地址   " + mOutputPath);
-                                    hideCenterLoading();
-                                    FileUtils.updateMediaStore(mActivity, mOutputPath, fileName);
-//                                                TrimmerActivity.go(mActivity, mOutputPath);
-                                }
-                            }));
-                    try {
-                        clipper.clipVideo(0, mVideoView.getVideoDuration() * 1000);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+                    combineVideo();
                 });
     }
 
@@ -168,12 +146,10 @@ public class PreviewFragment extends TSFragment implements MediaPlayerWrapper.IM
 
     @Override
     protected void initData() {
-        mPath = getArguments().getString(PATH, "");
-        if (TextUtils.isEmpty(mPath)) {
+        ArrayList<String> srcList =getArguments().getStringArrayList(PATH);
+        if (srcList==null||srcList.isEmpty()) {
             throw new IllegalArgumentException("video path can not be null");
         }
-        ArrayList<String> srcList = new ArrayList<>();
-        srcList.add(mPath);
         mVideoView.setVideoPath(srcList);
         mVideoView.setIMediaCallback(this);
     }
@@ -259,5 +235,83 @@ public class PreviewFragment extends TSFragment implements MediaPlayerWrapper.IM
     public boolean onTouch(View v, MotionEvent event) {
         mVideoView.onTouch(event);
         return true;
+    }
+
+    /**
+     * 合并视频
+     */
+    private void combineVideo() {
+
+        mVideoView.pause();
+        showCenterLoading("视频处理中");
+        isLoading = true;
+
+        final String fileName = "CainCamera_" + System.currentTimeMillis() + ".mp4";
+        final String path = ParamsManager.AlbumPath
+                + fileName;
+        final File file = new File(path);
+        if (!file.getParentFile().exists()) {
+            file.getParentFile().mkdirs();
+        }
+        VideoCombineManager.getInstance()
+                .startVideoCombiner(VideoListManager.getInstance().getSubVideoPathList(),
+                        path, new VideoCombiner.VideoCombineListener() {
+                            @Override
+                            public void onCombineStart() {
+                                LogUtils.d(TAG, "开始合并");
+
+                            }
+
+                            @Override
+                            public void onCombineProcessing(final int current, final int sum) {
+                                LogUtils.d(TAG, "当前视频： " + current + ", 合并视频总数： " + sum);
+
+                            }
+
+                            @Override
+                            public void onCombineFinished(final boolean success) {
+                                if (success) {
+                                    LogUtils.d(TAG, "合并成功");
+                                } else {
+                                    LogUtils.d(TAG, "合并失败");
+                                }
+                                VideoListManager.getInstance().removeAllSubVideo();
+                                // 更更新媒体库
+                                FileUtils.updateMediaStore(mActivity, path, fileName);
+
+                                clipVideo(path);
+
+                            }
+                        });
+    }
+
+    private void clipVideo(String path) {
+
+        VideoClipper clipper = new VideoClipper();
+        if (mBtnBeauty.isSelected()) {
+            clipper.showBeauty();
+        }
+        clipper.setInputVideoPath(mActivity, path);
+        final String fileName = "tym_" + System.currentTimeMillis() + ".mp4";
+        mOutputPath = FileUtils.getPath("tym/tym/", fileName);
+        clipper.setFilterType(mFilterType);
+        clipper.setOutputVideoPath(mOutputPath);
+        clipper.setOnVideoCutFinishListener(() -> mSubscription = Observable.empty()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new EmptySubscribe<Object>() {
+                    @Override
+                    public void onCompleted() {
+                        isLoading = false;
+                        ToastUtils.showToast("视频保存地址   " + mOutputPath);
+                        hideCenterLoading();
+                        FileUtils.updateMediaStore(mActivity, mOutputPath, fileName);
+//                                                TrimmerActivity.go(mActivity, mOutputPath);
+                    }
+                }));
+        try {
+            clipper.clipVideo(0, mVideoView.getVideoDuration() * 1000);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
