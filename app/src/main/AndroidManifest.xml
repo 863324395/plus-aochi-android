@@ -726,6 +726,7 @@
         <activity android:name=".modules.shortvideo.record.RecordActivity"/>
         <activity android:name=".modules.shortvideo.videostore.VideoSelectActivity"/>
         <activity android:name=".modules.shortvideo.preview.PreviewActivity"/>
+        <activity android:name=".modules.shortvideo.clipe.TrimmerActivity"/>
         <!-- 开机自启动服务 -->
         <receiver android:name=".modules.chat.call.receiver.StartServiceReceiver">
             <intent-filter android:priority="1000">

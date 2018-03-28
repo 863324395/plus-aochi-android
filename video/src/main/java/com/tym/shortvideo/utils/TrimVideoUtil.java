@@ -36,10 +36,6 @@ public class TrimVideoUtil {
         clipper.setOutputVideoPath(outputFile);
         final String tempOutFile = outputFile;
 
-
-
-
-
         clipper.setOnVideoCutFinishListener(new VideoClipper.OnVideoCutFinishListener() {
             @Override
             public void onFinish() {
@@ -52,8 +48,6 @@ public class TrimVideoUtil {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-
     }
 
     public static void backgroundShootVideoThumb(final Context context, final Uri videoUri, final SingleCallback<ArrayList<Bitmap>, Integer> callback) {
