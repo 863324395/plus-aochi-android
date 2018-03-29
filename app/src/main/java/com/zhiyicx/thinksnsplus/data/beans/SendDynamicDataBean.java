@@ -23,6 +23,7 @@ public class SendDynamicDataBean implements Serializable, Parcelable {
      */
     public static final int PHOTO_TEXT_DYNAMIC = 0;// 图片文字动态
     public static final int TEXT_ONLY_DYNAMIC = 1;// 纯文字动态
+    public static final int VIDEO_TEXT_DYNAMIC = 2;// 视频文字动态
 
     /**
      * 动态归属

@@ -726,8 +726,10 @@
         <activity android:name=".modules.shortvideo.record.RecordActivity"
                   android:theme="@style/GalleryTheme"/>
         <activity android:name=".modules.shortvideo.videostore.VideoSelectActivity"/>
-        <activity android:name=".modules.shortvideo.preview.PreviewActivity"/>
+        <activity android:name=".modules.shortvideo.preview.PreviewActivity"
+                  android:theme="@style/GalleryTheme"/>
         <activity android:name=".modules.shortvideo.clipe.TrimmerActivity"/>
+        <activity android:name=".modules.shortvideo.detail.VideoDetailActivity"/>
         <!-- 开机自启动服务 -->
         <receiver android:name=".modules.chat.call.receiver.StartServiceReceiver">
             <intent-filter android:priority="1000">

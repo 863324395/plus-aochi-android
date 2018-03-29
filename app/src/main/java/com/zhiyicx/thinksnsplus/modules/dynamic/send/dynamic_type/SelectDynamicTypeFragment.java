@@ -31,6 +31,7 @@ import com.zhiyicx.thinksnsplus.modules.dynamic.send.SendDynamicActivity;
 import com.zhiyicx.thinksnsplus.modules.information.publish.detail.EditeInfoDetailActivity;
 import com.zhiyicx.thinksnsplus.modules.markdown_editor.BaseMarkdownActivity;
 import com.zhiyicx.thinksnsplus.modules.q_a.publish.question.PublishQuestionActivity;
+import com.zhiyicx.thinksnsplus.modules.shortvideo.detail.VideoDetailActivity;
 import com.zhiyicx.thinksnsplus.modules.shortvideo.record.RecordActivity;
 import com.zhiyicx.thinksnsplus.modules.shortvideo.videostore.VideoSelectActivity;
 import com.zhiyicx.thinksnsplus.widget.IconTextView;
@@ -243,16 +244,17 @@ public class SelectDynamicTypeFragment extends TSFragment<SelectDynamicTypeContr
                 break;
             case R.id.send_video:
                 // 小视频
-                mRxPermissions.request(Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO)
-                        .subscribe(aBoolean -> {
-                            if (aBoolean) {
-//                                startActivity(new Intent(getActivity(), RecordActivity.class));
-                                startActivity(new Intent(getActivity(), VideoSelectActivity.class));
-                                closeActivity();
-                            } else {
-
-                            }
-                        });
+                VideoDetailActivity.startVideoDetailActivity(mActivity,"",0);
+//                mRxPermissions.request(Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO)
+//                        .subscribe(aBoolean -> {
+//                            if (aBoolean) {
+////                                startActivity(new Intent(getActivity(), RecordActivity.class));
+//                                startActivity(new Intent(getActivity(), VideoSelectActivity.class));
+//                                closeActivity();
+//                            } else {
+//
+//                            }
+//                        });
                 break;
                 /*
                  发帖

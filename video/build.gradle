@@ -36,9 +36,7 @@ dependencies {
     })
     testCompile testDependences.junit
 
-    compile dataDependences.gson
-    compile dataDependences.markdownView
-    compile dataDependences.vsersionUpdate
+    compile 'cn.jzvd:jiaozivideoplayer:6.2.9'
 
     compile project(":common")
 

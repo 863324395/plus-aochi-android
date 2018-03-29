@@ -28,6 +28,7 @@ import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.EmptySubscribe;
+import com.zhiyicx.thinksnsplus.modules.shortvideo.detail.VideoDetailActivity;
 
 import java.io.File;
 import java.io.IOException;
@@ -101,6 +102,21 @@ public class PreviewFragment extends TSFragment implements MediaPlayerWrapper.IM
     @Override
     protected boolean needCenterLoadingDialog() {
         return true;
+    }
+
+    @Override
+    protected boolean showToolBarDivider() {
+        return false;
+    }
+
+    @Override
+    protected boolean setUseSatusbar() {
+        return false;
+    }
+
+    @Override
+    protected boolean showToolbar() {
+        return false;
     }
 
     @Override
@@ -305,6 +321,7 @@ public class PreviewFragment extends TSFragment implements MediaPlayerWrapper.IM
                         ToastUtils.showToast("视频保存地址   " + mOutputPath);
                         hideCenterLoading();
                         FileUtils.updateMediaStore(mActivity, mOutputPath, fileName);
+                        VideoDetailActivity.startVideoDetailActivity(mActivity,mOutputPath,0);
 //                                                TrimmerActivity.go(mActivity, mOutputPath);
                     }
                 }));

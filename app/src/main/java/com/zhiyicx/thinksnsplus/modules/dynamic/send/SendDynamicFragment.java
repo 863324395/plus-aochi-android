@@ -47,6 +47,7 @@ import com.zhiyicx.thinksnsplus.data.beans.GroupSendDynamicDataBean;
 import com.zhiyicx.thinksnsplus.data.beans.SendDynamicDataBean;
 import com.zhiyicx.thinksnsplus.data.beans.SendDynamicDataBeanV2;
 import com.zhiyicx.thinksnsplus.modules.photopicker.PhotoViewActivity;
+import com.zhiyicx.thinksnsplus.modules.shortvideo.videostore.VideoSelectActivity;
 import com.zhiyicx.thinksnsplus.widget.UserInfoInroduceInputView;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
@@ -253,7 +254,7 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
 
     private void initTollState() {
         boolean canPay = mPresenter.getSystemConfigBean().getFeed().hasPaycontrol();
-        mTvToll.setVisibility(canPay ? View.VISIBLE : View.GONE);
+        mTvToll.setVisibility(canPay && dynamicType != SendDynamicDataBean.VIDEO_TEXT_DYNAMIC ? View.VISIBLE : View.GONE);
     }
 
     @Override
@@ -718,7 +719,9 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                     // 最后一项作为占位图
                     paintView.setImageResource(R.mipmap.ico_edit_pen);
                     filterView.setVisibility(View.GONE);
-                    imageView.setImageResource(R.mipmap.img_edit_photo_frame);
+                    // TODO 换成摄像图标
+                    imageView.setImageResource(dynamicType == SendDynamicDataBean.VIDEO_TEXT_DYNAMIC ?
+                            R.mipmap.img_edit_photo_frame : R.mipmap.img_edit_photo_frame);
                 } else {
                     paintView.setVisibility(isToll ? View.VISIBLE : View.GONE);
                     filterView.setVisibility(isToll ? View.VISIBLE : View.GONE);
@@ -732,6 +735,10 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                         paintView.setImageResource(R.mipmap.ico_lock);
                     } else {
                         paintView.setImageResource(R.mipmap.ico_edit_pen);
+                        if (dynamicType == SendDynamicDataBean.VIDEO_TEXT_DYNAMIC) {
+                            paintView.setVisibility(View.VISIBLE);
+                            // TODO 换成摄像图标
+                        }
                         filterView.setVisibility(View.GONE);
                     }
                     Glide.with(getContext())
@@ -745,6 +752,10 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                 imageView.setOnClickListener(v -> {
                     DeviceUtils.hideSoftKeyboard(getContext(), v);
                     if (TextUtils.isEmpty(imageBean.getImgUrl())) {
+                        if (dynamicType == SendDynamicDataBean.VIDEO_TEXT_DYNAMIC) {
+                            startActivity(new Intent(mActivity, VideoSelectActivity.class));
+                            return;
+                        }
                         ArrayList<String> photos = new ArrayList<>();
                         // 最后一张是占位图
                         for (int i = 0; i < selectedPhotos.size(); i++) {
@@ -824,6 +835,7 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
             }
         }
         switch (dynamicType) {
+            case SendDynamicDataBean.VIDEO_TEXT_DYNAMIC:
             case SendDynamicDataBean.PHOTO_TEXT_DYNAMIC:
                 // 没有图片就初始化这些
                 initPhotoSelector();

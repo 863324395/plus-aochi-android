@@ -18,11 +18,6 @@ import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 public class RecordActivity extends TSActivity<AppBasePresenter,RecordFragment> {
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState, @Nullable PersistableBundle persistentState) {
-        super.onCreate(savedInstanceState, persistentState);
-    }
-
-    @Override
     public void onBackPressed() {
         mContanierFragment.onBackPressed();
     }

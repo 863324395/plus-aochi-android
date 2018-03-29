@@ -125,12 +125,6 @@ public class RecordFragment extends TSFragment implements SurfaceHolder.Callback
     }
 
     @Override
-    protected boolean useEventBus() {
-        return true;
-    }
-
-
-    @Override
     protected boolean setUseSatusbar() {
         return false;
     }
