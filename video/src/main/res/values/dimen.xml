@@ -9,6 +9,7 @@
     <dimen name="dp20">20dp</dimen>
     <dimen name="dp25">25dp</dimen>
     <dimen name="dp30">30dp</dimen>
+    <dimen name="dp35">35dp</dimen>
     <dimen name="dp40">40dp</dimen>
     <dimen name="dp50">50dp</dimen>
     <dimen name="dp60">60dp</dimen>
@@ -30,6 +31,7 @@
 
     <!--拍照录制按钮宽高-->
     <dimen name="bottom_gallery_layout_height">120dp</dimen>
+
     <dimen name="record_width_height">100dp</dimen>
     <dimen name="stickers_width_height">40dp</dimen>
     <dimen name="filters_width_height">40dp</dimen>

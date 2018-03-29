@@ -369,18 +369,18 @@ public class ShutterButton extends AppCompatImageView {
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 
-        if (mMeasuredWidth == -1) {
-            mMeasuredWidth = getMeasuredWidth();
-
-            mOuterOvalRadius = mMeasuredWidth * mZoomValue / 2;
-            mInnerOvalRadius = mMeasuredWidth * mZoomValue / 2 - mStrokeWidth * 2;
-
-            // 设置绘制的带下
-            mOval.left = mStrokeWidth / 2;
-            mOval.top = mStrokeWidth / 2;
-            mOval.right = mMeasuredWidth - mStrokeWidth / 2;
-            mOval.bottom = mMeasuredWidth - mStrokeWidth / 2;
-        }
+//        if (mMeasuredWidth == -1) {
+//            mMeasuredWidth = getMeasuredWidth();
+//
+//            mOuterOvalRadius = mMeasuredWidth * mZoomValue / 2;
+//            mInnerOvalRadius = mMeasuredWidth * mZoomValue / 2 - mStrokeWidth * 2;
+//
+//            // 设置绘制的带下
+//            mOval.left = mStrokeWidth / 2;
+//            mOval.top = mStrokeWidth / 2;
+//            mOval.right = mMeasuredWidth - mStrokeWidth / 2;
+//            mOval.bottom = mMeasuredWidth - mStrokeWidth / 2;
+//        }
     }
 
     @Override
