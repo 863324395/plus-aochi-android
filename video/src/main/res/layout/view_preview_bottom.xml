@@ -18,8 +18,9 @@
 
         <com.tym.shortvideo.view.ShutterButton
             android:id="@+id/btn_take"
-            android:layout_width="@dimen/record_width_height"
-            android:layout_height="@dimen/record_width_height"
+            android:src="@mipmap/ico_video_record"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:layout_gravity="center" />
 

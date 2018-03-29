@@ -719,9 +719,9 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                     // 最后一项作为占位图
                     paintView.setImageResource(R.mipmap.ico_edit_pen);
                     filterView.setVisibility(View.GONE);
-                    // TODO 换成摄像图标
+                    // 换成摄像图标
                     imageView.setImageResource(dynamicType == SendDynamicDataBean.VIDEO_TEXT_DYNAMIC ?
-                            R.mipmap.img_edit_photo_frame : R.mipmap.img_edit_photo_frame);
+                            R.mipmap.ico_video_recordings : R.mipmap.img_edit_photo_frame);
                 } else {
                     paintView.setVisibility(isToll ? View.VISIBLE : View.GONE);
                     filterView.setVisibility(isToll ? View.VISIBLE : View.GONE);
@@ -737,7 +737,7 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                         paintView.setImageResource(R.mipmap.ico_edit_pen);
                         if (dynamicType == SendDynamicDataBean.VIDEO_TEXT_DYNAMIC) {
                             paintView.setVisibility(View.VISIBLE);
-                            // TODO 换成摄像图标
+                            paintView.setImageResource(R.mipmap.ico_video_recordings_white);
                         }
                         filterView.setVisibility(View.GONE);
                     }

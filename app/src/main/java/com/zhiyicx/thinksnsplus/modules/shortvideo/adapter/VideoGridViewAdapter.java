@@ -30,8 +30,9 @@ public class VideoGridViewAdapter extends CommonAdapter<VideoInfo> {
     protected void convert(ViewHolder holder, VideoInfo video, int position) {
         if (TextUtils.isEmpty(video.getPath())) {
             holder.setVisible(R.id.tv_duration, View.GONE);
-            holder.setImageResource(R.id.iv_cover, R.mipmap.ico_identi_camera);
+            holder.setImageResource(R.id.iv_cover, R.mipmap.pic_shootvideo);
         } else {
+            holder.setVisible(R.id.tv_duration, View.VISIBLE);
             holder.setText(R.id.tv_duration, DateUtil.convertSecondsToTime(video.getDuration() / 1000));
             Glide.with(mContext).load(TrimVideoUtil.getVideoFilePath(video.getPath())).into(holder.getImageViwe(R.id.iv_cover));
         }

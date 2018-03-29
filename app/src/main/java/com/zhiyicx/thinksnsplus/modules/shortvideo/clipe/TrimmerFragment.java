@@ -60,8 +60,8 @@ public class TrimmerFragment extends TSFragment implements TrimVideoListener {
     }
 
     @Override
-    public void onDestroy() {
-        super.onDestroy();
+    public void onDestroyView() {
+        super.onDestroyView();
         mVideoTrimmerView.destroy();
     }
 

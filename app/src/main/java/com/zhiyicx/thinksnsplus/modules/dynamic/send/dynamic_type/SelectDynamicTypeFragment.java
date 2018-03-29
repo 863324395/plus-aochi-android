@@ -31,8 +31,6 @@ import com.zhiyicx.thinksnsplus.modules.dynamic.send.SendDynamicActivity;
 import com.zhiyicx.thinksnsplus.modules.information.publish.detail.EditeInfoDetailActivity;
 import com.zhiyicx.thinksnsplus.modules.markdown_editor.BaseMarkdownActivity;
 import com.zhiyicx.thinksnsplus.modules.q_a.publish.question.PublishQuestionActivity;
-import com.zhiyicx.thinksnsplus.modules.shortvideo.detail.VideoDetailActivity;
-import com.zhiyicx.thinksnsplus.modules.shortvideo.record.RecordActivity;
 import com.zhiyicx.thinksnsplus.modules.shortvideo.videostore.VideoSelectActivity;
 import com.zhiyicx.thinksnsplus.widget.IconTextView;
 
@@ -57,7 +55,7 @@ import static com.zhiyicx.thinksnsplus.modules.certification.input.Certification
  * @Description
  */
 public class SelectDynamicTypeFragment extends TSFragment<SelectDynamicTypeContract.Presenter>
-        implements SelectDynamicTypeContract.View,PhotoSelectorImpl.IPhotoBackListener {
+        implements SelectDynamicTypeContract.View, PhotoSelectorImpl.IPhotoBackListener {
     public static final int DEFAULT_ANIMATE_DELAY_START = 80;
     public static final int DEFAULT_ANIMATE_DELAY = 80;
 
@@ -198,7 +196,7 @@ public class SelectDynamicTypeFragment extends TSFragment<SelectDynamicTypeContr
     }
 
     @OnClick({R.id.send_words_dynamic, R.id.send_image_dynamic, R.id.check_in, R.id.im_close_dynamic, R.id.send_words_question, R.id.open_zhibo, R
-            .id.send_info, R.id.send_circle_post,R.id.send_video})
+            .id.send_info, R.id.send_circle_post, R.id.send_video})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.send_words_dynamic:
@@ -244,17 +242,15 @@ public class SelectDynamicTypeFragment extends TSFragment<SelectDynamicTypeContr
                 break;
             case R.id.send_video:
                 // 小视频
-                VideoDetailActivity.startVideoDetailActivity(mActivity,"",0);
-//                mRxPermissions.request(Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO)
-//                        .subscribe(aBoolean -> {
-//                            if (aBoolean) {
-////                                startActivity(new Intent(getActivity(), RecordActivity.class));
-//                                startActivity(new Intent(getActivity(), VideoSelectActivity.class));
-//                                closeActivity();
-//                            } else {
-//
-//                            }
-//                        });
+                mRxPermissions.request(Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO)
+                        .subscribe(aBoolean -> {
+                            if (aBoolean) {
+                                startActivity(new Intent(getActivity(), VideoSelectActivity.class));
+                                closeActivity();
+                            } else {
+
+                            }
+                        });
                 break;
                 /*
                  发帖

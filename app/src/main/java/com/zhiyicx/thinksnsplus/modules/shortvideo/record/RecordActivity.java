@@ -1,11 +1,5 @@
 package com.zhiyicx.thinksnsplus.modules.shortvideo.record;
 
-import android.os.Bundle;
-import android.os.PersistableBundle;
-import android.support.annotation.Nullable;
-import android.view.Window;
-import android.view.WindowManager;
-
 import com.zhiyicx.baseproject.base.TSActivity;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 
@@ -15,7 +9,7 @@ import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class RecordActivity extends TSActivity<AppBasePresenter,RecordFragment> {
+public class RecordActivity extends TSActivity<AppBasePresenter, RecordFragment> {
 
     @Override
     public void onBackPressed() {

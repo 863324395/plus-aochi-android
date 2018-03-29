@@ -16,8 +16,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|right"
-        android:layout_marginBottom="@dimen/spacing_normal_large"
-        android:layout_marginRight="@dimen/spacing_normal_large"
+        android:textSize="@dimen/size_note_assist"
+        android:textColor="@color/white"
+        android:layout_marginBottom="@dimen/spacing_mid_small_8dp"
+        android:layout_marginRight="@dimen/spacing_mid_small_8dp"
         android:background="@drawable/shape_bg_circle_radus_alpha_gray"/>
 
 </FrameLayout>

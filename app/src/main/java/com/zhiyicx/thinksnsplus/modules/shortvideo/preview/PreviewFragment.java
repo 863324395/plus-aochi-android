@@ -162,8 +162,8 @@ public class PreviewFragment extends TSFragment implements MediaPlayerWrapper.IM
 
     @Override
     protected void initData() {
-        ArrayList<String> srcList =getArguments().getStringArrayList(PATH);
-        if (srcList==null||srcList.isEmpty()) {
+        ArrayList<String> srcList = getArguments().getStringArrayList(PATH);
+        if (srcList == null || srcList.isEmpty()) {
             throw new IllegalArgumentException("video path can not be null");
         }
         mVideoView.setVideoPath(srcList);
@@ -187,8 +187,8 @@ public class PreviewFragment extends TSFragment implements MediaPlayerWrapper.IM
     }
 
     @Override
-    public void onDestroy() {
-        super.onDestroy();
+    public void onDestroyView() {
+        super.onDestroyView();
         if (mSubscription != null && !mSubscription.isUnsubscribed()) {
             mSubscription.unsubscribe();
         }
@@ -198,8 +198,10 @@ public class PreviewFragment extends TSFragment implements MediaPlayerWrapper.IM
 
     @Override
     public void onBackPressed() {
-        if (!isLoading()) {
+        if (isLoading()) {
             super.onBackPressed();
+        } else {
+            mActivity.finish();
         }
     }
 
@@ -321,7 +323,7 @@ public class PreviewFragment extends TSFragment implements MediaPlayerWrapper.IM
                         ToastUtils.showToast("视频保存地址   " + mOutputPath);
                         hideCenterLoading();
                         FileUtils.updateMediaStore(mActivity, mOutputPath, fileName);
-                        VideoDetailActivity.startVideoDetailActivity(mActivity,mOutputPath,0);
+                        VideoDetailActivity.startVideoDetailActivity(mActivity, mOutputPath, 0);
 //                                                TrimmerActivity.go(mActivity, mOutputPath);
                     }
                 }));

@@ -240,11 +240,11 @@ public class RecordFragment extends TSFragment implements SurfaceHolder.Callback
     }
 
     @Override
-    public void onDestroy() {
+    public void onDestroyView() {
         DrawerManager.getInstance().destoryTrhead();
         // 在停止时需要释放上下文，防止内存泄漏
         ParamsManager.context = null;
-        super.onDestroy();
+        super.onDestroyView();
     }
 
     @Override
@@ -388,6 +388,7 @@ public class RecordFragment extends TSFragment implements SurfaceHolder.Callback
         mTymTest.setProgressMin((int) CountDownManager.getInstance().getMinMilliSeconds());
         // 添加分割线
         mBtnTake.addSplitView();
+        mBtnTake.setImageResource(R.mipmap.ico_video_recording);
         mTymTest.setDeleteMode(false);
         mTymTest.addSplitView();
         mBtnLocal.setVisibility(View.GONE);
@@ -399,6 +400,7 @@ public class RecordFragment extends TSFragment implements SurfaceHolder.Callback
         DrawerManager.getInstance().stopRecording();
         // 停止倒计时
         CountDownManager.getInstance().stopTimer();
+        mBtnTake.setImageResource(R.mipmap.ico_video_record);
     }
 
     @Override

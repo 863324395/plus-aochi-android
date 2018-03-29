@@ -10,6 +10,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.ColorRes;
 import android.support.annotation.DimenRes;
+import android.support.v7.widget.AppCompatImageView;
 import android.text.TextPaint;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -28,7 +29,7 @@ import java.util.List;
  * Created by cain.huang on 2017/12/28.
  */
 
-public class ShutterButton extends View {
+public class ShutterButton extends AppCompatImageView {
 
     // 按钮做缩放动画
     private static final int MSG_ZOOM_ANIM = 0x00;
@@ -109,18 +110,16 @@ public class ShutterButton extends View {
     private Paint mPaint;
 
     public ShutterButton(Context context) {
-        super(context);
-        init();
+        this(context,null);
     }
 
     public ShutterButton(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        init();
+        this(context, attrs,0);
     }
 
     public ShutterButton(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        init();
+//        init();
     }
 
     private void init() {
@@ -220,7 +219,7 @@ public class ShutterButton extends View {
                 if (mProgress >= mMax) {
                     return true;
                 }
-                // 取消回删
+                // 删除状态下不允许录制
 //                if (isDeleteMode()) {
 //                    return true;
 //                }
@@ -228,10 +227,6 @@ public class ShutterButton extends View {
                     startRecord(firstX, firstY);
                 }
                 break;
-
-//            case MotionEvent.ACTION_MOVE:
-//                startZoomAnim();
-//                break;
 
             case MotionEvent.ACTION_UP:
             case MotionEvent.ACTION_CANCEL:
@@ -257,13 +252,19 @@ public class ShutterButton extends View {
     private void startRecord(float upX, float upY) {
         if (mEnableEncoder && mPreviewing && !(mProgress >= mMax)) {
             mEnableEncoder = false;
-            if (Math.abs(upX - firstX) < mStrokeWidth
-                    && Math.abs(upY - firstY) < mStrokeWidth) {
-                if (mGestureListener != null) {
-                    mGestureListener.onStartRecord();
-                }
-                openButton();
+
+            if (mGestureListener != null) {
+                mGestureListener.onStartRecord();
             }
+            openButton();
+
+//            if (Math.abs(upX - firstX) < mStrokeWidth
+//                    && Math.abs(upY - firstY) < mStrokeWidth) {
+//                if (mGestureListener != null) {
+//                    mGestureListener.onStartRecord();
+//                }
+//                openButton();
+//            }
         }
     }
 
@@ -274,8 +275,8 @@ public class ShutterButton extends View {
         if (!mOpenMode) {
             mOpenMode = true;
             // 放大动画
-            mButtonHandler.sendMessageDelayed(
-                    mButtonHandler.obtainMessage(MSG_ZOOM_ANIM, true), mAnimDuration);
+//            mButtonHandler.sendMessageDelayed(
+//                    mButtonHandler.obtainMessage(MSG_ZOOM_ANIM, true), mAnimDuration);
         }
     }
 
@@ -286,8 +287,8 @@ public class ShutterButton extends View {
         if (mOpenMode) {
             mOpenMode = false;
             // 缩小动画
-            mButtonHandler.sendMessageDelayed(
-                    mButtonHandler.obtainMessage(MSG_ZOOM_ANIM, false), mAnimDuration);
+//            mButtonHandler.sendMessageDelayed(
+//                    mButtonHandler.obtainMessage(MSG_ZOOM_ANIM, false), mAnimDuration);
         }
     }
 
@@ -320,36 +321,10 @@ public class ShutterButton extends View {
         }
     }
 
-    private void startZoomAnim() {
-        if (mButtonAnim == null || !mButtonAnim.isRunning()) {
-            mButtonAnim = ValueAnimator.ofFloat(0, 0.2f).setDuration(500);
-            mButtonAnim.setRepeatCount(ValueAnimator.INFINITE);
-            mButtonAnim.setRepeatMode(ValueAnimator.REVERSE);
-            mButtonAnim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                @Override
-                public void onAnimationUpdate(ValueAnimator animation) {
-                    float value = (float) animation.getAnimatedValue();
-                    mOuterOvalRadius = mMeasuredWidth * (mZoomValue + value) / 2;
-                    mInnerOvalRadius = mMeasuredWidth * (mZoomValue - value) / 2 - mStrokeWidth * 2;
-
-                    value = 1 - mZoomValue - value;
-                    mOval.left = mMeasuredWidth * value / 2 + mStrokeWidth / 2;
-                    mOval.top = mMeasuredWidth * value / 2 + mStrokeWidth / 2;
-                    mOval.right = mMeasuredWidth * (1 - value / 2) - mStrokeWidth / 2;
-                    mOval.bottom = mMeasuredWidth * (1 - value / 2) - mStrokeWidth / 2;
-
-                    invalidate();
-                }
-            });
-            mButtonAnim.start();
-        }
-    }
-
     /**
      * 设置段点
      */
     public void addSplitView() {
-        LogUtils.d("addSplitView", "mGrithPro = " + mGirthPro);
         mSplitList.add(mGirthPro);
         // invalidate();
     }
@@ -411,13 +386,13 @@ public class ShutterButton extends View {
     @Override
     protected void onDraw(Canvas canvas) {
 
+        super.onDraw(canvas);
+
         // 绘制外圆背景
-        mFillPaint.setColor(mOuterBackgroundColor);
-        canvas.drawCircle(mMeasuredWidth / 2, mMeasuredWidth / 2, mOuterOvalRadius, mFillPaint);
+//        drawOutCircleBg(canvas);
 
         // 绘制内圆颜色
-        mFillPaint.setColor(mInnerBackgroundColor);
-        canvas.drawCircle(mMeasuredWidth / 2, mMeasuredWidth / 2, mInnerOvalRadius, mFillPaint);
+//        drawInsideCircle(canvas);
 
 
         // 绘制进度
@@ -428,6 +403,16 @@ public class ShutterButton extends View {
 
         // 绘制删除模式的段落
         // drawDelete(canvas);
+    }
+
+    private void drawInsideCircle(Canvas canvas) {
+        mFillPaint.setColor(mInnerBackgroundColor);
+        canvas.drawCircle(mMeasuredWidth / 2, mMeasuredWidth / 2, mInnerOvalRadius, mFillPaint);
+    }
+
+    private void drawOutCircleBg(Canvas canvas) {
+        mFillPaint.setColor(mOuterBackgroundColor);
+        canvas.drawCircle(mMeasuredWidth / 2, mMeasuredWidth / 2, mOuterOvalRadius, mFillPaint);
     }
 
     private void drawDelete(Canvas canvas) {
