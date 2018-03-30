@@ -49,6 +49,7 @@ public final class RenderManager {
     private ScaleType mScaleType = ScaleType.CENTER_CROP;
     private FloatBuffer mVertexBuffer;
     private FloatBuffer mTextureBuffer;
+    private int mBeautiLevel = 100;
 
     public static RenderManager getInstance() {
         if (mInstance == null) {
@@ -248,9 +249,14 @@ public final class RenderManager {
      * @param percent 0 ~ 100
      */
     public void setBeautifyLevel(int percent) {
+        mBeautiLevel = percent;
         if (mRealTimeFilter != null) {
             mRealTimeFilter.setBeautifyLevel(percent / 100.0f);
         }
+    }
+
+    public int getBeautiLevel() {
+        return mBeautiLevel;
     }
 
     /**

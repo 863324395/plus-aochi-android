@@ -188,12 +188,12 @@ public class PreviewFragment extends TSFragment implements MediaPlayerWrapper.IM
 
     @Override
     public void onDestroyView() {
-        super.onDestroyView();
         if (mSubscription != null && !mSubscription.isUnsubscribed()) {
             mSubscription.unsubscribe();
         }
         isDestroy = true;
         mVideoView.onDestroy();
+        super.onDestroyView();
     }
 
     @Override

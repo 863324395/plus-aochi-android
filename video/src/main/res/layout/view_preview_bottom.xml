@@ -11,7 +11,6 @@
 
 
     <RelativeLayout
-        android:paddingLeft="@dimen/dp35"
         android:layout_width="match_parent"
         android:layout_height="@dimen/bottom_gallery_layout_height"
         android:layout_marginTop="@dimen/bottom_layout_margin">
@@ -26,19 +25,17 @@
             android:layout_gravity="center" />
 
         <ImageView
-            android:visibility="gone"
             android:layout_marginLeft="@dimen/dp35"
             android:id="@+id/iv_left"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:src="@mipmap/ico_video_delete"
+            android:src="@mipmap/ico_video_beauty_on"
             />
 
         <ImageView
             android:layout_marginRight="@dimen/dp35"
             android:id="@+id/iv_right"
-            android:visibility="gone"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@mipmap/btn_chat_camera"

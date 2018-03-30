@@ -12,7 +12,7 @@ import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.SurfaceHolder;
 import android.view.View;
-import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding.view.RxView;
@@ -24,12 +24,11 @@ import com.tym.shortvideo.recodrender.ColorFilterManager;
 import com.tym.shortvideo.recodrender.DrawerManager;
 import com.tym.shortvideo.recodrender.ParamsManager;
 import com.tym.shortvideo.recodrender.RecordManager;
+import com.tym.shortvideo.recodrender.RenderManager;
 import com.tym.shortvideo.recodrender.RenderStateChangedListener;
 import com.tym.shortvideo.recordcore.CountDownManager;
 import com.tym.shortvideo.recordcore.VideoListManager;
 import com.tym.shortvideo.recordcore.multimedia.MediaEncoder;
-import com.tym.shortvideo.recordcore.multimedia.VideoCombineManager;
-import com.tym.shortvideo.recordcore.multimedia.VideoCombiner;
 import com.tym.shortvideo.utils.BitmapUtils;
 import com.tym.shortvideo.utils.CameraUtils;
 import com.tym.shortvideo.utils.FileUtils;
@@ -40,10 +39,8 @@ import com.tym.shortvideo.view.CainSurfaceView;
 import com.tym.shortvideo.view.ProgressView;
 import com.tym.shortvideo.view.ShutterButton;
 import com.zhiyicx.baseproject.base.TSFragment;
-import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
-import com.zhiyicx.thinksnsplus.modules.home.HomeActivity;
 import com.zhiyicx.thinksnsplus.modules.shortvideo.adapter.EffectFilterAdapter;
 import com.zhiyicx.thinksnsplus.modules.shortvideo.preview.PreviewActivity;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
@@ -74,26 +71,24 @@ public class RecordFragment extends TSFragment implements SurfaceHolder.Callback
     AspectFrameLayout mLayoutAspect;
     @BindView(R.id.tv_fps)
     TextView mTvFps;
-    @BindView(R.id.btn_switch)
-    Button mBtnSwitch;
-    @BindView(R.id.btn_lvjing)
-    Button mBtnLvjing;
-    @BindView(R.id.btn_beauty)
-    Button mBtnBeauty;
+
     @BindView(R.id.btn_take)
     ShutterButton mBtnTake;
-    @BindView(R.id.btn_record_delete)
-    Button mBtnRecordDelete;
-    @BindView(R.id.btn_local)
-    Button mBtnLocal;
-    @BindView(R.id.btn_record_done)
-    Button mBtnRecordDone;
     @BindView(R.id.effect_list)
     AsyncRecyclerview mEffectList;
     @BindView(R.id.tym_test)
     ProgressView mTymTest;
     @BindView(R.id.tv_countdown)
     TextView mTvCountdown;
+
+    @BindView(R.id.iv_back)
+    ImageView mIvBack;
+    @BindView(R.id.iv_left)
+    ImageView mIvLeft;
+    @BindView(R.id.iv_right)
+    ImageView mIvRight;
+    @BindView(R.id.tv_next_setup)
+    TextView mTvNextSetUp;
 
     private CainSurfaceView mCameraSurfaceView;
 
@@ -136,8 +131,6 @@ public class RecordFragment extends TSFragment implements SurfaceHolder.Callback
 
     @Override
     protected void initView(View rootView) {
-
-        mBtnLvjing.setVisibility(View.GONE);
         String phoneName = Build.MODEL;
         if (phoneName.toLowerCase().contains("bullhead")
                 || phoneName.toLowerCase().contains("nexus 5x")) {
@@ -168,17 +161,18 @@ public class RecordFragment extends TSFragment implements SurfaceHolder.Callback
         adjustBottomView();
 
         initEffectListView();
-        DrawerManager.getInstance().setBeautifyLevel(0);
         setRecordType(2);
-
         initListener();
     }
 
     private void initListener() {
 
+        RxView.clicks(mIvBack)
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
+                .compose(this.bindToLifecycle())
+                .subscribe(aVoid -> mActivity.finish());
 
-
-        RxView.clicks(mBtnSwitch)
+        RxView.clicks(mIvRight)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .compose(this.bindToLifecycle())
                 .subscribe(aVoid -> switchCamera());
@@ -189,28 +183,30 @@ public class RecordFragment extends TSFragment implements SurfaceHolder.Callback
                 .subscribe(aVoid -> takePicture());
         mBtnTake.setGestureListener(this);
 
-        RxView.clicks(mBtnBeauty)
+        RxView.clicks(mIvLeft)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .compose(this.bindToLifecycle())
-                .subscribe(aVoid -> DrawerManager.getInstance().setBeautifyLevel(100));
-
-        RxView.clicks(mBtnLocal)
-                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
-                .compose(this.bindToLifecycle())
-                .subscribe(aVoid ->
-                        startActivity(new Intent(mActivity, HomeActivity.class))
+                .subscribe(aVoid -> {
+                            if (mTymTest.getSplitList().isEmpty()) {
+                                switchBeauty();
+                            } else {
+                                deleteRecordedVideo(false);
+                            }
+                        }
                 );
 
-        RxView.clicks(mBtnRecordDelete)
+        RxView.clicks(mTvNextSetUp)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .compose(this.bindToLifecycle())
-                .subscribe(aVoid -> deleteRecordedVideo(false));
-
-        RxView.clicks(mBtnRecordDone)
-                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
-                .compose(this.bindToLifecycle())
-                .subscribe(aVoid -> previewRecordVideo());
+                .subscribe(aVoid -> {
+                    if (CountDownManager.getInstance().getVisibleDuration() < CountDownManager.getInstance().getMinMilliSeconds()) {
+                        showSnackErrorMessage("不得小于" + CountDownManager.getInstance().getMinMilliSeconds() / 1000 + "秒");
+                        return;
+                    }
+                    previewRecordVideo();
+                });
     }
+
 
     @Override
     public void onResume() {
@@ -370,15 +366,15 @@ public class RecordFragment extends TSFragment implements SurfaceHolder.Callback
         RecordManager.getInstance().setEnableAudioRecording(ParamsManager.canRecordingAudio
                 && ParamsManager.sMGLType == GLType.VIDEO);
         // 是否允许高清录制
-        RecordManager.getInstance().enableHighDefinition(true);
+        RecordManager.getInstance().enableHighDefinition(false);
         // 初始化录制器
         RecordManager.getInstance().initRecorder(RecordManager.RECORD_WIDTH,
                 RecordManager.RECORD_HEIGHT, mEncoderListener);
 
         // 隐藏删除按钮
         if (ParamsManager.sMGLType == GLType.VIDEO) {
-            mBtnRecordDone.setVisibility(View.GONE);
-            mBtnRecordDelete.setVisibility(View.GONE);
+            mIvLeft.setVisibility(View.GONE);
+            mIvRight.setVisibility(View.GONE);
         }
         // 初始化倒计时
         CountDownManager.getInstance().initCountDownTimer();
@@ -391,7 +387,6 @@ public class RecordFragment extends TSFragment implements SurfaceHolder.Callback
         mBtnTake.setImageResource(R.mipmap.ico_video_recording);
         mTymTest.setDeleteMode(false);
         mTymTest.addSplitView();
-        mBtnLocal.setVisibility(View.GONE);
     }
 
     @Override
@@ -401,6 +396,9 @@ public class RecordFragment extends TSFragment implements SurfaceHolder.Callback
         // 停止倒计时
         CountDownManager.getInstance().stopTimer();
         mBtnTake.setImageResource(R.mipmap.ico_video_record);
+        mIvLeft.setImageResource(R.mipmap.ico_video_delete);
+        mIvLeft.setVisibility(View.VISIBLE);
+        mIvRight.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -413,6 +411,11 @@ public class RecordFragment extends TSFragment implements SurfaceHolder.Callback
         } else {
             previewRecordVideo();
         }
+    }
+
+    @Override
+    public void onVideoReady() {
+
     }
 
     private void registerHomeReceiver() {
@@ -433,6 +436,19 @@ public class RecordFragment extends TSFragment implements SurfaceHolder.Callback
         }
     }
 
+    private void switchBeauty() {
+        if (RenderManager.getInstance().getBeautiLevel() > 0) {
+            DrawerManager.getInstance().setBeautifyLevel(0);
+        } else {
+            DrawerManager.getInstance().setBeautifyLevel(100);
+        }
+        setLeftImage(RenderManager.getInstance().getBeautiLevel() > 0);
+    }
+
+    private void setLeftImage(boolean beautyOn) {
+        mIvLeft.setImageResource(beautyOn ? R.mipmap.ico_video_beauty_on : R.mipmap.ico_video_beauty_close);
+    }
+
     /**
      * 显示滤镜
      */
@@ -449,11 +465,9 @@ public class RecordFragment extends TSFragment implements SurfaceHolder.Callback
      */
     private void adjustBottomView() {
         if (CameraUtils.getCurrentRatio() < CameraUtils.Ratio_4_3) {
-            mBtnRecordDelete.setBackgroundResource(R.mipmap.preview_video_delete_white);
-            mBtnRecordDone.setBackgroundResource(R.mipmap.preview_video_done_white);
+
         } else {
-            mBtnRecordDelete.setBackgroundResource(R.mipmap.preview_video_delete_black);
-            mBtnRecordDone.setBackgroundResource(R.mipmap.preview_video_done_black);
+
         }
     }
 
@@ -568,11 +582,8 @@ public class RecordFragment extends TSFragment implements SurfaceHolder.Callback
             // 销毁录制线程
             RecordManager.getInstance().destoryThread();
             mNeedToWaitStop = false;
-//            combineVideo();
             // 隐藏删除和预览按钮
-            mBtnRecordDone.setVisibility(View.GONE);
-            mBtnRecordDelete.setVisibility(View.GONE);
-            ArrayList<String> arrayList=new ArrayList<>(VideoListManager.getInstance()
+            ArrayList<String> arrayList = new ArrayList<>(VideoListManager.getInstance()
                     .getSubVideoPathList());
             PreviewActivity.startPreviewActivity(mActivity, arrayList);
         }
@@ -608,15 +619,12 @@ public class RecordFragment extends TSFragment implements SurfaceHolder.Callback
             mTvCountdown.setText(CountDownManager.getInstance().getVisibleDurationString());
             // 如果此时没有了视频，则隐藏删除按钮
             if (VideoListManager.getInstance().getSubVideoList().size() <= 0) {
-                mBtnRecordDelete.setVisibility(View.GONE);
-                mBtnRecordDone.setVisibility(View.GONE);
+
+                setLeftImage(RenderManager.getInstance().getBeautiLevel() > 0);
+
                 // 复位状态
                 mNeedToWaitStop = false;
                 mOnRecording = false;
-            }
-
-            if (mTymTest.getSplitList().size() == 0) {
-                mBtnLocal.setVisibility(View.VISIBLE);
             }
 
         } else { // 没有进入删除模式则进入删除模式
@@ -748,8 +756,8 @@ public class RecordFragment extends TSFragment implements SurfaceHolder.Callback
                 // 显示删除按钮
                 if (ParamsManager.sMGLType == GLType.VIDEO) {
                     mActivity.runOnUiThread(() -> {
-                        mBtnRecordDone.setVisibility(View.VISIBLE);
-                        mBtnRecordDelete.setVisibility(View.VISIBLE);
+                        mIvLeft.setVisibility(View.VISIBLE);
+                        mIvRight.setVisibility(View.VISIBLE);
                     });
                 }
 

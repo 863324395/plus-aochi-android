@@ -245,7 +245,7 @@ public class MagicBeautyFilter extends GPUImageFilter {
         mHeightLoc = GLES30.glGetUniformLocation(getProgram(), "height");
         mOpacityLoc = GLES30.glGetUniformLocation(getProgram(), "opacity");
 
-//        setBeautyLevel(3);
+        setBeautyLevel(5);
     }
 
 

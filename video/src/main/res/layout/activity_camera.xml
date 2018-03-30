@@ -46,12 +46,14 @@
 
     <ImageView
         android:id="@+id/iv_back"
+        android:layout_marginTop="@dimen/dp30"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/dp10"
         android:src="@mipmap/ico_video_close"/>
 
     <TextView
+        android:layout_marginTop="@dimen/dp30"
         android:id="@+id/tv_next_setup"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

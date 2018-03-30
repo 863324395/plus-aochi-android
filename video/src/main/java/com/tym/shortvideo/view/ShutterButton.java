@@ -18,6 +18,7 @@ import android.view.MotionEvent;
 import android.view.View;
 
 
+import com.tym.shortvideo.recordcore.CountDownManager;
 import com.tym.video.R;
 import com.zhiyicx.common.utils.log.LogUtils;
 
@@ -110,11 +111,11 @@ public class ShutterButton extends AppCompatImageView {
     private Paint mPaint;
 
     public ShutterButton(Context context) {
-        this(context,null);
+        this(context, null);
     }
 
     public ShutterButton(Context context, AttributeSet attrs) {
-        this(context, attrs,0);
+        this(context, attrs, 0);
     }
 
     public ShutterButton(Context context, AttributeSet attrs, int defStyleAttr) {
@@ -446,6 +447,8 @@ public class ShutterButton extends AppCompatImageView {
 
         // 进度条结束
         void onProgressOver();
+
+        void onVideoReady();
     }
 
     /**
