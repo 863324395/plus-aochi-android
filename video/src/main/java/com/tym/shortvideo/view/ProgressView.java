@@ -9,6 +9,7 @@ import android.os.Message;
 import android.util.AttributeSet;
 import android.view.View;
 
+import com.tym.shortvideo.recordcore.CountDownManager;
 import com.tym.video.R;
 import com.tym.shortvideo.utils.DeviceUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
@@ -158,15 +159,14 @@ public class ProgressView extends View {
         int left = 0, right = 0;
         right = left + (int) (width * mCurrentLenght);
 
-        LogUtils.d("left:"+left);
-        LogUtils.d("width:"+width);
-        LogUtils.d("mCurrentLenght:"+mCurrentLenght);
-        LogUtils.d("right:"+width * mCurrentLenght);
-        LogUtils.d("height:"+height);
+        LogUtils.d("left:" + left);
+        LogUtils.d("width:" + width);
+        LogUtils.d("mCurrentLenght:" + mCurrentLenght);
+        LogUtils.d("right:" + width * mCurrentLenght);
+        LogUtils.d("height:" + height);
 
         canvas.drawRect(left, 0.0F, width * mCurrentLenght, height,
                 mProgressPaint);
-
 
 
         if (isDeleteMode()) {
@@ -220,7 +220,7 @@ public class ProgressView extends View {
 
         postInvalidate();
 
-        LogUtils.d("setProgress:",mCurrentLenght);
+        LogUtils.d("setProgress:", mCurrentLenght);
         // 满进度回调
         if (mCurrentLenght >= 1) {
 
@@ -233,6 +233,7 @@ public class ProgressView extends View {
     public void addSplitView() {
         LogUtils.d("addSplitView", "mGrithPro = " + mCurrentLenght);
         mSplitList.add(mCurrentLenght);
+        CountDownManager.getInstance().setSplitList(mSplitList);
         postInvalidate();
     }
 
@@ -245,6 +246,7 @@ public class ProgressView extends View {
             mDeleteMode = false;
             postInvalidate();
         }
+        CountDownManager.getInstance().setSplitList(mSplitList);
     }
 
     /**
@@ -255,6 +257,7 @@ public class ProgressView extends View {
             mSplitList.clear();
             postInvalidate();
         }
+        CountDownManager.getInstance().setSplitList(mSplitList);
     }
 
     public List<Float> getSplitList() {

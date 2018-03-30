@@ -6,6 +6,9 @@ import android.os.Message;
 import com.tym.shortvideo.utils.AccurateCountDownTimer;
 import com.tym.shortvideo.utils.StringUtils;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 /**
  * 倒计时管理器
@@ -48,6 +51,8 @@ public final class CountDownManager {
 
     // 倒计时监听
     private CountDownListener mListener;
+
+    private List<Float> mSplitList = new ArrayList<>();
 
     // 倒计时Handler
     private Handler mTimerHandler = new Handler() {
@@ -192,6 +197,14 @@ public final class CountDownManager {
         } else if (type == CountDownType.ThreeMinute) {
             mMaxMillisSeconds = VideoListManager.DURATION_THREE_MINUTE;
         }
+    }
+
+    public List<Float> getSplitList() {
+        return mSplitList;
+    }
+
+    public void setSplitList(List<Float> splitList) {
+        mSplitList = splitList;
     }
 
     /**

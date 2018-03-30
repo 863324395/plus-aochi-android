@@ -249,7 +249,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:scaleType="fitCenter"
-                        android:src="@mipmap/btn_chat_camera"/>
+                        android:src="@mipmap/ico_video_local"/>
 
                 <TextView
                         android:layout_width="wrap_content"

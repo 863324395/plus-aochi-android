@@ -43,8 +43,6 @@ public class TGridDecoration extends RecyclerView.ItemDecoration {
         } else {
             super.onDraw(c, parent, state);
         }
-
-
     }
 
     private int getSpanCount(RecyclerView parent) {
@@ -113,7 +111,9 @@ public class TGridDecoration extends RecyclerView.ItemDecoration {
             } else {
                 childCount = childCount - childCount % spanCount;
                 if (pos >= childCount)// 如果是最后一列，则不需要绘制右边
+                {
                     return true;
+                }
             }
         }
         return false;
@@ -129,7 +129,9 @@ public class TGridDecoration extends RecyclerView.ItemDecoration {
                 childCount = childCount - childCount % spanCount;
             }
             if (pos >= childCount)// 如果是最后一行，则不需要绘制底部
+            {
                 return true;
+            }
         } else if (layoutManager instanceof StaggeredGridLayoutManager) {
             int orientation = ((StaggeredGridLayoutManager) layoutManager)
                     .getOrientation();
@@ -137,8 +139,9 @@ public class TGridDecoration extends RecyclerView.ItemDecoration {
             if (orientation == StaggeredGridLayoutManager.VERTICAL) {
                 childCount = childCount - childCount % spanCount;
                 // 如果是最后一行，则不需要绘制底部
-                if (pos >= childCount)
+                if (pos >= childCount) {
                     return true;
+                }
             } else
             // StaggeredGridLayoutManager 且横向滚动
             {
@@ -171,12 +174,12 @@ public class TGridDecoration extends RecyclerView.ItemDecoration {
             outRect.set(0, 0, width,
                     height);
         } else {
-            if (isLastRaw(parent, itemPosition, spanCount, childCount))// 如果是最后一行，则不需要绘制底部
-            {
+            if (isLastRaw(parent, itemPosition, spanCount, childCount)) {
+                // 如果是最后一行，则不需要绘制底部
                 LogUtils.d("最后一行::" + itemPosition);
                 outRect.set(0, 0, width, 0);
-            } else if (isLastColum(parent, itemPosition, spanCount, childCount))// 如果是最后一列，则不需要绘制右边
-            {
+            }else if (isLastColum(parent, itemPosition, spanCount, childCount)) {
+                // 如果是最后一列，则不需要绘制右边
                 outRect.set(0, 0, 0, height);
             } else {
                 outRect.set(0, 0, width,

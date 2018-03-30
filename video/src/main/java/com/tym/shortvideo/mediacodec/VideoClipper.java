@@ -17,6 +17,7 @@ import com.tym.shortvideo.filter.helper.MagicFilterFactory;
 import com.tym.shortvideo.filter.helper.MagicFilterType;
 import com.tym.shortvideo.media.VideoInfo;
 import com.tym.shortvideo.filter.base.GPUImageFilter;
+import com.zhiyicx.common.utils.log.LogUtils;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -386,7 +387,7 @@ public class VideoClipper {
         outputSurface.isBeauty(isOpenBeauty);
 
         if (mFilter != null) {
-            Log.e("hero", "---gpuFilter 不为null哟----设置进outputSurface里面");
+            LogUtils.e("hero", "---gpuFilter 不为null哟----设置进outputSurface里面");
             outputSurface.addGpuFilter(mFilter);
         }
 

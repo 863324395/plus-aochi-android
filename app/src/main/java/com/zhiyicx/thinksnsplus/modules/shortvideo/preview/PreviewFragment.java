@@ -2,14 +2,10 @@ package com.zhiyicx.thinksnsplus.modules.shortvideo.preview;
 
 import android.media.MediaPlayer;
 import android.os.Bundle;
-import android.text.TextUtils;
-import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.jakewharton.rxbinding.view.RxView;
 import com.tym.shortvideo.filter.helper.MagicFilterType;
@@ -22,17 +18,22 @@ import com.tym.shortvideo.recordcore.VideoListManager;
 import com.tym.shortvideo.recordcore.multimedia.VideoCombineManager;
 import com.tym.shortvideo.recordcore.multimedia.VideoCombiner;
 import com.tym.shortvideo.utils.FileUtils;
+import com.tym.shortvideo.utils.TrimVideoUtil;
 import com.tym.shortvideo.view.VideoPreviewView;
 import com.zhiyicx.baseproject.base.TSFragment;
+import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
+import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.EmptySubscribe;
-import com.zhiyicx.thinksnsplus.modules.shortvideo.detail.VideoDetailActivity;
+import com.zhiyicx.thinksnsplus.data.beans.SendDynamicDataBean;
+import com.zhiyicx.thinksnsplus.modules.dynamic.send.SendDynamicActivity;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
@@ -55,16 +56,14 @@ public class PreviewFragment extends TSFragment implements MediaPlayerWrapper.IM
 
     @BindView(R.id.videoView)
     VideoPreviewView mVideoView;
-    @BindView(R.id.tv_fps)
-    TextView mTvFps;
-    @BindView(R.id.btn_switch)
-    Button mBtnSwitch;
-    @BindView(R.id.btn_lvjing)
-    Button mBtnLvjing;
-    @BindView(R.id.btn_beauty)
-    Button mBtnBeauty;
-    @BindView(R.id.tv_confrim)
-    TextView mTvConfrim;
+    @BindView(R.id.tv_toolbar_right)
+    TextView mToolbarRight;
+    @BindView(R.id.tv_toolbar_left)
+    TextView mToolbarLeft;
+    @BindView(R.id.tv_toolbar_center)
+    TextView mToolbarCenter;
+    @BindView(R.id.rl_toolbar)
+    RelativeLayout mToolBar;
 
     /**
      * 预览视频地址
@@ -105,12 +104,22 @@ public class PreviewFragment extends TSFragment implements MediaPlayerWrapper.IM
     }
 
     @Override
-    protected boolean showToolBarDivider() {
+    protected boolean setUseSatusbar() {
+        return true;
+    }
+
+    @Override
+    protected boolean setStatusbarGrey() {
         return false;
     }
 
     @Override
-    protected boolean setUseSatusbar() {
+    protected boolean setUseStatusView() {
+        return false;
+    }
+
+    @Override
+    protected boolean showToolBarDivider() {
         return false;
     }
 
@@ -121,39 +130,35 @@ public class PreviewFragment extends TSFragment implements MediaPlayerWrapper.IM
 
     @Override
     protected void initView(View rootView) {
-        mTvFps.setVisibility(View.GONE);
-        mBtnSwitch.setVisibility(View.GONE);
-        mBtnLvjing.setVisibility(View.GONE);
         mFilterType = MagicFilterType.NONE;
+        mVideoView.setOnTouchListener(this);
+        mToolbarCenter.setText(R.string.filter);
+        mToolbarLeft.setText(R.string.cancel);
+        mToolbarRight.setText(R.string.complete);
         initListener();
-
     }
 
     private void initListener() {
+        RxView.clicks(mToolbarRight)
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
+                .compose(this.bindToLifecycle())
+                .subscribe(aVoid -> combineVideo());
+
+        RxView.clicks(mToolbarLeft)
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
+                .compose(this.bindToLifecycle())
+                .subscribe(aVoid -> mActivity.finish());
+
         mVideoView.setOnFilterChangeListener(this);
-        mVideoView.setOnTouchListener(this);
+    }
 
-        RxView.clicks(mBtnBeauty)
-                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
-                .compose(this.bindToLifecycle())
-                .subscribe(aVoid -> {
-                    mVideoView.switchBeauty();
-                    if (mBtnBeauty.isSelected()) {
-                        mBtnBeauty.setSelected(false);
-                    } else {
-                        mBtnBeauty.setSelected(true);
-                    }
-                });
-
-        RxView.clicks(mTvConfrim)
-                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
-                .compose(this.bindToLifecycle())
-                .subscribe(aVoid -> {
-                    if (isLoading()) {
-                        return;
-                    }
-                    combineVideo();
-                });
+    @Override
+    protected void setRightClick() {
+        super.setRightClick();
+        if (isLoading()) {
+            return;
+        }
+        combineVideo();
     }
 
     private boolean isLoading() {
@@ -306,9 +311,7 @@ public class PreviewFragment extends TSFragment implements MediaPlayerWrapper.IM
     private void clipVideo(String path) {
 
         VideoClipper clipper = new VideoClipper();
-        if (mBtnBeauty.isSelected()) {
-            clipper.showBeauty();
-        }
+        clipper.showBeauty();
         clipper.setInputVideoPath(mActivity, path);
         final String fileName = "tym_" + System.currentTimeMillis() + ".mp4";
         mOutputPath = FileUtils.getPath("tym/tym/", fileName);
@@ -323,8 +326,17 @@ public class PreviewFragment extends TSFragment implements MediaPlayerWrapper.IM
                         ToastUtils.showToast("视频保存地址   " + mOutputPath);
                         hideCenterLoading();
                         FileUtils.updateMediaStore(mActivity, mOutputPath, fileName);
-                        VideoDetailActivity.startVideoDetailActivity(mActivity, mOutputPath, 0);
-//                                                TrimmerActivity.go(mActivity, mOutputPath);
+
+                        SendDynamicDataBean sendDynamicDataBean = new SendDynamicDataBean();
+                        sendDynamicDataBean.setDynamicBelong(SendDynamicDataBean.NORMAL_DYNAMIC);
+                        List<ImageBean> pic = new ArrayList<>();
+                        ImageBean imageBean = new ImageBean();
+                        imageBean.setImgUrl(TrimVideoUtil.getVideoFilePath(mOutputPath));
+                        pic.add(imageBean);
+                        sendDynamicDataBean.setDynamicPrePhotos(pic);
+                        sendDynamicDataBean.setDynamicType(SendDynamicDataBean.VIDEO_TEXT_DYNAMIC);
+                        SendDynamicActivity.startToSendDynamicActivity(getContext(), sendDynamicDataBean);
+                        mActivity.finish();
                     }
                 }));
         try {

@@ -47,6 +47,7 @@ import com.zhiyicx.thinksnsplus.data.beans.GroupSendDynamicDataBean;
 import com.zhiyicx.thinksnsplus.data.beans.SendDynamicDataBean;
 import com.zhiyicx.thinksnsplus.data.beans.SendDynamicDataBeanV2;
 import com.zhiyicx.thinksnsplus.modules.photopicker.PhotoViewActivity;
+import com.zhiyicx.thinksnsplus.modules.shortvideo.record.RecordActivity;
 import com.zhiyicx.thinksnsplus.modules.shortvideo.videostore.VideoSelectActivity;
 import com.zhiyicx.thinksnsplus.widget.UserInfoInroduceInputView;
 import com.zhy.adapter.recyclerview.CommonAdapter;
@@ -717,11 +718,13 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                 final View filterView = holder.getView(R.id.iv_dynamic_img_filter);
                 if (TextUtils.isEmpty(imageBean.getImgUrl())) {
                     // 最后一项作为占位图
-                    paintView.setImageResource(R.mipmap.ico_edit_pen);
+                    paintView.setVisibility(View.GONE);
                     filterView.setVisibility(View.GONE);
                     // 换成摄像图标
-                    imageView.setImageResource(dynamicType == SendDynamicDataBean.VIDEO_TEXT_DYNAMIC ?
-                            R.mipmap.ico_video_recordings : R.mipmap.img_edit_photo_frame);
+//                    imageView.setImageResource(dynamicType == SendDynamicDataBean.VIDEO_TEXT_DYNAMIC ?
+//                            R.mipmap.ico_video_recordings : R.mipmap.img_edit_photo_frame);
+
+                    imageView.setImageResource( R.mipmap.img_edit_photo_frame);
                 } else {
                     paintView.setVisibility(isToll ? View.VISIBLE : View.GONE);
                     filterView.setVisibility(isToll ? View.VISIBLE : View.GONE);
@@ -753,7 +756,7 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                     DeviceUtils.hideSoftKeyboard(getContext(), v);
                     if (TextUtils.isEmpty(imageBean.getImgUrl())) {
                         if (dynamicType == SendDynamicDataBean.VIDEO_TEXT_DYNAMIC) {
-                            startActivity(new Intent(mActivity, VideoSelectActivity.class));
+                            startActivity(new Intent(mActivity, RecordActivity.class));
                             return;
                         }
                         ArrayList<String> photos = new ArrayList<>();

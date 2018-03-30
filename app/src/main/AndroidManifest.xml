@@ -727,7 +727,7 @@
                   android:theme="@style/GalleryTheme"/>
         <activity android:name=".modules.shortvideo.videostore.VideoSelectActivity"/>
         <activity android:name=".modules.shortvideo.preview.PreviewActivity"
-                  android:theme="@style/GalleryTheme"/>
+                  android:theme="@style/Translucent"/>
         <activity android:name=".modules.shortvideo.clipe.TrimmerActivity"/>
         <activity android:name=".modules.shortvideo.detail.VideoDetailActivity"/>
         <!-- 开机自启动服务 -->

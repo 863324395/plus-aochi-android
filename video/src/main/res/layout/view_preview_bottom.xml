@@ -38,7 +38,7 @@
             android:id="@+id/iv_right"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@mipmap/btn_chat_camera"
+            android:src="@mipmap/ico_video_local"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"/>
 

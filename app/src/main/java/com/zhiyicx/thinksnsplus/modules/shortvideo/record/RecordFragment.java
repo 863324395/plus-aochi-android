@@ -239,7 +239,7 @@ public class RecordFragment extends TSFragment implements SurfaceHolder.Callback
     public void onDestroyView() {
         DrawerManager.getInstance().destoryTrhead();
         // 在停止时需要释放上下文，防止内存泄漏
-        ParamsManager.context = null;
+//        ParamsManager.context = null;
         super.onDestroyView();
     }
 
@@ -586,6 +586,7 @@ public class RecordFragment extends TSFragment implements SurfaceHolder.Callback
             ArrayList<String> arrayList = new ArrayList<>(VideoListManager.getInstance()
                     .getSubVideoPathList());
             PreviewActivity.startPreviewActivity(mActivity, arrayList);
+            mActivity.finish();
         }
     }
 

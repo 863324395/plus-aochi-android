@@ -10,6 +10,7 @@ import com.tym.shortvideo.media.VideoInfo;
 import com.tym.shortvideo.utils.TrimVideoUtil;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.common.utils.recycleviewdecoration.TGridDecoration;
+import com.zhiyicx.common.utils.recycleviewdecoration.VideoSelectItemDecoration;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.modules.shortvideo.adapter.VideoGridViewAdapter;
 import com.zhiyicx.thinksnsplus.modules.shortvideo.record.RecordActivity;
@@ -39,8 +40,8 @@ public class VideoSelectFragment extends TSListFragment {
     }
 
     @Override
-    protected void setCenterText(String centerText) {
-        getString(R.string.video_select);
+    protected String setCenterTitle() {
+        return getString(R.string.video_select);
     }
 
     @Override
@@ -83,7 +84,7 @@ public class VideoSelectFragment extends TSListFragment {
 
     @Override
     protected RecyclerView.ItemDecoration getItemDecoration() {
-        return new TGridDecoration(20, 20, false);
+        return new VideoSelectItemDecoration(20, 20);
     }
 
     @Override

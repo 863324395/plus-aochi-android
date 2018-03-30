@@ -20,4 +20,5 @@
     <string name="compressed_done">视频压缩完成！</string>
 
     <string name="next_setup">下一步</string>
+    <string name="filter">滤镜</string>
 </resources>

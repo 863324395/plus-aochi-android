@@ -25,6 +25,7 @@ import android.view.Surface;
 import com.tym.shortvideo.media.VideoInfo;
 import com.tym.shortvideo.filter.helper.VideoDrawer;
 import com.tym.shortvideo.filter.base.GPUImageFilter;
+import com.zhiyicx.common.utils.log.LogUtils;
 
 import javax.microedition.khronos.egl.EGL10;
 import javax.microedition.khronos.egl.EGLConfig;
@@ -276,7 +277,7 @@ class OutputSurface implements SurfaceTexture.OnFrameAvailableListener {
     public void onFrameAvailable(SurfaceTexture st) {
 
         if (VERBOSE) {
-            Log.d(TAG, "new frame available");
+            LogUtils.d(TAG, "new frame available");
         }
         synchronized (mFrameSyncObject) {
             if (mFrameAvailable) {
@@ -294,7 +295,7 @@ class OutputSurface implements SurfaceTexture.OnFrameAvailableListener {
         boolean failed = false;
         int error;
         while ((error = mEGL.eglGetError()) != EGL10.EGL_SUCCESS) {
-            Log.e(TAG, msg + ": EGL error: 0x" + Integer.toHexString(error));
+            LogUtils.e(TAG, msg + ": EGL error: 0x" + Integer.toHexString(error));
             failed = true;
         }
         if (failed) {
