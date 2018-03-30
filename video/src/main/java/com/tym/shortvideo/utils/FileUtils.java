@@ -1,16 +1,14 @@
 package com.tym.shortvideo.utils;
 
 import android.content.ContentResolver;
-import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.util.Log;
 
-
+import com.tym.shortvideo.interfaces.SingleCallback;
 import com.tym.shortvideo.recodrender.ParamsManager;
 
 import java.io.BufferedReader;
@@ -34,6 +32,7 @@ public class FileUtils {
     private static final String TAG = "FileUtils";
 
     private static final int BUFFER_SIZE = 1024 * 8;
+    static MediaScannerConnection msc = null;
 
     private FileUtils() {
     }
@@ -69,22 +68,21 @@ public class FileUtils {
         }
     }
 
-    public static void updateMediaStore(Context context, String path, String fileNmae) {
-        ContentValues values = new ContentValues();
-        values.put(MediaStore.Video.Media.DATA, path);
-        values.put(MediaStore.Video.Media.DISPLAY_NAME, fileNmae);
-        context.getContentResolver().insert(
-                MediaStore.Video.Media.EXTERNAL_CONTENT_URI, values);
+    public static void updateMediaStore(Context context, final String path, final SingleCallback<String, Uri> callBack) {
+        msc = new MediaScannerConnection(context, new MediaScannerConnection.MediaScannerConnectionClient() {
+            @Override
+            public void onMediaScannerConnected() {
+                msc.scanFile(path, null);
+            }
 
-        MediaScannerConnection.scanFile(ParamsManager.context,
-                new String[]{path + fileNmae}, null,
-                new MediaScannerConnection.OnScanCompletedListener() {
-                    @Override
-                    public void onScanCompleted(String path, Uri uri) {
-                        Log.i("ExternalStorage", "Scanned " + path + ":");
-                        Log.i("ExternalStorage", "-> uri=" + uri);
-                    }
-                });
+            @Override
+            public void onScanCompleted(String path, Uri uri) {
+                msc.disconnect();
+                callBack.onSingleCallback(path, uri);
+                msc = null;
+            }
+        });
+        msc.connect();
     }
 
     /**

@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.shortvideo.preview;
 
 import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
@@ -10,6 +11,7 @@ import android.widget.TextView;
 import com.jakewharton.rxbinding.view.RxView;
 import com.tym.shortvideo.filter.helper.MagicFilterType;
 import com.tym.shortvideo.filter.helper.SlideGpuFilterGroup;
+import com.tym.shortvideo.interfaces.SingleCallback;
 import com.tym.shortvideo.media.MediaPlayerWrapper;
 import com.tym.shortvideo.media.VideoInfo;
 import com.tym.shortvideo.mediacodec.VideoClipper;
@@ -299,9 +301,6 @@ public class PreviewFragment extends TSFragment implements MediaPlayerWrapper.IM
                                     LogUtils.d(TAG, "合并失败");
                                 }
                                 VideoListManager.getInstance().removeAllSubVideo();
-                                // 更更新媒体库
-                                FileUtils.updateMediaStore(mActivity, path, fileName);
-
                                 clipVideo(path);
 
                             }
@@ -322,21 +321,23 @@ public class PreviewFragment extends TSFragment implements MediaPlayerWrapper.IM
                 .subscribe(new EmptySubscribe<Object>() {
                     @Override
                     public void onCompleted() {
-                        isLoading = false;
-                        ToastUtils.showToast("视频保存地址   " + mOutputPath);
-                        hideCenterLoading();
-                        FileUtils.updateMediaStore(mActivity, mOutputPath, fileName);
+                        FileUtils.updateMediaStore(mActivity, mOutputPath, (s, uri) -> {
 
-                        SendDynamicDataBean sendDynamicDataBean = new SendDynamicDataBean();
-                        sendDynamicDataBean.setDynamicBelong(SendDynamicDataBean.NORMAL_DYNAMIC);
-                        List<ImageBean> pic = new ArrayList<>();
-                        ImageBean imageBean = new ImageBean();
-                        imageBean.setImgUrl(TrimVideoUtil.getVideoFilePath(mOutputPath));
-                        pic.add(imageBean);
-                        sendDynamicDataBean.setDynamicPrePhotos(pic);
-                        sendDynamicDataBean.setDynamicType(SendDynamicDataBean.VIDEO_TEXT_DYNAMIC);
-                        SendDynamicActivity.startToSendDynamicActivity(getContext(), sendDynamicDataBean);
-                        mActivity.finish();
+                            isLoading = false;
+                            ToastUtils.showToast("视频保存地址   " + mOutputPath);
+                            hideCenterLoading();
+
+                            SendDynamicDataBean sendDynamicDataBean = new SendDynamicDataBean();
+                            sendDynamicDataBean.setDynamicBelong(SendDynamicDataBean.NORMAL_DYNAMIC);
+                            List<ImageBean> pic = new ArrayList<>();
+                            ImageBean imageBean = new ImageBean();
+                            imageBean.setImgUrl(TrimVideoUtil.getVideoFilePath(mOutputPath));
+                            pic.add(imageBean);
+                            sendDynamicDataBean.setDynamicPrePhotos(pic);
+                            sendDynamicDataBean.setDynamicType(SendDynamicDataBean.VIDEO_TEXT_DYNAMIC);
+                            SendDynamicActivity.startToSendDynamicActivity(getContext(), sendDynamicDataBean);
+                            mActivity.finish();
+                        });
                     }
                 }));
         try {

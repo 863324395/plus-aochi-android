@@ -29,6 +29,8 @@ import com.tym.shortvideo.utils.BackgroundExecutor;
 import com.tym.shortvideo.utils.DeviceUtils;
 import com.tym.shortvideo.utils.TrimVideoUtil;
 import com.tym.shortvideo.utils.UiThreadExecutor;
+import com.zhiyicx.common.utils.ToastUtils;
+import com.zhiyicx.common.utils.log.LogUtils;
 
 import java.io.File;
 import java.lang.ref.WeakReference;
@@ -415,7 +417,7 @@ public class VideoTrimmerView extends FrameLayout {
 
     private void onSaveClicked() {
         if (mEndPosition / 1000 - mStartPosition / 1000 < TrimVideoUtil.MIN_TIME_FRAME) {
-            Toast.makeText(mContext, "视频长不足3秒,无法上传", Toast.LENGTH_SHORT).show();
+            ToastUtils.showToast( "视频长不足3秒,无法上传");
         } else {
             mVideoView.pause();
             TrimVideoUtil.trim(mContext, mSrc, getTrimmedVideoPath(), mStartPosition * 1000, mEndPosition * 1000, mOnTrimVideoListener);
@@ -503,7 +505,7 @@ public class VideoTrimmerView extends FrameLayout {
             return;
         }
         if (isDebugMode) {
-            Log.i("Jason", "updateVideoProgress time = " + time);
+            LogUtils.i("Jason", "updateVideoProgress time = " + time);
         }
         if (time >= mEndPosition) {
             mMessageHandler.removeMessages(SHOW_PROGRESS);
@@ -525,7 +527,7 @@ public class VideoTrimmerView extends FrameLayout {
 
         int position = mVideoView.getCurrentPosition();
         if (isDebugMode) {
-            Log.i("Jason", "updateVideoProgress position = " + position);
+            LogUtils.i("Jason", "updateVideoProgress position = " + position);
         }
         mListeners.updateProgress(position, 0, 0);
     }

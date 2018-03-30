@@ -13,6 +13,7 @@ import com.zhiyicx.common.utils.recycleviewdecoration.TGridDecoration;
 import com.zhiyicx.common.utils.recycleviewdecoration.VideoSelectItemDecoration;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.modules.shortvideo.adapter.VideoGridViewAdapter;
+import com.zhiyicx.thinksnsplus.modules.shortvideo.clipe.TrimmerActivity;
 import com.zhiyicx.thinksnsplus.modules.shortvideo.record.RecordActivity;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 
@@ -70,7 +71,7 @@ public class VideoSelectFragment extends TSListFragment {
                 if (TextUtils.isEmpty(videoInfo.getPath())) {
                     startActivity(new Intent(mActivity, RecordActivity.class));
                 }else{
-
+                    TrimmerActivity.startTrimmerActivity(mActivity,videoInfo.getPath());
                 }
             }
 

@@ -4,6 +4,8 @@ import android.app.ProgressDialog;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.tym.shortvideo.interfaces.TrimVideoListener;
 import com.tym.shortvideo.utils.TrimVideoUtil;
@@ -25,6 +27,15 @@ public class TrimmerFragment extends TSFragment implements TrimVideoListener {
 
     @BindView(R.id.trimmer_view)
     VideoTrimmerView mVideoTrimmerView;
+    @BindView(R.id.tv_toolbar_right)
+    TextView mToolbarRight;
+    @BindView(R.id.tv_toolbar_left)
+    TextView mToolbarLeft;
+    @BindView(R.id.tv_toolbar_center)
+    TextView mToolbarCenter;
+    @BindView(R.id.rl_toolbar)
+    RelativeLayout mToolBar;
+
 
     private ProgressDialog mProgressDialog;
 
@@ -35,11 +46,40 @@ public class TrimmerFragment extends TSFragment implements TrimVideoListener {
     }
 
     @Override
+    protected boolean setUseSatusbar() {
+        return true;
+    }
+
+    @Override
+    protected boolean setStatusbarGrey() {
+        return false;
+    }
+
+    @Override
+    protected boolean setUseStatusView() {
+        return false;
+    }
+
+    @Override
+    protected boolean showToolBarDivider() {
+        return false;
+    }
+
+    @Override
+    protected boolean showToolbar() {
+        return false;
+    }
+
+    @Override
     protected void initView(View rootView) {
         String path = getArguments().getString(PATH);
         mVideoTrimmerView.setMaxDuration(TrimVideoUtil.VIDEO_MAX_DURATION);
         mVideoTrimmerView.setOnTrimVideoListener(this);
         mVideoTrimmerView.setVideoURI(Uri.parse(path));
+
+        mToolbarCenter.setText(R.string.clip_speed);
+        mToolbarLeft.setText(R.string.cancel);
+        mToolbarRight.setText(R.string.complete);
     }
 
     @Override

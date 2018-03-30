@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-
 public class RangeSeekBarView extends View {
 
     private static final String TAG = RangeSeekBarView.class.getSimpleName();
@@ -118,7 +117,7 @@ public class RangeSeekBarView extends View {
         int minW = getPaddingLeft() + getPaddingRight() + getSuggestedMinimumWidth() + (int) mThumbWidth;
         mViewWidth = resolveSizeAndState(minW, widthMeasureSpec, 1);
 
-        int minH = getPaddingBottom() + getPaddingTop() + mHeightTimeLine + DeviceUtils.dipToPX(2) * 2 + 
+        int minH = getPaddingBottom() + getPaddingTop() + mHeightTimeLine + DeviceUtils.dipToPX(2) * 2 +
                 paddingTop;
         int viewHeight = resolveSizeAndState(minH, heightMeasureSpec, 1);
 
@@ -183,11 +182,17 @@ public class RangeSeekBarView extends View {
 
     private void drawTopBottom(Canvas canvas) {
 
-        Rect topRect = new Rect((int) getThumbs().get(0).getPos() + drawTop, paddingTop, (int) (getThumbs().get(1).getPos() - getPaddingLeft() + thumbMargin), DeviceUtils.dipToPX(2) + paddingTop);
+        Rect topRect = new Rect((int) getThumbs().get(0).getPos() + drawTop,
+                paddingTop,
+                (int) (getThumbs().get(1).getPos() - getPaddingLeft() + thumbMargin),
+                DeviceUtils.dipToPX(2) + paddingTop);
         canvas.drawRect(topRect, mTopBottom);
 
         final float x = getThumbs().get(0).getPos() + drawTop;
-        Rect bottomRect = new Rect((int) x, mHeightTimeLine + paddingTop, (int) (getThumbs().get(1).getPos() - getPaddingLeft() + thumbMargin), mHeightTimeLine + DeviceUtils.dipToPX(2) + paddingTop);
+        Rect bottomRect = new Rect((int) x,
+                mHeightTimeLine + paddingTop,
+                (int) (getThumbs().get(1).getPos() - getPaddingLeft() + thumbMargin),
+                mHeightTimeLine +  DeviceUtils.dipToPX(3) + paddingTop);
         canvas.drawRect(bottomRect, mTopBottom);
     }
 
@@ -285,6 +290,7 @@ public class RangeSeekBarView extends View {
                 invalidate();
                 return true;
             }
+            default:
         }
         return false;
     }
