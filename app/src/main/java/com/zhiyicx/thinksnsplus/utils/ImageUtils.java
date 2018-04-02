@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.utils;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
@@ -526,6 +527,20 @@ public class ImageUtils {
                 .placeholder(R.drawable.shape_default_error_image)
                 .into(imageView);
 
+    }
+
+    /**
+     * 获取 iamgeview 的 bitmap
+     * @param showImageView
+     * @return
+     */
+    public static Bitmap getImageViewBitMap(ImageView showImageView) {
+        showImageView.setDrawingCacheEnabled(true);
+
+        Bitmap bitmap = showImageView.getDrawingCache();
+
+        showImageView.setDrawingCacheEnabled(false);
+        return bitmap;
     }
 
 }

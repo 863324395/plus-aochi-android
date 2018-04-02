@@ -1,19 +1,27 @@
 package com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.text.TextUtils;
 import android.widget.LinearLayout;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.model.GlideUrl;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.widget.imageview.FilterImageView;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.DrawableProvider;
+import com.zhiyicx.common.utils.FastBlur;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhiyicx.thinksnsplus.modules.shortvideo.helper.CustomMediaPlayerAssertFolder;
+import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
 import java.util.LinkedHashMap;
@@ -89,6 +97,20 @@ public class DynamicListItemForShorVideo extends DynamicListBaseItem {
                     .placeholder(R.drawable.shape_default_image)
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .error(R.drawable.shape_default_image)
+                    .listener(new RequestListener<GlideUrl, GlideDrawable>() {
+                        @Override
+                        public boolean onException(Exception e, GlideUrl model, Target<GlideDrawable> target, boolean isFirstResource) {
+                            return false;
+                        }
+
+                        @Override
+                        public boolean onResourceReady(GlideDrawable resource, GlideUrl model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                            Bitmap bitmap = FastBlur.blurBitmap(ConvertUtils.drawable2Bitmap(resource), resource.getIntrinsicWidth(), resource
+                                    .getIntrinsicHeight());
+                            view.setBackgroundDrawable(new BitmapDrawable(mContext.getResources(), bitmap));
+                            return false;
+                        }
+                    })
                     .into(view.thumbImageView);
         } else {
             // 本地
@@ -110,10 +132,25 @@ public class DynamicListItemForShorVideo extends DynamicListBaseItem {
                     .placeholder(R.drawable.shape_default_image)
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .error(R.drawable.shape_default_image)
-                    .into(view.thumbImageView);
-        }
+                    .listener(new RequestListener<String, GlideDrawable>() {
+                        @Override
+                        public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
+                            return false;
+                        }
 
-        LinkedHashMap<String,String> map = new LinkedHashMap<>();
+                        @Override
+                        public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+
+                            Bitmap bitmap = FastBlur.blurBitmap(ConvertUtils.drawable2Bitmap(resource), resource.getIntrinsicWidth(), resource
+                                    .getIntrinsicHeight());
+                            view.setBackgroundDrawable(new BitmapDrawable(mContext.getResources(), bitmap));
+                            return false;
+                        }
+                    })
+                    .into(view.thumbImageView);
+
+        }
+        LinkedHashMap<String, String> map = new LinkedHashMap<>();
         map.put(JZVideoPlayer.URL_KEY_DEFAULT, "file:///storage/emulated/0/DCIM/Camera/VID_20180402_104256.mp4");
         Object[] dataSourceObjects = new Object[2];
         dataSourceObjects[0] = map;

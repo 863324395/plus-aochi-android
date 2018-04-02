@@ -267,7 +267,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
 
             @Override
             public void onChildViewDetachedFromWindow(View view) {
-                JZVideoPlayer jzvd =(JZVideoPlayer) view.findViewById(R.id.videoplayer);
+                JZVideoPlayer jzvd = (JZVideoPlayer) view.findViewById(R.id.videoplayer);
                 if (jzvd != null && JZUtils.dataSourceObjectsContainsUri(jzvd.dataSourceObjects, JZMediaManager.getCurrentDataSource())) {
                     JZVideoPlayer currentJzvd = JZVideoPlayerManager.getCurrentJzvd();
                     if (currentJzvd != null && currentJzvd.currentScreen != JZVideoPlayer.SCREEN_WINDOW_FULLSCREEN) {
