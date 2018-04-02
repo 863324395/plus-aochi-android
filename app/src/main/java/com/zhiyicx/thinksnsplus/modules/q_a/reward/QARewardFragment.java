@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v7.widget.SwitchCompat;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
@@ -72,7 +73,7 @@ public class QARewardFragment extends TSFragment<QARewardContract.Presenter> imp
     @BindView(R.id.tv_invite_hint)
     TextView mTvInviteHint;
     @BindView(R.id.wc_invite)
-    SwitchCompat mWcInvite;
+    CheckBox mWcInvite;
     @BindView(R.id.ll_qa_set_money)
     LinearLayout mLlQaSetMoney;
     @BindView(R.id.et_input)
@@ -80,7 +81,7 @@ public class QARewardFragment extends TSFragment<QARewardContract.Presenter> imp
     @BindView(R.id.bt_qa_select_expert)
     CombinationButton mBtQaSelectExpert;
     @BindView(R.id.wc_onlooker)
-    SwitchCompat mWcOnlooker;
+    CheckBox mWcOnlooker;
     @BindView(R.id.rl_onlooker)
     RelativeLayout mRlOnlooker;
     @BindView(R.id.rb_onlookers_one)
@@ -106,6 +107,8 @@ public class QARewardFragment extends TSFragment<QARewardContract.Presenter> imp
 
     @BindView(R.id.tv_custom_money)
     TextView mCustomMoney;
+    @BindView(R.id.ll_invite_line)
+    View mLlInviteLine;
 
     // 悬赏相关
     private List<Float> mRewardLabels; // reward labels
@@ -160,6 +163,7 @@ public class QARewardFragment extends TSFragment<QARewardContract.Presenter> imp
         mEtInput.clearFocus();
         mWcOnlooker.setFocusable(true);
         mWcOnlooker.requestFocus();
+        mLlInviteLine.setVisibility(View.GONE);
     }
 
     @Override
@@ -406,13 +410,13 @@ public class QARewardFragment extends TSFragment<QARewardContract.Presenter> imp
                     // 跳转搜索选择专家列表
                     Intent intent = new Intent(getActivity(), ExpertSearchActivity.class);
                     Bundle bundle = new Bundle();
-                    String topic_ids = "";
+                    StringBuilder topicIds = new StringBuilder();
                     if (mQAPublishBean.getTopics() != null) {
                         for (QAPublishBean.Topic qaTopicBean : mQAPublishBean.getTopics()) {
-                            topic_ids += qaTopicBean.getId() + ",";
+                            topicIds.append(qaTopicBean.getId()).append(",");
                         }
                     }
-                    bundle.putString(BUNDLE_TOPIC_IDS, topic_ids);
+                    bundle.putString(BUNDLE_TOPIC_IDS, topicIds.toString());
                     intent.putExtras(bundle);
                     startActivityForResult(intent, QA_PUBLISH.id);
                 });
