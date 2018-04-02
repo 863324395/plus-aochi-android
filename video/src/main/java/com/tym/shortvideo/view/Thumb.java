@@ -58,7 +58,7 @@ public class Thumb {
         return mBitmap;
     }
 
-    private void setBitmap( Bitmap bitmap) {
+    public void setBitmap( Bitmap bitmap) {
         mBitmap = bitmap;
         mWidthBitmap = bitmap.getWidth();
         mHeightBitmap = bitmap.getHeight();

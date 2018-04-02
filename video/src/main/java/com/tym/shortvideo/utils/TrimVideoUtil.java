@@ -167,6 +167,7 @@ public class TrimVideoUtil {
                                                            video.setPath(cursor.getString(cursor.getColumnIndex(MediaStore.Video.Media.DATA)));
                                                            video.setCreateTime(cursor.getString(cursor.getColumnIndex(MediaStore.Video.Media.DATE_ADDED)));
                                                            video.setName(cursor.getString(cursor.getColumnIndex(MediaStore.Video.Media.DISPLAY_NAME)));
+                                                           
                                                            videos.add(video);
                                                        }
                                                    }

@@ -415,7 +415,7 @@ public class VideoTrimmerView extends FrameLayout {
         mSeekBarView.getLayoutParams().width = currentPixMax;
     }
 
-    private void onSaveClicked() {
+    public void onSaveClicked() {
         if (mEndPosition / 1000 - mStartPosition / 1000 < TrimVideoUtil.MIN_TIME_FRAME) {
             ToastUtils.showToast( "视频长不足3秒,无法上传");
         } else {

@@ -7,13 +7,25 @@ import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.jakewharton.rxbinding.view.RxView;
 import com.tym.shortvideo.interfaces.TrimVideoListener;
+import com.tym.shortvideo.utils.FileUtils;
 import com.tym.shortvideo.utils.TrimVideoUtil;
 import com.tym.shortvideo.view.VideoTrimmerView;
 import com.zhiyicx.baseproject.base.TSFragment;
+import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
+import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.data.beans.SendDynamicDataBean;
+import com.zhiyicx.thinksnsplus.modules.dynamic.send.SendDynamicActivity;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
+
+import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 
 /**
  * @Author Jliuer
@@ -80,6 +92,20 @@ public class TrimmerFragment extends TSFragment implements TrimVideoListener {
         mToolbarCenter.setText(R.string.clip_speed);
         mToolbarLeft.setText(R.string.cancel);
         mToolbarRight.setText(R.string.complete);
+
+        initListener();
+    }
+
+    private void initListener() {
+        RxView.clicks(mToolbarRight)
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
+                .compose(this.bindToLifecycle())
+                .subscribe(aVoid -> mVideoTrimmerView.onSaveClicked());
+
+        RxView.clicks(mToolbarLeft)
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
+                .compose(this.bindToLifecycle())
+                .subscribe(aVoid -> mActivity.finish());
     }
 
     @Override
@@ -101,8 +127,8 @@ public class TrimmerFragment extends TSFragment implements TrimVideoListener {
 
     @Override
     public void onDestroyView() {
-        super.onDestroyView();
         mVideoTrimmerView.destroy();
+        super.onDestroyView();
     }
 
     @Override
@@ -113,6 +139,18 @@ public class TrimmerFragment extends TSFragment implements TrimVideoListener {
     @Override
     public void onFinishTrim(String url) {
         mProgressDialog.dismiss();
+        FileUtils.updateMediaStore(mActivity, url, (s, uri) -> {
+            SendDynamicDataBean sendDynamicDataBean = new SendDynamicDataBean();
+            sendDynamicDataBean.setDynamicBelong(SendDynamicDataBean.NORMAL_DYNAMIC);
+            List<ImageBean> pic = new ArrayList<>();
+            ImageBean imageBean = new ImageBean();
+            imageBean.setImgUrl(TrimVideoUtil.getVideoFilePath(url));
+            pic.add(imageBean);
+            sendDynamicDataBean.setDynamicPrePhotos(pic);
+            sendDynamicDataBean.setDynamicType(SendDynamicDataBean.VIDEO_TEXT_DYNAMIC);
+            SendDynamicActivity.startToSendDynamicActivity(getContext(), sendDynamicDataBean);
+            mActivity.finish();
+        });
     }
 
     @Override

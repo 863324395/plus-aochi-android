@@ -1,6 +1,7 @@
 package com.tym.shortvideo.view;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -9,11 +10,10 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 
-
-import com.tym.video.R;
 import com.tym.shortvideo.interfaces.RangeSeekBarListener;
 import com.tym.shortvideo.utils.DateUtil;
 import com.tym.shortvideo.utils.DeviceUtils;
+import com.tym.video.R;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,6 +45,8 @@ public class RangeSeekBarView extends View {
     private final Paint mTextPaintL = new Paint();
     private final Paint mTextPaintR = new Paint();
     private int thumbMargin = DeviceUtils.dipToPX(3);
+
+    private boolean resizeFlagImage;
 
     public RangeSeekBarView(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
@@ -118,7 +120,7 @@ public class RangeSeekBarView extends View {
         mViewWidth = resolveSizeAndState(minW, widthMeasureSpec, 1);
 
         int minH = getPaddingBottom() + getPaddingTop() + mHeightTimeLine + DeviceUtils.dipToPX(2) * 2 +
-                paddingTop;
+                paddingTop + DeviceUtils.dipToPX(2) * 2;
         int viewHeight = resolveSizeAndState(minH, heightMeasureSpec, 1);
 
         setMeasuredDimension(mViewWidth, viewHeight);
@@ -161,7 +163,14 @@ public class RangeSeekBarView extends View {
                     }
 
                 }
+                if (!resizeFlagImage) {
+                    Bitmap bitmap = th.getBitmap();
+                    int h = DeviceUtils.dipToPX(2) * 2 + mHeightTimeLine;
+                    int w = bitmap.getWidth() * h / bitmap.getHeight();
+                    th.setBitmap(Bitmap.createScaledBitmap(bitmap, w, h, false));
+                }
             }
+            resizeFlagImage = true;
         }
     }
 
@@ -169,10 +178,9 @@ public class RangeSeekBarView extends View {
         if (!mThumbs.isEmpty()) {
             for (Thumb th : mThumbs) {
                 if (th.getIndex() == 0) {
-                    canvas.drawBitmap(th.getBitmap(), th.getPos() + getPaddingLeft(), paddingTop, null);
-
+                    canvas.drawBitmap(th.getBitmap(), th.getPos() + getPaddingLeft(), paddingTop - DeviceUtils.dipToPX(2), null);
                 } else {
-                    canvas.drawBitmap(th.getBitmap(), th.getPos() - getPaddingRight() - thumbMargin, paddingTop, null);
+                    canvas.drawBitmap(th.getBitmap(), th.getPos() - getPaddingRight() - thumbMargin, paddingTop - DeviceUtils.dipToPX(2), null);
                 }
             }
         }
@@ -183,16 +191,16 @@ public class RangeSeekBarView extends View {
     private void drawTopBottom(Canvas canvas) {
 
         Rect topRect = new Rect((int) getThumbs().get(0).getPos() + drawTop,
-                paddingTop,
+                paddingTop - DeviceUtils.dipToPX(2),
                 (int) (getThumbs().get(1).getPos() - getPaddingLeft() + thumbMargin),
                 DeviceUtils.dipToPX(2) + paddingTop);
         canvas.drawRect(topRect, mTopBottom);
 
         final float x = getThumbs().get(0).getPos() + drawTop;
         Rect bottomRect = new Rect((int) x,
-                mHeightTimeLine + paddingTop,
+                mHeightTimeLine + paddingTop - DeviceUtils.dipToPX(2),
                 (int) (getThumbs().get(1).getPos() - getPaddingLeft() + thumbMargin),
-                mHeightTimeLine +  DeviceUtils.dipToPX(3) + paddingTop);
+                mHeightTimeLine + DeviceUtils.dipToPX(2) + paddingTop);
         canvas.drawRect(bottomRect, mTopBottom);
     }
 
