@@ -8,9 +8,7 @@ import com.tym.shortvideo.media.VideoInfo;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
-import com.zhiyicx.thinksnsplus.modules.dynamic.detail.adapter.DynamicDetailCommentItem;
 import com.zhiyicx.thinksnsplus.widget.DynamicCommentEmptyItem;
-import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 import com.zhy.adapter.recyclerview.wrapper.HeaderAndFooterWrapper;
 
@@ -49,7 +47,7 @@ public class VideoDetailFragment extends TSListFragment<VideoDetailContract.Pres
 //        dynamicDetailCommentItem.setOnCommentTextClickListener(this);
 //        dynamicDetailCommentItem.setOnCommentResendListener(this);
 //        adapter.addItemViewDelegate(dynamicDetailCommentItem);
-        VideoDetailCommentItem videoDetailCommentItem=new VideoDetailCommentItem();
+        VideoDetailCommentItem videoDetailCommentItem = new VideoDetailCommentItem();
         DynamicCommentEmptyItem dynamicCommentEmptyItem = new DynamicCommentEmptyItem();
         adapter.addItemViewDelegate(dynamicCommentEmptyItem);
 //        adapter.addItemViewDelegate(videoDetailCommentItem);

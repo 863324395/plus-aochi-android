@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/rl_toolbar"
     android:layout_width="match_parent"
-    android:layout_height="44dp"
-    android:layout_marginLeft="@dimen/dp10"
-    android:layout_marginRight="@dimen/dp10"
-    android:layout_marginTop="@dimen/dp20">
+    android:layout_height="64dp"
+    android:minHeight="44dp"
+    android:background="@mipmap/pic_mask"
+    android:paddingLeft="@dimen/dp10"
+    android:paddingRight="@dimen/dp10">
 
     <TextView
         android:id="@+id/tv_toolbar_center"

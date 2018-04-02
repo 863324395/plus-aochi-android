@@ -158,7 +158,7 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
     public boolean isForViewType(DynamicDetailBeanV2 item, int position) {
         // 当本地和服务器都没有图片的时候，使用
         return item.getFeed_mark() != null && (item.getImages() != null && item.getImages().size
-                () == getImageCounts());
+                () == getImageCounts() && item.getId() > 0);
     }
 
     /**
@@ -211,8 +211,8 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
                 View iamgeContainer = holder.getView(R.id.nrv_image);
                 RelativeLayout.LayoutParams iamgeParam = (RelativeLayout.LayoutParams) iamgeContainer.getLayoutParams();
                 int marginTop = TextUtils.isEmpty(content) ? mContext.getResources().getDimensionPixelOffset(R.dimen.spacing_mid_small) : 0;
-                int margingLeft= mContext.getResources().getDimensionPixelOffset(R.dimen.spacing_normal);
-                int margingRight= mContext.getResources().getDimensionPixelOffset(R.dimen.dynamic_list_image_marginright);
+                int margingLeft = mContext.getResources().getDimensionPixelOffset(R.dimen.spacing_normal);
+                int margingRight = mContext.getResources().getDimensionPixelOffset(R.dimen.dynamic_list_image_marginright);
                 iamgeParam.setMargins(margingLeft, marginTop, margingRight, 0);
             } catch (Exception ignore) {
 
