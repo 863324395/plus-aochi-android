@@ -86,7 +86,8 @@ public class SendDynamicPresenter extends AppBasePresenter<SendDynamicContract.V
 
     @Override
     public void sendDynamicV2(DynamicDetailBeanV2 dynamicBean) {
-        if (dynamicBean.getImages() == null) { // 当没有图片的时候，给一个占位数组
+        if (dynamicBean.getImages() == null) {
+            // 当没有图片的时候，给一个占位数组
             dynamicBean.setImages(new ArrayList<>());
         }
         // 发送动态 V2 所需要的数据
@@ -94,7 +95,8 @@ public class SendDynamicPresenter extends AppBasePresenter<SendDynamicContract.V
         SendDynamicDataBeanV2 sendDynamicDataBeanV2 = SendDynamicDataBeanV2.DynamicDetailBean2SendDynamicDataBeanV2(dynamicBean);
         mRootView.packageDynamicStorageDataV2(sendDynamicDataBeanV2);
 
-        if (mRootView.hasTollVerify()) {// 当设置图片收费时，最少配置一张图
+        if (mRootView.hasTollVerify()) {
+            // 当设置图片收费时，最少配置一张图
             mRootView.initInstructionsPop(mContext.getString(R.string.instructions),
                     mContext.getString(R.string.dynamic_send_toll_toll_verify));
             return;
@@ -107,7 +109,9 @@ public class SendDynamicPresenter extends AppBasePresenter<SendDynamicContract.V
                     .dynamic_send_toll_notes), wordLimit));
             return;
         }
-        if ((mRootView.wordsNumLimit() && mRootView.getTollMoney() <= 0d) || mRootView.getTollMoney() != (long) mRootView.getTollMoney()) {//
+        boolean wordsLimit = (mRootView.wordsNumLimit() && mRootView.getTollMoney() <= 0d)
+                || mRootView.getTollMoney() != (long) mRootView.getTollMoney();
+        if (wordsLimit) {
             // 文字收费金额整数限制
             mRootView.initInstructionsPop(mContext.getString(R.string.instructions), String.format(Locale.getDefault(),
                     mContext.getResources().getString(R.string.limit_monye_death), getGoldName()));

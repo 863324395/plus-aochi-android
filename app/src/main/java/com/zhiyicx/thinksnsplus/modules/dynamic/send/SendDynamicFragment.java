@@ -627,21 +627,26 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
         dynamicDetailBeanV2.setAmount((long) mTollMoney);
 
         if (selectedPhotos != null && !selectedPhotos.isEmpty()) {
-            List<DynamicDetailBeanV2.ImagesBean> images = new ArrayList<>();
-            // 最后一张占位图，扔掉
-            for (int i = 0; i < selectedPhotos.size(); i++) {
-                if (!TextUtils.isEmpty(selectedPhotos.get(i).getImgUrl())) {
-                    DynamicDetailBeanV2.ImagesBean imagesBean = new DynamicDetailBeanV2.ImagesBean();
-                    imagesBean.setImgUrl(selectedPhotos.get(i).getImgUrl());
-                    BitmapFactory.Options options = DrawableProvider.getPicsWHByFile
-                            (selectedPhotos.get(i).getImgUrl());
-                    imagesBean.setHeight(options.outHeight);
-                    imagesBean.setWidth(options.outWidth);
-                    imagesBean.setImgMimeType(options.outMimeType);
-                    images.add(imagesBean);
+
+            if (dynamicType == SendDynamicDataBean.VIDEO_TEXT_DYNAMIC){
+
+            }else{
+                List<DynamicDetailBeanV2.ImagesBean> images = new ArrayList<>();
+                // 最后一张占位图，扔掉
+                for (int i = 0; i < selectedPhotos.size(); i++) {
+                    if (!TextUtils.isEmpty(selectedPhotos.get(i).getImgUrl())) {
+                        DynamicDetailBeanV2.ImagesBean imagesBean = new DynamicDetailBeanV2.ImagesBean();
+                        imagesBean.setImgUrl(selectedPhotos.get(i).getImgUrl());
+                        BitmapFactory.Options options = DrawableProvider.getPicsWHByFile
+                                (selectedPhotos.get(i).getImgUrl());
+                        imagesBean.setHeight(options.outHeight);
+                        imagesBean.setWidth(options.outWidth);
+                        imagesBean.setImgMimeType(options.outMimeType);
+                        images.add(imagesBean);
+                    }
                 }
+                dynamicDetailBeanV2.setImages(images);
             }
-            dynamicDetailBeanV2.setImages(images);
         }
 
         return dynamicDetailBeanV2;

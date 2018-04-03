@@ -1,17 +1,17 @@
 package com.zhiyicx.thinksnsplus.modules.home;
 
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.support.v4.app.Fragment;
 
 import com.zhiyicx.baseproject.base.TSActivity;
 import com.zhiyicx.baseproject.impl.share.UmengSharePolicyImpl;
-import com.zhiyicx.common.utils.ActivityHandler;
 import com.zhiyicx.common.utils.ActivityUtils;
-import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.config.JpushMessageTypeConfig;
 import com.zhiyicx.thinksnsplus.data.beans.JpushMessageBean;
+import com.zhiyicx.thinksnsplus.modules.shortvideo.helper.NetChangeReceiver;
 
 
 /**
@@ -23,6 +23,7 @@ import com.zhiyicx.thinksnsplus.data.beans.JpushMessageBean;
 
 public class HomeActivity extends TSActivity {
     public static final String BUNDLE_JPUSH_MESSAGE = "jpush_message";
+    private NetChangeReceiver mNetChangeReceiver;
 
     @Override
     protected void onNewIntent(Intent intent) {
@@ -44,6 +45,17 @@ public class HomeActivity extends TSActivity {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        if (mNetChangeReceiver == null) {
+            mNetChangeReceiver = new NetChangeReceiver();
+        }
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
+        registerReceiver(mNetChangeReceiver, filter);
+    }
+
+    @Override
     protected void componentInject() {
     }
 
@@ -56,6 +68,7 @@ public class HomeActivity extends TSActivity {
     public void onBackPressed() {
         ActivityUtils.goHome(this);
     }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
