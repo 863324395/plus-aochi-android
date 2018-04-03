@@ -1,12 +1,19 @@
 package com.tym.shortvideo.media;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import java.io.Serializable;
+
 /**
  * Created by Administrator on 2017/6/29 0029.
  * 视频的信息bean
  */
 
-public class VideoInfo{
+public class VideoInfo implements Parcelable,Serializable{
+    private static final long serialVersionUID = 1333866610918025407L;
     public String path;//路径
+    public String cover;//封面路径
     public String name;//名字
     public String createTime;//时间
     public int duration;//时长
@@ -22,6 +29,29 @@ public class VideoInfo{
     public int expHeight;//期望高度
     public int cutPoint;//剪切的开始点
     public int cutDuration;//剪切的时长
+
+    public int storeId;
+
+    public int getStoreId() {
+        return storeId;
+    }
+
+    public void setStoreId(int storeId) {
+        this.storeId = storeId;
+    }
+
+    public VideoInfo(int width, int height) {
+        this.width = width;
+        this.height = height;
+    }
+
+    public String getCover() {
+        return cover;
+    }
+
+    public void setCover(String cover) {
+        this.cover = cover;
+    }
 
     public String getName() {
         return name;
@@ -134,4 +164,64 @@ public class VideoInfo{
     public void setCutDuration(int cutDuration) {
         this.cutDuration = cutDuration;
     }
+
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.path);
+        dest.writeString(this.name);
+        dest.writeString(this.cover);
+        dest.writeString(this.createTime);
+        dest.writeInt(this.duration);
+        dest.writeInt(this.rotation);
+        dest.writeInt(this.width);
+        dest.writeInt(this.height);
+        dest.writeInt(this.storeId);
+        dest.writeInt(this.bitRate);
+        dest.writeInt(this.frameRate);
+        dest.writeInt(this.frameInterval);
+        dest.writeInt(this.expWidth);
+        dest.writeInt(this.expHeight);
+        dest.writeInt(this.cutPoint);
+        dest.writeInt(this.cutDuration);
+    }
+
+    public VideoInfo() {
+    }
+
+    protected VideoInfo(Parcel in) {
+        this.path = in.readString();
+        this.name = in.readString();
+        this.cover = in.readString();
+        this.createTime = in.readString();
+        this.duration = in.readInt();
+        this.rotation = in.readInt();
+        this.storeId = in.readInt();
+        this.width = in.readInt();
+        this.height = in.readInt();
+        this.bitRate = in.readInt();
+        this.frameRate = in.readInt();
+        this.frameInterval = in.readInt();
+        this.expWidth = in.readInt();
+        this.expHeight = in.readInt();
+        this.cutPoint = in.readInt();
+        this.cutDuration = in.readInt();
+    }
+
+    public static final Creator<VideoInfo> CREATOR = new Creator<VideoInfo>() {
+        @Override
+        public VideoInfo createFromParcel(Parcel source) {
+            return new VideoInfo(source);
+        }
+
+        @Override
+        public VideoInfo[] newArray(int size) {
+            return new VideoInfo[size];
+        }
+    };
 }

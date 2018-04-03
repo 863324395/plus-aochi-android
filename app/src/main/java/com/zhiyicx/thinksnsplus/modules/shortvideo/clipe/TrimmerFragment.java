@@ -9,12 +9,12 @@ import android.widget.TextView;
 
 import com.jakewharton.rxbinding.view.RxView;
 import com.tym.shortvideo.interfaces.TrimVideoListener;
+import com.tym.shortvideo.media.VideoInfo;
 import com.tym.shortvideo.utils.FileUtils;
 import com.tym.shortvideo.utils.TrimVideoUtil;
 import com.tym.shortvideo.view.VideoTrimmerView;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
-import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.SendDynamicDataBean;
 import com.zhiyicx.thinksnsplus.modules.dynamic.send.SendDynamicActivity;
@@ -36,6 +36,7 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 public class TrimmerFragment extends TSFragment implements TrimVideoListener {
 
     public static final String PATH = "path";
+    public static final String VIDEO = "video";
 
     @BindView(R.id.trimmer_view)
     VideoTrimmerView mVideoTrimmerView;
@@ -50,6 +51,7 @@ public class TrimmerFragment extends TSFragment implements TrimVideoListener {
 
 
     private ProgressDialog mProgressDialog;
+    private VideoInfo mVideoInfo;
 
     public static TrimmerFragment newInstance(Bundle bundle) {
         TrimmerFragment fragment = new TrimmerFragment();
@@ -85,6 +87,7 @@ public class TrimmerFragment extends TSFragment implements TrimVideoListener {
     @Override
     protected void initView(View rootView) {
         String path = getArguments().getString(PATH);
+        mVideoInfo = getArguments().getParcelable(VIDEO);
         mVideoTrimmerView.setMaxDuration(TrimVideoUtil.VIDEO_MAX_DURATION);
         mVideoTrimmerView.setOnTrimVideoListener(this);
         mVideoTrimmerView.setVideoURI(Uri.parse(path));
@@ -92,7 +95,6 @@ public class TrimmerFragment extends TSFragment implements TrimVideoListener {
         mToolbarCenter.setText(R.string.clip_speed);
         mToolbarLeft.setText(R.string.cancel);
         mToolbarRight.setText(R.string.complete);
-
         initListener();
     }
 
@@ -100,7 +102,22 @@ public class TrimmerFragment extends TSFragment implements TrimVideoListener {
         RxView.clicks(mToolbarRight)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .compose(this.bindToLifecycle())
-                .subscribe(aVoid -> mVideoTrimmerView.onSaveClicked());
+                .subscribe(aVoid -> {
+
+//                    mVideoTrimmerView.onSaveClicked()
+
+            SendDynamicDataBean sendDynamicDataBean = new SendDynamicDataBean();
+            sendDynamicDataBean.setDynamicBelong(SendDynamicDataBean.NORMAL_DYNAMIC);
+            List<ImageBean> pic = new ArrayList<>();
+            ImageBean imageBean = new ImageBean();
+            imageBean.setImgUrl(mVideoInfo.cover);
+            pic.add(imageBean);
+            sendDynamicDataBean.setDynamicPrePhotos(pic);
+            sendDynamicDataBean.setDynamicType(SendDynamicDataBean.VIDEO_TEXT_DYNAMIC);
+            sendDynamicDataBean.setVideoInfo(mVideoInfo);
+            SendDynamicActivity.startToSendDynamicActivity(getContext(), sendDynamicDataBean);
+            mActivity.finish();
+        });
 
         RxView.clicks(mToolbarLeft)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
@@ -144,10 +161,11 @@ public class TrimmerFragment extends TSFragment implements TrimVideoListener {
             sendDynamicDataBean.setDynamicBelong(SendDynamicDataBean.NORMAL_DYNAMIC);
             List<ImageBean> pic = new ArrayList<>();
             ImageBean imageBean = new ImageBean();
-            imageBean.setImgUrl(TrimVideoUtil.getVideoFilePath(url));
+            imageBean.setImgUrl(mVideoInfo.cover);
             pic.add(imageBean);
             sendDynamicDataBean.setDynamicPrePhotos(pic);
             sendDynamicDataBean.setDynamicType(SendDynamicDataBean.VIDEO_TEXT_DYNAMIC);
+            sendDynamicDataBean.setVideoInfo(mVideoInfo);
             SendDynamicActivity.startToSendDynamicActivity(getContext(), sendDynamicDataBean);
             mActivity.finish();
         });

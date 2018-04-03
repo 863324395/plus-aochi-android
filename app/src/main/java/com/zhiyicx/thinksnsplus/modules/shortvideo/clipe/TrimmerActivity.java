@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 
+import com.tym.shortvideo.media.VideoInfo;
 import com.zhiyicx.baseproject.base.TSActivity;
 
 /**
@@ -24,6 +25,15 @@ public class TrimmerActivity extends TSActivity {
             intent.putExtras(bundle);
             context.startActivity(intent);
         }
+    }
+
+    public static void startTrimmerActivity(Context context, VideoInfo video) {
+        Bundle bundle = new Bundle();
+        bundle.putString(TrimmerFragment.PATH, video.getPath());
+        bundle.putParcelable(TrimmerFragment.VIDEO, video);
+        Intent intent = new Intent(context, TrimmerActivity.class);
+        intent.putExtras(bundle);
+        context.startActivity(intent);
     }
 
     @Override

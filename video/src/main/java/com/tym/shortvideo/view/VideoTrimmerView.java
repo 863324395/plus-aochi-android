@@ -29,6 +29,8 @@ import com.tym.shortvideo.utils.BackgroundExecutor;
 import com.tym.shortvideo.utils.DeviceUtils;
 import com.tym.shortvideo.utils.TrimVideoUtil;
 import com.tym.shortvideo.utils.UiThreadExecutor;
+import com.zhiyicx.common.utils.ConvertUtils;
+import com.zhiyicx.common.utils.FileUtils;
 import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 
@@ -139,6 +141,7 @@ public class VideoTrimmerView extends FrameLayout {
                 UiThreadExecutor.runTask("", new Runnable() {
                     @Override
                     public void run() {
+                        FileUtils.saveBitmapToFile(mContext, bitmap.get(0), "video_cover");
                         videoThumbAdapter.addAll(bitmap);
                         videoThumbAdapter.notifyDataSetChanged();
                     }

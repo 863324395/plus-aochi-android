@@ -4,6 +4,7 @@ import android.app.Application;
 import android.util.SparseArray;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.base.BaseJson;
@@ -102,8 +103,8 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
 
     @Override
     public Observable<BaseJsonV2<Object>> sendDynamicV2(SendDynamicDataBeanV2 dynamicDetailBean) {
-        RequestBody body = RequestBody.create(okhttp3.MediaType.parse("application/json;charset=UTF-8"), new Gson()
-                .toJson(dynamicDetailBean));
+        Gson gson = new Gson();
+        RequestBody body = RequestBody.create(okhttp3.MediaType.parse("application/json;charset=UTF-8"), gson.toJson(dynamicDetailBean));
         return mDynamicClient.sendDynamicV2(body);
     }
 

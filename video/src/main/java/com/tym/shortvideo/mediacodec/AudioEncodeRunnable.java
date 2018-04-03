@@ -5,6 +5,8 @@ import android.media.MediaCodecInfo;
 import android.media.MediaFormat;
 import android.util.Log;
 
+import com.zhiyicx.common.utils.log.LogUtils;
+
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -49,7 +51,7 @@ public class AudioEncodeRunnable implements Runnable {
             int outBitSize;
             int outPacketSize;
             //初始化编码器
-            MediaFormat encodeFormat = MediaFormat.createAudioFormat("audio/mp4a-latm", 44100, 2);//mime type 采样率 声道数
+            MediaFormat encodeFormat = MediaFormat.createAudioFormat("audio/mp4a-latm", 44100, 1);//mime type 采样率 声道数
             encodeFormat.setInteger(MediaFormat.KEY_BIT_RATE, 96000);//比特率
             encodeFormat.setInteger(MediaFormat.KEY_AAC_PROFILE, MediaCodecInfo.CodecProfileLevel.AACObjectLC);
             encodeFormat.setInteger(MediaFormat.KEY_MAX_INPUT_SIZE, 500 * 1024);
@@ -71,11 +73,11 @@ public class AudioEncodeRunnable implements Runnable {
                     if (fis.read(buffer) != -1) {
                         allAudioBytes = Arrays.copyOf(buffer, buffer.length);
                     } else {
-                        Log.e("hero", "---文件读取完成---");
+                        LogUtils.e("hero", "---文件读取完成---");
                         isReadEnd = true;
                         break;
                     }
-                    Log.e("hero", "---io---读取文件-写入编码器--" + allAudioBytes.length);
+                    LogUtils.e("hero", "---io---读取文件-写入编码器--" + allAudioBytes.length);
                     inputIndex = mediaEncode.dequeueInputBuffer(-1);
                     inputBuffer = encodeInputBuffers[inputIndex];
                     inputBuffer.clear();//同解码器
@@ -95,7 +97,7 @@ public class AudioEncodeRunnable implements Runnable {
                     AudioCodec.addADTStoPacket(chunkAudio, outPacketSize);//添加ADTS 代码后面会贴上
                     outputBuffer.get(chunkAudio, 7, outBitSize);//将编码得到的AAC数据 取出到byte[]中 偏移量offset=7 你懂得
                     outputBuffer.position(encodeBufferInfo.offset);
-                    Log.e("hero", "--编码成功-写入文件----" + chunkAudio.length);
+                    LogUtils.e("hero", "--编码成功-写入文件----" + chunkAudio.length);
                     bos.write(chunkAudio, 0, chunkAudio.length);//BufferOutputStream 将文件保存到内存卡中 *.aac
                     bos.flush();
 

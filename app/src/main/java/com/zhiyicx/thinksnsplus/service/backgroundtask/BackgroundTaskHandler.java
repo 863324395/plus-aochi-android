@@ -9,6 +9,7 @@ import android.os.Parcelable;
 import android.text.TextUtils;
 
 import com.google.gson.Gson;
+import com.tym.shortvideo.media.VideoInfo;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.base.BaseJsonV2;
@@ -784,6 +785,7 @@ public class BackgroundTaskHandler {
         // 存入数据库
         // ....
         List<ImageBean> photos = sendDynamicDataBean.getPhotos();
+        VideoInfo videoInfo = sendDynamicDataBean.getVideoInfo();
         Observable<BaseJson<Object>> observable;
         // 有图片需要上传时：先处理图片上传任务，成功后，获取任务id，发布动态
         if (photos != null && !photos.isEmpty()) {
@@ -799,24 +801,48 @@ public class BackgroundTaskHandler {
                 String photoMimeType = imageBean.getImgMimeType();
                 upLoadPics.add(mUpLoadRepository.upLoadSingleFileV2(filePath, photoMimeType, true, photoWidth, photoHeight));
             }
-
+            if (videoInfo != null) {
+                upLoadPics.add(mUpLoadRepository.upLoadSingleFileV2(videoInfo.getPath(), "", false, videoInfo.getWidth(), videoInfo.getHeight()));
+            }
+            SendDynamicDataBeanV2.Video video = new SendDynamicDataBeanV2.Video();
             observable = Observable.concat(upLoadPics)
                     .map(integerBaseJson -> {
                         if (integerBaseJson.isStatus()) {
-                            sendDynamicDataBean.getStorage_task().get(position[0]).setId(integerBaseJson.getData());
-                            position[0]++;// 完成后+1
+                            if (videoInfo != null) {
+                                // 先上传的是封面，要有顺序
+                                if (position[0] == 0) {
+                                    video.setCover_id(integerBaseJson.getData());
+                                } else {
+                                    video.setVideo_id(integerBaseJson.getData());
+                                }
+                                sendDynamicDataBean.setVideo(video);
+                            } else {
+                                sendDynamicDataBean.getStorage_task().get(position[0]).setId(integerBaseJson.getData());
+                            }
+                            // 完成后+1,记录成功的图片数
+                            position[0]++;
                         } else {
                             if (position[0] > 0) {
                                 position[0]--;
                             }
-                            throw new NullPointerException();// 某一次失败就抛出异常，重传，因为有秒传功能所以不会浪费多少流量
+                            // 某一次失败就抛出异常，重传，因为有秒传功能所以不会浪费多少流量
+                            throw new NullPointerException();
                         }
                         sendDynamicDataBean.setPhotos(null);
                         return sendDynamicDataBean;
                     })
-                    .filter(sendDynamicDataBeanV2 -> position[0] == photos.size())
+                    .filter(sendDynamicDataBeanV2 -> {
+                        if (videoInfo == null) {
+                            return position[0] == photos.size();
+                        }
+                        return position[0] == photos.size() + 1;
+                    })
                     .map(integers -> {
+                        if (videoInfo != null) {
+                            sendDynamicDataBean.setImages(null);
+                        }
                         sendDynamicDataBean.setPhotos(null);
+                        sendDynamicDataBean.setVideoInfo(null);
                         return sendDynamicDataBean;
                     }).flatMap(sendDynamicDataBeanV2 -> mSendDynamicRepository.sendDynamicV2(sendDynamicDataBeanV2)
                             .flatMap(objectBaseJsonV2 -> {
@@ -828,7 +854,6 @@ public class BackgroundTaskHandler {
                                 return Observable.just(baseJson);
                             }));
         } else {
-            // 没有图片上传任务，直接发布动态
             observable = mSendDynamicRepository.sendDynamicV2(sendDynamicDataBean)
                     .flatMap(objectBaseJsonV2 -> {
                         BaseJson<Object> baseJson = new BaseJson<>();

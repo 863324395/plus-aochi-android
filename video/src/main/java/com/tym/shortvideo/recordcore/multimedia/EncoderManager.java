@@ -11,6 +11,7 @@ import com.tym.shortvideo.filter.helper.gles.WindowSurface;
 import com.tym.shortvideo.filter.base.GLDisplayFilter;
 import com.tym.shortvideo.filter.helper.type.GlUtil;
 import com.tym.shortvideo.filter.helper.type.ScaleType;
+import com.zhiyicx.common.utils.log.LogUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -30,7 +31,7 @@ public class EncoderManager {
     // 录制比特率
     private int mRecordBitrate;
     // 录制帧率
-    private int mFrameRate = 25;
+    private int mFrameRate = 15;
     // 像素资料量
     private int mBPP = 4;
 
@@ -116,7 +117,7 @@ public class EncoderManager {
         if (mRecorderOutputPath == null || mRecorderOutputPath.isEmpty()) {
             mRecorderOutputPath = ParamsManager.VideoPath
                     + "CainCamera_" + System.currentTimeMillis() + ".mp4";
-            Log.d(TAG, "the outpath is empty, auto-created path is : " + mRecorderOutputPath);
+            LogUtils.d(TAG, "the outpath is empty, auto-created path is : " + mRecorderOutputPath);
         }
         File file = new File(mRecorderOutputPath);
         if (!file.getParentFile().exists()) {
@@ -140,7 +141,7 @@ public class EncoderManager {
 
             mMuxerManager.prepare();
         } catch (IOException e) {
-            Log.e(TAG, "startRecording:", e);
+            LogUtils.e(TAG, "startRecording:", e);
         }
         mProcessTime += (System.currentTimeMillis() - time);
     }
@@ -264,7 +265,7 @@ public class EncoderManager {
 
         if (VERBOSE) {
             mProcessTime += (System.currentTimeMillis() - time);
-            Log.d(TAG, "sum of init and release time: " + mProcessTime + "ms");
+            LogUtils.d(TAG, "sum of init and release time: " + mProcessTime + "ms");
             mProcessTime = 0;
         }
     }

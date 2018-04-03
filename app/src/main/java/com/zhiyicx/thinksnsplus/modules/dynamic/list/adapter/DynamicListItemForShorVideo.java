@@ -161,7 +161,7 @@ public class DynamicListItemForShorVideo extends DynamicListBaseItem {
 
     @Override
     public boolean isForViewType(DynamicDetailBeanV2 item, int position) {
-        return item.getId() == -1;
+        return item.getVideo() != null;
     }
 
     @Override
