@@ -14,6 +14,7 @@ import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.jakewharton.rxbinding.view.RxView;
+import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.widget.imageview.FilterImageView;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.DrawableProvider;
@@ -150,8 +151,10 @@ public class DynamicListItemForShorVideo extends DynamicListBaseItem {
                     .into(view.thumbImageView);
 
         }
+        String url = String.format(ApiConfig.APP_DOMAIN+ApiConfig.MUSIC_PATH,
+                dynamicBean.getVideo().getVideo_id());
         LinkedHashMap<String, String> map = new LinkedHashMap<>();
-        map.put(JZVideoPlayer.URL_KEY_DEFAULT, "file:///storage/emulated/0/DCIM/Camera/VID_20180402_104256.mp4");
+        map.put(JZVideoPlayer.URL_KEY_DEFAULT, url);
         Object[] dataSourceObjects = new Object[2];
         dataSourceObjects[0] = map;
         dataSourceObjects[1] = this;
