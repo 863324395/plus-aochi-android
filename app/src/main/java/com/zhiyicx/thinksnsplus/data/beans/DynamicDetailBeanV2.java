@@ -794,6 +794,7 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable, Ser
 
     public static class ImagesBean implements Parcelable, Serializable {
         private static final long serialVersionUID = 536871009L;
+        public static final String FILE_MIME_TYPE_GIF = "image/gif";
         /**
          * file : 4
          * size : null
@@ -814,6 +815,7 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable, Ser
         /**
          * 图片类型
          */
+        @SerializedName(value = "imgMimeType",alternate = {"mime"})
         private String imgMimeType;
 
         private int imageViewWidth;

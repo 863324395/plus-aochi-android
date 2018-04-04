@@ -40,6 +40,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
+import static com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2.ImagesBean.FILE_MIME_TYPE_GIF;
 
 /**
  * @Describe 动态列表适配器基类
@@ -220,7 +221,8 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
                             .maxLines(contentView.getResources().getInteger(R.integer
                                     .dynamic_list_content_show_lines))
                             .onSpanTextClickListener(mOnSpanTextClickListener)
-                            .onTextSpanComplete(() -> ConvertUtils.stringLinkConvert(contentView, setLiknks(dynamicBean, contentView.getText().toString()), false))
+                            .onTextSpanComplete(() -> ConvertUtils.stringLinkConvert(contentView, setLiknks(dynamicBean, contentView.getText()
+                                    .toString()), false))
                             .disPlayText(true)
                             .build();
                 } else {
@@ -234,7 +236,8 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
                             .onSpanTextClickListener(mOnSpanTextClickListener)
                             .note(dynamicBean.getPaid_node().getNode())
                             .amount(dynamicBean.getPaid_node().getAmount())
-                            .onTextSpanComplete(() -> ConvertUtils.stringLinkConvert(contentView, setLiknks(dynamicBean, contentView.getText().toString()), false))
+                            .onTextSpanComplete(() -> ConvertUtils.stringLinkConvert(contentView, setLiknks(dynamicBean, contentView.getText()
+                                    .toString()), false))
                             .disPlayText(false)
                             .build();
                 }
@@ -338,12 +341,15 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
     DynamicDetailBeanV2 dynamicBean, final int positon, int part) {
         if (dynamicBean.getImages() != null && dynamicBean.getImages().size() > 0) {
             DynamicDetailBeanV2.ImagesBean imageBean = dynamicBean.getImages().get(positon);
+            // 是否是 gif
+            view.setIshowGifTag(FILE_MIME_TYPE_GIF.equals(imageBean.getImgMimeType()));
             // 是否是长图
             view.showLongImageTag(imageBean.hasLongImage());
 
             if (TextUtils.isEmpty(imageBean.getImgUrl())) {
                 Glide.with(view.getContext())
                         .load(imageBean.getGlideUrl())
+                        .asBitmap()
                         .placeholder(R.drawable.shape_default_image)
                         .diskCacheStrategy(DiskCacheStrategy.ALL)
                         .error(R.drawable.shape_default_image)
@@ -354,6 +360,7 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
 
                 Glide.with(view.getContext())
                         .load(imageBean.getImgUrl())
+                        .asBitmap()
                         .override(imageBean.getCurrentWith(), imageBean.getCurrentWith())
                         .placeholder(R.drawable.shape_default_image)
                         .diskCacheStrategy(DiskCacheStrategy.ALL)
@@ -473,7 +480,7 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
                     .setTextColor(ContextCompat.getColor(mContext, R.color
                             .themeColor))
                     .setLinkMetadata(LinkMetadata.builder()
-                            .putSerializableObj(LinkMetadata.METADATA_KEY_COTENT,new NetUrlHandleBean(dynamicDetailBeanV2.getFeed_content()))
+                            .putSerializableObj(LinkMetadata.METADATA_KEY_COTENT, new NetUrlHandleBean(dynamicDetailBeanV2.getFeed_content()))
                             .putSerializableObj(LinkMetadata.METADATA_KEY_TYPE, LinkMetadata.SpanType.NET_SITE)
                             .build())
                     .setTextColorOfHighlightedLink(ContextCompat.getColor(mContext, R.color

@@ -106,6 +106,9 @@ public class FilterImageView extends android.support.v7.widget.AppCompatImageVie
         postInvalidate();
     }
 
+    /**
+     * @param ishowGifTag 是否显示 gif 标识
+     */
     public void setIshowGifTag(boolean ishowGifTag) {
         mIshowGifTag = ishowGifTag;
         if (ishowGifTag) {
@@ -116,13 +119,17 @@ public class FilterImageView extends android.support.v7.widget.AppCompatImageVie
         }
     }
 
+    /**
+     * @param isShow 是否显示长图标识 ，gif 标识优先于 长图标识显示
+     */
     public void showLongImageTag(boolean isShow) {
         this.mIshowLongTag = isShow;
-        if (isShow) {
+        if (!mIshowGifTag && isShow) {
             if (mLongImageBitmap == null) {
                 mLongImageBitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.pic_longpic);
             }
             postInvalidate();
         }
     }
+
 }
