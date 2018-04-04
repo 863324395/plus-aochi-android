@@ -7,6 +7,7 @@ import com.bumptech.glide.load.model.GlideUrl;
 import com.google.gson.annotations.SerializedName;
 import com.klinker.android.link_builder.Link;
 import com.zhiyicx.baseproject.base.BaseListBean;
+import com.zhiyicx.baseproject.config.ImageZipConfig;
 import com.zhiyicx.baseproject.config.MarkdownConfig;
 import com.zhiyicx.baseproject.impl.photoselector.Toll;
 import com.zhiyicx.common.utils.ConvertUtils;
@@ -457,6 +458,7 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable, Ser
         for (int i = 0; i < imageCount; i++) {
             dealImageBean(images.get(i), i, imageCount);
         }
+        dealVideoBean(video);
 
         if (created_at != null) {
             friendlyTime = TimeUtils.getTimeFriendlyNormal(created_at);
@@ -482,6 +484,7 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable, Ser
         }
     }
 
+
     /**
      * 计算文本的长度是否超过最大行
      *
@@ -500,6 +503,33 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable, Ser
         // 获得单行最多显示字数
         return viewWidth / txtWidth * 2;
 
+    }
+
+    private void dealVideoBean(Video video) {
+        if (video == null) {
+            return;
+        }
+        int netWidth = video.getWidth();
+        int netHeight = video.getHeight();
+
+        if (netWidth * netHeight == 0) {
+            netWidth = netHeight = DEFALT_IMAGE_HEIGHT;
+        }
+
+        int with = ImageUtils.getmImageContainerWith();
+        int height = (with * netHeight / netWidth);
+        int mImageMaxHeight = ImageUtils.getmImageMaxHeight();
+        height = height > mImageMaxHeight ? mImageMaxHeight : height;
+        // 单张图最小高度
+        height = height < 300 ? 300 : height;
+        // 就怕是 0
+        if (with * height == 0) {
+            with = height = DEFALT_IMAGE_HEIGHT;
+        }
+        video.setWidth(with);
+        video.setHeight(height);
+        video.setGlideUrl(ImageUtils.imagePathConvertV2(true, video.cover_id, with, height,
+                ImageZipConfig.IMAGE_100_ZIP, AppApplication.getTOKEN()));
     }
 
     /**
@@ -608,7 +638,7 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable, Ser
         imageBean.setLongImage(ImageUtils.isLongImage(netHeight, netWidth));
     }
 
-    public static class Video implements Serializable,Parcelable{
+    public static class Video implements Serializable, Parcelable {
         private static final long serialVersionUID = -3037457547196702028L;
         private long id;
         private long user_id;
@@ -620,6 +650,15 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable, Ser
         private String created_at;
         private String updated_at;
         private String url;
+        private transient GlideUrl glideUrl;
+
+        public GlideUrl getGlideUrl() {
+            return glideUrl;
+        }
+
+        public void setGlideUrl(GlideUrl glideUrl) {
+            this.glideUrl = glideUrl;
+        }
 
         public Video(String url) {
             this.url = url;
@@ -1303,10 +1342,10 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable, Ser
 
     @Generated(hash = 768277612)
     public DynamicDetailBeanV2(Long id, String created_at, String updated_at, String deleted_at, Long user_id, String feed_content, int feed_from,
-            int feed_digg_count, int feed_view_count, int feed_comment_count, String feed_latitude, String feed_longtitude, String feed_geohash,
-            int audit_status, Long feed_mark, boolean has_digg, boolean has_collect, long amount, List<DynamicLikeBean> likes, boolean paid,
-            List<ImagesBean> images, List<Integer> diggs, PaidNote paid_node, Long hot_creat_time, boolean isFollowed, int state, int top,
-            List<DynamicDigListBean> digUserInfoList, RewardsCountBean reward, Video video) {
+                               int feed_digg_count, int feed_view_count, int feed_comment_count, String feed_latitude, String feed_longtitude, String feed_geohash,
+                               int audit_status, Long feed_mark, boolean has_digg, boolean has_collect, long amount, List<DynamicLikeBean> likes, boolean paid,
+                               List<ImagesBean> images, List<Integer> diggs, PaidNote paid_node, Long hot_creat_time, boolean isFollowed, int state, int top,
+                               List<DynamicDigListBean> digUserInfoList, RewardsCountBean reward, Video video) {
         this.id = id;
         this.created_at = created_at;
         this.updated_at = updated_at;

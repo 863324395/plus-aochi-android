@@ -190,6 +190,12 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
     }
 
     @Override
+    public void onPause() {
+        super.onPause();
+        JZVideoPlayer.releaseAllVideos();
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
         if (!mListDatas.isEmpty()) {
@@ -260,18 +266,12 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
         mRvList.addOnChildAttachStateChangeListener(new RecyclerView.OnChildAttachStateChangeListener() {
             @Override
             public void onChildViewAttachedToWindow(View view) {
-
+                JZVideoPlayer.onChildViewAttachedToWindow(view, R.id.videoplayer);
             }
 
             @Override
             public void onChildViewDetachedFromWindow(View view) {
-                JZVideoPlayer jzvd = (JZVideoPlayer) view.findViewById(R.id.videoplayer);
-                if (jzvd != null && jzvd.dataSourceObjects != null && JZUtils.dataSourceObjectsContainsUri(jzvd.dataSourceObjects, JZMediaManager.getCurrentDataSource())) {
-                    JZVideoPlayer currentJzvd = JZVideoPlayerManager.getCurrentJzvd();
-                    if (currentJzvd != null && currentJzvd.currentScreen != JZVideoPlayer.SCREEN_WINDOW_FULLSCREEN) {
-                        JZVideoPlayer.releaseAllVideos();
-                    }
-                }
+                JZVideoPlayer.onChildViewDetachedFromWindow(view);
             }
         });
 
@@ -420,8 +420,6 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
             data.add(DynamicListAdvert.advert2Dynamic(advert, maxId));
         } catch (Exception ignore) {
         }
-        DynamicDetailBeanV2 video = data.get(0);
-        video.setId(-1L);
         super.onNetResponseSuccess(data, isLoadMore);
     }
 

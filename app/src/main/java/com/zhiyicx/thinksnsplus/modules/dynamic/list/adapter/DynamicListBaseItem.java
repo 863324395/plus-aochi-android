@@ -158,7 +158,7 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
     public boolean isForViewType(DynamicDetailBeanV2 item, int position) {
         // 当本地和服务器都没有图片的时候，使用
         return item.getFeed_mark() != null && (item.getImages() != null && item.getImages().size
-                () == getImageCounts());
+                () == getImageCounts()) && item.getVideo() == null;
     }
 
     /**

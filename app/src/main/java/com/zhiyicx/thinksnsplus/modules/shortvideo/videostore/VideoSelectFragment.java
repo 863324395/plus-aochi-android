@@ -13,6 +13,7 @@ import com.tym.shortvideo.media.VideoInfo;
 import com.tym.shortvideo.utils.TrimVideoUtil;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.common.utils.FileUtils;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.common.utils.recycleviewdecoration.TGridDecoration;
 import com.zhiyicx.common.utils.recycleviewdecoration.VideoSelectItemDecoration;
 import com.zhiyicx.thinksnsplus.R;
@@ -63,6 +64,9 @@ public class VideoSelectFragment extends TSListFragment {
             mListDatas.addAll(videoInfos);
             mAdapter.notifyDataSetChanged();
         });
+
+        String src = "test.mp4";
+        LogUtils.d("testMD5::" + FileUtils.getAssetsFileMD5(src,mActivity));
     }
 
     @Override

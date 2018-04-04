@@ -27,6 +27,21 @@ public interface IUploadRepository {
     Observable<BaseJson<Integer>> upLoadSingleFileV2(String filePath, String mimeType, boolean isPic, int photoWidth, int photoHeight);
 
     /**
+     * 上传单个文件
+     *
+     * @param {params}    文件流需要的参数字段名，好像这儿随便来一个就可以了，但是不能没有;2017/4/28 修改为服务器处理的 input 数据
+     * @param filePath    文件本地路径
+     * @param mimeType    文件类型
+     * @param isPic       是否上传的图片，这样在获取mime时，可以方便一点
+     * @param photoHeight 图片高度
+     * @param photoWidth  图片宽度
+     * @param position  成功数量
+     * @return
+     */
+    Observable<BaseJson<Integer>> upLoadSingleFileV2(String filePath, String mimeType, boolean isPic,
+                                                     int photoWidth, int photoHeight,int[] position);
+
+    /**
      * 校验文件hash
      *
      * @param hash 文件 MD5 hash

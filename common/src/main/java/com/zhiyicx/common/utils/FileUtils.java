@@ -170,13 +170,21 @@ public class FileUtils {
      */
     public static boolean rename(File file, String newName) {
         // 文件为空返回false
-        if (file == null) return false;
+        if (file == null) {
+            return false;
+        }
         // 文件不存在返回false
-        if (!file.exists()) return false;
+        if (!file.exists()) {
+            return false;
+        }
         // 新的文件名为空返回false
-        if (TextUtils.isEmpty(newName)) return false;
+        if (TextUtils.isEmpty(newName)) {
+            return false;
+        }
         // 如果文件名没有改变返回true
-        if (newName.equals(file.getName())) return true;
+        if (newName.equals(file.getName())) {
+            return true;
+        }
         File newFile = new File(file.getParent() + File.separator + newName);
         // 如果重命名的文件已存在返回false
         return !newFile.exists()
@@ -261,10 +269,16 @@ public class FileUtils {
      * @return {@code true}: 存在或创建成功<br>{@code false}: 不存在或创建失败
      */
     public static boolean createOrExistsFile(File file) {
-        if (file == null) return false;
+        if (file == null) {
+            return false;
+        }
         // 如果存在，是文件则返回true，是目录则返回false
-        if (file.exists()) return file.isFile();
-        if (!createOrExistsDir(file.getParentFile())) return false;
+        if (file.exists()) {
+            return file.isFile();
+        }
+        if (!createOrExistsDir(file.getParentFile())) {
+            return false;
+        }
         try {
             return file.createNewFile();
         } catch (IOException e) {
@@ -290,11 +304,17 @@ public class FileUtils {
      * @return {@code true}: 创建成功<br>{@code false}: 创建失败
      */
     public static boolean createFileByDeleteOldFile(File file) {
-        if (file == null) return false;
+        if (file == null) {
+            return false;
+        }
         // 文件存在并且删除失败返回false
-        if (file.exists() && file.isFile() && !file.delete()) return false;
+        if (file.exists() && file.isFile() && !file.delete()) {
+            return false;
+        }
         // 创建目录失败返回false
-        if (!createOrExistsDir(file.getParentFile())) return false;
+        if (!createOrExistsDir(file.getParentFile())) {
+            return false;
+        }
         try {
             return file.createNewFile();
         } catch (IOException e) {
@@ -312,7 +332,9 @@ public class FileUtils {
      * @return 文件链表
      */
     public static List<File> searchFileInDir(File dir, String fileName) {
-        if (dir == null || !isDir(dir)) return null;
+        if (dir == null || !isDir(dir)) {
+            return null;
+        }
         List<File> list = new ArrayList<>();
         File[] files = dir.listFiles();
         if (files != null && files.length != 0) {
@@ -349,8 +371,12 @@ public class FileUtils {
      * @return {@code true}: 写入成功<br>{@code false}: 写入失败
      */
     public static boolean writeFileFromIS(File file, InputStream is, boolean append) {
-        if (file == null || is == null) return false;
-        if (!createOrExistsFile(file)) return false;
+        if (file == null || is == null) {
+            return false;
+        }
+        if (!createOrExistsFile(file)) {
+            return false;
+        }
         OutputStream os = null;
         try {
             os = new BufferedOutputStream(new FileOutputStream(file, append));
@@ -389,8 +415,12 @@ public class FileUtils {
      * @return {@code true}: 写入成功<br>{@code false}: 写入失败
      */
     public static boolean writeFileFromString(File file, String content, boolean append) {
-        if (file == null || content == null) return false;
-        if (!createOrExistsFile(file)) return false;
+        if (file == null || content == null) {
+            return false;
+        }
+        if (!createOrExistsFile(file)) {
+            return false;
+        }
         BufferedWriter bw = null;
         try {
             bw = new BufferedWriter(new FileWriter(file, append));
@@ -422,7 +452,9 @@ public class FileUtils {
      * @return 字符数组
      */
     public static byte[] readFile2Bytes(File file) {
-        if (file == null) return null;
+        if (file == null) {
+            return null;
+        }
         try {
             return ConvertUtils.inputStream2Bytes(new FileInputStream(file));
         } catch (FileNotFoundException e) {
@@ -496,7 +528,9 @@ public class FileUtils {
      * @return 文件大小
      */
     public static long getDirLength(File dir) {
-        if (!isDir(dir)) return -1;
+        if (!isDir(dir)) {
+            return -1;
+        }
         long len = 0;
         File[] files = dir.listFiles();
         if (files != null && files.length != 0) {
@@ -528,7 +562,9 @@ public class FileUtils {
      * @return 文件大小
      */
     public static long getFileLength(File file) {
-        if (!isFile(file)) return -1;
+        if (!isFile(file)) {
+            return -1;
+        }
         return file.length();
     }
 
@@ -564,6 +600,15 @@ public class FileUtils {
         return ConvertUtils.bytes2HexString(getFileMD5(file));
     }
 
+    public static String getAssetsFileMD5(String fileName, Context context) {
+        try {
+            InputStream inputStream = context.getResources().getAssets().open(fileName);
+            return ConvertUtils.bytes2HexString(getFileMD5(inputStream));
+        } catch (Exception e) {
+            return "tym";
+        }
+    }
+
     public static String getFileSHA_256ToString(File file) {
         return ConvertUtils.bytes2HexString(getFileSHA_256(file));
     }
@@ -575,14 +620,40 @@ public class FileUtils {
      * @return 文件的MD5校验码
      */
     public static byte[] getFileMD5(File file) {
-        if (file == null) return null;
+        if (file == null) {
+            return null;
+        }
         DigestInputStream dis = null;
         try {
             FileInputStream fis = new FileInputStream(file);
             MessageDigest md = MessageDigest.getInstance("MD5");
             dis = new DigestInputStream(fis, md);
             byte[] buffer = new byte[1024 * 256];
-            while (dis.read(buffer) > 0) ;
+            while (dis.read(buffer) > 0) {
+                ;
+            }
+            md = dis.getMessageDigest();
+            return md.digest();
+        } catch (NoSuchAlgorithmException | IOException e) {
+            e.printStackTrace();
+        } finally {
+            CloseUtils.closeIO(dis);
+        }
+        return null;
+    }
+
+    public static byte[] getFileMD5(InputStream stream) {
+        if (stream == null) {
+            return null;
+        }
+        DigestInputStream dis = null;
+        try {
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            dis = new DigestInputStream(stream, md);
+            byte[] buffer = new byte[1024 * 256];
+            while (dis.read(buffer) > 0) {
+                ;
+            }
             md = dis.getMessageDigest();
             return md.digest();
         } catch (NoSuchAlgorithmException | IOException e) {
@@ -600,14 +671,18 @@ public class FileUtils {
      * @return 文件的MD5校验码
      */
     public static byte[] getFileSHA_256(File file) {
-        if (file == null) return null;
+        if (file == null) {
+            return null;
+        }
         DigestInputStream dis = null;
         try {
             FileInputStream fis = new FileInputStream(file);
             MessageDigest md = MessageDigest.getInstance("SHA-256");
             dis = new DigestInputStream(fis, md);
             byte[] buffer = new byte[1024 * 256];
-            while (dis.read(buffer) > 0) ;
+            while (dis.read(buffer) > 0) {
+                ;
+            }
             md = dis.getMessageDigest();
             return md.digest();
         } catch (NoSuchAlgorithmException | IOException e) {
@@ -625,7 +700,9 @@ public class FileUtils {
      * @return filePath最长目录
      */
     public static String getDirName(File file) {
-        if (file == null) return null;
+        if (file == null) {
+            return null;
+        }
         return getDirName(file.getPath());
     }
 
@@ -636,7 +713,9 @@ public class FileUtils {
      * @return filePath最长目录
      */
     public static String getDirName(String filePath) {
-        if (TextUtils.isEmpty(filePath)) return filePath;
+        if (TextUtils.isEmpty(filePath)) {
+            return filePath;
+        }
         int lastSep = filePath.lastIndexOf(File.separator);
         return lastSep == -1 ? "" : filePath.substring(0, lastSep + 1);
     }
@@ -648,7 +727,9 @@ public class FileUtils {
      * @return 文件名
      */
     public static String getFileName(File file) {
-        if (file == null) return null;
+        if (file == null) {
+            return null;
+        }
         return getFileName(file.getPath());
     }
 
@@ -659,7 +740,9 @@ public class FileUtils {
      * @return 文件名
      */
     public static String getFileName(String filePath) {
-        if (TextUtils.isEmpty(filePath)) return filePath;
+        if (TextUtils.isEmpty(filePath)) {
+            return filePath;
+        }
         int lastSep = filePath.lastIndexOf(File.separator);
         return lastSep == -1 ? filePath : filePath.substring(lastSep + 1);
     }
@@ -671,7 +754,9 @@ public class FileUtils {
      * @return 不带拓展名的文件名
      */
     public static String getFileNameNoExtension(File file) {
-        if (file == null) return null;
+        if (file == null) {
+            return null;
+        }
         return getFileNameNoExtension(file.getPath());
     }
 
@@ -682,7 +767,9 @@ public class FileUtils {
      * @return 不带拓展名的文件名
      */
     public static String getFileNameNoExtension(String filePath) {
-        if (TextUtils.isEmpty(filePath)) return filePath;
+        if (TextUtils.isEmpty(filePath)) {
+            return filePath;
+        }
         int lastPoi = filePath.lastIndexOf('.');
         int lastSep = filePath.lastIndexOf(File.separator);
         if (lastSep == -1) {
@@ -701,7 +788,9 @@ public class FileUtils {
      * @return 文件拓展名
      */
     public static String getFileExtension(File file) {
-        if (file == null) return null;
+        if (file == null) {
+            return null;
+        }
         return getFileExtension(file.getPath());
     }
 
@@ -712,10 +801,14 @@ public class FileUtils {
      * @return 文件拓展名
      */
     public static String getFileExtension(String filePath) {
-        if (TextUtils.isEmpty(filePath)) return filePath;
+        if (TextUtils.isEmpty(filePath)) {
+            return filePath;
+        }
         int lastPoi = filePath.lastIndexOf('.');
         int lastSep = filePath.lastIndexOf(File.separator);
-        if (lastPoi == -1 || lastSep >= lastPoi) return "";
+        if (lastPoi == -1 || lastSep >= lastPoi) {
+            return "";
+        }
         return filePath.substring(lastPoi + 1);
     }
 
@@ -726,7 +819,7 @@ public class FileUtils {
             FileOutputStream out = new FileOutputStream(file);
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
             out.close();
-            LogUtils.d("saveBitmapToFile::",file.getAbsolutePath());
+            LogUtils.d("saveBitmapToFile::", file.getAbsolutePath());
             return file.getAbsolutePath();
         } catch (Exception e) {
             e.printStackTrace();

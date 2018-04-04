@@ -11,6 +11,7 @@ import com.zhiyicx.baseproject.config.MarkdownConfig;
 import com.zhiyicx.baseproject.config.PayConfig;
 import com.zhiyicx.common.config.ConstantConfig;
 import com.zhiyicx.common.utils.ConvertUtils;
+import com.zhiyicx.common.utils.FileUtils;
 import com.zhiyicx.common.utils.RegexUtils;
 import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
@@ -107,6 +108,11 @@ public class JavaTest {
                 System.out.println("reg::" + i + ":::" + matcher.group(i));
             }
         }
+    }
+
+    @Test
+    public void testMD5() {
+
     }
 
     @Test

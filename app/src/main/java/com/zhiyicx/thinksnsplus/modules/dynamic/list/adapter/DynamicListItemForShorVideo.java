@@ -5,7 +5,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.text.TextUtils;
-import android.widget.LinearLayout;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -13,25 +12,19 @@ import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
-import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.config.ApiConfig;
-import com.zhiyicx.baseproject.widget.imageview.FilterImageView;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.DrawableProvider;
 import com.zhiyicx.common.utils.FastBlur;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhiyicx.thinksnsplus.modules.shortvideo.helper.CustomMediaPlayerAssertFolder;
-import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
 import java.util.LinkedHashMap;
-import java.util.concurrent.TimeUnit;
 
 import cn.jzvd.JZVideoPlayer;
 import cn.jzvd.JZVideoPlayerStandard;
-
-import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 
 /**
  * @Describe 动态列表 五张图的时候的 item
@@ -86,14 +79,18 @@ public class DynamicListItemForShorVideo extends DynamicListBaseItem {
         int with;
         int height;
 
-        DynamicDetailBeanV2.ImagesBean imageBean = dynamicBean.getImages().get(0);
-        if (TextUtils.isEmpty(imageBean.getImgUrl())) {
-            with = imageBean.getImageViewWidth();
-            height = imageBean.getImageViewHeight();
-            // 是否是长图
+        String videoUrl;
+        DynamicDetailBeanV2.Video video = dynamicBean.getVideo();
+        if (TextUtils.isEmpty(video.getUrl())) {
+
+            videoUrl = String.format(ApiConfig.APP_DOMAIN + ApiConfig.MUSIC_PATH,
+                    dynamicBean.getVideo().getVideo_id());
+
+            with = video.getWidth();
+            height = video.getHeight();
             view.getLayoutParams().height = height;
             Glide.with(mContext)
-                    .load(imageBean.getGlideUrl())
+                    .load(video.getGlideUrl())
                     .override(with, height)
                     .placeholder(R.drawable.shape_default_image)
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
@@ -115,8 +112,10 @@ public class DynamicListItemForShorVideo extends DynamicListBaseItem {
                     .into(view.thumbImageView);
         } else {
             // 本地
-            BitmapFactory.Options option = DrawableProvider.getPicsWHByFile(imageBean.getImgUrl());
-            with = imageBean.getCurrentWith();
+            videoUrl = video.getUrl();
+
+            BitmapFactory.Options option = DrawableProvider.getPicsWHByFile(video.getUrl());
+            with = video.getWidth();
             if (option.outWidth == 0) {
                 height = with;
             } else {
@@ -128,7 +127,7 @@ public class DynamicListItemForShorVideo extends DynamicListBaseItem {
             }
             view.getLayoutParams().height = height;
             Glide.with(mContext)
-                    .load(imageBean.getImgUrl())
+                    .load(video.getUrl())
                     .override(with, height)
                     .placeholder(R.drawable.shape_default_image)
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
@@ -151,15 +150,8 @@ public class DynamicListItemForShorVideo extends DynamicListBaseItem {
                     .into(view.thumbImageView);
 
         }
-        String url = String.format(ApiConfig.APP_DOMAIN+ApiConfig.MUSIC_PATH,
-                dynamicBean.getVideo().getVideo_id());
-        LinkedHashMap<String, String> map = new LinkedHashMap<>();
-        map.put(JZVideoPlayer.URL_KEY_DEFAULT, url);
-        Object[] dataSourceObjects = new Object[2];
-        dataSourceObjects[0] = map;
-        dataSourceObjects[1] = this;
-        view.setUp(dataSourceObjects, 0, JZVideoPlayerStandard.SCREEN_WINDOW_LIST, "tym");
-        JZVideoPlayer.setMediaInterface(new CustomMediaPlayerAssertFolder());//进入此页面修改MediaInterface，让此页面的jzvd正常工作
+        view.setUp(videoUrl, JZVideoPlayerStandard.SCREEN_WINDOW_LIST, "tym");
+        view.positionInList = positon;
     }
 
     @Override
