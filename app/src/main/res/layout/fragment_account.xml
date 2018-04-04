@@ -40,12 +40,14 @@
             tools:text="-1288.00"/>
 
         <LinearLayout
+
             android:layout_marginBottom="@dimen/divider_line"
             android:id="@+id/bill_user_container"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dynamice_top_input_height"
             android:background="@color/white"
             android:orientation="horizontal"
+            android:clickable="false"
             android:paddingLeft="@dimen/spacing_mid"
             android:paddingRight="@dimen/spacing_mid">
 
@@ -64,6 +66,7 @@
                     android:layout_width="@dimen/headpic_for_assist"
                     android:layout_height="@dimen/headpic_for_assist"
                     android:layout_marginLeft="@dimen/spacing_large"
+                    android:clickable="false"
                     android:layout_gravity="center_vertical"/>
 
             <TextView
