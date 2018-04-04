@@ -19,6 +19,7 @@ import com.zhy.adapter.recyclerview.base.ViewHolder;
 import java.util.concurrent.TimeUnit;
 
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
+import static com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2.ImagesBean.FILE_MIME_TYPE_GIF;
 
 /**
  * @author Jliuer
@@ -84,11 +85,14 @@ public class CirclePostListItemForOneImage extends CirclePostListBaseItem {
                 height = DEFALT_IMAGE_HEIGHT;
             }
             view.setLayoutParams(new LinearLayout.LayoutParams(with, height));
+            // 是否是 gif
+            view.setIshowGifTag(FILE_MIME_TYPE_GIF.equals(imageBean.getImgMimeType()));
             view.showLongImageTag(isLongImage(imageBean.getHeight(), imageBean.getWidth())); // 是否是长图
 
             Glide.with(mContext)
                     .load(ImageUtils.imagePathConvertV2(canLook, imageBean.getFile_id(), canLook ? 0 : with, canLook ? 0 : height,
                             100, AppApplication.getTOKEN()))
+                    .asBitmap()
                     .override(with, height)
                     .placeholder(canLook ? R.drawable.shape_default_image : R.mipmap.pic_locked)
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
@@ -106,6 +110,8 @@ public class CirclePostListItemForOneImage extends CirclePostListBaseItem {
                 height = with * option.outHeight / option.outWidth;
                 height = height > mImageMaxHeight ? mImageMaxHeight : height;
                 proportion = ((with / option.outWidth) * 100);
+                // 是否是 gif
+                view.setIshowGifTag(FILE_MIME_TYPE_GIF.equals(option.outMimeType));
                 view.showLongImageTag(isLongImage(option.outHeight, option.outWidth)); // 是否是长图
             }
             if (height < DEFALT_IMAGE_HEIGHT) {
@@ -115,6 +121,7 @@ public class CirclePostListItemForOneImage extends CirclePostListBaseItem {
 
             Glide.with(mContext)
                     .load(imageBean.getImgUrl())
+                    .asBitmap()
                     .override(with, height)
                     .placeholder(R.drawable.shape_default_image)
                     .diskCacheStrategy(DiskCacheStrategy.ALL)

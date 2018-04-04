@@ -22,6 +22,7 @@ import java.util.concurrent.TimeUnit;
 import rx.functions.Action1;
 
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
+import static com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2.ImagesBean.FILE_MIME_TYPE_GIF;
 
 /**
  * @author LiuChao
@@ -73,11 +74,14 @@ public class PersonalCenterDynamicListItemForOneImage extends PersonalCenterDyna
         if (TextUtils.isEmpty(imageBean.getImgUrl())) {
             with = imageBean.getImageViewWidth();
             height = imageBean.getImageViewHeight();
+            // 是否是 gif
+            view.setIshowGifTag(FILE_MIME_TYPE_GIF.equals(imageBean.getImgMimeType()));
             // 是否是长图
             view.showLongImageTag(imageBean.hasLongImage());
             view.setLayoutParams(new LinearLayout.LayoutParams(with, height));
             Glide.with(mContext)
                     .load(imageBean.getGlideUrl())
+                    .asBitmap()
                     .override(with, height)
                     .placeholder(R.drawable.shape_default_image)
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
@@ -92,6 +96,8 @@ public class PersonalCenterDynamicListItemForOneImage extends PersonalCenterDyna
             } else {
                 height = with * option.outHeight / option.outWidth;
                 height = height > mImageMaxHeight ? mImageMaxHeight : height;
+                // 是否是 gif
+                view.setIshowGifTag(FILE_MIME_TYPE_GIF.equals(option.outMimeType));
                 // 是否是长图
                 view.showLongImageTag(isLongImage(option.outHeight, option.outWidth));
             }
@@ -103,6 +109,7 @@ public class PersonalCenterDynamicListItemForOneImage extends PersonalCenterDyna
 
             Glide.with(mContext)
                     .load(imageBean.getImgUrl())
+                    .asBitmap()
                     .override(with, height)
                     .placeholder(R.drawable.shape_default_image)
                     .diskCacheStrategy(DiskCacheStrategy.ALL)

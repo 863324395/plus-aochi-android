@@ -470,7 +470,7 @@ public class ImageUtils {
      * @param part    压缩比例 0-100
      */
     public static GlideUrl imagePathConvertV2(boolean canLook, int storage, int w, int h, int part, String token) {
-        String url = String.format(Locale.getDefault(), ApiConfig.APP_DOMAIN + ApiConfig.IMAGE_PATH_V2, storage, w, h, part);
+        String url = imagePathConvertV2(storage, w, h, part);
         return imagePathConvertV2(url, token);
     }
 
@@ -501,7 +501,12 @@ public class ImageUtils {
     }
 
     public static String imagePathConvertV2(int storage, int w, int h, int part) {
-        return String.format(Locale.getDefault(), ApiConfig.APP_DOMAIN + ApiConfig.IMAGE_PATH_V2, storage, w, h, part);
+        if (part == 100) {
+            //原图
+            return String.format(Locale.getDefault(), ApiConfig.APP_DOMAIN + ApiConfig.IMAGE_PATH_V2_ORIGIN, storage);
+        } else {
+            return String.format(Locale.getDefault(), ApiConfig.APP_DOMAIN + ApiConfig.IMAGE_PATH_V2, storage, w, h, part);
+        }
     }
 
     public static long[] getBitmapSize(String url) {

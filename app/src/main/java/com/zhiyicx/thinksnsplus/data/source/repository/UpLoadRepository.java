@@ -64,8 +64,10 @@ public class UpLoadRepository implements IUploadRepository {
         LogUtils.d("filePath::" + filePath);
         LogUtils.d("upLoadSingleFileV2::" + paramMap.get("hash"));
         paramMap.put("origin_filename", file.getName());
-        paramMap.put("width", photoWidth + "");
-        paramMap.put("height", photoHeight + "");
+        if (photoWidth != 0 && photoHeight != 0) {
+            paramMap.put("width", photoWidth + "");
+            paramMap.put("height", photoHeight + "");
+        }
         // 如果是图片就处理图片
         if (isPic) {
             paramMap.put("mime_type", mimeType);
@@ -191,8 +193,10 @@ public class UpLoadRepository implements IUploadRepository {
         // 如果是图片就处理图片
         if (isPic) {
             paramMap.put("mime_type", mimeType);
-            paramMap.put("width", photoWidth + "");// 如果是图片就选择宽高
-            paramMap.put("height", photoHeight + "");// 如果是图片就选择宽高
+            if (photoWidth != 0 && photoHeight != 0) {
+                paramMap.put("width", photoWidth + "");// 如果是图片就选择宽高
+                paramMap.put("height", photoHeight + "");// 如果是图片就选择宽高
+            }
         } else {
             paramMap.put("mime_type", FileUtils.getMimeType(filePath));
         }

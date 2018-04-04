@@ -341,12 +341,11 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
     DynamicDetailBeanV2 dynamicBean, final int positon, int part) {
         if (dynamicBean.getImages() != null && dynamicBean.getImages().size() > 0) {
             DynamicDetailBeanV2.ImagesBean imageBean = dynamicBean.getImages().get(positon);
-            // 是否是 gif
-            view.setIshowGifTag(FILE_MIME_TYPE_GIF.equals(imageBean.getImgMimeType()));
-            // 是否是长图
-            view.showLongImageTag(imageBean.hasLongImage());
-
             if (TextUtils.isEmpty(imageBean.getImgUrl())) {
+                // 是否是 gif
+                view.setIshowGifTag(FILE_MIME_TYPE_GIF.equals(imageBean.getImgMimeType()));
+                // 是否是长图
+                view.showLongImageTag(imageBean.hasLongImage());
                 Glide.with(view.getContext())
                         .load(imageBean.getGlideUrl())
                         .asBitmap()
@@ -356,6 +355,7 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
                         .into(view);
             } else {
                 BitmapFactory.Options option = DrawableProvider.getPicsWHByFile(imageBean.getImgUrl());
+                view.setIshowGifTag(FILE_MIME_TYPE_GIF.equals(option.outMimeType));
                 view.showLongImageTag(isLongImage(option.outHeight, option.outWidth));
 
                 Glide.with(view.getContext())

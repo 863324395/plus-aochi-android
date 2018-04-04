@@ -39,7 +39,9 @@ public class ApiConfig {
     public static final String URL_INTEGRATION_SHOP = "api/" + API_VERSION_2 + "/currency/shop";// 积分商城地址
 
     // 图片地址 V2
-    public static final String IMAGE_PATH_V2 = "api/" + API_VERSION_2 + "/files/%s?w=%d&h=%d&q=%d";
+    public static final String IMAGE_PATH_V2_ORIGIN = "api/" + API_VERSION_2 + "/files/%s";
+    public static final String IMAGE_PATH_V2 = IMAGE_PATH_V2_ORIGIN + "?w=%d&h=%d&q=%d";
+
     // 头像地址
     public static final String IMAGE_AVATAR_PATH_V2 = APP_DOMAIN + "api/" + API_VERSION_2 + "/users/%s/avatar";
 

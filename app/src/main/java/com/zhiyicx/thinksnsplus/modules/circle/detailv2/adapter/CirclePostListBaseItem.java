@@ -45,6 +45,7 @@ import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
+import static com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2.ImagesBean.FILE_MIME_TYPE_GIF;
 
 /**
  * @author Jliuer
@@ -293,11 +294,14 @@ public class CirclePostListBaseItem implements ItemViewDelegate<CirclePostListBe
             CirclePostListBean.ImagesBean imageBean = circlePostListBean.getImages().get(positon);
             if (TextUtils.isEmpty(imageBean.getImgUrl())) {
                 Boolean canLook = true;
+                // 是否是 gif
+                view.setIshowGifTag(FILE_MIME_TYPE_GIF.equals(imageBean.getImgMimeType()));
                 // 是否是长图
                 view.showLongImageTag(isLongImage(imageBean.getHeight(), imageBean.getWidth()));
                 Glide.with(mContext)
                         .load(ImageUtils.imagePathConvertV2(canLook, imageBean.getFile_id(), w, h,
                                 propPart, AppApplication.getTOKEN()))
+                        .asBitmap()
                         .override(w, h)
                         .placeholder(canLook ? R.drawable.shape_default_image : R.mipmap.pic_locked)
                         .diskCacheStrategy(DiskCacheStrategy.ALL)
@@ -306,9 +310,12 @@ public class CirclePostListBaseItem implements ItemViewDelegate<CirclePostListBe
             } else {
                 // 是否是长图
                 BitmapFactory.Options option = DrawableProvider.getPicsWHByFile(imageBean.getImgUrl());
+                // 是否是 gif
+                view.setIshowGifTag(FILE_MIME_TYPE_GIF.equals(option.outMimeType));
                 view.showLongImageTag(isLongImage(option.outHeight, option.outWidth));
                 Glide.with(mContext)
                         .load(imageBean.getImgUrl())
+                        .asBitmap()
                         .override(w, h)
                         .placeholder(R.drawable.shape_default_image)
                         .diskCacheStrategy(DiskCacheStrategy.ALL)

@@ -288,6 +288,7 @@ public class CirclePostListBean extends BaseListBean implements Serializable, Cl
         @SerializedName("id")
         private int file_id;
         private String imgUrl;
+        @SerializedName(value = "type",alternate = "mime")
         private String type;
 
         public int getPropPart() {

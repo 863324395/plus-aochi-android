@@ -91,7 +91,7 @@ public class FilterImageView extends android.support.v7.widget.AppCompatImageVie
         }
 
         if (mIshowGifTag && mGifImageBitmap != null) {
-            canvas.drawBitmap(mGifImageBitmap, (getWidth() - mGifImageBitmap.getWidth()) / 2, (getHeight() - mGifImageBitmap.getHeight()) / 2, null);
+            canvas.drawBitmap(mGifImageBitmap, getWidth() - mGifImageBitmap.getWidth(), getHeight() - mGifImageBitmap.getHeight() , null);
         }
     }
 
@@ -113,7 +113,7 @@ public class FilterImageView extends android.support.v7.widget.AppCompatImageVie
         mIshowGifTag = ishowGifTag;
         if (ishowGifTag) {
             if (mGifImageBitmap == null) {
-                mGifImageBitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.detail_share_wechat);
+                mGifImageBitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.logo);
             }
             postInvalidate();
         }
