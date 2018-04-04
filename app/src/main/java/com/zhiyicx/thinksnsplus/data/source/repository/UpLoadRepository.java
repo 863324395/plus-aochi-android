@@ -49,6 +49,12 @@ public class UpLoadRepository implements IUploadRepository {
         mUserInfoClient = serviceManager.getUserInfoClient();
     }
 
+    /**
+     * @author Jliuer
+     * @Date 18/04/04 15:49
+     * @Email Jliuer@aliyun.com
+     * @Description 上传单个文件
+     */
     @Override
     public Observable<BaseJson<Integer>> upLoadSingleFileV2(final String filePath, String mimeType, boolean isPic, int photoWidth, int photoHeight) {
         File file = new File(filePath);
@@ -103,6 +109,13 @@ public class UpLoadRepository implements IUploadRepository {
                 });
     }
 
+    /**
+     * @author Jliuer
+     * @Date 18/04/04 15:50
+     * @Email Jliuer@aliyun.com
+     * @param position 记录上传成功的个数
+     * @Description 上传单个文件
+     */
     @Override
     public Observable<BaseJson<Integer>> upLoadSingleFileV2(final String filePath, String mimeType, boolean isPic,
                                                             int photoWidth, int photoHeight, int[] position) {
@@ -164,6 +177,12 @@ public class UpLoadRepository implements IUploadRepository {
                 });
     }
 
+    /**
+     * @author Jliuer
+     * @Date 18/04/04 15:51
+     * @Email Jliuer@aliyun.com
+     * @Description 上传单个文件，带进度监听
+     */
     public Observable<BaseJson<Integer>> upLoadFileWithProgress(final String filePath, String mimeType,
                                                                 boolean isPic, int photoWidth, int photoHeight, ProgressRequestBody.ProgressRequestListener listener) {
         File file = new File(filePath);

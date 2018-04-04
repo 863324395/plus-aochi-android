@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.provider.MediaStore;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -12,15 +13,26 @@ import android.view.View;
 import com.tym.shortvideo.media.VideoInfo;
 import com.tym.shortvideo.utils.TrimVideoUtil;
 import com.zhiyicx.baseproject.base.TSListFragment;
+import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
+import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.FileUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.common.utils.recycleviewdecoration.TGridDecoration;
 import com.zhiyicx.common.utils.recycleviewdecoration.VideoSelectItemDecoration;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
+import com.zhiyicx.thinksnsplus.data.beans.SendDynamicDataBean;
+import com.zhiyicx.thinksnsplus.modules.dynamic.send.SendDynamicActivity;
 import com.zhiyicx.thinksnsplus.modules.shortvideo.adapter.VideoGridViewAdapter;
 import com.zhiyicx.thinksnsplus.modules.shortvideo.clipe.TrimmerActivity;
+import com.zhiyicx.thinksnsplus.modules.shortvideo.preview.PreviewActivity;
 import com.zhiyicx.thinksnsplus.modules.shortvideo.record.RecordActivity;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.POPUPWINDOW_ALPHA;
 
 /**
  * @Author Jliuer
@@ -29,6 +41,8 @@ import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
  * @Description
  */
 public class VideoSelectFragment extends TSListFragment {
+
+    private ActionPopupWindow mPopWindow;
 
     @Override
     protected boolean isLoadingMoreEnable() {
@@ -46,6 +60,11 @@ public class VideoSelectFragment extends TSListFragment {
     }
 
     @Override
+    protected boolean setUseCenterLoading() {
+        return true;
+    }
+
+    @Override
     protected String setCenterTitle() {
         return getString(R.string.video_select);
     }
@@ -54,15 +73,16 @@ public class VideoSelectFragment extends TSListFragment {
     protected void initData() {
         super.initData();
         TrimVideoUtil.getAllVideoFiles(mActivity, (videoInfos, integer) -> {
-            if (videoInfos.isEmpty()) {
-                setEmptyViewVisiable(true);
-            }
-            mListDatas.clear();
-            VideoInfo videoInfo = new VideoInfo();
-            videoInfo.setPath(null);
-            mListDatas.add(videoInfo);
-            mListDatas.addAll(videoInfos);
-            mAdapter.notifyDataSetChanged();
+            mActivity.runOnUiThread(() -> {
+                mListDatas.clear();
+                VideoInfo videoInfo = new VideoInfo();
+                videoInfo.setPath(null);
+                mListDatas.add(videoInfo);
+                mListDatas.addAll(videoInfos);
+                refreshData();
+                mRefreshlayout.finishRefresh();
+                closeLoadingView();
+            });
         });
     }
 
@@ -76,13 +96,7 @@ public class VideoSelectFragment extends TSListFragment {
                 if (TextUtils.isEmpty(videoInfo.getPath())) {
                     startActivity(new Intent(mActivity, RecordActivity.class));
                 } else {
-                    BitmapFactory.Options options = new BitmapFactory.Options();
-                    options.inPreferredConfig = Bitmap.Config.RGB_565;
-                    Bitmap bitmap = MediaStore.Video.Thumbnails.getThumbnail(mActivity.getContentResolver(), videoInfo.storeId, MediaStore.Images.Thumbnails.MINI_KIND,
-                            options);
-                    videoInfo.setCover(FileUtils.saveBitmapToFile(mActivity, bitmap, "video_cover"));
-//                    TrimmerActivity.startTrimmerActivity(mActivity,videoInfo.getPath());
-                    TrimmerActivity.startTrimmerActivity(mActivity, videoInfo);
+                    initReSendDynamicPopupWindow(videoInfo);
                 }
             }
 
@@ -102,5 +116,52 @@ public class VideoSelectFragment extends TSListFragment {
     @Override
     protected RecyclerView.LayoutManager getLayoutManager() {
         return new GridLayoutManager(mActivity, 4);
+    }
+
+    /**
+     * 初始化重发动态选择弹框
+     */
+    private void initReSendDynamicPopupWindow(VideoInfo videoInfo) {
+        if (mPopWindow == null) {
+            mPopWindow = ActionPopupWindow.builder()
+                    .item1Str(getString(R.string.direct_upload))
+                    .item2Str(getString(R.string.edite_upload))
+                    .bottomStr(getString(R.string.cancel))
+                    .isOutsideTouch(true)
+                    .isFocus(true)
+                    .backgroundAlpha(POPUPWINDOW_ALPHA)
+                    .with(getActivity())
+                    .item1ClickListener(() -> {
+                        mPopWindow.hide();
+
+                        BitmapFactory.Options options = new BitmapFactory.Options();
+                        options.inPreferredConfig = Bitmap.Config.RGB_565;
+                        Bitmap bitmap = MediaStore.Video.Thumbnails.getThumbnail(mActivity.getContentResolver(), videoInfo.storeId, MediaStore.Images.Thumbnails.MINI_KIND,
+                                options);
+                        videoInfo.setCover(FileUtils.saveBitmapToFile(mActivity, bitmap, "video_cover"));
+                        SendDynamicDataBean sendDynamicDataBean = new SendDynamicDataBean();
+                        sendDynamicDataBean.setDynamicBelong(SendDynamicDataBean.NORMAL_DYNAMIC);
+                        List<ImageBean> pic = new ArrayList<>();
+                        ImageBean imageBean = new ImageBean();
+                        imageBean.setImgUrl(videoInfo.getCover());
+                        pic.add(imageBean);
+                        sendDynamicDataBean.setDynamicPrePhotos(pic);
+                        sendDynamicDataBean.setDynamicType(SendDynamicDataBean.VIDEO_TEXT_DYNAMIC);
+                        sendDynamicDataBean.setVideoInfo(videoInfo);
+                        SendDynamicActivity.startToSendDynamicActivity(getContext(), sendDynamicDataBean);
+                        mActivity.finish();
+                    })
+                    .item2ClickListener(() -> {
+                        mPopWindow.hide();
+                        ArrayList<String> path = new ArrayList<>();
+                        path.add(videoInfo.getPath());
+                        PreviewActivity.startPreviewActivity(mActivity, path);
+                        mActivity.finish();
+                    })
+                    .bottomClickListener(() -> mPopWindow.hide())
+                    .build();
+        }
+        mPopWindow.show();
+
     }
 }

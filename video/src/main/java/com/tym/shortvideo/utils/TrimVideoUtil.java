@@ -4,8 +4,8 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.media.MediaMetadataRetriever;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.text.TextUtils;
@@ -15,16 +15,18 @@ import com.tym.shortvideo.interfaces.SingleCallback;
 import com.tym.shortvideo.interfaces.TrimVideoListener;
 import com.tym.shortvideo.media.VideoInfo;
 import com.tym.shortvideo.mediacodec.VideoClipper;
-import com.tym.video.R;
 
 import java.io.IOException;
 import java.util.ArrayList;
+
+import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
 
 
 public class TrimVideoUtil {
 
     private static final String TAG = TrimVideoUtil.class.getSimpleName();
-    public static final int VIDEO_MAX_DURATION = 15;// 15秒
+    public static final int VIDEO_MAX_DURATION = 10;
     public static final int MIN_TIME_FRAME = 3;
     private static int thumb_Width = (DeviceUtils.getScreenWidth() - DeviceUtils.dipToPX(20)) / VIDEO_MAX_DURATION;
     private static final int thumb_Height = DeviceUtils.dipToPX(60);
@@ -66,16 +68,16 @@ public class TrimVideoUtil {
                                                long numThumbs = videoLengthInMs < one_frame_time ? 1 : (videoLengthInMs / one_frame_time);
                                                final long interval = videoLengthInMs / numThumbs;
                                                float w, h;
-                                               w = 0;
-                                               h = thumb_Height;
+                                               w = thumb_Width;
+                                               h = 0;
                                                //每次截取到3帧之后上报
                                                for (long i = 0; i < numThumbs; ++i) {
                                                    Bitmap bitmap = mediaMetadataRetriever.getFrameAtTime(i * interval, MediaMetadataRetriever.OPTION_CLOSEST_SYNC);
-                                                   if (w == 0) {
-                                                       w = (h / (float) bitmap.getHeight()) * bitmap.getWidth();
+                                                   if (h == 0) {
+                                                       h = (w / (float) bitmap.getWidth()) * bitmap.getHeight();
                                                    }
                                                    try {
-                                                       bitmap = Bitmap.createScaledBitmap(bitmap, (int) w, thumb_Height, false);
+                                                       bitmap = Bitmap.createScaledBitmap(bitmap, thumb_Width, (int) h, false);
                                                    } catch (Exception e) {
                                                        e.printStackTrace();
                                                    }
@@ -155,33 +157,36 @@ public class TrimVideoUtil {
                                        public void execute() {
                                            VideoInfo video;
                                            ArrayList<VideoInfo> videos = new ArrayList<>();
-
-
                                            ContentResolver contentResolver = mContext.getContentResolver();
-
                                            try {
+
                                                Cursor cursor = contentResolver.query(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, null,
-                                                       null, null, MediaStore.Video.Media.DATE_MODIFIED + " desc");
+                                                       null, null, MediaStore.Video.Media.DEFAULT_SORT_ORDER);
                                                if (cursor != null) {
                                                    while (cursor.moveToNext()) {
                                                        video = new VideoInfo();
-                                                       if (cursor.getLong(cursor.getColumnIndex(MediaStore.Video.Media.DURATION)) != 0) {
-                                                           video.setDuration((int) cursor.getLong(cursor.getColumnIndex(MediaStore.Video.Media.DURATION)));
-                                                           video.setPath(cursor.getString(cursor.getColumnIndex(MediaStore.Video.Media.DATA)));
-                                                           video.setCreateTime(cursor.getString(cursor.getColumnIndex(MediaStore.Video.Media.DATE_ADDED)));
-                                                           video.setName(cursor.getString(cursor.getColumnIndex(MediaStore.Video.Media.DISPLAY_NAME)));
-                                                           video.setWidth(cursor.getInt(cursor.getColumnIndex(MediaStore.Video.Media.WIDTH)));
-                                                           video.setHeight(cursor.getInt(cursor.getColumnIndex(MediaStore.Video.Media.HEIGHT)));
-                                                           video.setStoreId(cursor.getInt(cursor.getColumnIndex(MediaStore.Video.Media._ID)));
+                                                       video.setPath(cursor.getString(cursor.getColumnIndex(MediaStore.Video.Media.DATA)));
+                                                       video.setCreateTime(cursor.getString(cursor.getColumnIndex(MediaStore.Video.Media.DATE_ADDED)));
+                                                       video.setName(cursor.getString(cursor.getColumnIndex(MediaStore.Video.Media.DISPLAY_NAME)));
+                                                       video.setWidth(cursor.getInt(cursor.getColumnIndex(MediaStore.Video.Media.WIDTH)));
+                                                       video.setHeight(cursor.getInt(cursor.getColumnIndex(MediaStore.Video.Media.HEIGHT)));
+                                                       video.setStoreId(cursor.getInt(cursor.getColumnIndex(MediaStore.Video.Media._ID)));
 
+                                                       MediaMetadataRetriever retriever = new MediaMetadataRetriever();
+                                                       retriever.setDataSource(mContext, Uri.parse(video.getPath()));
+                                                       int duration = Integer.parseInt(retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION));
+                                                       int width = Integer.parseInt(retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH));
+                                                       int height =Integer.parseInt(retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT));
+                                                       retriever.release();
 
-                                                           if (video.width*video.height==0){
-
-                                                           }
-                                                           video.setWidth(540);
-                                                           video.setHeight(960);
-                                                           videos.add(video);
+                                                       video.setDuration(duration);
+                                                       video.setWidth(width);
+                                                       video.setHeight(height);
+                                                       if (video.getDuration() < 3000) {
+                                                           continue;
                                                        }
+                                                       videos.add(video);
+
                                                    }
                                                    cursor.close();
                                                }

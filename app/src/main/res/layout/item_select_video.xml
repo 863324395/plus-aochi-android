@@ -4,14 +4,13 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <ImageView
+    <com.tym.shortvideo.view.SquareImageView
         android:id="@+id/iv_cover"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center"
         android:adjustViewBounds="true"
         android:scaleType="centerCrop"/>
-
 
     <TextView
         android:id="@+id/tv_duration"

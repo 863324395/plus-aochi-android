@@ -159,12 +159,6 @@ public class ProgressView extends View {
         int left = 0, right = 0;
         right = left + (int) (width * mCurrentLenght);
 
-        LogUtils.d("left:" + left);
-        LogUtils.d("width:" + width);
-        LogUtils.d("mCurrentLenght:" + mCurrentLenght);
-        LogUtils.d("right:" + width * mCurrentLenght);
-        LogUtils.d("height:" + height);
-
         canvas.drawRect(left, 0.0F, width * mCurrentLenght, height,
                 mProgressPaint);
 
@@ -220,7 +214,6 @@ public class ProgressView extends View {
 
         postInvalidate();
 
-        LogUtils.d("setProgress:", mCurrentLenght);
         // 满进度回调
         if (mCurrentLenght >= 1) {
 

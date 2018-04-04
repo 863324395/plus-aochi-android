@@ -157,11 +157,11 @@ public class VideoTrimmerView extends FrameLayout {
         pixelRangeMax = (mDuration * SCREEN_WIDTH) / mMaxDuration;
         mRangeSeekBarView.initThumbForRangeSeekBar(mDuration, pixelRangeMax);
 
-        //大于15秒的时候,游标处于0-15秒
+        //大于10秒的时候,游标处于0-10秒
         if (mDuration >= mMaxDuration) {
             mEndPosition = mMaxDuration;
             mTimeVideo = mMaxDuration;
-        } else {//小于15秒,游标处于0-mDuration
+        } else {//小于10秒,游标处于0-mDuration
             mEndPosition = mDuration;
             mTimeVideo = mDuration;
         }
@@ -420,7 +420,7 @@ public class VideoTrimmerView extends FrameLayout {
 
     public void onSaveClicked() {
         if (mEndPosition / 1000 - mStartPosition / 1000 < TrimVideoUtil.MIN_TIME_FRAME) {
-            ToastUtils.showToast( "视频长不足3秒,无法上传");
+            ToastUtils.showToast("视频长不足3秒,无法上传");
         } else {
             mVideoView.pause();
             TrimVideoUtil.trim(mContext, mSrc, getTrimmedVideoPath(), mStartPosition * 1000, mEndPosition * 1000, mOnTrimVideoListener);

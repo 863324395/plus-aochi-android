@@ -17,7 +17,7 @@ import com.zhiyicx.baseproject.base.TSActivity;
  */
 public class TrimmerActivity extends TSActivity {
 
-    public static void startTrimmerActivity(Context context, String videoPath) {
+    private static void startTrimmerActivity(Context context, String videoPath) {
         if (!TextUtils.isEmpty(videoPath)) {
             Bundle bundle = new Bundle();
             bundle.putString(TrimmerFragment.PATH, videoPath);

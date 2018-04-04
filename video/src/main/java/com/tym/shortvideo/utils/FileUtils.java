@@ -1,6 +1,7 @@
 package com.tym.shortvideo.utils;
 
 import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.media.MediaScannerConnection;
@@ -56,7 +57,10 @@ public class FileUtils {
         if (!f.exists() && !f.mkdirs()) {
             return getBaseFolder() + fileName;
         }
-        return p + fileName;
+        String file=p + fileName;
+        File newFile=new File(file);
+        newFile.deleteOnExit();
+        return file;
     }
 
     public static void copyFileOrFolder(String oldPath, String newPath) {
@@ -72,6 +76,7 @@ public class FileUtils {
         msc = new MediaScannerConnection(context, new MediaScannerConnection.MediaScannerConnectionClient() {
             @Override
             public void onMediaScannerConnected() {
+
                 msc.scanFile(path, null);
             }
 

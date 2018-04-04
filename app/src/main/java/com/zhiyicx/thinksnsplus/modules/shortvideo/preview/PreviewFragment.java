@@ -1,8 +1,11 @@
 package com.zhiyicx.thinksnsplus.modules.shortvideo.preview;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.RelativeLayout;
@@ -312,7 +315,7 @@ public class PreviewFragment extends TSFragment implements MediaPlayerWrapper.IM
         VideoClipper clipper = new VideoClipper();
         clipper.showBeauty();
         clipper.setInputVideoPath(mActivity, path);
-        final String fileName = "tym_" + System.currentTimeMillis() + ".mp4";
+        final String fileName = "tym_preview.mp4";
         mOutputPath = FileUtils.getPath("tym/tym/", fileName);
         clipper.setFilterType(mFilterType);
         clipper.setOutputVideoPath(mOutputPath);
@@ -324,17 +327,32 @@ public class PreviewFragment extends TSFragment implements MediaPlayerWrapper.IM
                         FileUtils.updateMediaStore(mActivity, mOutputPath, (s, uri) -> {
 
                             isLoading = false;
-                            ToastUtils.showToast("视频保存地址   " + mOutputPath);
                             hideCenterLoading();
+
+
+
+                            VideoInfo videoInfo = new VideoInfo();
+                            videoInfo.setPath(mOutputPath);
+                            videoInfo.setCreateTime(System.currentTimeMillis()+"");
+                            videoInfo.setWidth(mVideoView.getVideoWidth());
+                            videoInfo.setHeight(mVideoView.getVideoHeight());
+                            videoInfo.setDuration(mVideoView.getVideoDuration());
+
+                            BitmapFactory.Options options = new BitmapFactory.Options();
+                            options.inPreferredConfig = Bitmap.Config.RGB_565;
+                            Bitmap bitmap = MediaStore.Video.Thumbnails.getThumbnail(mActivity.getContentResolver(), videoInfo.storeId, MediaStore.Images.Thumbnails.MINI_KIND,
+                                    options);
+                            videoInfo.setCover(com.zhiyicx.common.utils.FileUtils.saveBitmapToFile(mActivity, bitmap, "video_cover"));
 
                             SendDynamicDataBean sendDynamicDataBean = new SendDynamicDataBean();
                             sendDynamicDataBean.setDynamicBelong(SendDynamicDataBean.NORMAL_DYNAMIC);
                             List<ImageBean> pic = new ArrayList<>();
                             ImageBean imageBean = new ImageBean();
-                            imageBean.setImgUrl(TrimVideoUtil.getVideoFilePath(mOutputPath));
+                            imageBean.setImgUrl(videoInfo.getCover());
                             pic.add(imageBean);
                             sendDynamicDataBean.setDynamicPrePhotos(pic);
                             sendDynamicDataBean.setDynamicType(SendDynamicDataBean.VIDEO_TEXT_DYNAMIC);
+                            sendDynamicDataBean.setVideoInfo(videoInfo);
                             SendDynamicActivity.startToSendDynamicActivity(getContext(), sendDynamicDataBean);
                             mActivity.finish();
                         });

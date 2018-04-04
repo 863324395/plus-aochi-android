@@ -174,6 +174,23 @@ public class VideoPreviewView extends GLSurfaceView implements GLSurfaceView.Ren
         return mMediaPlayer.getCurVideoDuration();
     }
 
+    public int getVideoWidth(){
+        return mMediaPlayer.getVideoInfo().get(0).getWidth();
+    }
+
+    public int getVideoHeight(){
+        return mMediaPlayer.getVideoInfo().get(0).getHeight();
+    }
+
+    /**
+     * 获取视频信息
+     * @return
+     */
+    public List<VideoInfo> getVideoInfo(){
+        return mMediaPlayer.getVideoInfo();
+    }
+
+
     /**
      * 切换美颜状态
      * */
