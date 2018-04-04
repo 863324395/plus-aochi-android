@@ -64,9 +64,6 @@ public class VideoSelectFragment extends TSListFragment {
             mListDatas.addAll(videoInfos);
             mAdapter.notifyDataSetChanged();
         });
-
-        String src = "test.mp4";
-        LogUtils.d("testMD5::" + FileUtils.getAssetsFileMD5(src,mActivity));
     }
 
     @Override

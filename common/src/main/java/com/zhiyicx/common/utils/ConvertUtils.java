@@ -63,6 +63,10 @@ public class ConvertUtils {
         throw new UnsupportedOperationException("u can't instantiate me...");
     }
 
+    /**
+     * 16 进制
+     */
+    private static final char lexDigits[] = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
     private static final char hexDigits[] = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
 
     /**
@@ -143,7 +147,7 @@ public class ConvertUtils {
             if (number >= 100000) {
                 return number / 10000 + "W";
             } else {
-                return number / 10000 + "." + ((number-number/10000*10000) / 1000) + "W";
+                return number / 10000 + "." + ((number - number / 10000 * 10000) / 1000) + "W";
             }
         }
         return String.valueOf(number);
@@ -284,8 +288,8 @@ public class ConvertUtils {
         }
         char[] ret = new char[len << 1];
         for (int i = 0, j = 0; i < len; i++) {
-            ret[j++] = hexDigits[bytes[i] >>> 4 & 0x0f];
-            ret[j++] = hexDigits[bytes[i] & 0x0f];
+            ret[j++] = lexDigits[bytes[i] >>> 4 & 0x0f];
+            ret[j++] = lexDigits[bytes[i] & 0x0f];
         }
         return new String(ret);
     }

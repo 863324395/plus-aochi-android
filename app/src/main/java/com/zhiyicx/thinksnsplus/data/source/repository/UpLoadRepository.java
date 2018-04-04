@@ -1,7 +1,5 @@
 package com.zhiyicx.thinksnsplus.data.source.repository;
 
-import android.app.Application;
-import android.content.Context;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
@@ -19,7 +17,6 @@ import com.zhiyicx.thinksnsplus.data.source.repository.i.IUploadRepository;
 
 import java.io.File;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -29,7 +26,6 @@ import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 /**
@@ -129,14 +125,14 @@ public class UpLoadRepository implements IUploadRepository {
                 .retryWhen(new RetryWithInterceptDelay(RETRY_MAX_COUNT, RETRY_INTERVAL_TIME) {
                     @Override
                     protected boolean extraReTryCondition(Throwable throwable) {
-                        // 文件不存在 服务器返回404,则 进行 重传.
-                        boolean not404 = !throwable.toString().contains("404");
-                        if (not404){
+                        // 文件不存在 服务器返回404,则 进行 重传文件，不再校验hash
+                        boolean is404 = throwable.toString().contains("404");
+                        if (is404) {
                             if (position[0] > 0) {
                                 position[0]--;
                             }
                         }
-                        return not404;
+                        return !is404;
                     }
                 })
                 .onErrorReturn(throwable -> {

@@ -173,12 +173,14 @@ public class TrimVideoUtil {
                                                            video.setWidth(cursor.getInt(cursor.getColumnIndex(MediaStore.Video.Media.WIDTH)));
                                                            video.setHeight(cursor.getInt(cursor.getColumnIndex(MediaStore.Video.Media.HEIGHT)));
                                                            video.setStoreId(cursor.getInt(cursor.getColumnIndex(MediaStore.Video.Media._ID)));
-                                                           videos.add(video);
+
 
                                                            if (video.width*video.height==0){
-                                                               video.setWidth(540);
-                                                               video.setHeight(960);
+
                                                            }
+                                                           video.setWidth(540);
+                                                           video.setHeight(960);
+                                                           videos.add(video);
                                                        }
                                                    }
                                                    cursor.close();

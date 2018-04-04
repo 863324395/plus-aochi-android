@@ -802,9 +802,7 @@ public class BackgroundTaskHandler {
                 upLoadPics.add(mUpLoadRepository.upLoadSingleFileV2(filePath, photoMimeType, true, photoWidth, photoHeight,position));
             }
             if (videoInfo != null) {
-                String videoPath=videoInfo.getPath();
-                videoPath = "file:///assets/test.mp4";
-                upLoadPics.add(mUpLoadRepository.upLoadSingleFileV2(videoPath, "", false, videoInfo.getWidth(), videoInfo.getHeight(),position));
+                upLoadPics.add(mUpLoadRepository.upLoadSingleFileV2(videoInfo.getPath(), "", false, videoInfo.getWidth(), videoInfo.getHeight(),position));
             }
             SendDynamicDataBeanV2.Video video = new SendDynamicDataBeanV2.Video();
             observable = Observable.concat(upLoadPics)
