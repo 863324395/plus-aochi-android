@@ -146,16 +146,25 @@ public class RangeSeekBarView extends View {
                 if (th.getIndex() == 0) {
                     final float x = th.getPos();
                     if (x > mPixelRangeMin) {
-                        Rect mRect = new Rect((int) mThumbWidth / 2, paddingTop, (int) (x + mThumbWidth / 2), mHeightTimeLine + paddingTop);
+                        Rect mRect = new Rect((int) mThumbWidth / 2,
+                                paddingTop,
+                                (int) (x + mThumbWidth / 2),
+                                mHeightTimeLine + paddingTop);
                         canvas.drawRect(mRect, mShadow);
                     }
                 } else {
                     Rect mRect = null;
                     final float x = th.getPos() + shadowMargin;
                     if (mPixelRangeMax < deviceWidth) {
-                        mRect = new Rect((int) x, paddingTop, (int) (mPixelRangeMax), mHeightTimeLine + paddingTop);
+                        mRect = new Rect((int) x,
+                                paddingTop,
+                                (int) (mPixelRangeMax),
+                                mHeightTimeLine + paddingTop);
                     } else if (mPixelRangeMax >= deviceWidth) {
-                        mRect = new Rect((int) x, paddingTop, (int) (deviceWidth + shadowMargin), mHeightTimeLine + paddingTop);
+                        mRect = new Rect((int) x,
+                                paddingTop,
+                                (int) (deviceWidth + shadowMargin),
+                                mHeightTimeLine + paddingTop);
                     }
 
                     if (mRect != null) {

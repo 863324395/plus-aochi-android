@@ -46,6 +46,7 @@ public class CustomMediaPlayerAssertFolder extends JZMediaInterface implements M
     @Override
     public void pause() {
         mediaPlayer.pause();
+        mediaPlayer.stop();
     }
 
     @Override
@@ -60,8 +61,9 @@ public class CustomMediaPlayerAssertFolder extends JZMediaInterface implements M
 
     @Override
     public void release() {
-        if (mediaPlayer != null)
+        if (mediaPlayer != null) {
             mediaPlayer.release();
+        }
     }
 
     @Override

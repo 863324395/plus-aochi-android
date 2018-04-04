@@ -19,6 +19,7 @@ import com.zhiyicx.thinksnsplus.data.source.repository.i.IUploadRepository;
 import java.io.File;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -58,11 +59,11 @@ public class UpLoadRepository implements IUploadRepository {
         final HashMap<String, String> paramMap = new HashMap<>();
         paramMap.put("hash", FileUtils.getFileMD5ToString(file));
         paramMap.put("origin_filename", file.getName());
+        paramMap.put("width", photoWidth + "");
+        paramMap.put("height", photoHeight + "");
         // 如果是图片就处理图片
         if (isPic) {
             paramMap.put("mime_type", mimeType);
-            paramMap.put("width", photoWidth + "");// 如果是图片就选择宽高
-            paramMap.put("height", photoHeight + "");// 如果是图片就选择宽高
         } else {
             paramMap.put("mime_type", FileUtils.getMimeType(filePath));
         }
@@ -70,7 +71,8 @@ public class UpLoadRepository implements IUploadRepository {
                 .retryWhen(new RetryWithInterceptDelay(RETRY_MAX_COUNT, RETRY_INTERVAL_TIME) {
                     @Override
                     protected boolean extraReTryCondition(Throwable throwable) {
-                        return !throwable.toString().contains("404"); // 文件不存在 服务器返回404.
+                        // 文件不存在 服务器返回404.
+                        return !throwable.toString().contains("404");
                     }
                 })
                 .onErrorReturn(throwable -> {
@@ -88,7 +90,8 @@ public class UpLoadRepository implements IUploadRepository {
                         // 封装图片File
                         HashMap<String, String> fileMap = new HashMap<>();
                         fileMap.put("file", filePath);
-                        return mCommonClient.upLoadFileByPostV2(UpLoadFile.upLoadFileAndParams(fileMap))
+                        Map<String, Object> params=new HashMap<>(paramMap);
+                        return mCommonClient.upLoadFileByPostV2(UpLoadFile.upLoadFileAndParams(fileMap,params))
                                 .flatMap(uploadFileResultV2 -> {
                                     BaseJson<Integer> success = new BaseJson<>();
                                     success.setData(uploadFileResultV2.getId());

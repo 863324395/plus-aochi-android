@@ -20,6 +20,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.jakewharton.rxbinding.widget.RxRadioGroup;
 import com.jakewharton.rxbinding.widget.RxTextView;
+import com.tym.shortvideo.media.VideoInfo;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.config.PayConfig;
@@ -48,7 +49,6 @@ import com.zhiyicx.thinksnsplus.data.beans.SendDynamicDataBean;
 import com.zhiyicx.thinksnsplus.data.beans.SendDynamicDataBeanV2;
 import com.zhiyicx.thinksnsplus.modules.photopicker.PhotoViewActivity;
 import com.zhiyicx.thinksnsplus.modules.shortvideo.record.RecordActivity;
-import com.zhiyicx.thinksnsplus.modules.shortvideo.videostore.VideoSelectActivity;
 import com.zhiyicx.thinksnsplus.widget.UserInfoInroduceInputView;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
@@ -171,6 +171,8 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
      * 各类提示信息弹窗
      */
     private ActionPopupWindow mInstructionsPopupWindow;
+
+    private SendDynamicDataBean mSendDynamicDataBean;
 
     public static SendDynamicFragment initFragment(Bundle bundle) {
         SendDynamicFragment sendDynamicFragment = new SendDynamicFragment();
@@ -511,7 +513,7 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
      */
     @Override
     public void packageDynamicStorageDataV2(SendDynamicDataBeanV2 sendDynamicDataBeanV2) {
-        List<SendDynamicDataBeanV2.StorageTaskBean> storage_task = new ArrayList<>();
+        List<SendDynamicDataBeanV2.StorageTaskBean> storageTask = new ArrayList<>();
         List<ImageBean> photos = new ArrayList<>();
         if (selectedPhotos != null && !selectedPhotos.isEmpty()) {
             for (int i = 0; i < selectedPhotos.size(); i++) {
@@ -522,12 +524,12 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                     taskBean.setAmount(imageBean.getToll_monye() > 0 ? imageBean.getToll_monye() : null);
                     taskBean.setType(imageBean.getToll_monye() * imageBean.getToll_type() > 0
                             ? (imageBean.getToll_type() == LOOK_TOLL ? LOOK_TOLL_TYPE : DOWNLOAD_TOLL_TYPE) : null);
-                    storage_task.add(taskBean);
+                    storageTask.add(taskBean);
                 }
             }
         }
         sendDynamicDataBeanV2.setPhotos(photos);
-        sendDynamicDataBeanV2.setStorage_task(storage_task);
+        sendDynamicDataBeanV2.setStorage_task(storageTask);
     }
 
     @Override
@@ -615,6 +617,7 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
 
         // 浏览量没有 0 ，从1 开始
         dynamicDetailBeanV2.setFeed_view_count(1);
+        dynamicDetailBeanV2.setId(-1L);
         dynamicDetailBeanV2.setFeed_mark(feedMark);
         dynamicDetailBeanV2.setCreated_at(TimeUtils.getCurrenZeroTimeStr());
         dynamicDetailBeanV2.setFeed_content(mEtDynamicContent.getInputContent());
@@ -627,6 +630,7 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
         dynamicDetailBeanV2.setAmount((long) mTollMoney);
 
         if (selectedPhotos != null && !selectedPhotos.isEmpty()) {
+
             List<DynamicDetailBeanV2.ImagesBean> images = new ArrayList<>();
             // 最后一张占位图，扔掉
             for (int i = 0; i < selectedPhotos.size(); i++) {
@@ -642,6 +646,16 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                 }
             }
             dynamicDetailBeanV2.setImages(images);
+
+            if (dynamicType == SendDynamicDataBean.VIDEO_TEXT_DYNAMIC) {
+                VideoInfo videoInfo = mSendDynamicDataBean.getVideoInfo();
+                DynamicDetailBeanV2.Video video = new DynamicDetailBeanV2.Video();
+                video.setCreated_at(dynamicDetailBeanV2.getCreated_at());
+                video.setHeight(videoInfo.getHeight());
+                video.setWidth(videoInfo.getWidth());
+                video.setUrl(videoInfo.getPath());
+                dynamicDetailBeanV2.setVideo(video);
+            }
         }
 
         return dynamicDetailBeanV2;
@@ -724,7 +738,7 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
 //                    imageView.setImageResource(dynamicType == SendDynamicDataBean.VIDEO_TEXT_DYNAMIC ?
 //                            R.mipmap.ico_video_recordings : R.mipmap.img_edit_photo_frame);
 
-                    imageView.setImageResource( R.mipmap.img_edit_photo_frame);
+                    imageView.setImageResource(R.mipmap.img_edit_photo_frame);
                 } else {
                     paintView.setVisibility(isToll ? View.VISIBLE : View.GONE);
                     filterView.setVisibility(isToll ? View.VISIBLE : View.GONE);
@@ -822,15 +836,15 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
     private void initDynamicType() {
         Bundle bundle = getArguments();
         if (bundle != null) {
-            SendDynamicDataBean sendDynamicDataBean = bundle.getParcelable(SendDynamicActivity
+            mSendDynamicDataBean = bundle.getParcelable(SendDynamicActivity
                     .SEND_DYNAMIC_DATA);
-            dynamicType = sendDynamicDataBean.getDynamicType();
-            List<ImageBean> originPhotos = sendDynamicDataBean.getDynamicPrePhotos();
+            dynamicType = mSendDynamicDataBean.getDynamicType();
+            List<ImageBean> originPhotos = mSendDynamicDataBean.getDynamicPrePhotos();
             if (originPhotos != null) {
                 selectedPhotos = new ArrayList<>(MAX_PHOTOS);
                 selectedPhotos.addAll(originPhotos);
             }
-            if (sendDynamicDataBean.getDynamicBelong() == SendDynamicDataBean.GROUP_DYNAMIC) {
+            if (mSendDynamicDataBean.getDynamicBelong() == SendDynamicDataBean.GROUP_DYNAMIC) {
                 isFromGroup = true;
 //                mEtDynamicTitle.setVisibility(View.VISIBLE);
 //                mTitleUnderLine.setVisibility(View.VISIBLE);

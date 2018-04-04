@@ -10,6 +10,8 @@ import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.webkit.MimeTypeMap;
 
+import com.zhiyicx.common.utils.log.LogUtils;
+
 import java.io.BufferedOutputStream;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -724,6 +726,7 @@ public class FileUtils {
             FileOutputStream out = new FileOutputStream(file);
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
             out.close();
+            LogUtils.d("saveBitmapToFile::",file.getAbsolutePath());
             return file.getAbsolutePath();
         } catch (Exception e) {
             e.printStackTrace();

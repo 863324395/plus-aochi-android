@@ -4,6 +4,7 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 import android.provider.MediaStore;
@@ -59,6 +60,7 @@ public class TrimVideoUtil {
                                            try {
                                                MediaMetadataRetriever mediaMetadataRetriever = new MediaMetadataRetriever();
                                                mediaMetadataRetriever.setDataSource(context, videoUri);
+                                               // METADATA_KEY_VIDEO_WIDTH
                                                // Retrieve media data use microsecond
                                                long videoLengthInMs = Long.parseLong(mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)) * 1000;
                                                long numThumbs = videoLengthInMs < one_frame_time ? 1 : (videoLengthInMs / one_frame_time);
@@ -156,6 +158,7 @@ public class TrimVideoUtil {
 
 
                                            ContentResolver contentResolver = mContext.getContentResolver();
+
                                            try {
                                                Cursor cursor = contentResolver.query(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, null,
                                                        null, null, MediaStore.Video.Media.DATE_MODIFIED + " desc");
@@ -167,8 +170,15 @@ public class TrimVideoUtil {
                                                            video.setPath(cursor.getString(cursor.getColumnIndex(MediaStore.Video.Media.DATA)));
                                                            video.setCreateTime(cursor.getString(cursor.getColumnIndex(MediaStore.Video.Media.DATE_ADDED)));
                                                            video.setName(cursor.getString(cursor.getColumnIndex(MediaStore.Video.Media.DISPLAY_NAME)));
-                                                           
+                                                           video.setWidth(cursor.getInt(cursor.getColumnIndex(MediaStore.Video.Media.WIDTH)));
+                                                           video.setHeight(cursor.getInt(cursor.getColumnIndex(MediaStore.Video.Media.HEIGHT)));
+                                                           video.setStoreId(cursor.getInt(cursor.getColumnIndex(MediaStore.Video.Media._ID)));
                                                            videos.add(video);
+
+                                                           if (video.width*video.height==0){
+                                                               video.setWidth(540);
+                                                               video.setHeight(960);
+                                                           }
                                                        }
                                                    }
                                                    cursor.close();

@@ -3,6 +3,7 @@ package com.zhiyicx.thinksnsplus.data.beans;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.tym.shortvideo.media.VideoInfo;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 
 import java.io.Serializable;
@@ -36,6 +37,26 @@ public class SendDynamicDataBean implements Serializable, Parcelable {
     private int dynamicBelong;// 动态归属：属于哪儿的动态，频道，非频道。。。
     private long dynamicChannlId;// 动态所属频道id
     private long feedMark;// 动态唯一约束值
+
+    private Video mVideo;// 需要发给服务器的视频信息，包含封面等
+
+    private VideoInfo mVideoInfo;// 视频信息，包含地址等
+
+    public Video getVideo() {
+        return mVideo;
+    }
+
+    public void setVideo(Video video) {
+        mVideo = video;
+    }
+
+    public VideoInfo getVideoInfo() {
+        return mVideoInfo;
+    }
+
+    public void setVideoInfo(VideoInfo videoInfo) {
+        mVideoInfo = videoInfo;
+    }
 
     public int getDynamicType() {
         return dynamicType;
@@ -80,6 +101,62 @@ public class SendDynamicDataBean implements Serializable, Parcelable {
     public SendDynamicDataBean() {
     }
 
+    public static class Video implements Parcelable ,Serializable{
+        private static final long serialVersionUID = -4434422478157175851L;
+        private long video_id;
+        private long cover_id;
+
+        public Video(long video_id, long cover_id) {
+            this.video_id = video_id;
+            this.cover_id = cover_id;
+        }
+
+        public long getVideo_id() {
+            return video_id;
+        }
+
+        public void setVideo_id(long video_id) {
+            this.video_id = video_id;
+        }
+
+        public long getCover_id() {
+            return cover_id;
+        }
+
+        public void setCover_id(long cover_id) {
+            this.cover_id = cover_id;
+        }
+
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            dest.writeLong(this.video_id);
+            dest.writeLong(this.cover_id);
+        }
+
+        protected Video(Parcel in) {
+            this.video_id = in.readLong();
+            this.cover_id = in.readLong();
+        }
+
+        public static final Creator<Video> CREATOR = new Creator<Video>() {
+            @Override
+            public Video createFromParcel(Parcel source) {
+                return new Video(source);
+            }
+
+            @Override
+            public Video[] newArray(int size) {
+                return new Video[size];
+            }
+        };
+    }
+
     @Override
     public String toString() {
         return "SendDynamicDataBean{" +
@@ -90,6 +167,7 @@ public class SendDynamicDataBean implements Serializable, Parcelable {
                 ", feedMark=" + feedMark +
                 '}';
     }
+
 
     @Override
     public int describeContents() {
@@ -103,6 +181,7 @@ public class SendDynamicDataBean implements Serializable, Parcelable {
         dest.writeInt(this.dynamicBelong);
         dest.writeLong(this.dynamicChannlId);
         dest.writeLong(this.feedMark);
+        dest.writeParcelable(this.mVideoInfo, flags);
     }
 
     protected SendDynamicDataBean(Parcel in) {
@@ -111,6 +190,7 @@ public class SendDynamicDataBean implements Serializable, Parcelable {
         this.dynamicBelong = in.readInt();
         this.dynamicChannlId = in.readLong();
         this.feedMark = in.readLong();
+        this.mVideoInfo = in.readParcelable(VideoInfo.class.getClassLoader());
     }
 
     public static final Creator<SendDynamicDataBean> CREATOR = new Creator<SendDynamicDataBean>() {

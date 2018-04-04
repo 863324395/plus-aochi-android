@@ -85,7 +85,8 @@ public class UpLoadFile {
     public static List<MultipartBody.Part> upLoadFileAndParams(Map<String, String> filePathList, Map<String, Object> params) {
 
         MultipartBody.Builder builder = new MultipartBody.Builder();
-        builder.setType(MultipartBody.FORM);//表单类型
+        //表单类型
+        builder.setType(MultipartBody.FORM);
         if (params != null) {
             for (Map.Entry<String, Object> entry : params.entrySet()) {
                 if (entry.getValue() == null) {

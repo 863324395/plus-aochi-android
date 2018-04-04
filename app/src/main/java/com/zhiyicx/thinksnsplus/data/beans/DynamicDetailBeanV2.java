@@ -131,6 +131,9 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable, Ser
     @Convert(converter = RewardCountBeanConverter.class, columnType = String.class)
     private RewardsCountBean reward;// 打赏总额
 
+    @Convert(converter = VideoConverter.class, columnType = String.class)
+    private Video video;
+
     @Transient
     private int startPosition;
     @Transient
@@ -226,6 +229,14 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable, Ser
 
     public void setReward(RewardsCountBean reward) {
         this.reward = reward;
+    }
+
+    public Video getVideo() {
+        return video;
+    }
+
+    public void setVideo(Video video) {
+        this.video = video;
     }
 
     public int getState() {
@@ -595,6 +606,151 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable, Ser
         }
         imageBean.setPropPart(proportion);
         imageBean.setLongImage(ImageUtils.isLongImage(netHeight, netWidth));
+    }
+
+    public static class Video implements Serializable,Parcelable{
+        private static final long serialVersionUID = -3037457547196702028L;
+        private long id;
+        private long user_id;
+        private int video_id;
+        private int cover_id;
+        private long feed_id;
+        private int height;
+        private int width;
+        private String created_at;
+        private String updated_at;
+        private String url;
+
+        public Video(String url) {
+            this.url = url;
+        }
+
+        public long getId() {
+            return id;
+        }
+
+        public void setId(long id) {
+            this.id = id;
+        }
+
+        public long getUser_id() {
+            return user_id;
+        }
+
+        public void setUser_id(long user_id) {
+            this.user_id = user_id;
+        }
+
+        public int getVideo_id() {
+            return video_id;
+        }
+
+        public void setVideo_id(int video_id) {
+            this.video_id = video_id;
+        }
+
+        public int getCover_id() {
+            return cover_id;
+        }
+
+        public void setCover_id(int cover_id) {
+            this.cover_id = cover_id;
+        }
+
+        public long getFeed_id() {
+            return feed_id;
+        }
+
+        public void setFeed_id(long feed_id) {
+            this.feed_id = feed_id;
+        }
+
+        public int getHeight() {
+            return height;
+        }
+
+        public void setHeight(int height) {
+            this.height = height;
+        }
+
+        public int getWidth() {
+            return width;
+        }
+
+        public void setWidth(int width) {
+            this.width = width;
+        }
+
+        public String getCreated_at() {
+            return created_at;
+        }
+
+        public void setCreated_at(String created_at) {
+            this.created_at = created_at;
+        }
+
+        public String getUpdated_at() {
+            return updated_at;
+        }
+
+        public void setUpdated_at(String updated_at) {
+            this.updated_at = updated_at;
+        }
+
+        public String getUrl() {
+            return url;
+        }
+
+        public void setUrl(String url) {
+            this.url = url;
+        }
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            dest.writeLong(this.id);
+            dest.writeLong(this.user_id);
+            dest.writeInt(this.video_id);
+            dest.writeInt(this.cover_id);
+            dest.writeLong(this.feed_id);
+            dest.writeInt(this.height);
+            dest.writeInt(this.width);
+            dest.writeString(this.created_at);
+            dest.writeString(this.url);
+            dest.writeString(this.updated_at);
+        }
+
+        public Video() {
+        }
+
+        protected Video(Parcel in) {
+            this.id = in.readLong();
+            this.user_id = in.readLong();
+            this.video_id = in.readInt();
+            this.cover_id = in.readInt();
+            this.feed_id = in.readLong();
+            this.height = in.readInt();
+            this.width = in.readInt();
+            this.created_at = in.readString();
+            this.url = in.readString();
+            this.updated_at = in.readString();
+        }
+
+        public static final Creator<Video> CREATOR = new Creator<Video>() {
+            @Override
+            public Video createFromParcel(Parcel source) {
+                return new Video(source);
+            }
+
+            @Override
+            public Video[] newArray(int size) {
+                return new Video[size];
+            }
+        };
     }
 
     public static class ImagesBean implements Parcelable, Serializable {
@@ -1005,6 +1161,9 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable, Ser
     public static class RewardCountBeanConverter extends BaseConvert<RewardsCountBean> {
     }
 
+    public static class VideoConverter extends BaseConvert<Video> {
+    }
+
 
     @Override
     public int describeContents() {
@@ -1142,14 +1301,12 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable, Ser
         this.friendlyContent = in.readString();
     }
 
-    @Generated(hash = 1726011089)
-    public DynamicDetailBeanV2(Long id, String created_at, String updated_at, String deleted_at, Long user_id, String feed_content,
-                               int feed_from, int feed_digg_count, int feed_view_count, int feed_comment_count, String feed_latitude, String
-                                       feed_longtitude,
-                               String feed_geohash, int audit_status, Long feed_mark, boolean has_digg, boolean has_collect, long amount,
-                               List<DynamicLikeBean> likes, boolean paid, List<ImagesBean> images, List<Integer> diggs, PaidNote paid_node, Long
-                                       hot_creat_time,
-                               boolean isFollowed, int state, int top, List<DynamicDigListBean> digUserInfoList, RewardsCountBean reward) {
+    @Generated(hash = 768277612)
+    public DynamicDetailBeanV2(Long id, String created_at, String updated_at, String deleted_at, Long user_id, String feed_content, int feed_from,
+            int feed_digg_count, int feed_view_count, int feed_comment_count, String feed_latitude, String feed_longtitude, String feed_geohash,
+            int audit_status, Long feed_mark, boolean has_digg, boolean has_collect, long amount, List<DynamicLikeBean> likes, boolean paid,
+            List<ImagesBean> images, List<Integer> diggs, PaidNote paid_node, Long hot_creat_time, boolean isFollowed, int state, int top,
+            List<DynamicDigListBean> digUserInfoList, RewardsCountBean reward, Video video) {
         this.id = id;
         this.created_at = created_at;
         this.updated_at = updated_at;
@@ -1179,6 +1336,7 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable, Ser
         this.top = top;
         this.digUserInfoList = digUserInfoList;
         this.reward = reward;
+        this.video = video;
     }
 
     public static final Creator<DynamicDetailBeanV2> CREATOR = new Creator<DynamicDetailBeanV2>() {

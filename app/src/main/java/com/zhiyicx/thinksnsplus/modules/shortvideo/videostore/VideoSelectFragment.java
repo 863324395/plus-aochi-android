@@ -1,6 +1,9 @@
 package com.zhiyicx.thinksnsplus.modules.shortvideo.videostore;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.provider.MediaStore;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -9,6 +12,7 @@ import android.view.View;
 import com.tym.shortvideo.media.VideoInfo;
 import com.tym.shortvideo.utils.TrimVideoUtil;
 import com.zhiyicx.baseproject.base.TSListFragment;
+import com.zhiyicx.common.utils.FileUtils;
 import com.zhiyicx.common.utils.recycleviewdecoration.TGridDecoration;
 import com.zhiyicx.common.utils.recycleviewdecoration.VideoSelectItemDecoration;
 import com.zhiyicx.thinksnsplus.R;
@@ -70,8 +74,14 @@ public class VideoSelectFragment extends TSListFragment {
                 VideoInfo videoInfo = (VideoInfo) mListDatas.get(position);
                 if (TextUtils.isEmpty(videoInfo.getPath())) {
                     startActivity(new Intent(mActivity, RecordActivity.class));
-                }else{
-                    TrimmerActivity.startTrimmerActivity(mActivity,videoInfo.getPath());
+                } else {
+                    BitmapFactory.Options options = new BitmapFactory.Options();
+                    options.inPreferredConfig = Bitmap.Config.RGB_565;
+                    Bitmap bitmap = MediaStore.Video.Thumbnails.getThumbnail(mActivity.getContentResolver(), videoInfo.storeId, MediaStore.Images.Thumbnails.MINI_KIND,
+                            options);
+                    videoInfo.setCover(FileUtils.saveBitmapToFile(mActivity, bitmap, "video_cover"));
+//                    TrimmerActivity.startTrimmerActivity(mActivity,videoInfo.getPath());
+                    TrimmerActivity.startTrimmerActivity(mActivity, videoInfo);
                 }
             }
 
