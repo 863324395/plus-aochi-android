@@ -6,6 +6,7 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.Message;
+import android.support.annotation.IntDef;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -35,6 +36,8 @@ import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 
 import java.io.File;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
@@ -111,7 +114,7 @@ public class VideoTrimmerView extends FrameLayout {
     }
 
     private void setUpSeekBar() {
-        mSeekBarView.setEnabled(false);
+//        mSeekBarView.setEnabled(false);
         mSeekBarView.setOnTouchListener(new OnTouchListener() {
             private float startX;
 
@@ -357,9 +360,9 @@ public class VideoTrimmerView extends FrameLayout {
 
             @Override
             public void onSeekStart(RangeSeekBarView rangeSeekBarView, int index, float value) {
-                if (mSeekBarView.getVisibility() == View.VISIBLE) {
-                    mSeekBarView.setVisibility(GONE);
-                }
+//                if (mSeekBarView.getVisibility() == View.VISIBLE) {
+//                    mSeekBarView.setVisibility(GONE);
+//                }
             }
 
             @Override
@@ -600,4 +603,11 @@ public class VideoTrimmerView extends FrameLayout {
         public ImageView thumb;
     }
 
+    public void setRangeSeekBarViewVisible(@Visibility int viewVisible) {
+        mRangeSeekBarView.setVisibility(viewVisible);
+    }
+
+    @IntDef({View.VISIBLE, View.INVISIBLE, View.GONE})
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface Visibility {}
 }

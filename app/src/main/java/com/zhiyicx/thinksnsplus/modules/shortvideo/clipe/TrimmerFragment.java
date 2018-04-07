@@ -65,11 +65,6 @@ public class TrimmerFragment extends TSFragment implements TrimVideoListener {
     }
 
     @Override
-    protected boolean setStatusbarGrey() {
-        return false;
-    }
-
-    @Override
     protected boolean setUseStatusView() {
         return false;
     }
@@ -103,7 +98,7 @@ public class TrimmerFragment extends TSFragment implements TrimVideoListener {
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .compose(this.bindToLifecycle())
                 .subscribe(aVoid -> {
-
+//
 //                    mVideoTrimmerView.onSaveClicked()
 
             SendDynamicDataBean sendDynamicDataBean = new SendDynamicDataBean();

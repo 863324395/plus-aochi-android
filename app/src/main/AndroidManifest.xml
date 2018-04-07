@@ -730,6 +730,7 @@
                   android:theme="@style/Translucent"/>
         <activity android:name=".modules.shortvideo.clipe.TrimmerActivity"/>
         <activity android:name=".modules.shortvideo.detail.VideoDetailActivity"/>
+        <activity android:name=".modules.shortvideo.cover.CoverActivity"/>
         <!-- 开机自启动服务 -->
         <receiver android:name=".modules.chat.call.receiver.StartServiceReceiver">
             <intent-filter android:priority="1000">

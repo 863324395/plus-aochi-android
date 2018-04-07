@@ -28,11 +28,13 @@ public class TrimVideoUtil {
     private static final String TAG = TrimVideoUtil.class.getSimpleName();
     public static final int VIDEO_MAX_DURATION = 10;
     public static final int MIN_TIME_FRAME = 3;
-    private static int thumb_Width = (DeviceUtils.getScreenWidth() - DeviceUtils.dipToPX(20)) / VIDEO_MAX_DURATION;
+    private static int thumb_Width = (DeviceUtils.getScreenWidth() - DeviceUtils.dipToPX(20)) /
+            VIDEO_MAX_DURATION;
     private static final int thumb_Height = DeviceUtils.dipToPX(60);
     private static final long one_frame_time = 1000000;
 
-    public static void trim(Context context, Uri inputFile, String outputFile, long startMs, long endMs, final TrimVideoListener callback) {
+    public static void trim(Context context, Uri inputFile, String outputFile, long startMs, long
+            endMs, final TrimVideoListener callback) {
         VideoClipper clipper = new VideoClipper();
         clipper.setFilterType(MagicFilterType.NONE);
         clipper.setInputVideoPath(context, inputFile);
@@ -54,46 +56,113 @@ public class TrimVideoUtil {
         }
     }
 
-    public static void backgroundShootVideoThumb(final Context context, final Uri videoUri, final SingleCallback<ArrayList<Bitmap>, Integer> callback) {
+    public static void backgroundShootVideoThumb(final Context context, final Uri videoUri, final
+    SingleCallback<ArrayList<Bitmap>, Integer> callback) {
         final ArrayList<Bitmap> thumbnailList = new ArrayList<>();
         BackgroundExecutor.execute(new BackgroundExecutor.Task("", 0L, "") {
                                        @Override
                                        public void execute() {
                                            try {
-                                               MediaMetadataRetriever mediaMetadataRetriever = new MediaMetadataRetriever();
-                                               mediaMetadataRetriever.setDataSource(context, videoUri);
+                                               MediaMetadataRetriever mediaMetadataRetriever =
+                                                       new MediaMetadataRetriever();
+                                               mediaMetadataRetriever.setDataSource(context,
+                                                       videoUri);
                                                // METADATA_KEY_VIDEO_WIDTH
                                                // Retrieve media data use microsecond
-                                               long videoLengthInMs = Long.parseLong(mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)) * 1000;
-                                               long numThumbs = videoLengthInMs < one_frame_time ? 1 : (videoLengthInMs / one_frame_time);
+                                               long videoLengthInMs = Long.parseLong
+                                                       (mediaMetadataRetriever.extractMetadata
+                                                               (MediaMetadataRetriever
+                                                                       .METADATA_KEY_DURATION)) *
+                                                       1000;
+                                               long numThumbs = videoLengthInMs < one_frame_time
+                                                       ? 1 : (videoLengthInMs / one_frame_time);
                                                final long interval = videoLengthInMs / numThumbs;
                                                float w, h;
                                                w = thumb_Width;
                                                h = 0;
                                                //每次截取到3帧之后上报
                                                for (long i = 0; i < numThumbs; ++i) {
-                                                   Bitmap bitmap = mediaMetadataRetriever.getFrameAtTime(i * interval, MediaMetadataRetriever.OPTION_CLOSEST_SYNC);
+                                                   Bitmap bitmap = mediaMetadataRetriever
+                                                           .getFrameAtTime(i * interval,
+                                                                   MediaMetadataRetriever
+                                                                           .OPTION_CLOSEST_SYNC);
                                                    if (h == 0) {
-                                                       h = (w / (float) bitmap.getWidth()) * bitmap.getHeight();
+                                                       h = (w / (float) bitmap.getWidth()) *
+                                                               bitmap.getHeight();
                                                    }
                                                    try {
-                                                       bitmap = Bitmap.createScaledBitmap(bitmap, thumb_Width, (int) h, false);
+                                                       bitmap = Bitmap.createScaledBitmap(bitmap,
+                                                               thumb_Width, (int) h, false);
                                                    } catch (Exception e) {
                                                        e.printStackTrace();
                                                    }
                                                    thumbnailList.add(bitmap);
                                                    if (thumbnailList.size() == 3) {
-                                                       callback.onSingleCallback((ArrayList<Bitmap>) thumbnailList.clone(), (int) interval);
+                                                       callback.onSingleCallback(
+                                                               (ArrayList<Bitmap>) thumbnailList
+                                                                       .clone(), (int) interval);
                                                        thumbnailList.clear();
                                                    }
                                                }
                                                if (thumbnailList.size() > 0) {
-                                                   callback.onSingleCallback((ArrayList<Bitmap>) thumbnailList.clone(), (int) interval);
+                                                   callback.onSingleCallback((ArrayList<Bitmap>)
+                                                           thumbnailList.clone(), (int) interval);
                                                    thumbnailList.clear();
                                                }
                                                mediaMetadataRetriever.release();
                                            } catch (final Throwable e) {
-                                               Thread.getDefaultUncaughtExceptionHandler().uncaughtException(Thread.currentThread(), e);
+                                               Thread.getDefaultUncaughtExceptionHandler()
+                                                       .uncaughtException(Thread.currentThread(),
+                                                               e);
+                                           }
+                                       }
+                                   }
+        );
+
+    }
+
+
+    public static void backgroundShootVideoThumb(final Context context, final Uri videoUri, final
+    long frame_time, final SingleCallback<Bitmap, Integer> callback) {
+        final ArrayList<Bitmap> thumbnailList = new ArrayList<>();
+        BackgroundExecutor.execute(new BackgroundExecutor.Task("", 0L, "") {
+                                       @Override
+                                       public void execute() {
+                                           try {
+                                               MediaMetadataRetriever mediaMetadataRetriever =
+                                                       new MediaMetadataRetriever();
+                                               mediaMetadataRetriever.setDataSource(context,
+                                                       videoUri);
+                                               // METADATA_KEY_VIDEO_WIDTH
+                                               // Retrieve media data use microsecond
+                                               long videoLengthInMs = Long.parseLong
+                                                       (mediaMetadataRetriever.extractMetadata
+                                                               (MediaMetadataRetriever
+                                                                       .METADATA_KEY_DURATION)) *
+                                                       1000;
+                                               float w, h;
+                                               w = thumb_Width;
+                                               h = 0;
+                                               //每次截取到3帧之后上报
+                                               Bitmap bitmap = mediaMetadataRetriever
+                                                       .getFrameAtTime(frame_time,
+                                                               MediaMetadataRetriever
+                                                                       .OPTION_CLOSEST_SYNC);
+                                               h = (w / (float) bitmap.getWidth()) * bitmap
+                                                       .getHeight();
+                                               try {
+                                                   bitmap = Bitmap.createScaledBitmap(bitmap,
+                                                           thumb_Width, (int) h, false);
+                                                   callback.onSingleCallback(bitmap,1);
+                                               } catch (Exception e) {
+                                                   e.printStackTrace();
+                                               }
+
+                                               mediaMetadataRetriever.release();
+                                           } catch (final Throwable e) {
+                                               Thread.getDefaultUncaughtExceptionHandler()
+                                                       .uncaughtException(Thread.currentThread(),
+                                                               e);
                                            }
                                        }
                                    }
@@ -150,33 +219,61 @@ public class TrimVideoUtil {
         return retStr;
     }
 
-    public static void getAllVideoFiles(final Context mContext, final SingleCallback<ArrayList<VideoInfo>, Integer> callback) {
+    public static void getAllVideoFiles(final Context mContext, final
+    SingleCallback<ArrayList<VideoInfo>, Integer> callback) {
 
         BackgroundExecutor.execute(new BackgroundExecutor.Task("", 0L, "") {
                                        @Override
                                        public void execute() {
                                            VideoInfo video;
                                            ArrayList<VideoInfo> videos = new ArrayList<>();
-                                           ContentResolver contentResolver = mContext.getContentResolver();
+                                           ContentResolver contentResolver = mContext
+                                                   .getContentResolver();
                                            try {
 
-                                               Cursor cursor = contentResolver.query(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, null,
-                                                       null, null, MediaStore.Video.Media.DEFAULT_SORT_ORDER);
+                                               Cursor cursor = contentResolver.query(MediaStore
+                                                               .Video.Media.EXTERNAL_CONTENT_URI,
+                                                       null,
+                                                       null, null, MediaStore.Video.Media
+                                                               .DEFAULT_SORT_ORDER);
                                                if (cursor != null) {
                                                    while (cursor.moveToNext()) {
                                                        video = new VideoInfo();
-                                                       video.setPath(cursor.getString(cursor.getColumnIndex(MediaStore.Video.Media.DATA)));
-                                                       video.setCreateTime(cursor.getString(cursor.getColumnIndex(MediaStore.Video.Media.DATE_ADDED)));
-                                                       video.setName(cursor.getString(cursor.getColumnIndex(MediaStore.Video.Media.DISPLAY_NAME)));
-                                                       video.setWidth(cursor.getInt(cursor.getColumnIndex(MediaStore.Video.Media.WIDTH)));
-                                                       video.setHeight(cursor.getInt(cursor.getColumnIndex(MediaStore.Video.Media.HEIGHT)));
-                                                       video.setStoreId(cursor.getInt(cursor.getColumnIndex(MediaStore.Video.Media._ID)));
+                                                       video.setPath(cursor.getString(cursor
+                                                               .getColumnIndex(MediaStore.Video
+                                                                       .Media.DATA)));
+                                                       video.setCreateTime(cursor.getString
+                                                               (cursor.getColumnIndex(MediaStore
+                                                                       .Video.Media.DATE_ADDED)));
+                                                       video.setName(cursor.getString(cursor
+                                                               .getColumnIndex(MediaStore.Video
+                                                                       .Media.DISPLAY_NAME)));
+                                                       video.setWidth(cursor.getInt(cursor
+                                                               .getColumnIndex(MediaStore.Video
+                                                                       .Media.WIDTH)));
+                                                       video.setHeight(cursor.getInt(cursor
+                                                               .getColumnIndex(MediaStore.Video
+                                                                       .Media.HEIGHT)));
+                                                       video.setStoreId(cursor.getInt(cursor
+                                                               .getColumnIndex(MediaStore.Video
+                                                                       .Media._ID)));
 
-                                                       MediaMetadataRetriever retriever = new MediaMetadataRetriever();
-                                                       retriever.setDataSource(mContext, Uri.parse(video.getPath()));
-                                                       int duration = Integer.parseInt(retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION));
-                                                       int width = Integer.parseInt(retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH));
-                                                       int height =Integer.parseInt(retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT));
+                                                       MediaMetadataRetriever retriever = new
+                                                               MediaMetadataRetriever();
+                                                       retriever.setDataSource(mContext, Uri
+                                                               .parse(video.getPath()));
+                                                       int duration = Integer.parseInt(retriever
+                                                               .extractMetadata
+                                                                       (MediaMetadataRetriever
+                                                                               .METADATA_KEY_DURATION));
+                                                       int width = Integer.parseInt(retriever
+                                                               .extractMetadata
+                                                                       (MediaMetadataRetriever
+                                                                               .METADATA_KEY_VIDEO_WIDTH));
+                                                       int height = Integer.parseInt(retriever
+                                                               .extractMetadata
+                                                                       (MediaMetadataRetriever
+                                                                               .METADATA_KEY_VIDEO_HEIGHT));
                                                        retriever.release();
 
                                                        video.setDuration(duration);

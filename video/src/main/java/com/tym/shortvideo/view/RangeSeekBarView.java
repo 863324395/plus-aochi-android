@@ -158,12 +158,12 @@ public class RangeSeekBarView extends View {
                     if (mPixelRangeMax < deviceWidth) {
                         mRect = new Rect((int) x,
                                 paddingTop,
-                                (int) (mPixelRangeMax),
+                                (int) (mPixelRangeMax)+shadowMargin,
                                 mHeightTimeLine + paddingTop);
                     } else if (mPixelRangeMax >= deviceWidth) {
                         mRect = new Rect((int) x,
                                 paddingTop,
-                                (int) (deviceWidth + shadowMargin),
+                                deviceWidth + shadowMargin,
                                 mHeightTimeLine + paddingTop);
                     }
 
@@ -268,8 +268,8 @@ public class RangeSeekBarView extends View {
                 final float newX = mThumb.getPos() + dx;
                 if (currentThumb == 0) {
 
-                    if ((newX + mThumb.getWidthBitmap()) >= mThumb2.getPos()) {
-                        mThumb.setPos(mThumb2.getPos() - mThumb.getWidthBitmap());
+                    if (newX >= mThumb2.getPos() -mThumb.getWidthBitmap() - TimeToPix(3000)) {
+                        mThumb.setPos(mThumb2.getPos() - TimeToPix(3000));
                     } else if (newX <= mPixelRangeMin) {
                         mThumb.setPos(mPixelRangeMin);
                     } else {
@@ -284,8 +284,9 @@ public class RangeSeekBarView extends View {
                     }
 
                 } else {
-                    if (newX <= mThumb2.getPos() + mThumb2.getWidthBitmap()) {
-                        mThumb.setPos(mThumb2.getPos() + mThumb.getWidthBitmap());
+                    if (newX <= mThumb2.getPos() + mThumb2.getWidthBitmap() + TimeToPix(3000)) {
+                        mThumb.setPos(mThumb2.getPos() + mThumb.getWidthBitmap() + TimeToPix
+                                (3000));
                     } else if (newX >= deviceWidth) {
                         mThumb.setPos(deviceWidth);
                     } else if (newX >= mPixelRangeMax) {
@@ -453,5 +454,9 @@ public class RangeSeekBarView extends View {
 
     private List<Thumb> getThumbs() {
         return mThumbs;
+    }
+
+    private long TimeToPix(long value) {
+        return (mPixelRangeMax * value) / mDuration;
     }
 }

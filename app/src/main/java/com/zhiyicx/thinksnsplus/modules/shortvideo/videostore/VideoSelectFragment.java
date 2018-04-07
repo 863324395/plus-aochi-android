@@ -152,10 +152,13 @@ public class VideoSelectFragment extends TSListFragment {
                         mActivity.finish();
                     })
                     .item2ClickListener(() -> {
-                        mPopWindow.hide();
-                        ArrayList<String> path = new ArrayList<>();
-                        path.add(videoInfo.getPath());
-                        PreviewActivity.startPreviewActivity(mActivity, path);
+
+
+                        TrimmerActivity.startTrimmerActivity(mActivity,videoInfo);
+//                        mPopWindow.hide();
+//                        ArrayList<String> path = new ArrayList<>();
+//                        path.add(videoInfo.getPath());
+//                        PreviewActivity.startPreviewActivity(mActivity, path);
                         mActivity.finish();
                     })
                     .bottomClickListener(() -> mPopWindow.hide())

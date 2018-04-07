@@ -8,6 +8,7 @@ import android.text.TextUtils;
 
 import com.tym.shortvideo.media.VideoInfo;
 import com.zhiyicx.baseproject.base.TSActivity;
+import com.zhiyicx.thinksnsplus.modules.shortvideo.cover.CoverActivity;
 
 /**
  * @author Jliuer
@@ -31,7 +32,7 @@ public class TrimmerActivity extends TSActivity {
         Bundle bundle = new Bundle();
         bundle.putString(TrimmerFragment.PATH, video.getPath());
         bundle.putParcelable(TrimmerFragment.VIDEO, video);
-        Intent intent = new Intent(context, TrimmerActivity.class);
+        Intent intent = new Intent(context, CoverActivity.class);
         intent.putExtras(bundle);
         context.startActivity(intent);
     }
