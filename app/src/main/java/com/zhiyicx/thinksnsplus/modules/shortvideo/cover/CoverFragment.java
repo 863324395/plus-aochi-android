@@ -1,25 +1,25 @@
 package com.zhiyicx.thinksnsplus.modules.shortvideo.cover;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
-import android.graphics.Bitmap;
+import android.content.Intent;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
-import android.widget.VideoView;
 
 import com.jakewharton.rxbinding.view.RxView;
-import com.tym.shortvideo.interfaces.SingleCallback;
+import com.tym.shortvideo.media.MediaPlayerWrapper;
 import com.tym.shortvideo.media.VideoInfo;
-import com.tym.shortvideo.utils.FileUtils;
 import com.tym.shortvideo.utils.TrimVideoUtil;
+import com.tym.shortvideo.view.VideoPreviewView;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.thinksnsplus.R;
 
+import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
@@ -32,12 +32,13 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class CoverFragment extends TSFragment {
+public class CoverFragment extends TSFragment implements MediaPlayerWrapper.IMediaCallback {
     public static final String PATH = "path";
     public static final String VIDEO = "video";
+    public static final int REQUESTCODE = 1000;
 
-    @BindView(R.id.video_loader)
-    VideoView mVideoView;
+    @BindView(R.id.videoView)
+    VideoPreviewView mVideoView;
     @BindView(R.id.sk_cover)
     SeekBar mSeekBar;
     @BindView(R.id.tv_toolbar_right)
@@ -48,12 +49,9 @@ public class CoverFragment extends TSFragment {
     TextView mToolbarCenter;
     @BindView(R.id.rl_toolbar)
     RelativeLayout mToolBar;
-    @BindView(R.id.layout_surface_view)
-    RelativeLayout mLinearVideo;
 
 
     private ProgressDialog mProgressDialog;
-    private VideoInfo mVideoInfo;
     private String mPath;
 
     public static CoverFragment newInstance(Bundle bundle) {
@@ -84,11 +82,6 @@ public class CoverFragment extends TSFragment {
 
     @Override
     protected void initView(View rootView) {
-        mPath = getArguments().getString(PATH);
-        mVideoInfo = getArguments().getParcelable(VIDEO);
-
-        mVideoView.setVideoURI(Uri.parse(mPath));
-        mVideoView.requestFocus();
 
         mToolbarCenter.setText(R.string.clip_cover);
         mToolbarLeft.setText(R.string.cancel);
@@ -107,20 +100,34 @@ public class CoverFragment extends TSFragment {
                 .compose(this.bindToLifecycle())
                 .subscribe(aVoid -> mActivity.finish());
 
-        mVideoView.setOnPreparedListener(this::onVideoPrepared);
+        mVideoView.setIMediaCallback(this);
+
     }
 
     private void getVideoCover() {
         buildDialog(getString(R.string.covering));
         TrimVideoUtil.backgroundShootVideoThumb(mActivity, Uri.parse(mPath), (long) mSeekBar
                 .getProgress(), (bitmap, integer) -> {
+            String cover = com.zhiyicx.common.utils.FileUtils.saveBitmapToFile(mActivity,
+                    bitmap,
+                    "video_cover");
             mProgressDialog.dismiss();
-            
+            Bundle bundle = new Bundle();
+            bundle.putString(PATH, cover);
+            Intent intent = new Intent();
+            intent.putExtras(bundle);
+            mActivity.setResult(Activity.RESULT_OK, intent);
+            mActivity.finish();
         });
     }
 
     @Override
     protected void initData() {
+        ArrayList<String> srcList = getArguments().getStringArrayList(PATH);
+        if (srcList == null || srcList.isEmpty()) {
+            throw new IllegalArgumentException("video path can not be null");
+        }
+        mVideoView.setVideoPath(srcList);
 
     }
 
@@ -129,36 +136,21 @@ public class CoverFragment extends TSFragment {
         return R.layout.activity_cover;
     }
 
-
-    private ProgressDialog buildDialog(String msg) {
-        if (mProgressDialog == null) {
-            mProgressDialog = ProgressDialog.show(mActivity, "", msg);
-        }
-        mProgressDialog.setMessage(msg);
-        return mProgressDialog;
+    @Override
+    public void onPause() {
+        super.onPause();
+        mVideoView.pause();
     }
 
-    private void onVideoPrepared(MediaPlayer mp) {
+    @Override
+    public void onDestroyView() {
+        mVideoView.onDestroy();
+        super.onDestroyView();
+    }
 
-        ViewGroup.LayoutParams lp = mVideoView.getLayoutParams();
-        int videoWidth = mp.getVideoWidth();
-        int videoHeight = mp.getVideoHeight();
-        float videoProportion = (float) videoWidth / (float) videoHeight;
-        int screenWidth = mLinearVideo.getWidth();
-        int screenHeight = mLinearVideo.getHeight();
-        float screenProportion = (float) screenWidth / (float) screenHeight;
-
-        if (videoProportion > screenProportion) {
-            lp.width = screenWidth;
-            lp.height = (int) ((float) screenWidth / videoProportion);
-        } else {
-            lp.width = (int) (videoProportion * (float) screenHeight);
-            lp.height = screenHeight;
-        }
-        mVideoView.setLayoutParams(lp);
-        mSeekBar.setMax(mVideoView.getDuration());
-        mVideoView.seekTo(1);
-
+    @Override
+    public void onVideoPrepare() {
+        mSeekBar.setMax(mVideoView.getVideoDuration());
         mSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
@@ -175,5 +167,33 @@ public class CoverFragment extends TSFragment {
 
             }
         });
+    }
+
+    @Override
+    public void onVideoStart() {
+
+    }
+
+    @Override
+    public void onVideoPause() {
+
+    }
+
+    @Override
+    public void onCompletion(MediaPlayer mp) {
+
+    }
+
+    @Override
+    public void onVideoChanged(VideoInfo info) {
+        mPath = info.getPath();
+    }
+
+    private ProgressDialog buildDialog(String msg) {
+        if (mProgressDialog == null) {
+            mProgressDialog = ProgressDialog.show(mActivity, "", msg);
+        }
+        mProgressDialog.setMessage(msg);
+        return mProgressDialog;
     }
 }

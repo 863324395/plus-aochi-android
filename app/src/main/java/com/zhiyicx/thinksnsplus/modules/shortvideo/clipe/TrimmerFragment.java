@@ -10,6 +10,7 @@ import android.widget.TextView;
 import com.jakewharton.rxbinding.view.RxView;
 import com.tym.shortvideo.interfaces.TrimVideoListener;
 import com.tym.shortvideo.media.VideoInfo;
+import com.tym.shortvideo.recordcore.VideoListManager;
 import com.tym.shortvideo.utils.FileUtils;
 import com.tym.shortvideo.utils.TrimVideoUtil;
 import com.tym.shortvideo.view.VideoTrimmerView;
@@ -18,6 +19,7 @@ import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.SendDynamicDataBean;
 import com.zhiyicx.thinksnsplus.modules.dynamic.send.SendDynamicActivity;
+import com.zhiyicx.thinksnsplus.modules.shortvideo.preview.PreviewActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,6 +54,19 @@ public class TrimmerFragment extends TSFragment implements TrimVideoListener {
 
     private ProgressDialog mProgressDialog;
     private VideoInfo mVideoInfo;
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        mVideoTrimmerView.onPause();
+        mVideoTrimmerView.setRestoreState(true);
+    }
+
+    @Override
+    public void onDestroyView() {
+        mVideoTrimmerView.destroy();
+        super.onDestroyView();
+    }
 
     public static TrimmerFragment newInstance(Bundle bundle) {
         TrimmerFragment fragment = new TrimmerFragment();
@@ -98,21 +113,8 @@ public class TrimmerFragment extends TSFragment implements TrimVideoListener {
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .compose(this.bindToLifecycle())
                 .subscribe(aVoid -> {
-//
-//                    mVideoTrimmerView.onSaveClicked()
-
-            SendDynamicDataBean sendDynamicDataBean = new SendDynamicDataBean();
-            sendDynamicDataBean.setDynamicBelong(SendDynamicDataBean.NORMAL_DYNAMIC);
-            List<ImageBean> pic = new ArrayList<>();
-            ImageBean imageBean = new ImageBean();
-            imageBean.setImgUrl(mVideoInfo.cover);
-            pic.add(imageBean);
-            sendDynamicDataBean.setDynamicPrePhotos(pic);
-            sendDynamicDataBean.setDynamicType(SendDynamicDataBean.VIDEO_TEXT_DYNAMIC);
-            sendDynamicDataBean.setVideoInfo(mVideoInfo);
-            SendDynamicActivity.startToSendDynamicActivity(getContext(), sendDynamicDataBean);
-            mActivity.finish();
-        });
+                    mVideoTrimmerView.onSaveClicked();
+                });
 
         RxView.clicks(mToolbarLeft)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
@@ -131,19 +133,6 @@ public class TrimmerFragment extends TSFragment implements TrimVideoListener {
     }
 
     @Override
-    public void onPause() {
-        super.onPause();
-        mVideoTrimmerView.onPause();
-        mVideoTrimmerView.setRestoreState(true);
-    }
-
-    @Override
-    public void onDestroyView() {
-        mVideoTrimmerView.destroy();
-        super.onDestroyView();
-    }
-
-    @Override
     public void onStartTrim() {
         buildDialog(getResources().getString(R.string.trimming)).show();
     }
@@ -151,17 +140,10 @@ public class TrimmerFragment extends TSFragment implements TrimVideoListener {
     @Override
     public void onFinishTrim(String url) {
         mProgressDialog.dismiss();
-        FileUtils.updateMediaStore(mActivity, url, (s, uri) -> {
-            SendDynamicDataBean sendDynamicDataBean = new SendDynamicDataBean();
-            sendDynamicDataBean.setDynamicBelong(SendDynamicDataBean.NORMAL_DYNAMIC);
-            List<ImageBean> pic = new ArrayList<>();
-            ImageBean imageBean = new ImageBean();
-            imageBean.setImgUrl(mVideoInfo.cover);
-            pic.add(imageBean);
-            sendDynamicDataBean.setDynamicPrePhotos(pic);
-            sendDynamicDataBean.setDynamicType(SendDynamicDataBean.VIDEO_TEXT_DYNAMIC);
-            sendDynamicDataBean.setVideoInfo(mVideoInfo);
-            SendDynamicActivity.startToSendDynamicActivity(getContext(), sendDynamicDataBean);
+        FileUtils.updateMediaStore(mActivity, url, (path, uri) -> {
+            ArrayList<String> arrayList = new ArrayList<>();
+            arrayList.add(path);
+            PreviewActivity.startPreviewActivity(mActivity, arrayList);
             mActivity.finish();
         });
     }

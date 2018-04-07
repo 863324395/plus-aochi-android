@@ -32,7 +32,7 @@ public class TrimmerActivity extends TSActivity {
         Bundle bundle = new Bundle();
         bundle.putString(TrimmerFragment.PATH, video.getPath());
         bundle.putParcelable(TrimmerFragment.VIDEO, video);
-        Intent intent = new Intent(context, CoverActivity.class);
+        Intent intent = new Intent(context, TrimmerActivity.class);
         intent.putExtras(bundle);
         context.startActivity(intent);
     }

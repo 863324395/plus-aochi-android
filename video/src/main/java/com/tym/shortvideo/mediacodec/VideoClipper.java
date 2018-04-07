@@ -10,6 +10,7 @@ import android.media.MediaMetadataRetriever;
 import android.media.MediaMuxer;
 import android.net.Uri;
 import android.os.Build;
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 
@@ -533,8 +534,8 @@ public class VideoClipper {
         }
         mVideoExtractor.release();
         mAudioExtractor.release();
-//        mMediaMuxer.stop();
-//        mMediaMuxer.release();
+        mMediaMuxer.stop();
+        mMediaMuxer.release();
         if (outputSurface != null) {
             outputSurface.release();
         }

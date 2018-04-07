@@ -7,23 +7,10 @@
     android:orientation="vertical">
 
 
-    <RelativeLayout
-        android:id="@+id/layout_surface_view"
+    <com.tym.shortvideo.view.VideoPreviewView
+        android:id="@+id/videoView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@+id/layout"
-        android:background="@android:color/black"
-        android:gravity="center"
-        android:orientation="vertical">
-
-        <VideoView
-            android:id="@+id/video_loader"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true" />
-
-    </RelativeLayout>
+        android:layout_height="match_parent"/>
 
     <SeekBar
         android:id="@+id/sk_cover"

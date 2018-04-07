@@ -5,11 +5,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 
 import com.zhiyicx.baseproject.base.TSActivity;
-import com.zhiyicx.common.utils.SkinUtils;
-import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 
 import java.util.ArrayList;
@@ -20,7 +17,7 @@ import java.util.ArrayList;
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class PreviewActivity extends TSActivity<AppBasePresenter,PreviewFragment> {
+public class PreviewActivity extends TSActivity<AppBasePresenter, PreviewFragment> {
 
     @Override
     protected PreviewFragment getFragment() {
@@ -28,8 +25,15 @@ public class PreviewActivity extends TSActivity<AppBasePresenter,PreviewFragment
     }
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState, @Nullable PersistableBundle persistentState) {
+    public void onCreate(@Nullable Bundle savedInstanceState, @Nullable PersistableBundle
+            persistentState) {
         super.onCreate(savedInstanceState, persistentState);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        mContanierFragment.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override

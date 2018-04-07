@@ -114,7 +114,7 @@ public class VideoTrimmerView extends FrameLayout {
     }
 
     private void setUpSeekBar() {
-//        mSeekBarView.setEnabled(false);
+        mSeekBarView.setEnabled(false);
         mSeekBarView.setOnTouchListener(new OnTouchListener() {
             private float startX;
 
@@ -360,9 +360,9 @@ public class VideoTrimmerView extends FrameLayout {
 
             @Override
             public void onSeekStart(RangeSeekBarView rangeSeekBarView, int index, float value) {
-//                if (mSeekBarView.getVisibility() == View.VISIBLE) {
-//                    mSeekBarView.setVisibility(GONE);
-//                }
+                if (mSeekBarView.getVisibility() == View.VISIBLE) {
+                    mSeekBarView.setVisibility(GONE);
+                }
             }
 
             @Override

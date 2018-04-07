@@ -26,4 +26,12 @@
         android:text="完成"
         android:visibility="gone"/>
 
+    <ImageView
+        android:id="@+id/iv_cover"
+        android:layout_gravity="bottom|center_horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/dp20"
+        android:src="@mipmap/ico_video_cover"/>
+
 </FrameLayout>

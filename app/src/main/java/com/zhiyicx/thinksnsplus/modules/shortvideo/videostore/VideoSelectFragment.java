@@ -9,6 +9,7 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.PopupWindow;
 
 import com.tym.shortvideo.media.VideoInfo;
 import com.tym.shortvideo.utils.TrimVideoUtil;
@@ -152,13 +153,8 @@ public class VideoSelectFragment extends TSListFragment {
                         mActivity.finish();
                     })
                     .item2ClickListener(() -> {
-
-
+                        mPopWindow.hide();
                         TrimmerActivity.startTrimmerActivity(mActivity,videoInfo);
-//                        mPopWindow.hide();
-//                        ArrayList<String> path = new ArrayList<>();
-//                        path.add(videoInfo.getPath());
-//                        PreviewActivity.startPreviewActivity(mActivity, path);
                         mActivity.finish();
                     })
                     .bottomClickListener(() -> mPopWindow.hide())
@@ -166,5 +162,18 @@ public class VideoSelectFragment extends TSListFragment {
         }
         mPopWindow.show();
 
+    }
+
+    @Override
+    public void onDestroyView() {
+        releasePop(mPopWindow);
+        super.onDestroyView();
+
+    }
+
+    public void releasePop(PopupWindow popupWindow) {
+        if (popupWindow != null && popupWindow.isShowing()) {
+            popupWindow.dismiss();
+        }
     }
 }

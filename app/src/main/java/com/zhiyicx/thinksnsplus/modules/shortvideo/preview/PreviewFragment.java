@@ -1,20 +1,17 @@
 package com.zhiyicx.thinksnsplus.modules.shortvideo.preview;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.content.Intent;
 import android.media.MediaPlayer;
-import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding.view.RxView;
 import com.tym.shortvideo.filter.helper.MagicFilterType;
 import com.tym.shortvideo.filter.helper.SlideGpuFilterGroup;
-import com.tym.shortvideo.interfaces.SingleCallback;
 import com.tym.shortvideo.media.MediaPlayerWrapper;
 import com.tym.shortvideo.media.VideoInfo;
 import com.tym.shortvideo.mediacodec.VideoClipper;
@@ -23,17 +20,17 @@ import com.tym.shortvideo.recordcore.VideoListManager;
 import com.tym.shortvideo.recordcore.multimedia.VideoCombineManager;
 import com.tym.shortvideo.recordcore.multimedia.VideoCombiner;
 import com.tym.shortvideo.utils.FileUtils;
-import com.tym.shortvideo.utils.TrimVideoUtil;
 import com.tym.shortvideo.view.VideoPreviewView;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
-import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.EmptySubscribe;
 import com.zhiyicx.thinksnsplus.data.beans.SendDynamicDataBean;
 import com.zhiyicx.thinksnsplus.modules.dynamic.send.SendDynamicActivity;
+import com.zhiyicx.thinksnsplus.modules.shortvideo.cover.CoverActivity;
+import com.zhiyicx.thinksnsplus.modules.shortvideo.cover.CoverFragment;
 
 import java.io.File;
 import java.io.IOException;
@@ -67,6 +64,8 @@ public class PreviewFragment extends TSFragment implements MediaPlayerWrapper.IM
     TextView mToolbarLeft;
     @BindView(R.id.tv_toolbar_center)
     TextView mToolbarCenter;
+    @BindView(R.id.iv_cover)
+    ImageView mCover;
     @BindView(R.id.rl_toolbar)
     RelativeLayout mToolBar;
 
@@ -96,6 +95,9 @@ public class PreviewFragment extends TSFragment implements MediaPlayerWrapper.IM
     private Subscription mSubscription;
 
     public boolean isLoading;
+
+    private VideoInfo mVideoInfo;
+    private ArrayList<String> srcList;
 
     public static PreviewFragment getInstance(Bundle bundle) {
         PreviewFragment fragment = new PreviewFragment();
@@ -154,7 +156,20 @@ public class PreviewFragment extends TSFragment implements MediaPlayerWrapper.IM
                 .compose(this.bindToLifecycle())
                 .subscribe(aVoid -> mActivity.finish());
 
+        RxView.clicks(mCover)
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
+                .compose(this.bindToLifecycle())
+                .subscribe(aVoid -> CoverActivity.startCoverActivity(mActivity, srcList));
+
         mVideoView.setOnFilterChangeListener(this);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == CoverFragment.REQUESTCODE && data.getExtras() != null) {
+            mVideoInfo.setCover(data.getExtras().getString(CoverFragment.PATH));
+        }
     }
 
     @Override
@@ -172,10 +187,11 @@ public class PreviewFragment extends TSFragment implements MediaPlayerWrapper.IM
 
     @Override
     protected void initData() {
-        ArrayList<String> srcList = getArguments().getStringArrayList(PATH);
+        srcList = getArguments().getStringArrayList(PATH);
         if (srcList == null || srcList.isEmpty()) {
             throw new IllegalArgumentException("video path can not be null");
         }
+        mVideoInfo = new VideoInfo();
         mVideoView.setVideoPath(srcList);
         mVideoView.setIMediaCallback(this);
     }
@@ -330,30 +346,28 @@ public class PreviewFragment extends TSFragment implements MediaPlayerWrapper.IM
                             hideCenterLoading();
 
 
-
-                            VideoInfo videoInfo = new VideoInfo();
-                            videoInfo.setPath(mOutputPath);
-                            videoInfo.setCreateTime(System.currentTimeMillis()+"");
-                            videoInfo.setWidth(mVideoView.getVideoWidth());
-                            videoInfo.setHeight(mVideoView.getVideoHeight());
-                            videoInfo.setDuration(mVideoView.getVideoDuration());
-
-                            BitmapFactory.Options options = new BitmapFactory.Options();
-                            options.inPreferredConfig = Bitmap.Config.RGB_565;
-                            Bitmap bitmap = MediaStore.Video.Thumbnails.getThumbnail(mActivity.getContentResolver(), videoInfo.storeId, MediaStore.Images.Thumbnails.MINI_KIND,
-                                    options);
-                            videoInfo.setCover(com.zhiyicx.common.utils.FileUtils.saveBitmapToFile(mActivity, bitmap, "video_cover"));
+                            if (mVideoInfo == null) {
+                                mVideoInfo = new VideoInfo();
+                            }
+                            mVideoInfo.setPath(mOutputPath);
+                            mVideoInfo.setCreateTime(System.currentTimeMillis() + "");
+                            mVideoInfo.setWidth(mVideoView.getVideoWidth());
+                            mVideoInfo.setHeight(mVideoView.getVideoHeight());
+                            mVideoInfo.setDuration(mVideoView.getVideoDuration());
 
                             SendDynamicDataBean sendDynamicDataBean = new SendDynamicDataBean();
-                            sendDynamicDataBean.setDynamicBelong(SendDynamicDataBean.NORMAL_DYNAMIC);
+                            sendDynamicDataBean.setDynamicBelong(SendDynamicDataBean
+                                    .NORMAL_DYNAMIC);
                             List<ImageBean> pic = new ArrayList<>();
                             ImageBean imageBean = new ImageBean();
-                            imageBean.setImgUrl(videoInfo.getCover());
+                            imageBean.setImgUrl(mVideoInfo.getCover());
                             pic.add(imageBean);
                             sendDynamicDataBean.setDynamicPrePhotos(pic);
-                            sendDynamicDataBean.setDynamicType(SendDynamicDataBean.VIDEO_TEXT_DYNAMIC);
-                            sendDynamicDataBean.setVideoInfo(videoInfo);
-                            SendDynamicActivity.startToSendDynamicActivity(getContext(), sendDynamicDataBean);
+                            sendDynamicDataBean.setDynamicType(SendDynamicDataBean
+                                    .VIDEO_TEXT_DYNAMIC);
+                            sendDynamicDataBean.setVideoInfo(mVideoInfo);
+                            SendDynamicActivity.startToSendDynamicActivity(getContext(),
+                                    sendDynamicDataBean);
                             mActivity.finish();
                         });
                     }
