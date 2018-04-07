@@ -79,7 +79,7 @@ public class TrimVideoUtil {
                                                final long interval = videoLengthInMs / numThumbs;
                                                float w, h;
                                                w = thumb_Width;
-                                               h = 0;
+                                               h = thumb_Height;
                                                //每次截取到3帧之后上报
                                                for (long i = 0; i < numThumbs; ++i) {
                                                    Bitmap bitmap = mediaMetadataRetriever
