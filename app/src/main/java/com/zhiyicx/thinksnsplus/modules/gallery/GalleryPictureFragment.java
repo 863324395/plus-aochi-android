@@ -52,6 +52,7 @@ import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.DrawableProvider;
 import com.zhiyicx.common.utils.FileUtils;
+import com.zhiyicx.common.utils.NetUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
@@ -100,6 +101,8 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
     TextView mTvToVip;
     @BindView(R.id.ll_toll)
     LinearLayout mLlToll;
+    @BindView(R.id.iv_gif_control)
+    ImageView mIvGifControl;
     @Inject
     GalleryPresenter mGalleryPresenter;
 
@@ -143,11 +146,17 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
 
     @Override
     protected void initData() {
-        DaggerGalleryComponent.builder()
+        DaggerGalleryComponent
+                .builder()
                 .appComponent(AppApplication.AppComponentHolder.getAppComponent())
                 .galleryPresenterModule(new GalleryPresenterModule(this))
-                .build().inject(this);
+                .build()
+                .inject(this);
         checkAndLoadImage();
+        // wifi 是否连接
+        if (NetUtils.isWifiConnected(getContext().getApplicationContext())) {
+
+        }
     }
 
     private void checkAndLoadImage() {
@@ -163,14 +172,7 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
             mPhotoViewAttacherNormal.setOnLongClickListener(null);
         }
         // 显示图片
-        if (mImageBean == null) {
-            mIvPager.setImageResource(R.mipmap.pic_locked);
-        } else {
-            boolean canLoadImage = AndroidLifecycleUtils.canLoadImage(context);
-            if (canLoadImage) {
-                loadImage(mImageBean, rect);
-            }
-        }
+        loadImage(mImageBean, rect);
     }
 
     @Override
@@ -291,6 +293,12 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
         return fragment;
     }
 
+    /**
+     * 加载图片
+     *
+     * @param imageBean
+     * @param rect
+     */
     private void loadImage(final ImageBean imageBean, final AnimationRectBean rect) {
         final Toll toll = mImageBean.getToll();
         final boolean canLook;
@@ -597,13 +605,17 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                 });
     }
 
-    @OnClick({R.id.tv_to_pay, R.id.tv_to_vip})
+    @OnClick({R.id.tv_to_pay, R.id.tv_to_vip, R.id.iv_gif_control})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.tv_to_pay:
                 initCenterPopWindow(R.string.buy_pay_desc);
                 break;
             case R.id.tv_to_vip:
+
+                break;
+
+            case R.id.iv_gif_control:
 
                 break;
             default:

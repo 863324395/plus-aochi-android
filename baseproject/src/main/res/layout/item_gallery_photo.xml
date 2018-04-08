@@ -21,8 +21,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center"
-        android:scaleType="centerInside"
-        android:gravity="center"/>
+        android:gravity="center"
+        android:scaleType="centerInside"/>
 
     <ProgressBar
         android:id="@+id/pb_progress"
@@ -33,6 +33,14 @@
         android:indeterminateTint="@color/themeColor"
         android:indeterminateTintMode="src_atop"
         tools:ignore="UnusedAttribute"/>
+
+    <ImageView
+        android:id="@+id/iv_gif_control"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:src="@mipmap/logo"
+        android:visibility="gone"/>
 
     <!--查看全屏-->
     <TextView
