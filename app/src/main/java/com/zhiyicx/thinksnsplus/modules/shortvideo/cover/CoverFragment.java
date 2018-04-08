@@ -17,6 +17,7 @@ import com.tym.shortvideo.media.VideoInfo;
 import com.tym.shortvideo.utils.TrimVideoUtil;
 import com.tym.shortvideo.view.VideoPreviewView;
 import com.zhiyicx.baseproject.base.TSFragment;
+import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.thinksnsplus.R;
 
 import java.util.ArrayList;
@@ -34,7 +35,7 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
  */
 public class CoverFragment extends TSFragment implements MediaPlayerWrapper.IMediaCallback {
     public static final String PATH = "path";
-    public static final String VIDEO = "video";
+    public static final String PREVIEW = "preview";
     public static final int REQUESTCODE = 1000;
 
     @BindView(R.id.videoView)
@@ -53,6 +54,8 @@ public class CoverFragment extends TSFragment implements MediaPlayerWrapper.IMed
 
     private ProgressDialog mProgressDialog;
     private String mPath;
+    private boolean isPre;
+    private boolean mResumed;
 
     public static CoverFragment newInstance(Bundle bundle) {
         CoverFragment fragment = new CoverFragment();
@@ -82,7 +85,6 @@ public class CoverFragment extends TSFragment implements MediaPlayerWrapper.IMed
 
     @Override
     protected void initView(View rootView) {
-
         mToolbarCenter.setText(R.string.clip_cover);
         mToolbarLeft.setText(R.string.cancel);
         mToolbarRight.setText(R.string.complete);
@@ -110,7 +112,7 @@ public class CoverFragment extends TSFragment implements MediaPlayerWrapper.IMed
                 .getProgress(), (bitmap, integer) -> {
             String cover = com.zhiyicx.common.utils.FileUtils.saveBitmapToFile(mActivity,
                     bitmap,
-                    "video_cover");
+                    "video_cover.jpg");
             mProgressDialog.dismiss();
             Bundle bundle = new Bundle();
             bundle.putString(PATH, cover);
@@ -127,8 +129,18 @@ public class CoverFragment extends TSFragment implements MediaPlayerWrapper.IMed
         if (srcList == null || srcList.isEmpty()) {
             throw new IllegalArgumentException("video path can not be null");
         }
+        isPre = getArguments().getBoolean(PREVIEW);
         mVideoView.setVideoPath(srcList);
+        mSeekBar.setVisibility(isPre ? View.GONE : View.VISIBLE);
+    }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (mResumed && isPre) {
+            mVideoView.start();
+        }
+        mResumed = true;
     }
 
     @Override
@@ -150,6 +162,9 @@ public class CoverFragment extends TSFragment implements MediaPlayerWrapper.IMed
 
     @Override
     public void onVideoPrepare() {
+        if (isPre) {
+            mVideoView.start();
+        }
         mSeekBar.setMax(mVideoView.getVideoDuration());
         mSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -181,7 +196,10 @@ public class CoverFragment extends TSFragment implements MediaPlayerWrapper.IMed
 
     @Override
     public void onCompletion(MediaPlayer mp) {
-
+        if (isPre) {
+            mVideoView.seekTo(0);
+            mVideoView.start();
+        }
     }
 
     @Override

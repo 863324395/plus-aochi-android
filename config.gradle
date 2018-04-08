@@ -10,7 +10,7 @@ allprojects {
 ext {
     //Android
     applicationId = "com.zhiyicx.thinksnsplus"
-    minSdkVersion = 16
+    minSdkVersion = 18
     targetSdkVersion = 25
     versionCode = 180
     versionName = "1.7.180402-alpha"

@@ -144,7 +144,7 @@ public class VideoTrimmerView extends FrameLayout {
                 UiThreadExecutor.runTask("", new Runnable() {
                     @Override
                     public void run() {
-                        FileUtils.saveBitmapToFile(mContext, bitmap.get(0), "video_cover");
+                        FileUtils.saveBitmapToFile(mContext, bitmap.get(0), "video_cover.jpg");
                         videoThumbAdapter.addAll(bitmap);
                         videoThumbAdapter.notifyDataSetChanged();
                     }

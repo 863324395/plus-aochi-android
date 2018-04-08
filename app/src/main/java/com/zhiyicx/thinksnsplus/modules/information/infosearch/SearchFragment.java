@@ -112,7 +112,7 @@ public class SearchFragment extends TSListFragment<SearchContract.Presenter, Inf
                         AppApplication.sOverRead.add(realData.getId().intValue());
                     }
                     FileUtils.saveBitmapToFile(getActivity(), ConvertUtils.drawable2BitmapWithWhiteBg(getContext()
-                            , imageView.getDrawable(), R.mipmap.icon), "info_share");
+                            , imageView.getDrawable(), R.mipmap.icon), "info_share.jpg");
                     title.setTextColor(getResources()
                             .getColor(R.color.normal_for_assist_text));
                     Intent intent = new Intent(getActivity(), InfoDetailsActivity.class);

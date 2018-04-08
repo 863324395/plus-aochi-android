@@ -1,7 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.shortvideo.preview;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
@@ -15,7 +14,6 @@ import android.widget.TextView;
 import com.jakewharton.rxbinding.view.RxView;
 import com.tym.shortvideo.filter.helper.MagicFilterType;
 import com.tym.shortvideo.filter.helper.SlideGpuFilterGroup;
-import com.tym.shortvideo.interfaces.SingleCallback;
 import com.tym.shortvideo.media.MediaPlayerWrapper;
 import com.tym.shortvideo.media.VideoInfo;
 import com.tym.shortvideo.mediacodec.VideoClipper;
@@ -47,7 +45,6 @@ import butterknife.BindView;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Func1;
 
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 
@@ -165,13 +162,16 @@ public class PreviewFragment extends TSFragment implements MediaPlayerWrapper.IM
                     if (mVideoInfo == null) {
                         mVideoInfo = new VideoInfo();
                     }
-                    if (TextUtils.isEmpty(mVideoInfo.getCover())){
+                    if (TextUtils.isEmpty(mVideoInfo.getCover())) {
                         TrimVideoUtil.backgroundShootVideoThumb(mActivity,
-                                Uri.parse(VideoListManager.getInstance().getSubVideoPathList().get(0)), 1, (bitmap, integer) -> {
-                                    mVideoInfo.setCover(com.zhiyicx.common.utils.FileUtils.saveBitmapToFile(mActivity, bitmap, "video_cover"));
+                                Uri.parse(VideoListManager.getInstance().getSubVideoPathList()
+                                        .get(0)), 1, (bitmap, integer) -> {
+                                    mVideoInfo.setCover(com.zhiyicx.common.utils.FileUtils
+                                            .saveBitmapToFile(mActivity, bitmap, "video_cover" +
+                                                    ".jpg"));
                                     combineVideo();
-                        });
-                    }else{
+                                });
+                    } else {
                         combineVideo();
                     }
 
@@ -185,7 +185,7 @@ public class PreviewFragment extends TSFragment implements MediaPlayerWrapper.IM
         RxView.clicks(mCover)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .compose(this.bindToLifecycle())
-                .subscribe(aVoid -> CoverActivity.startCoverActivity(mActivity, srcList));
+                .subscribe(aVoid -> CoverActivity.startCoverActivity(mActivity, srcList, false));
 
         mVideoView.setOnFilterChangeListener(this);
     }
@@ -255,7 +255,7 @@ public class PreviewFragment extends TSFragment implements MediaPlayerWrapper.IM
 
     @Override
     public void onVideoPrepare() {
-
+        mVideoView.start();
     }
 
     @Override
