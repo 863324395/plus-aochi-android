@@ -108,7 +108,8 @@ public class UpLoadFile {
                     File file = new File(filePathList.get(fileParam));
                     String mimeType = FileUtils.getMimeTypeByFile(file);
                     RequestBody imageBody = RequestBody.create(
-                            MediaType.parse("multipart/form-data"), file);
+                            MediaType.parse(TextUtils.isEmpty(mimeType) ? "multipart/form-data" : mimeType), file);
+//                            MediaType.parse(mimeType), file);
                     //imgfile 后台接收图片流的参数名
                     builder.addFormDataPart(fileParam, file.getName(), imageBody);
                 } catch (NullPointerException e) {
@@ -141,8 +142,8 @@ public class UpLoadFile {
                     String mimeType = FileUtils.getMimeTypeByFile(file);
 
                     RequestBody imageBody = RequestBody.create(
-//                            MediaType.parse(TextUtils.isEmpty(mimeType) ? "multipart/form-data" : mimeType), file);
-                            MediaType.parse("multipart/form-data"), file);
+                            MediaType.parse(TextUtils.isEmpty(mimeType) ? "multipart/form-data" : mimeType), file);
+//                            MediaType.parse(mimeType), file);
 
                     builder.addFormDataPart(fileParam, file.getName(), new ProgressRequestBody(imageBody, listener));//imgfile 后台接收图片流的参数名
                 } catch (NullPointerException e) {

@@ -617,7 +617,6 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
 
         // 浏览量没有 0 ，从1 开始
         dynamicDetailBeanV2.setFeed_view_count(1);
-        dynamicDetailBeanV2.setId(-1L);
         dynamicDetailBeanV2.setFeed_mark(feedMark);
         dynamicDetailBeanV2.setCreated_at(TimeUtils.getCurrenZeroTimeStr());
         dynamicDetailBeanV2.setFeed_content(mEtDynamicContent.getInputContent());

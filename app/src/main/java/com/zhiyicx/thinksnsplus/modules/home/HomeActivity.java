@@ -68,6 +68,9 @@ public class HomeActivity extends TSActivity {
 
     @Override
     public void onBackPressed() {
+        if (JZVideoPlayer.backPress()) {
+            return;
+        }
         ActivityUtils.goHome(this);
     }
 

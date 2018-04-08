@@ -6,10 +6,11 @@ import android.os.Parcelable;
 import java.io.Serializable;
 
 /**
- * Created by Administrator on 2017/6/29 0029.
- * 视频的信息bean
+ * @author Jliuer
+ * @Date 18/04/08 14:03
+ * @Email Jliuer@aliyun.com
+ * @Description
  */
-
 public class VideoInfo implements Parcelable,Serializable{
     private static final long serialVersionUID = 1333866610918025407L;
     public String path;//路径
@@ -38,6 +39,9 @@ public class VideoInfo implements Parcelable,Serializable{
 
     public void setStoreId(int storeId) {
         this.storeId = storeId;
+    }
+
+    public VideoInfo() {
     }
 
     public VideoInfo(int width, int height) {
@@ -174,14 +178,13 @@ public class VideoInfo implements Parcelable,Serializable{
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.path);
-        dest.writeString(this.name);
         dest.writeString(this.cover);
+        dest.writeString(this.name);
         dest.writeString(this.createTime);
         dest.writeInt(this.duration);
         dest.writeInt(this.rotation);
         dest.writeInt(this.width);
         dest.writeInt(this.height);
-        dest.writeInt(this.storeId);
         dest.writeInt(this.bitRate);
         dest.writeInt(this.frameRate);
         dest.writeInt(this.frameInterval);
@@ -189,19 +192,16 @@ public class VideoInfo implements Parcelable,Serializable{
         dest.writeInt(this.expHeight);
         dest.writeInt(this.cutPoint);
         dest.writeInt(this.cutDuration);
-    }
-
-    public VideoInfo() {
+        dest.writeInt(this.storeId);
     }
 
     protected VideoInfo(Parcel in) {
         this.path = in.readString();
-        this.name = in.readString();
         this.cover = in.readString();
+        this.name = in.readString();
         this.createTime = in.readString();
         this.duration = in.readInt();
         this.rotation = in.readInt();
-        this.storeId = in.readInt();
         this.width = in.readInt();
         this.height = in.readInt();
         this.bitRate = in.readInt();
@@ -211,6 +211,7 @@ public class VideoInfo implements Parcelable,Serializable{
         this.expHeight = in.readInt();
         this.cutPoint = in.readInt();
         this.cutDuration = in.readInt();
+        this.storeId = in.readInt();
     }
 
     public static final Creator<VideoInfo> CREATOR = new Creator<VideoInfo>() {

@@ -21,36 +21,40 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.klinker.android.link_builder.Link;
 import com.klinker.android.link_builder.LinkMetadata;
+import com.klinker.android.link_builder.NetUrlHandleBean;
+import com.tym.shortvideo.view.ZhiyiVideoView;
+import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.config.MarkdownConfig;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.baseproject.impl.photoselector.Toll;
-import com.zhiyicx.common.utils.log.LogUtils;
-import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
-import com.klinker.android.link_builder.NetUrlHandleBean;
-import com.zhiyicx.thinksnsplus.data.beans.RealAdvertListBean;
-import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBActivity;
-import com.zhiyicx.thinksnsplus.data.beans.RewardsCountBean;
-import com.zhiyicx.thinksnsplus.data.beans.RewardsListBean;
-import com.zhiyicx.thinksnsplus.modules.wallet.reward.RewardType;
-import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhiyicx.baseproject.widget.imageview.FilterImageView;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.SkinUtils;
 import com.zhiyicx.common.utils.TextViewUtils;
 import com.zhiyicx.common.utils.UIUtils;
+import com.zhiyicx.common.utils.log.LogUtils;
+import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.AnimationRectBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDigListBean;
+import com.zhiyicx.thinksnsplus.data.beans.RealAdvertListBean;
+import com.zhiyicx.thinksnsplus.data.beans.RewardsCountBean;
+import com.zhiyicx.thinksnsplus.data.beans.RewardsListBean;
 import com.zhiyicx.thinksnsplus.modules.dynamic.detail.dig_list.DigListActivity;
 import com.zhiyicx.thinksnsplus.modules.dynamic.detail.dig_list.DigListFragment;
 import com.zhiyicx.thinksnsplus.modules.gallery.GalleryActivity;
+import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBActivity;
+import com.zhiyicx.thinksnsplus.modules.wallet.reward.RewardType;
+import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhiyicx.thinksnsplus.widget.DynamicHorizontalStackIconView;
 import com.zhiyicx.thinksnsplus.widget.ReWardView;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import cn.jzvd.JZVideoPlayerStandard;
 
 /**
  * @Describe 动态详情头部信息
@@ -148,12 +152,31 @@ public class DynamicDetailHeader {
         final Context context = mTitle.getContext();
         // 设置图片
         List<DynamicDetailBeanV2.ImagesBean> photoList = dynamicBean.getImages();
-        if (photoList == null || photoList.isEmpty()) {
+        if ((photoList == null || photoList.isEmpty()) && dynamicBean.getVideo() == null) {
             mPhotoContainer.setVisibility(View.GONE);
             sharBitmap = ConvertUtils.drawBg4Bitmap(0xffffff, BitmapFactory.decodeResource(context
                     .getResources(), R.mipmap.icon).copy(Bitmap.Config.RGB_565, true));
         } else {
             mPhotoContainer.setVisibility(View.VISIBLE);
+            DynamicDetailBeanV2.Video video = dynamicBean.getVideo();
+            if (video != null) {
+                ZhiyiVideoView videoView = new ZhiyiVideoView(mContext);
+
+                int height = (videoView.getHeight() * picWidth / videoView.getWidth());
+                // 提前设置图片控件的大小，使得占位图显示
+                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(picWidth, height);
+                layoutParams.gravity = Gravity.CENTER_HORIZONTAL;
+                videoView.setLayoutParams(layoutParams);
+
+                mPhotoContainer.addView(videoView);
+                videoView.getLayoutParams().height = ConvertUtils.dp2px(mContext, 400);
+                String videoUrl = String.format(ApiConfig.APP_DOMAIN + ApiConfig.MUSIC_PATH,
+                        dynamicBean.getVideo().getVideo_id());
+                videoView.setUp(videoUrl, JZVideoPlayerStandard.SCREEN_WINDOW_LIST, "tym");
+                Glide.with(mContext).load(video.getGlideUrl()).into(videoView.thumbImageView);
+                videoView.positionInList = 0;
+                return;
+            }
             for (int i = 0; i < photoList.size(); i++) {
                 showContentImage(context, photoList, i, dynamicBean.getUser_id().intValue(), i == photoList.size() - 1, mPhotoContainer);
             }
@@ -196,6 +219,9 @@ public class DynamicDetailHeader {
     }
 
     public void updateImage(DynamicDetailBeanV2 dynamicBean) {
+        if (dynamicBean.getVideo() != null) {
+            return;
+        }
         List<DynamicDetailBeanV2.ImagesBean> photoList = dynamicBean.getImages();
         mPhotoContainer.removeAllViews();
         for (int i = 0; i < photoList.size(); i++) {

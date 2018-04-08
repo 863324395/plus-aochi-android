@@ -5,8 +5,8 @@ import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.media.MediaMetadataRetriever;
-import android.media.MediaPlayer;
 import android.net.Uri;
+import android.os.Build;
 import android.provider.MediaStore;
 import android.text.TextUtils;
 
@@ -15,12 +15,10 @@ import com.tym.shortvideo.interfaces.SingleCallback;
 import com.tym.shortvideo.interfaces.TrimVideoListener;
 import com.tym.shortvideo.media.VideoInfo;
 import com.tym.shortvideo.mediacodec.VideoClipper;
+import com.zhiyicx.common.utils.log.LogUtils;
 
 import java.io.IOException;
 import java.util.ArrayList;
-
-import rx.Observable;
-import rx.android.schedulers.AndroidSchedulers;
 
 
 public class TrimVideoUtil {
@@ -147,7 +145,7 @@ public class TrimVideoUtil {
                                                try {
                                                    bitmap = Bitmap.createScaledBitmap(bitmap,
                                                            thumb_Width, thumb_Height, false);
-                                                   callback.onSingleCallback(bitmap,1);
+                                                   callback.onSingleCallback(bitmap, 1);
                                                } catch (Exception e) {
                                                    e.printStackTrace();
                                                }
@@ -252,11 +250,27 @@ public class TrimVideoUtil {
                                                                .getColumnIndex(MediaStore.Video
                                                                        .Media._ID)));
 
-                                                       try{
+                                                       try {
                                                            MediaMetadataRetriever retriever = new
                                                                    MediaMetadataRetriever();
                                                            retriever.setDataSource(mContext, Uri
                                                                    .parse(video.getPath()));
+
+                                                           LogUtils.d("duration::" + retriever
+                                                                   .extractMetadata
+                                                                           (MediaMetadataRetriever
+                                                                                   .METADATA_KEY_DURATION));
+
+                                                           LogUtils.d("width::" + retriever
+                                                                   .extractMetadata
+                                                                           (MediaMetadataRetriever
+                                                                                   .METADATA_KEY_VIDEO_WIDTH));
+
+                                                           LogUtils.d("height::" + retriever
+                                                                   .extractMetadata
+                                                                           (MediaMetadataRetriever
+                                                                                   .METADATA_KEY_VIDEO_HEIGHT));
+
                                                            int duration = Integer.parseInt(retriever
                                                                    .extractMetadata
                                                                            (MediaMetadataRetriever
@@ -269,12 +283,28 @@ public class TrimVideoUtil {
                                                                    .extractMetadata
                                                                            (MediaMetadataRetriever
                                                                                    .METADATA_KEY_VIDEO_HEIGHT));
+
+                                                           int rotation = 0;
+
+                                                           if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                                                               rotation = Integer.parseInt(retriever
+                                                                       .extractMetadata
+                                                                               (MediaMetadataRetriever
+                                                                                       .METADATA_KEY_VIDEO_ROTATION));
+                                                           }
+
+                                                           if (rotation == 90 || rotation == 270) {
+                                                               // 图像颠倒了，不知道为啥
+                                                               video.setWidth(height);
+                                                               video.setHeight(width);
+                                                           }else{
+                                                               video.setWidth(width);
+                                                               video.setHeight(height);
+                                                           }
                                                            video.setDuration(duration);
-                                                           video.setWidth(width);
-                                                           video.setHeight(height);
 
                                                            retriever.release();
-                                                       }catch (Exception e){
+                                                       } catch (Exception e) {
 
                                                        }
                                                        if (video.getDuration() < 3000) {

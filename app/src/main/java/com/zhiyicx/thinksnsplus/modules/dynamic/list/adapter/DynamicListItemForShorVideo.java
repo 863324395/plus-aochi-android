@@ -113,18 +113,9 @@ public class DynamicListItemForShorVideo extends DynamicListBaseItem {
         } else {
             // 本地
             videoUrl = video.getUrl();
-
-            BitmapFactory.Options option = DrawableProvider.getPicsWHByFile(video.getUrl());
             with = video.getWidth();
-            if (option.outWidth == 0) {
-                height = with;
-            } else {
-                height = with * option.outHeight / option.outWidth;
-                height = height > mImageMaxHeight ? mImageMaxHeight : height;
-            }
-            if (height < DEFALT_IMAGE_HEIGHT) {
-                height = DEFALT_IMAGE_HEIGHT;
-            }
+            height= video.getHeight();
+
             view.getLayoutParams().height = height;
             Glide.with(mContext)
                     .load(video.getUrl())

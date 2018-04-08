@@ -137,16 +137,18 @@ public class VideoSelectFragment extends TSListFragment {
 
                         BitmapFactory.Options options = new BitmapFactory.Options();
                         options.inPreferredConfig = Bitmap.Config.RGB_565;
-                        Bitmap bitmap = MediaStore.Video.Thumbnails.getThumbnail(mActivity.getContentResolver(), videoInfo.storeId, MediaStore.Images.Thumbnails.MINI_KIND,
+                        Bitmap bitmap = MediaStore.Video.Thumbnails.getThumbnail(mActivity.getContentResolver(), videoInfo.getStoreId(), MediaStore.Images.Thumbnails.MINI_KIND,
                                 options);
                         videoInfo.setCover(FileUtils.saveBitmapToFile(mActivity, bitmap, "video_cover"));
                         SendDynamicDataBean sendDynamicDataBean = new SendDynamicDataBean();
                         sendDynamicDataBean.setDynamicBelong(SendDynamicDataBean.NORMAL_DYNAMIC);
+
                         List<ImageBean> pic = new ArrayList<>();
                         ImageBean imageBean = new ImageBean();
                         imageBean.setImgUrl(videoInfo.getCover());
                         pic.add(imageBean);
                         sendDynamicDataBean.setDynamicPrePhotos(pic);
+
                         sendDynamicDataBean.setDynamicType(SendDynamicDataBean.VIDEO_TEXT_DYNAMIC);
                         sendDynamicDataBean.setVideoInfo(videoInfo);
                         SendDynamicActivity.startToSendDynamicActivity(getContext(), sendDynamicDataBean);
