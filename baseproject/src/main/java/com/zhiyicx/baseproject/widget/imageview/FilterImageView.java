@@ -113,7 +113,7 @@ public class FilterImageView extends android.support.v7.widget.AppCompatImageVie
         mIshowGifTag = ishowGifTag;
         if (ishowGifTag) {
             if (mGifImageBitmap == null) {
-                mGifImageBitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.logo);
+                mGifImageBitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.pic_gif);
             }
             postInvalidate();
         }

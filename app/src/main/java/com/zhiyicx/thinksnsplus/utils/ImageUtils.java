@@ -28,6 +28,8 @@ import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 
 import java.util.Locale;
 
+import static com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2.ImagesBean.FILE_MIME_TYPE_GIF;
+
 /**
  * @Describe
  * @Author Jungle68
@@ -536,6 +538,7 @@ public class ImageUtils {
 
     /**
      * 获取 iamgeview 的 bitmap
+     *
      * @param showImageView
      * @return
      */
@@ -546,6 +549,15 @@ public class ImageUtils {
 
         showImageView.setDrawingCacheEnabled(false);
         return bitmap;
+    }
+
+    /**
+     * 图片是否是 gif
+     * @param imageMinityp
+     * @return
+     */
+    public static boolean imageIsGif(String imageMinityp) {
+        return FILE_MIME_TYPE_GIF.equals(imageMinityp);
     }
 
 }

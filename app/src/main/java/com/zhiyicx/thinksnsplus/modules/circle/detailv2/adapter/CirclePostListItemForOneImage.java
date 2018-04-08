@@ -86,7 +86,7 @@ public class CirclePostListItemForOneImage extends CirclePostListBaseItem {
             }
             view.setLayoutParams(new LinearLayout.LayoutParams(with, height));
             // 是否是 gif
-            view.setIshowGifTag(FILE_MIME_TYPE_GIF.equals(imageBean.getImgMimeType()));
+            view.setIshowGifTag(ImageUtils.imageIsGif(imageBean.getImgMimeType()));
             view.showLongImageTag(isLongImage(imageBean.getHeight(), imageBean.getWidth())); // 是否是长图
 
             Glide.with(mContext)
@@ -111,7 +111,7 @@ public class CirclePostListItemForOneImage extends CirclePostListBaseItem {
                 height = height > mImageMaxHeight ? mImageMaxHeight : height;
                 proportion = ((with / option.outWidth) * 100);
                 // 是否是 gif
-                view.setIshowGifTag(FILE_MIME_TYPE_GIF.equals(option.outMimeType));
+                view.setIshowGifTag(ImageUtils.imageIsGif(option.outMimeType));
                 view.showLongImageTag(isLongImage(option.outHeight, option.outWidth)); // 是否是长图
             }
             if (height < DEFALT_IMAGE_HEIGHT) {

@@ -844,7 +844,8 @@ public class BackgroundTaskHandler {
                         sendDynamicDataBean.setPhotos(null);
                         sendDynamicDataBean.setVideoInfo(null);
                         return sendDynamicDataBean;
-                    }).flatMap(sendDynamicDataBeanV2 -> mSendDynamicRepository.sendDynamicV2(sendDynamicDataBeanV2)
+                    })
+                    .flatMap(sendDynamicDataBeanV2 -> mSendDynamicRepository.sendDynamicV2(sendDynamicDataBeanV2)
                             .flatMap(objectBaseJsonV2 -> {
                                 BaseJson<Object> baseJson = new BaseJson<>();
                                 baseJson.setData((double) objectBaseJsonV2.getId());

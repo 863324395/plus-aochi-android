@@ -1098,7 +1098,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
 
     private void goDynamicDetail(int position, boolean isLookMoreComment, ViewHolder holder) {
         // 还未发送成功的动态列表不查看详情
-        if (mListDatas.get(position).getId() == null || mListDatas.get(position).getId() == 0) {
+        if (mListDatas.get(position).getId() == null || mListDatas.get(position).getId() <= 0) {
             return;
         }
 

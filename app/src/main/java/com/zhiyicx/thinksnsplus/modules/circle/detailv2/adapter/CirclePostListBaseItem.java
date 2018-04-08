@@ -295,7 +295,7 @@ public class CirclePostListBaseItem implements ItemViewDelegate<CirclePostListBe
             if (TextUtils.isEmpty(imageBean.getImgUrl())) {
                 Boolean canLook = true;
                 // 是否是 gif
-                view.setIshowGifTag(FILE_MIME_TYPE_GIF.equals(imageBean.getImgMimeType()));
+                view.setIshowGifTag(ImageUtils.imageIsGif(imageBean.getImgMimeType()));
                 // 是否是长图
                 view.showLongImageTag(isLongImage(imageBean.getHeight(), imageBean.getWidth()));
                 Glide.with(mContext)
@@ -311,7 +311,7 @@ public class CirclePostListBaseItem implements ItemViewDelegate<CirclePostListBe
                 // 是否是长图
                 BitmapFactory.Options option = DrawableProvider.getPicsWHByFile(imageBean.getImgUrl());
                 // 是否是 gif
-                view.setIshowGifTag(FILE_MIME_TYPE_GIF.equals(option.outMimeType));
+                view.setIshowGifTag(ImageUtils.imageIsGif(option.outMimeType));
                 view.showLongImageTag(isLongImage(option.outHeight, option.outWidth));
                 Glide.with(mContext)
                         .load(imageBean.getImgUrl())

@@ -17,7 +17,10 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.BitmapRequestBuilder;
 import com.bumptech.glide.DrawableRequestBuilder;
+import com.bumptech.glide.GifRequestBuilder;
+import com.bumptech.glide.GifTypeRequest;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.klinker.android.link_builder.Link;
@@ -61,6 +64,8 @@ import cn.jzvd.JZUtils;
 import cn.jzvd.JZVideoPlayerManager;
 import cn.jzvd.JZVideoPlayerStandard;
 
+import static com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2.ImagesBean.FILE_MIME_TYPE_GIF;
+
 /**
  * @Describe 动态详情头部信息
  * @Author Jungle68
@@ -69,6 +74,7 @@ import cn.jzvd.JZVideoPlayerStandard;
  */
 
 public class DynamicDetailHeader {
+    private static final int DEFAULT_PART_TOTAL = 100;
 
     private LinearLayout mPhotoContainer;
     private TextView mContent;
@@ -83,6 +89,11 @@ public class DynamicDetailHeader {
     private Bitmap sharBitmap;
     private OnImageClickLisenter mOnImageClickLisenter;
     private TextViewUtils.OnSpanTextClickListener mOnSpanTextClickListener;
+
+    /**
+     * Gif 是否直接播放
+     */
+    private boolean mIsGifPlay = false;
 
     View getDynamicDetailHeader() {
         return mDynamicDetailHeader;
@@ -338,24 +349,40 @@ public class DynamicDetailHeader {
         imageView.setLayoutParams(layoutParams);
 
         if (TextUtils.isEmpty(imageBean.getImgUrl())) {
-            int part = (picWidth / imageBean.getWidth()) * 100;
-            if (part > 100) {
-                part = 100;
+            int part = (picWidth / imageBean.getWidth()) * DEFAULT_PART_TOTAL;
+            if (part > DEFAULT_PART_TOTAL) {
+                part = DEFAULT_PART_TOTAL;
             }
             boolean canLook = !(imageBean.isPaid() != null && !imageBean.isPaid()
                     && imageBean.getType().equals(Toll.LOOK_TOLL_TYPE));
-            DrawableRequestBuilder requestBuilder =
-                    Glide.with(mContext)
-                            .load(ImageUtils.imagePathConvertV2(canLook, imageBean.getFile(), canLook ? picWidth : 0,
-                                    canLook ? height : 0, part, AppApplication.getTOKEN()))
-                            .override(picWidth, height)
-                            .placeholder(R.drawable.shape_default_image)
-                            .diskCacheStrategy(DiskCacheStrategy.ALL)
-                            .error(R.drawable.shape_default_image);
-            if (!canLook) {// 切换展位图防止闪屏
-                requestBuilder.placeholder(R.drawable.shape_default_image);
+            imageView.setIshowGifTag(ImageUtils.imageIsGif(imageBean.getImgMimeType()));
+            if (ImageUtils.imageIsGif(imageBean.getImgMimeType()) && mIsGifPlay) {
+                GifRequestBuilder requestBuilder = Glide.with(mContext)
+                        .load(ImageUtils.imagePathConvertV2(canLook, imageBean.getFile(), canLook ? picWidth : 0,
+                                canLook ? height : 0, part, AppApplication.getTOKEN()))
+                        .asGif()
+                        .override(picWidth, height)
+                        .placeholder(R.drawable.shape_default_image)
+                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+                        .error(R.drawable.shape_default_image);
+                if (!canLook) {// 切换展位图防止闪屏
+                    requestBuilder.placeholder(R.drawable.shape_default_image);
+                }
+                requestBuilder.into(imageView);
+            } else {
+                BitmapRequestBuilder requestBuilder = Glide.with(mContext)
+                        .load(ImageUtils.imagePathConvertV2(canLook, imageBean.getFile(), canLook ? picWidth : 0,
+                                canLook ? height : 0, part, AppApplication.getTOKEN()))
+                        .asBitmap()
+                        .override(picWidth, height)
+                        .placeholder(R.drawable.shape_default_image)
+                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+                        .error(R.drawable.shape_default_image);
+                if (!canLook) {// 切换展位图防止闪屏
+                    requestBuilder.placeholder(R.drawable.shape_default_image);
+                }
+                requestBuilder.into(imageView);
             }
-            requestBuilder.into(imageView);
         } else {
             Glide.with(mContext)
                     .load(imageBean.getImgUrl())

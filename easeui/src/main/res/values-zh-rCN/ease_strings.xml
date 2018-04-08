@@ -18,7 +18,7 @@
     <string name="user_card">名片</string>
     <string name="move_up_to_cancel">手指上滑，取消发送</string>
     <string name="release_to_cancel">松开手指，取消发送</string>
-    <string name="send_fail">发送消息失败,</string>
+    <string name="send_fail">发送失败</string>
     <string name="delete_message">删除消息</string>
     <string name="delete_conversation_messages">删除会话和消息</string>
     <string name="delete_conversation">删除会话</string>
@@ -26,7 +26,7 @@
     <string name="delete_voice">删除语音</string>
     <string name="delete_video">删除视频</string>
     <string name="delete">删除</string>
-    <string name="resend">重发</string>
+    <string name="resend">重新发送</string>
     <string name="confirm_resend">确认重发该信息？</string>
     <string name="connect_failuer_toast">请检查网络或稍候重试</string>
     <string name="network_unavailable">网络连接不可用，请检查网络</string>

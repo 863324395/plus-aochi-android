@@ -12,6 +12,7 @@ import com.zhiyicx.baseproject.widget.imageview.FilterImageView;
 import com.zhiyicx.common.utils.DrawableProvider;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
+import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
 import java.util.concurrent.TimeUnit;
@@ -78,7 +79,7 @@ public class DynamicListItemForOneImage extends DynamicListBaseItem {
             with = imageBean.getImageViewWidth();
             height = imageBean.getImageViewHeight();
             // 是否是 gif
-            view.setIshowGifTag(FILE_MIME_TYPE_GIF.equals(imageBean.getImgMimeType()));
+            view.setIshowGifTag(ImageUtils.imageIsGif(imageBean.getImgMimeType()));
             // 是否是长图
             view.showLongImageTag(imageBean.hasLongImage());
             view.setLayoutParams(new LinearLayout.LayoutParams(with, height));
@@ -100,7 +101,7 @@ public class DynamicListItemForOneImage extends DynamicListBaseItem {
                 height = with * option.outHeight / option.outWidth;
                 height = height > mImageMaxHeight ? mImageMaxHeight : height;
                 // 是否是 gif
-                view.setIshowGifTag(FILE_MIME_TYPE_GIF.equals(option.outMimeType));
+                view.setIshowGifTag(ImageUtils.imageIsGif(option.outMimeType));
                 // 是否是长图
                 view.showLongImageTag(isLongImage(option.outHeight, option.outWidth));
             }
