@@ -80,6 +80,7 @@ import cn.jzvd.JZMediaManager;
 import cn.jzvd.JZUtils;
 import cn.jzvd.JZVideoPlayer;
 import cn.jzvd.JZVideoPlayerManager;
+import cn.jzvd.JZVideoPlayerStandard;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
@@ -89,6 +90,7 @@ import static com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.POPUPWI
 import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment.DYNAMIC_DETAIL_DATA;
 import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment.DYNAMIC_DETAIL_DATA_POSITION;
 import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment.DYNAMIC_DETAIL_DATA_TYPE;
+import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment.DYNAMIC_VIDEO_STATE;
 import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment.LOOK_COMMENT_MORE;
 import static com.zhiyicx.thinksnsplus.modules.dynamic.tollcomment.DynamicCommentTollFragment.TOLL_DYNAMIC_COMMENT;
 
@@ -278,7 +280,6 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
             }
         });
     }
-
 
 
     @Override
@@ -591,7 +592,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
             return;
         }
 
-        goDynamicDetail(position, false);
+        goDynamicDetail(position, false, (ViewHolder) holder);
 
     }
 
@@ -792,8 +793,9 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
         if (!TouristConfig.MORE_COMMENT_CAN_LOOK && mPresenter.handleTouristControl()) {
             return;
         }
+
         int position = mPresenter.getCurrenPosiotnInDataList(dynamicBean.getFeed_mark());
-        goDynamicDetail(position, true);
+        goDynamicDetail(position, true, (ViewHolder) mRvList.getChildViewHolder(view));
     }
 
     /**
@@ -1094,17 +1096,33 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
         }
     }
 
-    private void goDynamicDetail(int position, boolean isLookMoreComment) {
+    private void goDynamicDetail(int position, boolean isLookMoreComment, ViewHolder holder) {
         // 还未发送成功的动态列表不查看详情
         if (mListDatas.get(position).getId() == null || mListDatas.get(position).getId() == 0) {
             return;
         }
+
         Intent intent = new Intent(getActivity(), DynamicDetailActivity.class);
         Bundle bundle = new Bundle();
         bundle.putParcelable(DYNAMIC_DETAIL_DATA, mListDatas.get(position));
         bundle.putString(DYNAMIC_DETAIL_DATA_TYPE, getDynamicType());
         bundle.putInt(DYNAMIC_DETAIL_DATA_POSITION, position);
+
         bundle.putBoolean(LOOK_COMMENT_MORE, isLookMoreComment);
+
+
+        JZVideoPlayerStandard playView = null;
+        try {
+            playView = holder.getView(R.id.videoplayer);
+        } catch (Exception ignore) {
+
+        }
+        if (playView != null && playView.currentState>0) {
+            playView.textureViewContainer.removeView(JZMediaManager.textureView);
+            bundle.putInt(DYNAMIC_VIDEO_STATE, playView.currentState);
+            playView.onStatePause();
+        }
+
         intent.putExtras(bundle);
         startActivity(intent);
         mPresenter.handleViewCount(mListDatas.get(position).getId(), position);

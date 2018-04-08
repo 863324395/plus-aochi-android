@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.modules.dynamic.detail;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -29,6 +30,7 @@ import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.baseproject.impl.photoselector.Toll;
 import com.zhiyicx.baseproject.widget.imageview.FilterImageView;
 import com.zhiyicx.common.utils.ConvertUtils;
+import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.SkinUtils;
 import com.zhiyicx.common.utils.TextViewUtils;
 import com.zhiyicx.common.utils.UIUtils;
@@ -54,6 +56,9 @@ import com.zhiyicx.thinksnsplus.widget.ReWardView;
 import java.util.ArrayList;
 import java.util.List;
 
+import cn.jzvd.JZMediaManager;
+import cn.jzvd.JZUtils;
+import cn.jzvd.JZVideoPlayerManager;
 import cn.jzvd.JZVideoPlayerStandard;
 
 /**
@@ -73,6 +78,7 @@ public class DynamicDetailHeader {
     private ReWardView mReWardView;
     private Context mContext;
     private int screenWidth;
+    private int screenHeight;
     private int picWidth;
     private Bitmap sharBitmap;
 
@@ -101,6 +107,9 @@ public class DynamicDetailHeader {
         mPhotoContainer = (LinearLayout) mDynamicDetailHeader.findViewById(R.id
                 .ll_dynamic_photos_container);
         screenWidth = UIUtils.getWindowWidth(context);
+        screenHeight = UIUtils.getWindowHeight(context) - DeviceUtils.getStatuBarHeight(mContext)
+                - mContext.getResources().getDimensionPixelOffset(com.zhiyicx.baseproject.R.dimen.toolbar_height)
+                - mContent.getResources().getDimensionPixelOffset(com.zhiyicx.baseproject.R.dimen.divider_line);
 //        picWidth = UIUtils.getWindowWidth(context) - context.getResources().getDimensionPixelSize
 //                (R.dimen.spacing_normal) * 2;
         picWidth = screenWidth;
@@ -132,7 +141,7 @@ public class DynamicDetailHeader {
      *
      * @param dynamicBean
      */
-    public void setDynamicDetial(DynamicDetailBeanV2 dynamicBean) {
+    public void setDynamicDetial(DynamicDetailBeanV2 dynamicBean,int state) {
         String titleText = "";
         if (TextUtils.isEmpty(titleText)) {
             mTitle.setVisibility(View.GONE);
@@ -161,18 +170,25 @@ public class DynamicDetailHeader {
             DynamicDetailBeanV2.Video video = dynamicBean.getVideo();
             if (video != null) {
                 ZhiyiVideoView videoView = new ZhiyiVideoView(mContext);
-
-                int height = (videoView.getHeight() * picWidth / videoView.getWidth());
-                // 提前设置图片控件的大小，使得占位图显示
-                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(picWidth, height);
-                layoutParams.gravity = Gravity.CENTER_HORIZONTAL;
-                videoView.setLayoutParams(layoutParams);
-
                 mPhotoContainer.addView(videoView);
-                videoView.getLayoutParams().height = ConvertUtils.dp2px(mContext, 400);
-                String videoUrl = String.format(ApiConfig.APP_DOMAIN + ApiConfig.MUSIC_PATH,
+
+                int width = picWidth;
+                int height = (video.getHeight() * picWidth / video.getWidth());
+                if (height > screenHeight) {
+                    height = screenHeight;
+                    width = (screenHeight / video.getHeight()) * video.getWidth();
+                }
+                videoView.getLayoutParams().height = height;
+                videoView.getLayoutParams().width = width;
+
+                String videoUrl = String.format(ApiConfig.APP_DOMAIN + ApiConfig.FILE_PATH,
                         dynamicBean.getVideo().getVideo_id());
                 videoView.setUp(videoUrl, JZVideoPlayerStandard.SCREEN_WINDOW_LIST, "tym");
+
+                videoView.setState(state);
+                videoView.addTextureView();
+//                JZVideoPlayerManager.setSecondFloor(videoView);
+
                 Glide.with(mContext).load(video.getGlideUrl()).into(videoView.thumbImageView);
                 videoView.positionInList = 0;
                 return;

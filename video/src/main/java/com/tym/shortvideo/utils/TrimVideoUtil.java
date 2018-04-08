@@ -256,21 +256,6 @@ public class TrimVideoUtil {
                                                            retriever.setDataSource(mContext, Uri
                                                                    .parse(video.getPath()));
 
-                                                           LogUtils.d("duration::" + retriever
-                                                                   .extractMetadata
-                                                                           (MediaMetadataRetriever
-                                                                                   .METADATA_KEY_DURATION));
-
-                                                           LogUtils.d("width::" + retriever
-                                                                   .extractMetadata
-                                                                           (MediaMetadataRetriever
-                                                                                   .METADATA_KEY_VIDEO_WIDTH));
-
-                                                           LogUtils.d("height::" + retriever
-                                                                   .extractMetadata
-                                                                           (MediaMetadataRetriever
-                                                                                   .METADATA_KEY_VIDEO_HEIGHT));
-
                                                            int duration = Integer.parseInt(retriever
                                                                    .extractMetadata
                                                                            (MediaMetadataRetriever

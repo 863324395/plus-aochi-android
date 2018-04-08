@@ -2,7 +2,6 @@ package com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.text.TextUtils;
 
@@ -14,16 +13,11 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.utils.ConvertUtils;
-import com.zhiyicx.common.utils.DrawableProvider;
 import com.zhiyicx.common.utils.FastBlur;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
-import com.zhiyicx.thinksnsplus.modules.shortvideo.helper.CustomMediaPlayerAssertFolder;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
-import java.util.LinkedHashMap;
-
-import cn.jzvd.JZVideoPlayer;
 import cn.jzvd.JZVideoPlayerStandard;
 
 /**
@@ -83,7 +77,7 @@ public class DynamicListItemForShorVideo extends DynamicListBaseItem {
         DynamicDetailBeanV2.Video video = dynamicBean.getVideo();
         if (TextUtils.isEmpty(video.getUrl())) {
 
-            videoUrl = String.format(ApiConfig.APP_DOMAIN + ApiConfig.MUSIC_PATH,
+            videoUrl = String.format(ApiConfig.APP_DOMAIN + ApiConfig.FILE_PATH,
                     dynamicBean.getVideo().getVideo_id());
 
             with = video.getWidth();

@@ -43,8 +43,8 @@ public class ApiConfig {
     // 头像地址
     public static final String IMAGE_AVATAR_PATH_V2 = APP_DOMAIN + "api/" + API_VERSION_2 + "/users/%s/avatar";
 
-    // 音乐地址 V2
-    public static final String MUSIC_PATH = "api/" + API_VERSION_2 + "/files/%s";
+    // 音乐等文件地址 V2
+    public static final String FILE_PATH = "api/" + API_VERSION_2 + "/files/%s";
 
     /*******************************************  接口 Path  *********************************************/
 

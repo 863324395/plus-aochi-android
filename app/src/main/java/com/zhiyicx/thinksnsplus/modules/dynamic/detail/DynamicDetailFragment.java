@@ -79,6 +79,7 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
     public static final String DYNAMIC_DETAIL_DATA = "dynamic_detail_data";
     public static final String DYNAMIC_LIST_NEED_REFRESH = "dynamic_list_need_refresh";
     public static final String DYNAMIC_UPDATE_TOLL = "dynamic_update_toll";
+    public static final String DYNAMIC_VIDEO_STATE = "dynamic_video_state";
     public static final String DYNAMIC_DETAIL_DATA_TYPE = "dynamic_detail_data_type";
     public static final String DYNAMIC_DETAIL_DATA_POSITION = "dynamic_detail_data_position";
     public static final String LOOK_COMMENT_MORE = "look_comment_more";
@@ -408,7 +409,7 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
         setToolBarUser(mDynamicBean);// 设置标题用户
         initBottomToolData(mDynamicBean);// 初始化底部工具栏数据
 //        设置动态详情列表数据
-        mDynamicDetailHeader.setDynamicDetial(mDynamicBean);
+        mDynamicDetailHeader.setDynamicDetial(mDynamicBean, getArgumentsBundle().getInt(DYNAMIC_VIDEO_STATE, -1));
         updateReward();
         updateCommentCountAndDig();
         onNetResponseSuccess(mDynamicBean.getComments(), false);

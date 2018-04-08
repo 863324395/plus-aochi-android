@@ -1,6 +1,8 @@
 package com.tym.shortvideo.view;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.pm.ActivityInfo;
 import android.media.AudioManager;
 import android.util.AttributeSet;
@@ -19,6 +21,7 @@ import com.zhiyicx.common.utils.log.LogUtils;
 import java.lang.reflect.Constructor;
 
 import cn.jzvd.JZMediaManager;
+import cn.jzvd.JZUserActionStandard;
 import cn.jzvd.JZUtils;
 import cn.jzvd.JZVideoPlayer;
 import cn.jzvd.JZVideoPlayerManager;
@@ -140,5 +143,34 @@ public class ZhiyiVideoView extends JZVideoPlayerStandard {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void showWifiDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setMessage(getResources().getString(R.string.tips_not_wifi));
+        builder.setPositiveButton(getResources().getString(R.string.tips_not_wifi_confirm), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+                onEvent(JZUserActionStandard.ON_CLICK_START_WIFIDIALOG);
+                startVideo();
+                WIFI_TIP_DIALOG_SHOWED = true;
+            }
+        });
+        builder.setNegativeButton(getResources().getString(R.string.tips_not_wifi_cancel), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+                clearFloatScreen();
+            }
+        });
+        builder.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialog) {
+                dialog.dismiss();
+            }
+        });
+        builder.create().show();
     }
 }

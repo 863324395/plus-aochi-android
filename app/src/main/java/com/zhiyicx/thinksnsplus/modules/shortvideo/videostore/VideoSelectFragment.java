@@ -96,6 +96,7 @@ public class VideoSelectFragment extends TSListFragment {
                 VideoInfo videoInfo = (VideoInfo) mListDatas.get(position);
                 if (TextUtils.isEmpty(videoInfo.getPath())) {
                     startActivity(new Intent(mActivity, RecordActivity.class));
+                    mActivity.finish();
                 } else {
                     initReSendDynamicPopupWindow(videoInfo);
                 }

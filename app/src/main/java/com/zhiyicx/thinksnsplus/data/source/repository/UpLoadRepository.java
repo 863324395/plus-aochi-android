@@ -141,9 +141,7 @@ public class UpLoadRepository implements IUploadRepository {
                         // 文件不存在 服务器返回404,则 进行 重传文件，不再校验hash
                         boolean is404 = throwable.toString().contains("404");
                         if (is404) {
-                            if (position[0] > 0) {
-                                position[0]--;
-                            }
+
                         }
                         return !is404;
                     }
