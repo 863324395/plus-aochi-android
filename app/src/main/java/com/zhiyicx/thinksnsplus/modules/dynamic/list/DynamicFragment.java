@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.dynamic.list;
 
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -190,12 +191,6 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
     }
 
     @Override
-    public void onPause() {
-        super.onPause();
-        JZVideoPlayer.releaseAllVideos();
-    }
-
-    @Override
     public void onResume() {
         super.onResume();
         if (!mListDatas.isEmpty()) {
@@ -283,6 +278,8 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
             }
         });
     }
+
+
 
     @Override
     protected boolean setUseCenterLoading() {

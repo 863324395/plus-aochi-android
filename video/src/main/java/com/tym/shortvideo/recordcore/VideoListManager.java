@@ -73,7 +73,7 @@ public class VideoListManager {
      */
     public void addSubVideo(String path, int duration) {
         if (mVideoList == null) {
-            mVideoList = new LinkedList<SubVideo>();
+            mVideoList = new LinkedList<>();
         }
         SubVideo subVideo = new SubVideo();
         subVideo.mediaPath = path;
@@ -87,7 +87,7 @@ public class VideoListManager {
      */
     public void addSubVideo(SubVideo subVideo) {
         if (mVideoList == null) {
-            mVideoList = new LinkedList<SubVideo>();
+            mVideoList = new LinkedList<>();
         }
         mVideoList.add(subVideo);
     }
@@ -179,9 +179,9 @@ public class VideoListManager {
      */
     public List<String> getSubVideoPathList() {
         if (mVideoList == null || mVideoList.isEmpty()) {
-            return new ArrayList<String>();
+            return new ArrayList<>();
         }
-        List<String> mediaPaths = new ArrayList<String>();
+        List<String> mediaPaths = new ArrayList<>();
         for (int i = 0; i < mVideoList.size(); i++) {
             mediaPaths.add(i, mVideoList.get(i).getMediaPath());
         }

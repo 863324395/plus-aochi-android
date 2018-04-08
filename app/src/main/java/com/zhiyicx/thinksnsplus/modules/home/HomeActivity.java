@@ -13,6 +13,8 @@ import com.zhiyicx.thinksnsplus.config.JpushMessageTypeConfig;
 import com.zhiyicx.thinksnsplus.data.beans.JpushMessageBean;
 import com.zhiyicx.thinksnsplus.modules.shortvideo.helper.NetChangeReceiver;
 
+import cn.jzvd.JZVideoPlayer;
+
 
 /**
  * @Describe
@@ -74,6 +76,12 @@ public class HomeActivity extends TSActivity {
         super.onActivityResult(requestCode, resultCode, data);
         UmengSharePolicyImpl.onActivityResult(requestCode, resultCode, data, this);
         mContanierFragment.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        JZVideoPlayer.releaseAllVideos();
     }
 
     @Override

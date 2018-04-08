@@ -603,6 +603,10 @@ public class VideoTrimmerView extends FrameLayout {
         public ImageView thumb;
     }
 
+    public int getDuration() {
+        return mDuration;
+    }
+
     public void setRangeSeekBarViewVisible(@Visibility int viewVisible) {
         mRangeSeekBarView.setVisibility(viewVisible);
     }

@@ -12,14 +12,13 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
-    <SeekBar
+    <android.support.v7.widget.AppCompatSeekBar
         android:id="@+id/sk_cover"
-        android:background="@null"
         android:progressDrawable="@drawable/jz_bottom_seek_progress"
         android:thumb="@drawable/jz_bottom_seek_thumb"
         android:layout_gravity="center_vertical"
         android:layout_width="match_parent"
-        android:layout_height="20dp"
+        android:layout_height="10dp"
         android:visibility="visible"
         android:max="1000"
         android:secondaryProgress="0" />

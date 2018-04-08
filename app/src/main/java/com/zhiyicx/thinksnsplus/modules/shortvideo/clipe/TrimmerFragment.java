@@ -112,9 +112,7 @@ public class TrimmerFragment extends TSFragment implements TrimVideoListener {
         RxView.clicks(mToolbarRight)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .compose(this.bindToLifecycle())
-                .subscribe(aVoid -> {
-                    mVideoTrimmerView.onSaveClicked();
-                });
+                .subscribe(aVoid -> mVideoTrimmerView.onSaveClicked());
 
         RxView.clicks(mToolbarLeft)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
@@ -143,6 +141,7 @@ public class TrimmerFragment extends TSFragment implements TrimVideoListener {
         FileUtils.updateMediaStore(mActivity, url, (path, uri) -> {
             ArrayList<String> arrayList = new ArrayList<>();
             arrayList.add(path);
+            VideoListManager.getInstance().addSubVideo(path,mVideoTrimmerView.getDuration());
             PreviewActivity.startPreviewActivity(mActivity, arrayList);
             mActivity.finish();
         });

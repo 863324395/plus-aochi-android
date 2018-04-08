@@ -124,7 +124,6 @@ public class TrimVideoUtil {
 
     public static void backgroundShootVideoThumb(final Context context, final Uri videoUri, final
     long frame_time, final SingleCallback<Bitmap, Integer> callback) {
-        final ArrayList<Bitmap> thumbnailList = new ArrayList<>();
         BackgroundExecutor.execute(new BackgroundExecutor.Task("", 0L, "") {
                                        @Override
                                        public void execute() {
@@ -140,19 +139,14 @@ public class TrimVideoUtil {
                                                                (MediaMetadataRetriever
                                                                        .METADATA_KEY_DURATION)) *
                                                        1000;
-                                               float w, h;
-                                               w = thumb_Width;
-                                               h = 0;
                                                //每次截取到3帧之后上报
                                                Bitmap bitmap = mediaMetadataRetriever
                                                        .getFrameAtTime(frame_time,
                                                                MediaMetadataRetriever
                                                                        .OPTION_CLOSEST_SYNC);
-                                               h = (w / (float) bitmap.getWidth()) * bitmap
-                                                       .getHeight();
                                                try {
                                                    bitmap = Bitmap.createScaledBitmap(bitmap,
-                                                           thumb_Width, (int) h, false);
+                                                           thumb_Width, thumb_Height, false);
                                                    callback.onSingleCallback(bitmap,1);
                                                } catch (Exception e) {
                                                    e.printStackTrace();
@@ -258,27 +252,31 @@ public class TrimVideoUtil {
                                                                .getColumnIndex(MediaStore.Video
                                                                        .Media._ID)));
 
-                                                       MediaMetadataRetriever retriever = new
-                                                               MediaMetadataRetriever();
-                                                       retriever.setDataSource(mContext, Uri
-                                                               .parse(video.getPath()));
-                                                       int duration = Integer.parseInt(retriever
-                                                               .extractMetadata
-                                                                       (MediaMetadataRetriever
-                                                                               .METADATA_KEY_DURATION));
-                                                       int width = Integer.parseInt(retriever
-                                                               .extractMetadata
-                                                                       (MediaMetadataRetriever
-                                                                               .METADATA_KEY_VIDEO_WIDTH));
-                                                       int height = Integer.parseInt(retriever
-                                                               .extractMetadata
-                                                                       (MediaMetadataRetriever
-                                                                               .METADATA_KEY_VIDEO_HEIGHT));
-                                                       retriever.release();
+                                                       try{
+                                                           MediaMetadataRetriever retriever = new
+                                                                   MediaMetadataRetriever();
+                                                           retriever.setDataSource(mContext, Uri
+                                                                   .parse(video.getPath()));
+                                                           int duration = Integer.parseInt(retriever
+                                                                   .extractMetadata
+                                                                           (MediaMetadataRetriever
+                                                                                   .METADATA_KEY_DURATION));
+                                                           int width = Integer.parseInt(retriever
+                                                                   .extractMetadata
+                                                                           (MediaMetadataRetriever
+                                                                                   .METADATA_KEY_VIDEO_WIDTH));
+                                                           int height = Integer.parseInt(retriever
+                                                                   .extractMetadata
+                                                                           (MediaMetadataRetriever
+                                                                                   .METADATA_KEY_VIDEO_HEIGHT));
+                                                           video.setDuration(duration);
+                                                           video.setWidth(width);
+                                                           video.setHeight(height);
 
-                                                       video.setDuration(duration);
-                                                       video.setWidth(width);
-                                                       video.setHeight(height);
+                                                           retriever.release();
+                                                       }catch (Exception e){
+
+                                                       }
                                                        if (video.getDuration() < 3000) {
                                                            continue;
                                                        }

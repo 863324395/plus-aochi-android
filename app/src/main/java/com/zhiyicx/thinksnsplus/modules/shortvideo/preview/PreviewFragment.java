@@ -1,8 +1,11 @@
 package com.zhiyicx.thinksnsplus.modules.shortvideo.preview;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
@@ -12,6 +15,7 @@ import android.widget.TextView;
 import com.jakewharton.rxbinding.view.RxView;
 import com.tym.shortvideo.filter.helper.MagicFilterType;
 import com.tym.shortvideo.filter.helper.SlideGpuFilterGroup;
+import com.tym.shortvideo.interfaces.SingleCallback;
 import com.tym.shortvideo.media.MediaPlayerWrapper;
 import com.tym.shortvideo.media.VideoInfo;
 import com.tym.shortvideo.mediacodec.VideoClipper;
@@ -20,6 +24,7 @@ import com.tym.shortvideo.recordcore.VideoListManager;
 import com.tym.shortvideo.recordcore.multimedia.VideoCombineManager;
 import com.tym.shortvideo.recordcore.multimedia.VideoCombiner;
 import com.tym.shortvideo.utils.FileUtils;
+import com.tym.shortvideo.utils.TrimVideoUtil;
 import com.tym.shortvideo.view.VideoPreviewView;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
@@ -42,6 +47,7 @@ import butterknife.BindView;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
 
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 
@@ -148,8 +154,28 @@ public class PreviewFragment extends TSFragment implements MediaPlayerWrapper.IM
     private void initListener() {
         RxView.clicks(mToolbarRight)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
+                .filter(aVoid -> !isLoading())
                 .compose(this.bindToLifecycle())
-                .subscribe(aVoid -> combineVideo());
+                .subscribe(aVoid -> {
+
+                    mVideoView.pause();
+                    showCenterLoading("视频处理中");
+                    isLoading = true;
+
+                    if (mVideoInfo == null) {
+                        mVideoInfo = new VideoInfo();
+                    }
+                    if (TextUtils.isEmpty(mVideoInfo.getCover())){
+                        TrimVideoUtil.backgroundShootVideoThumb(mActivity,
+                                Uri.parse(VideoListManager.getInstance().getSubVideoPathList().get(0)), 1, (bitmap, integer) -> {
+                                    mVideoInfo.setCover(com.zhiyicx.common.utils.FileUtils.saveBitmapToFile(mActivity, bitmap, "video_cover"));
+                                    combineVideo();
+                        });
+                    }else{
+                        combineVideo();
+                    }
+
+                });
 
         RxView.clicks(mToolbarLeft)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
@@ -170,15 +196,6 @@ public class PreviewFragment extends TSFragment implements MediaPlayerWrapper.IM
         if (requestCode == CoverFragment.REQUESTCODE && data.getExtras() != null) {
             mVideoInfo.setCover(data.getExtras().getString(CoverFragment.PATH));
         }
-    }
-
-    @Override
-    protected void setRightClick() {
-        super.setRightClick();
-        if (isLoading()) {
-            return;
-        }
-        combineVideo();
     }
 
     private boolean isLoading() {
@@ -285,11 +302,6 @@ public class PreviewFragment extends TSFragment implements MediaPlayerWrapper.IM
      * 合并视频
      */
     private void combineVideo() {
-
-        mVideoView.pause();
-        showCenterLoading("视频处理中");
-        isLoading = true;
-
         final String fileName = "CainCamera_" + System.currentTimeMillis() + ".mp4";
         final String path = ParamsManager.AlbumPath
                 + fileName;
@@ -345,10 +357,6 @@ public class PreviewFragment extends TSFragment implements MediaPlayerWrapper.IM
                             isLoading = false;
                             hideCenterLoading();
 
-
-                            if (mVideoInfo == null) {
-                                mVideoInfo = new VideoInfo();
-                            }
                             mVideoInfo.setPath(mOutputPath);
                             mVideoInfo.setCreateTime(System.currentTimeMillis() + "");
                             mVideoInfo.setWidth(mVideoView.getVideoWidth());
