@@ -867,12 +867,17 @@ public class FileUtils {
      * @return
      */
     public static String getMimeTypeByFile(File file) {
-        String result = null;
-        result = getMimeType(file.getPath());
-        if (TextUtils.isEmpty(result)) {
-            result = getMimeTypeByFileName(file.getName());
+        BitmapFactory.Options option = DrawableProvider.getPicsWHByFile(file.getPath());
+        if (option != null) {
+            return option.outMimeType;
+        } else {
+            String result;
+            result = getMimeType(file.getPath());
+            if (TextUtils.isEmpty(result)) {
+                result = getMimeTypeByFileName(file.getName());
+            }
+            return result;
         }
-        return result;
     }
 
     private static String getSuffix(File file) {
