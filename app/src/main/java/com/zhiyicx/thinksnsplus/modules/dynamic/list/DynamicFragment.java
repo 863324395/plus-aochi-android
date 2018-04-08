@@ -1117,7 +1117,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
         } catch (Exception ignore) {
 
         }
-        if (playView != null && playView.currentState>0) {
+        if (playView != null && playView.currentState > 0) {
             playView.textureViewContainer.removeView(JZMediaManager.textureView);
             bundle.putInt(DYNAMIC_VIDEO_STATE, playView.currentState);
             playView.onStatePause();

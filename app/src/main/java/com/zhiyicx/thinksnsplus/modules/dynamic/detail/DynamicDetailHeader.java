@@ -141,7 +141,7 @@ public class DynamicDetailHeader {
      *
      * @param dynamicBean
      */
-    public void setDynamicDetial(DynamicDetailBeanV2 dynamicBean,int state) {
+    public void setDynamicDetial(DynamicDetailBeanV2 dynamicBean, int state) {
         String titleText = "";
         if (TextUtils.isEmpty(titleText)) {
             mTitle.setVisibility(View.GONE);
@@ -184,9 +184,10 @@ public class DynamicDetailHeader {
                 String videoUrl = String.format(ApiConfig.APP_DOMAIN + ApiConfig.FILE_PATH,
                         dynamicBean.getVideo().getVideo_id());
                 videoView.setUp(videoUrl, JZVideoPlayerStandard.SCREEN_WINDOW_LIST, "tym");
-
-                videoView.setState(state);
-                videoView.addTextureView();
+                if (state > 0) {
+                    videoView.setState(state);
+                    videoView.addTextureView();
+                }
 //                JZVideoPlayerManager.setSecondFloor(videoView);
 
                 Glide.with(mContext).load(video.getGlideUrl()).into(videoView.thumbImageView);
