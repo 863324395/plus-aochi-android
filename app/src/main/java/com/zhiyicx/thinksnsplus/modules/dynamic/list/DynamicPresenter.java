@@ -282,14 +282,8 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.View>
         if (AppApplication.getmCurrentLoginAuth() == null) {
             return new ArrayList<>();
         }
-        List<DynamicDetailBeanV2> datas = mDynamicDetailBeanV2GreenDao.getMySendingUnSuccessDynamic(AppApplication.getMyUserIdWithdefault());
+        return mDynamicDetailBeanV2GreenDao.getMySendingUnSuccessDynamic(AppApplication.getMyUserIdWithdefault());
 
-        for (int i = 0; i < datas.size(); i++) {
-            datas.get(i).setState(DynamicDetailBeanV2.SEND_ERROR);
-        }
-        mDynamicDetailBeanV2GreenDao.insertOrReplace(datas);
-
-        return datas;
     }
 
     /**
