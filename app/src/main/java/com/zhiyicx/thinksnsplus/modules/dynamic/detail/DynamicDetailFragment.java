@@ -417,8 +417,8 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
             mRvList.post(() -> ((LinearLayoutManager) layoutManager).scrollToPositionWithOffset(0, -mDynamicDetailHeader.scrollCommentToTop()));
         }
         // 如果当前动态所属用户，就是当前用户，隐藏关注按钮
-        long user_id = mDynamicBean.getUser_id();
-        if (AppApplication.getmCurrentLoginAuth() != null && user_id == AppApplication.getmCurrentLoginAuth().getUser_id()) {
+        long userId = mDynamicBean.getUser_id();
+        if (AppApplication.getmCurrentLoginAuth() != null && userId == AppApplication.getmCurrentLoginAuth().getUser_id()) {
             mTvToolbarRight.setVisibility(View.GONE);
         } else {
             // 获取用户关注状态
@@ -767,7 +767,7 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
      * 初始化重发评论选择弹框
      */
     private void initReSendCommentPopupWindow(final DynamicCommentBean commentBean, final long
-            feed_id) {
+            feedId) {
         mReSendCommentPopWindow = ActionPopupWindow.builder()
                 .item1Str(getString(R.string.dynamic_list_resend_comment))
                 .item1Color(ContextCompat.getColor(getContext(), R.color.themeColor))
@@ -778,7 +778,7 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
                 .with(getActivity())
                 .item1ClickListener(() -> {
                     mReSendCommentPopWindow.hide();
-                    mPresenter.reSendComment(commentBean, feed_id);
+                    mPresenter.reSendComment(commentBean, feedId);
                 })
                 .bottomClickListener(() -> mReSendCommentPopWindow.hide())
                 .build();
@@ -809,11 +809,11 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
 
     @Override
     public void onDestroyView() {
-        super.onDestroyView();
         dismissPop(mDeletCommentPopWindow);
         dismissPop(mOtherDynamicPopWindow);
         dismissPop(mMyDynamicPopWindow);
         dismissPop(mPayImagePopWindow);
         dismissPop(mReSendCommentPopWindow);
+        super.onDestroyView();
     }
 }

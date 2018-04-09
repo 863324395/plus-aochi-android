@@ -74,26 +74,21 @@ public class DynamicDetailHeader {
     private TextView mContent;
     private TextView mTitle;
     private View mDynamicDetailHeader;
-    private FrameLayout fl_comment_count_container;
+    private FrameLayout mFlcommentcountcontainer;
     private ReWardView mReWardView;
     private Context mContext;
     private int screenWidth;
     private int screenHeight;
     private int picWidth;
     private Bitmap sharBitmap;
-
-    private LinearLayout mLlAdvert;
-    private View mRewardView;
-
     private OnImageClickLisenter mOnImageClickLisenter;
-    private DynamicDetailAdvertHeader mDynamicDetailAdvertHeader;
     private TextViewUtils.OnSpanTextClickListener mOnSpanTextClickListener;
 
-    public View getDynamicDetailHeader() {
+    View getDynamicDetailHeader() {
         return mDynamicDetailHeader;
     }
 
-    public DynamicDetailHeader(Context context, List<RealAdvertListBean> adverts) {
+    DynamicDetailHeader(Context context, List<RealAdvertListBean> adverts) {
         this.mContext = context;
         mDynamicDetailHeader = LayoutInflater.from(context).inflate(R.layout
                 .view_header_dynamic_detial, null);
@@ -102,10 +97,11 @@ public class DynamicDetailHeader {
         mTitle = (TextView) mDynamicDetailHeader.findViewById(R.id.tv_dynamic_title);
         mContent = (TextView) mDynamicDetailHeader.findViewById(R.id.tv_dynamic_content);
         initAdvert(context, adverts);
-        fl_comment_count_container = (FrameLayout) mDynamicDetailHeader.findViewById(R.id
+        mFlcommentcountcontainer = (FrameLayout) mDynamicDetailHeader.findViewById(R.id
                 .fl_comment_count_container);
         mPhotoContainer = (LinearLayout) mDynamicDetailHeader.findViewById(R.id
                 .ll_dynamic_photos_container);
+        picWidth = UIUtils.getWindowWidth(context);
         screenWidth = UIUtils.getWindowWidth(context);
         screenHeight = UIUtils.getWindowHeight(context) - DeviceUtils.getStatuBarHeight(mContext)
                 - mContext.getResources().getDimensionPixelOffset(com.zhiyicx.baseproject.R.dimen.toolbar_height)
@@ -114,20 +110,18 @@ public class DynamicDetailHeader {
 //                (R.dimen.spacing_normal) * 2;
         picWidth = screenWidth;
         mReWardView = (ReWardView) mDynamicDetailHeader.findViewById(R.id.v_reward);
-        mLlAdvert = (LinearLayout) mDynamicDetailHeader.findViewById(R.id.ll_advert);
-        mRewardView = mDynamicDetailHeader.findViewById(R.id.v_reward);
     }
 
     private void initAdvert(Context context, List<RealAdvertListBean> adverts) {
-        mDynamicDetailAdvertHeader = new DynamicDetailAdvertHeader(context, mDynamicDetailHeader
+        DynamicDetailAdvertHeader dynamicDetailAdvertHeader = new DynamicDetailAdvertHeader(context, mDynamicDetailHeader
                 .findViewById(R.id.ll_advert));
         if (!com.zhiyicx.common.BuildConfig.USE_ADVERT || adverts.isEmpty()) {
-            mDynamicDetailAdvertHeader.hideAdvert();
+            dynamicDetailAdvertHeader.hideAdvert();
             return;
         }
-        mDynamicDetailAdvertHeader.setTitle("广告");
-        mDynamicDetailAdvertHeader.setAdverts(adverts);
-        mDynamicDetailAdvertHeader.setOnItemClickListener((v, position1, url) ->
+        dynamicDetailAdvertHeader.setTitle(context.getString(R.string.advert));
+        dynamicDetailAdvertHeader.setAdverts(adverts);
+        dynamicDetailAdvertHeader.setOnItemClickListener((v, position1, url) ->
                 toAdvert(adverts.get(position1).getAdvertFormat().getImage().getLink(), adverts.get(position1).getTitle())
         );
     }
@@ -195,7 +189,7 @@ public class DynamicDetailHeader {
                 return;
             }
             for (int i = 0; i < photoList.size(); i++) {
-                showContentImage(context, photoList, i, dynamicBean.getUser_id().intValue(), i == photoList.size() - 1, mPhotoContainer);
+                showContentImage(context, photoList, i, i == photoList.size() - 1, mPhotoContainer);
             }
             FilterImageView imageView = (FilterImageView) mPhotoContainer.getChildAt(0).findViewById(R.id.dynamic_content_img);
             sharBitmap = ConvertUtils.drawable2BitmapWithWhiteBg(mContext, imageView
@@ -204,12 +198,24 @@ public class DynamicDetailHeader {
         }
     }
 
+    /**
+     * 文字网页链接点击处理
+     *
+     * @param dynamicBean
+     * @param content
+     */
     private void dealLinkWords(DynamicDetailBeanV2 dynamicBean, String content) {
         content = content.replaceAll(MarkdownConfig.NETSITE_FORMAT, Link.DEFAULT_NET_SITE);
         mContent.setText(content);
         ConvertUtils.stringLinkConvert(mContent, setLiknks(dynamicBean, mContent.getText().toString()), false);
     }
 
+    /**
+     * 处理详情文字收费
+     *
+     * @param dynamicBean
+     * @param contentText
+     */
     private void dealTollWords(DynamicDetailBeanV2 dynamicBean, String contentText) {
         if (contentText.length() == 50 && dynamicBean.getPaid_node() != null && !dynamicBean.getPaid_node().isPaid()) {
             contentText += mContext.getString(R.string.words_holder);
@@ -231,18 +237,23 @@ public class DynamicDetailHeader {
         textViewUtils.build();
     }
 
-    public Bitmap getSharBitmap() {
+    Bitmap getSharBitmap() {
         return sharBitmap;
     }
 
-    public void updateImage(DynamicDetailBeanV2 dynamicBean) {
+    /**
+     * 更新动态的图片加载
+     *
+     * @param dynamicBean
+     */
+    void updateImage(DynamicDetailBeanV2 dynamicBean) {
         if (dynamicBean.getVideo() != null) {
             return;
         }
         List<DynamicDetailBeanV2.ImagesBean> photoList = dynamicBean.getImages();
         mPhotoContainer.removeAllViews();
         for (int i = 0; i < photoList.size(); i++) {
-            showContentImage(mContext, photoList, i, dynamicBean.getUser_id().intValue(), i == photoList.size() - 1, mPhotoContainer);
+            showContentImage(mContext, photoList, i, i == photoList.size() - 1, mPhotoContainer);
         }
         FilterImageView imageView = (FilterImageView) mPhotoContainer.getChildAt(0).findViewById(R.id.dynamic_content_img);
         sharBitmap = ConvertUtils.drawable2BitmapWithWhiteBg(mContext, imageView
@@ -255,7 +266,7 @@ public class DynamicDetailHeader {
      *
      * @param dynamicBean
      */
-    public void updateHeaderViewData(final DynamicDetailBeanV2 dynamicBean) {
+    void updateHeaderViewData(final DynamicDetailBeanV2 dynamicBean) {
 
         DynamicHorizontalStackIconView dynamicHorizontalStackIconView =
                 (DynamicHorizontalStackIconView) mDynamicDetailHeader.findViewById(R.id
@@ -278,13 +289,13 @@ public class DynamicDetailHeader {
             mDynamicDetailHeader.getContext().startActivity(intent);
         });
         if (dynamicBean.getFeed_comment_count() <= 0) {
-            fl_comment_count_container.setVisibility(View.GONE);
+            mFlcommentcountcontainer.setVisibility(View.GONE);
         } else {
             ((TextView) mDynamicDetailHeader.findViewById(R.id.tv_comment_count)).setText
                     (mDynamicDetailHeader.getResources().getString(R.string
                             .dynamic_comment_count, ConvertUtils.numberConvert(dynamicBean
                             .getFeed_comment_count())));
-            fl_comment_count_container.setVisibility(View.VISIBLE);
+            mFlcommentcountcontainer.setVisibility(View.VISIBLE);
         }
     }
 
@@ -301,7 +312,16 @@ public class DynamicDetailHeader {
         mReWardView.initData(sourceId, data, rewardsCountBean, rewardType, moneyName);
     }
 
-    private void showContentImage(Context context, List<DynamicDetailBeanV2.ImagesBean> photoList, final int position, final int user_id,
+    /**
+     * 显示内容中的 图片
+     *
+     * @param context
+     * @param photoList
+     * @param position
+     * @param lastImg
+     * @param photoContainer
+     */
+    private void showContentImage(Context context, List<DynamicDetailBeanV2.ImagesBean> photoList, final int position,
                                   boolean lastImg, LinearLayout photoContainer) {
         DynamicDetailBeanV2.ImagesBean imageBean = photoList.get(position);
         View view = LayoutInflater.from(context).inflate(R.layout.view_dynamic_detail_photos, null);
@@ -400,16 +420,12 @@ public class DynamicDetailHeader {
         return mOnImageClickLisenter;
     }
 
-    public void setOnImageClickLisenter(OnImageClickLisenter onImageClickLisenter) {
+    void setOnImageClickLisenter(OnImageClickLisenter onImageClickLisenter) {
         mOnImageClickLisenter = onImageClickLisenter;
     }
 
-    public void setReWardViewVisible(int visible) {
+    void setReWardViewVisible(int visible) {
         mReWardView.setVisibility(visible);
-    }
-
-    public ReWardView getReWardView() {
-        return mReWardView;
     }
 
     protected List<Link> setLiknks(final DynamicDetailBeanV2 dynamicDetailBeanV2, String content) {
@@ -429,8 +445,8 @@ public class DynamicDetailHeader {
                         LogUtils.d(clickedText);
                         Intent intent = new Intent();
                         intent.setAction("android.intent.action.VIEW");
-                        Uri content_url = Uri.parse(clickedText);
-                        intent.setData(content_url);
+                        Uri contentUrl = Uri.parse(clickedText);
+                        intent.setData(contentUrl);
                         mContext.startActivity(intent);
                     })
                     .setOnLongClickListener((clickedText, linkMetadata) -> {
@@ -442,8 +458,8 @@ public class DynamicDetailHeader {
         return links;
     }
 
-    public int scrollCommentToTop() {
-        return mRewardView.getBottom();
+    int scrollCommentToTop() {
+        return mReWardView.getBottom();
     }
 
     public interface OnImageClickLisenter {

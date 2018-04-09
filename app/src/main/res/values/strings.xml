@@ -1068,4 +1068,5 @@
     <string name="modifing">修改中&#8230;</string>
     <string name="group_quit_format">%s解散了</string>
     <string name="userup_exit_group">%s退出了群聊</string>
+    <string name="advert">广告</string>
 </resources>
