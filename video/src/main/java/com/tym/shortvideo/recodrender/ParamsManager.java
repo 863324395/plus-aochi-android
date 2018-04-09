@@ -24,10 +24,10 @@ public class ParamsManager {
     public static final String AlbumPath = StoragePath + "/DCIM/Camera/";
 
     // 图片存放地址
-    public static final String ImagePath = StoragePath + "/CainCamera/Image/";
+    public static final String ImagePath = StoragePath + "/Zhiyi/Image/";
 
     // 视频存放地址
-    public static final String VideoPath = StoragePath + "/CainCamera/Video/";
+    public static final String VideoPath = StoragePath + "/Zhiyi/Video/";
 
     // 存放预览类型，GIF表情包、PICTURE拍照、VIDEO视频等
     public static GLType sMGLType = GLType.PICTURE;

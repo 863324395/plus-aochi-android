@@ -222,6 +222,12 @@ public class DeviceUtils {
         return display.getWidth();
     }
 
+    public static int getScreenHeight() {
+        Display display = ((WindowManager) ParamsManager.context.getSystemService(Context.WINDOW_SERVICE))
+                .getDefaultDisplay();
+        return display.getHeight();
+    }
+
     @SuppressWarnings("deprecation")
     public static int getScreenHeight(Context context) {
         Display display = ((WindowManager) context.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();

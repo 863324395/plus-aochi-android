@@ -10,7 +10,7 @@ import com.zhiyicx.baseproject.base.TSActivity;
 
 import java.util.ArrayList;
 
-import static com.zhiyicx.thinksnsplus.modules.shortvideo.cover.CoverFragment.REQUESTCODE;
+import static com.zhiyicx.thinksnsplus.modules.shortvideo.cover.CoverFragment.REQUEST_COVER_CODE;
 
 /**
  * @Author Jliuer
@@ -37,7 +37,7 @@ public class CoverActivity extends TSActivity {
         intent.putExtras(bundle);
         if (context instanceof Activity) {
             Activity activity = (Activity) context;
-            activity.startActivityForResult(intent, REQUESTCODE);
+            activity.startActivityForResult(intent, REQUEST_COVER_CODE);
             return;
         }
         context.startActivity(intent);

@@ -2,8 +2,6 @@ package com.tym.shortvideo.filter.helper;
 
 import android.content.Context;
 import android.content.res.Resources;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.SurfaceTexture;
 import android.opengl.GLES11Ext;
 import android.opengl.GLES20;
@@ -17,11 +15,9 @@ import com.tym.shortvideo.filter.base.avfilter.GroupFilter;
 import com.tym.shortvideo.filter.base.avfilter.NoFilter;
 import com.tym.shortvideo.filter.base.avfilter.ProcessFilter;
 import com.tym.shortvideo.filter.base.avfilter.RotationOESFilter;
-import com.tym.shortvideo.filter.base.avfilter.WaterMarkFilter;
 import com.tym.shortvideo.filter.helper.type.GlUtil;
 import com.tym.shortvideo.media.VideoInfo;
 import com.tym.shortvideo.utils.MatrixUtils;
-import com.tym.video.R;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -99,15 +95,15 @@ public class VideoDrawer implements GLSurfaceView.Renderer {
         mSlideFilterGroup = new SlideGpuFilterGroup();
         OM = MatrixUtils.getOriginalMatrix();
         MatrixUtils.flip(OM, false, true);//矩阵上下翻转
-//        mShow.setMatrix(OM);
+        mShow.setMatrix(OM);
 
-        WaterMarkFilter waterMarkFilter = new WaterMarkFilter(res);
-        Bitmap logo = BitmapFactory.decodeResource(res, R.mipmap.logo).copy(Bitmap.Config.RGB_565, true);
-        logo = Bitmap.createScaledBitmap(logo, 50, 50, true);
-        waterMarkFilter.setWaterMark(logo);
-
-        waterMarkFilter.setPosition(30, 200, 0, 0);
-        mBeFilter.addFilter(waterMarkFilter);
+//        WaterMarkFilter waterMarkFilter = new WaterMarkFilter(res);
+//        Bitmap logo = BitmapFactory.decodeResource(res, R.mipmap.logo).copy(Bitmap.Config.RGB_565, true);
+//        logo = Bitmap.createScaledBitmap(logo, 50, 50, true);
+//        waterMarkFilter.setWaterMark(logo);
+//
+//        waterMarkFilter.setPosition(30, 200, 0, 0);
+//        mBeFilter.addFilter(waterMarkFilter);
 
     }
 

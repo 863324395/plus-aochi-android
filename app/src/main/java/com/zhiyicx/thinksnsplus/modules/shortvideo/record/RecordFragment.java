@@ -360,7 +360,7 @@ public class RecordFragment extends TSFragment implements SurfaceHolder.Callback
         RecordManager.getInstance().initThread();
         // 设置输出路径
         String path = ParamsManager.VideoPath
-                + "CainCamera_" + System.currentTimeMillis() + ".mp4";
+                + "Zhiyi_" + System.currentTimeMillis() + ".mp4";
         RecordManager.getInstance().setOutputPath(path);
         // 是否允许录音，只有录制视频才有音频
         RecordManager.getInstance().setEnableAudioRecording(ParamsManager.canRecordingAudio

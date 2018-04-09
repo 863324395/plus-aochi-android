@@ -79,8 +79,8 @@
         </activity>
         <activity
             android:name=".modules.home.HomeActivity"
-            android:launchMode="singleTask"
             android:configChanges="orientation|screenSize|keyboardHidden"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize|stateAlwaysHidden">
         </activity>
@@ -233,8 +233,8 @@
         </activity>
         <activity
             android:name=".modules.dynamic.detail.DynamicDetailActivity"
-            android:screenOrientation="portrait"
             android:configChanges="orientation|screenSize|keyboardHidden"
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize">
         </activity>
         <activity
@@ -725,14 +725,23 @@
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustNothing|stateAlwaysHidden"/>
-        <activity android:name=".modules.shortvideo.record.RecordActivity"
-                  android:theme="@style/GalleryTheme"/>
-        <activity android:name=".modules.shortvideo.videostore.VideoSelectActivity"/>
-        <activity android:name=".modules.shortvideo.preview.PreviewActivity"
-                  android:theme="@style/Translucent"/>
-        <activity android:name=".modules.shortvideo.clipe.TrimmerActivity"/>
-        <activity android:name=".modules.shortvideo.detail.VideoDetailActivity"/>
-        <activity android:name=".modules.shortvideo.cover.CoverActivity"/>
+        <activity
+            android:name=".modules.shortvideo.record.RecordActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/GalleryTheme"/>
+        <activity
+            android:name=".modules.shortvideo.videostore.VideoSelectActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".modules.shortvideo.preview.PreviewActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Translucent"/>
+        <activity
+            android:name=".modules.shortvideo.clipe.TrimmerActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".modules.shortvideo.cover.CoverActivity"
+            android:screenOrientation="portrait"/>
         <!-- 开机自启动服务 -->
         <receiver android:name=".modules.chat.call.receiver.StartServiceReceiver">
             <intent-filter android:priority="1000">

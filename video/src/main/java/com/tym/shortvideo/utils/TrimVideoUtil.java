@@ -269,14 +269,10 @@ public class TrimVideoUtil {
                                                                            (MediaMetadataRetriever
                                                                                    .METADATA_KEY_VIDEO_HEIGHT));
 
-                                                           int rotation = 0;
-
-                                                           if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-                                                               rotation = Integer.parseInt(retriever
-                                                                       .extractMetadata
-                                                                               (MediaMetadataRetriever
-                                                                                       .METADATA_KEY_VIDEO_ROTATION));
-                                                           }
+                                                           int rotation = Integer.parseInt(retriever
+                                                                   .extractMetadata
+                                                                           (MediaMetadataRetriever
+                                                                                   .METADATA_KEY_VIDEO_ROTATION));
 
                                                            if (rotation == 90 || rotation == 270) {
                                                                // 图像颠倒了，不知道为啥

@@ -289,6 +289,8 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
         mCustomMoney.setText(mPresenter.getGoldName());
     }
 
+
+
     @Override
     public double getTollMoney() {
         return mTollMoney;
@@ -456,7 +458,7 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         // 获取图片选择器返回结果
-        if (mPhotoSelector != null) {
+        if (mPhotoSelector != null && dynamicType != SendDynamicDataBean.VIDEO_TEXT_DYNAMIC) {
             // 图片选择器界面数据保存操作
             if (data != null) {
                 Bundle tollBundle = new Bundle();
@@ -468,6 +470,11 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                 tollBundle.putParcelableArrayList(TOLLBUNDLE, new ArrayList<>(oldData));
             }
             mPhotoSelector.onActivityResult(requestCode, resultCode, data);
+        }else if(dynamicType == SendDynamicDataBean.VIDEO_TEXT_DYNAMIC){
+            selectedPhotos.clear();
+            addPlaceHolder();
+            setSendDynamicState();// 每次刷新图片后都要判断发布按钮状态
+            mCommonAdapter.notifyDataSetChanged();
         }
     }
 

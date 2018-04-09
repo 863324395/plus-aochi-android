@@ -223,7 +223,7 @@ public class CainSurfaceView extends SurfaceView {
 
         if (mFocusAnimator == null) {
             mFocusImageView = new ImageView(getContext());
-            mFocusImageView.setImageResource(R.drawable.video_focus);
+            mFocusImageView.setImageResource(R.mipmap.ico_video_focusing);
             mFocusImageView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
             mFocusImageView.measure(0, 0);
             mFocusImageView.setX(mTouchPreviewX - mFocusImageView.getMeasuredWidth() / 2);

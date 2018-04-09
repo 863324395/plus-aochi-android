@@ -5,6 +5,8 @@ import android.media.MediaMetadataRetriever;
 import android.media.MediaPlayer;
 import android.view.Surface;
 
+import com.zhiyicx.common.utils.log.LogUtils;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -83,9 +85,6 @@ public class MediaPlayerWrapper implements MediaPlayer.OnCompletionListener, Med
                     mCallback.onVideoChanged(mInfoList.get(0));
                 }
             }
-        }
-        if (mCallback != null) {
-            mCallback.onVideoPrepare();
         }
     }
 
@@ -204,7 +203,9 @@ public class MediaPlayerWrapper implements MediaPlayer.OnCompletionListener, Med
 
     @Override
     public void onPrepared(MediaPlayer mp) {
-
+        if (mCallback != null && mPlayerList.indexOf(mp) == 0) {
+            mCallback.onVideoPrepare();
+        }
     }
 
     public void setVolume(float volume) {

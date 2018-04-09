@@ -10,7 +10,7 @@ import com.tym.shortvideo.filter.helper.type.GlUtil;
  * @author Jliuer
  * @Date 18/03/28 10:14
  * @Email Jliuer@aliyun.com
- * @Description  draw并不执行父类的draw方法,所以矩阵对它无效
+ * @Description draw并不执行父类的draw方法, 所以矩阵对它无效
  */
 public class ProcessFilter extends AFilter {
 
@@ -26,9 +26,9 @@ public class ProcessFilter extends AFilter {
 
     public ProcessFilter(Resources mRes) {
         super(mRes);
-        mFilter=new NoFilter(mRes);
-        float[]  OM= MatrixUtils.getOriginalMatrix();
-        MatrixUtils.flip(OM,false,true);//矩阵上下翻转
+        mFilter = new NoFilter(mRes);
+        float[] OM = MatrixUtils.getOriginalMatrix();
+        MatrixUtils.flip(OM, false, true);//矩阵上下翻转
         mFilter.setMatrix(OM);
     }
 
@@ -49,38 +49,38 @@ public class ProcessFilter extends AFilter {
 
     @Override
     public void draw() {
-        boolean b= GLES20.glIsEnabled(GLES20.GL_CULL_FACE);
-        if(b){
+        boolean b = GLES20.glIsEnabled(GLES20.GL_CULL_FACE);
+        if (b) {
             GLES20.glDisable(GLES20.GL_CULL_FACE);
         }
-        GLES20.glViewport(0,0,width,height);
-        GlUtil.bindFrameTexture(fFrame[0],fTexture[0]);
+        GLES20.glViewport(0, 0, width, height);
+        GlUtil.bindFrameTexture(fFrame[0], fTexture[0]);
         GLES20.glFramebufferRenderbuffer(GLES20.GL_FRAMEBUFFER, GLES20.GL_DEPTH_ATTACHMENT,
-            GLES20.GL_RENDERBUFFER, fRender[0]);
+                GLES20.GL_RENDERBUFFER, fRender[0]);
         mFilter.setTextureId(getTextureId());
         mFilter.draw();
         GlUtil.unBindFrameBuffer();
-        if(b){
+        if (b) {
             GLES20.glEnable(GLES20.GL_CULL_FACE);
         }
     }
 
     @Override
     protected void onSizeChanged(int width, int height) {
-        if(this.width!=width&&this.height!=height){
-            this.width=width;
-            this.height=height;
-            mFilter.setSize(width,height);
+        if (this.width != width && this.height != height) {
+            this.width = width;
+            this.height = height;
+            mFilter.setSize(width, height);
             deleteFrameBuffer();
-            GLES20.glGenFramebuffers(1,fFrame,0);
-            GLES20.glGenRenderbuffers(1,fRender,0);
-            GLES20.glBindRenderbuffer(GLES20.GL_RENDERBUFFER,fRender[0]);
+            GLES20.glGenFramebuffers(1, fFrame, 0);
+            GLES20.glGenRenderbuffers(1, fRender, 0);
+            GLES20.glBindRenderbuffer(GLES20.GL_RENDERBUFFER, fRender[0]);
             GLES20.glRenderbufferStorage(GLES20.GL_RENDERBUFFER, GLES20.GL_DEPTH_COMPONENT16,
-                width, height);
+                    width, height);
             GLES20.glFramebufferRenderbuffer(GLES20.GL_FRAMEBUFFER, GLES20.GL_DEPTH_ATTACHMENT,
-                GLES20.GL_RENDERBUFFER, fRender[0]);
-            GLES20.glBindRenderbuffer(GLES20.GL_RENDERBUFFER,0);
-            GlUtil.genTexturesWithParameter(1,fTexture,0, GLES20.GL_RGBA,width,height);
+                    GLES20.GL_RENDERBUFFER, fRender[0]);
+            GLES20.glBindRenderbuffer(GLES20.GL_RENDERBUFFER, 0);
+            GlUtil.genTexturesWithParameter(1, fTexture, 0, GLES20.GL_RGBA, width, height);
         }
     }
 

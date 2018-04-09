@@ -193,7 +193,7 @@ public class PreviewFragment extends TSFragment implements MediaPlayerWrapper.IM
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == CoverFragment.REQUESTCODE && data.getExtras() != null) {
+        if (requestCode == CoverFragment.REQUEST_COVER_CODE && data.getExtras() != null) {
             mVideoInfo.setCover(data.getExtras().getString(CoverFragment.PATH));
         }
     }

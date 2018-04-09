@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
@@ -18,6 +19,7 @@ import com.tym.shortvideo.utils.TrimVideoUtil;
 import com.tym.shortvideo.view.VideoPreviewView;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.common.utils.ToastUtils;
+import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.thinksnsplus.R;
 
 import java.util.ArrayList;
@@ -31,12 +33,13 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
  * @Author Jliuer
  * @Date 2018/04/07
  * @Email Jliuer@aliyun.com
- * @Description
+ * @Description 选择封面 && 动态发布页预览
  */
 public class CoverFragment extends TSFragment implements MediaPlayerWrapper.IMediaCallback {
     public static final String PATH = "path";
     public static final String PREVIEW = "preview";
-    public static final int REQUESTCODE = 1000;
+    public static final int REQUEST_COVER_CODE = 1000;
+    public static final int REQUEST_DELETE_CODE = 2000;
 
     @BindView(R.id.videoView)
     VideoPreviewView mVideoView;
@@ -95,7 +98,14 @@ public class CoverFragment extends TSFragment implements MediaPlayerWrapper.IMed
         RxView.clicks(mToolbarRight)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .compose(this.bindToLifecycle())
-                .subscribe(aVoid -> getVideoCover());
+                .subscribe(aVoid -> {
+                    if (isPre) {
+                        mActivity.setResult(Activity.RESULT_OK);
+                        mActivity.finish();
+                    } else {
+                        getVideoCover();
+                    }
+                });
 
         RxView.clicks(mToolbarLeft)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
@@ -132,6 +142,13 @@ public class CoverFragment extends TSFragment implements MediaPlayerWrapper.IMed
         isPre = getArguments().getBoolean(PREVIEW);
         mVideoView.setVideoPath(srcList);
         mSeekBar.setVisibility(isPre ? View.GONE : View.VISIBLE);
+
+        if (isPre) {
+            mToolbarCenter.setText(R.string.preview);
+            mToolbarLeft.setCompoundDrawables(UIUtils.getCompoundDrawables(getContext(), setLeftImg()), null, null, null);
+            mToolbarRight.setText(R.string.delete);
+            mToolbarRight.setTextColor(ContextCompat.getColorStateList(getContext(), com.zhiyicx.baseproject.R.color.selector_text_color));
+        }
     }
 
     @Override
