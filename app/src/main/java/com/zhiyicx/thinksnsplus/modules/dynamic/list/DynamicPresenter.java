@@ -263,7 +263,7 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.View>
         for (int i = 0; i < size; i++) {
             if (mRootView.getListDatas().get(i).getFeed_mark().equals(dynamicBean.getFeed_mark())) {
                 mRootView.getListDatas().get(i).setState(dynamicBean.getState());
-                mRootView.getListDatas().get(i).setId(dynamicBean.getId());
+                mRootView.getListDatas().get(i).setSendFailMessage(dynamicBean.getSendFailMessage());
                 mRootView.getListDatas().get(i).setId(dynamicBean.getId());
                 return i;
             }

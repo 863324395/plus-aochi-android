@@ -15,8 +15,10 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.jakewharton.rxbinding.view.RxView;
 import com.klinker.android.link_builder.Link;
 import com.klinker.android.link_builder.LinkMetadata;
+import com.klinker.android.link_builder.NetUrlHandleBean;
 import com.zhiyicx.baseproject.widget.DynamicListMenuView;
 import com.zhiyicx.baseproject.widget.imageview.FilterImageView;
+import com.zhiyicx.common.BuildConfig;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.DrawableProvider;
@@ -27,7 +29,6 @@ import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
-import com.klinker.android.link_builder.NetUrlHandleBean;
 import com.zhiyicx.thinksnsplus.i.OnUserInfoClickListener;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhiyicx.thinksnsplus.widget.comment.DynamicListCommentView;
@@ -40,7 +41,6 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
-import static com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2.ImagesBean.FILE_MIME_TYPE_GIF;
 
 /**
  * @Describe 动态列表适配器基类
@@ -280,6 +280,7 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
                 // 设置动态发送状态
                 if (dynamicBean.getState() == DynamicBean.SEND_ERROR) {
                     holder.setVisible(R.id.fl_tip, View.VISIBLE);
+                    holder.setText(R.id.tv_hint_text, BuildConfig.USE_LOG?dynamicBean.getSendFailMessage():holder.getConvertView().getResources().getString(R.string.send_fail));
                 } else {
                     holder.setVisible(R.id.fl_tip, View.GONE);
                 }

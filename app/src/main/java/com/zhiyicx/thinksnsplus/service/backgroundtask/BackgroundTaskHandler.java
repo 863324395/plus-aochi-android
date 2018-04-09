@@ -18,6 +18,7 @@ import com.zhiyicx.common.utils.ActivityHandler;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.imsdk.entity.IMConfig;
 import com.zhiyicx.rxerrorhandler.functions.RetryWithInterceptDelay;
+import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
@@ -147,7 +148,6 @@ public class BackgroundTaskHandler {
     private boolean mIsNetConnected;
 
     private Thread mBackTaskDealThread;
-    private ConnectivityManager connectMgr;
     private NetworkInfo mobNetInfo;
     private NetworkInfo wifiNetInfo;
 
@@ -204,9 +204,7 @@ public class BackgroundTaskHandler {
         List<BackgroundRequestTaskBean> cacheDatas = mBackgroundRequestTaskBeanGreenDao.getMultiDataFromCacheByUserId(AppApplication
                 .getMyUserIdWithdefault());
         if (cacheDatas != null) {
-            for (BackgroundRequestTaskBean tmp : cacheDatas) {
-                mTaskBeanConcurrentLinkedQueue.add(tmp);
-            }
+            mTaskBeanConcurrentLinkedQueue.addAll(cacheDatas);
         }
     }
 
@@ -239,18 +237,14 @@ public class BackgroundTaskHandler {
      */
     public boolean checkNetStatus(Context context) {
         if (mobNetInfo == null) {
-            connectMgr = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+            ConnectivityManager connectMgr = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
             //手机网络连接状态
             mobNetInfo = connectMgr.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
             //WIFI连接状态
             wifiNetInfo = connectMgr.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
         }
 
-        if (mobNetInfo != null && !mobNetInfo.isConnected() && !wifiNetInfo.isConnected()) {
-            //当前无可用的网络
-            return false;
-        }
-        return true;
+        return !(mobNetInfo != null && !mobNetInfo.isConnected() && !wifiNetInfo.isConnected());
     }
 
     /**
@@ -799,10 +793,11 @@ public class BackgroundTaskHandler {
                 int photoWidth = (int) imageBean.getWidth();
                 int photoHeight = (int) imageBean.getHeight();
                 String photoMimeType = imageBean.getImgMimeType();
-                upLoadPics.add(mUpLoadRepository.upLoadSingleFileV2(filePath, photoMimeType, true, photoWidth, photoHeight,position));
+                upLoadPics.add(mUpLoadRepository.upLoadSingleFileV2(filePath, photoMimeType, true, photoWidth, photoHeight, position));
             }
             if (videoInfo != null) {
-                upLoadPics.add(mUpLoadRepository.upLoadSingleFileV2(videoInfo.getPath(), "", false, videoInfo.getWidth(), videoInfo.getHeight(),position));
+                upLoadPics.add(mUpLoadRepository.upLoadSingleFileV2(videoInfo.getPath(), "", false, videoInfo.getWidth(), videoInfo.getHeight(),
+                        position));
             }
             SendDynamicDataBeanV2.Video video = new SendDynamicDataBeanV2.Video();
             observable = Observable.concat(upLoadPics)
@@ -872,6 +867,7 @@ public class BackgroundTaskHandler {
                     @Override
                     protected void onSuccess(Object data) {
                         // 发送动态到动态列表：状态为发送成功
+                        detailBeanV2.setSendFailMessage("");
                         sendDynamicByEventBus(SendDynamicDataBean.NORMAL_DYNAMIC, detailBeanV2, true, backgroundRequestTaskBean, data);
                     }
 
@@ -881,7 +877,7 @@ public class BackgroundTaskHandler {
                         if (position[0] > 0) {
                             position[0]--;
                         }
-
+                        detailBeanV2.setSendFailMessage(message);
                         sendDynamicByEventBus(SendDynamicDataBean.NORMAL_DYNAMIC, detailBeanV2, false, backgroundRequestTaskBean, null);
                     }
 
@@ -891,6 +887,7 @@ public class BackgroundTaskHandler {
                         if (position[0] > 0) {
                             position[0]--;
                         }
+                        detailBeanV2.setSendFailMessage(mContext.getString(R.string.err_net_not_work));
                         // 发送动态到动态列表：状态为发送失败
                         sendDynamicByEventBus(SendDynamicDataBean.NORMAL_DYNAMIC, detailBeanV2, false, backgroundRequestTaskBean, null);
                     }
