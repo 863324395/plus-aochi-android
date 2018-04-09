@@ -87,10 +87,8 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.View>
     private AllAdvertListBeanGreenDaoImpl mAllAdvertListBeanGreenDao;
     private BaseDynamicRepository mDynamicRepository;
 
-    private SparseArray<Long> msendingStatus = new SparseArray<>();
-
     @Inject
-    public DynamicPresenter(DynamicContract.View rootView
+    DynamicPresenter(DynamicContract.View rootView
             , AllAdvertListBeanGreenDaoImpl allAdvertListBeanGreenDao
             , DynamicDetailBeanV2GreenDaoImpl dynamicDetailBeanV2GreenDao
             , DynamicCommentBeanGreenDaoImpl dynamicCommentBeanGreenDao
@@ -117,25 +115,30 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.View>
     }
 
     /**
+     * 数据加载，上拉和下拉
+     *
      * @param maxId      当前获取到数据的最大 id
      * @param isLoadMore 加载状态
      */
     @Override
     public void requestNetData(Long maxId, final boolean isLoadMore) {
+
         if (ApiConfig.DYNAMIC_TYPE_EMPTY.equals(mRootView.getDynamicType())) {
             mRootView.onNetResponseSuccess(new ArrayList<>(), isLoadMore);
             return;
         }
+
         Subscription dynamicLisSub = mDynamicRepository.getDynamicListV2(mRootView.getDynamicType(), maxId, null, isLoadMore, null)
                 .observeOn(Schedulers.io())
                 .map(listBaseJson -> {
+                    List<DynamicDetailBeanV2> data = null;
                     // 更新数据库
                     insertOrUpdateDynamicDBV2(listBaseJson);
                     // 如果是刷新，并且获取到了数据，更新发布的动态 ,把发布的动态信息放到请求数据的前面
                     if (!isLoadMore) {
                         if (mRootView.getDynamicType().equals(ApiConfig.DYNAMIC_TYPE_NEW) || mRootView.getDynamicType().equals((ApiConfig
                                 .DYNAMIC_TYPE_FOLLOWS))) {
-                            List<DynamicDetailBeanV2> data = getDynamicBeenFromDBV2();
+                            data = getDynamicBeenFromDBV2();
                             data.addAll(listBaseJson);
                         }
                     }
@@ -152,7 +155,7 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.View>
                         }
                     }
 
-                    return listBaseJson;
+                    return data;
                 })
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new BaseSubscribeForV2<List<DynamicDetailBeanV2>>() {
@@ -271,6 +274,9 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.View>
         return -1;
     }
 
+    /**
+     * @return 我正在发布，或者发布失败的动态
+     */
     @NonNull
     private List<DynamicDetailBeanV2> getDynamicBeenFromDBV2() {
         if (AppApplication.getmCurrentLoginAuth() == null) {
@@ -278,18 +284,10 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.View>
         }
         List<DynamicDetailBeanV2> datas = mDynamicDetailBeanV2GreenDao.getMySendingUnSuccessDynamic(AppApplication.getMyUserIdWithdefault());
 
-        msendingStatus.clear();
         for (int i = 0; i < datas.size(); i++) {
-            // 第一次加载的时候将自己没有发送成功的动态状态修改为失败
-            if (mRootView.getListDatas() == null || mRootView.getListDatas().size() == 0) {
-                datas.get(i).setState(DynamicDetailBeanV2.SEND_ERROR);
-            }
-            msendingStatus.put(i, datas.get(i).getFeed_mark());
+            datas.get(i).setState(DynamicDetailBeanV2.SEND_ERROR);
         }
-        // 第一次加载的时候将自己没有发送成功的动态状态修改为失败
-        if (mRootView.getListDatas() == null || mRootView.getListDatas().size() == 0) {
-            mDynamicDetailBeanV2GreenDao.insertOrReplace(datas);
-        }
+        mDynamicDetailBeanV2GreenDao.insertOrReplace(datas);
 
         return datas;
     }
@@ -544,7 +542,7 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.View>
                             mRootView.getListDatas().get(dynamicPosition).getPaid_node().setPaid(true);
                             mRootView.getListDatas().get(dynamicPosition).setFeed_content(data.getData());
                             if (data.getData() != null) {
-                                String friendlyContent = data.getData().replaceAll(MarkdownConfig.NETSITE_FORMAT,  Link
+                                String friendlyContent = data.getData().replaceAll(MarkdownConfig.NETSITE_FORMAT, Link
                                         .DEFAULT_NET_SITE);
                                 if (friendlyContent.length() > DYNAMIC_LIST_CONTENT_MAX_SHOW_SIZE) {
                                     friendlyContent = friendlyContent.substring(0, DYNAMIC_LIST_CONTENT_MAX_SHOW_SIZE) + "...";
