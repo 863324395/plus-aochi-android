@@ -84,6 +84,9 @@ public class TrimVideoUtil {
                                                            .getFrameAtTime(i * interval,
                                                                    MediaMetadataRetriever
                                                                            .OPTION_CLOSEST_SYNC);
+                                                   if (bitmap == null) {
+                                                       continue;
+                                                   }
                                                    if (h == 0) {
                                                        h = (w / (float) bitmap.getWidth()) *
                                                                bitmap.getHeight();
@@ -278,7 +281,7 @@ public class TrimVideoUtil {
                                                                // 图像颠倒了，不知道为啥
                                                                video.setWidth(height);
                                                                video.setHeight(width);
-                                                           }else{
+                                                           } else {
                                                                video.setWidth(width);
                                                                video.setHeight(height);
                                                            }

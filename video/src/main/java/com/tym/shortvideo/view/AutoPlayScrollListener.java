@@ -3,6 +3,7 @@ package com.tym.shortvideo.view;
 import android.graphics.Rect;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
 
 import cn.jzvd.JZVideoPlayerStandard;
 
@@ -90,9 +91,15 @@ public abstract class AutoPlayScrollListener extends RecyclerView.OnScrollListen
                         currentPlayView.startButton.performClick();
                         JZVideoPlayerStandard view = null;
                         if (current + 1 == firstCompoleteVisibleItem) {
-                            view = (JZVideoPlayerStandard) recyclerView.getChildAt(i + 1).findViewById(getPlayerViewId());
+                            View itemView = recyclerView.getChildAt(i + 1);
+                            if (itemView != null) {
+                                view = (JZVideoPlayerStandard) itemView.findViewById(getPlayerViewId());
+                            }
                         } else if (current - 1 == lastCompoleteVisibleItem) {
-                            view = (JZVideoPlayerStandard) recyclerView.getChildAt(i - 1).findViewById(getPlayerViewId());
+                            View itemView = recyclerView.getChildAt(i - 1);
+                            if (itemView != null) {
+                                view = (JZVideoPlayerStandard) itemView.findViewById(getPlayerViewId());
+                            }
                         }
                         if (view != null) {
                             view.startVideo();

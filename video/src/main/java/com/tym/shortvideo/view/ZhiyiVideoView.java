@@ -35,8 +35,6 @@ import cn.jzvd.JZVideoPlayerStandard;
  */
 public class ZhiyiVideoView extends JZVideoPlayerStandard {
 
-//    LinearLayout mBottonContainer;
-//    LinearLayout mTopContainer;
 
     public ZhiyiVideoView(Context context) {
         super(context);
@@ -49,8 +47,6 @@ public class ZhiyiVideoView extends JZVideoPlayerStandard {
     @Override
     public void init(Context context) {
         super.init(context);
-//        mBottonContainer = (LinearLayout) findViewById(R.id.layout_bottom);
-//        mTopContainer = (LinearLayout) findViewById(R.id.layout_top);
     }
 
     @Override
