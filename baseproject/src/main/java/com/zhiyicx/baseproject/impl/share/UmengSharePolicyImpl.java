@@ -124,7 +124,9 @@ public class UmengSharePolicyImpl implements SharePolicy, OnShareCallbackListene
      */
     @Override
     public void shareMoment(Activity activity, final OnShareCallbackListener l) {
-        if (checkShareContent()) return;
+        if (checkShareContent()) {
+            return;
+        }
         shareActionConfig(activity, l, SHARE_MEDIA.WEIXIN_CIRCLE);
 
     }
@@ -135,7 +137,9 @@ public class UmengSharePolicyImpl implements SharePolicy, OnShareCallbackListene
      */
     @Override
     public void shareQQ(Activity activity, OnShareCallbackListener l) {
-        if (checkShareContent()) return;
+        if (checkShareContent()) {
+            return;
+        }
         shareActionConfig(activity, l, SHARE_MEDIA.QQ);
     }
 
@@ -144,7 +148,9 @@ public class UmengSharePolicyImpl implements SharePolicy, OnShareCallbackListene
      */
     @Override
     public void shareZone(Activity activity, OnShareCallbackListener l) {
-        if (checkShareContent()) return;
+        if (checkShareContent()) {
+            return;
+        }
         shareActionConfig(activity, l, SHARE_MEDIA.QZONE);
 
     }
@@ -154,7 +160,9 @@ public class UmengSharePolicyImpl implements SharePolicy, OnShareCallbackListene
      */
     @Override
     public void shareWeibo(Activity activity, OnShareCallbackListener l) {
-        if (checkShareContent()) return;
+        if (checkShareContent()) {
+            return;
+        }
         shareActionConfig(activity, l, SHARE_MEDIA.SINA);
     }
 
@@ -163,7 +171,9 @@ public class UmengSharePolicyImpl implements SharePolicy, OnShareCallbackListene
      */
     @Override
     public void shareWechat(Activity activity, OnShareCallbackListener l) {
-        if (checkShareContent()) return;
+        if (checkShareContent()) {
+            return;
+        }
         shareActionConfig(activity, l, SHARE_MEDIA.WEIXIN);
     }
 

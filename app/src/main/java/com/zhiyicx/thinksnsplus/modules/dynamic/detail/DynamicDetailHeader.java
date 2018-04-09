@@ -2,7 +2,6 @@ package com.zhiyicx.thinksnsplus.modules.dynamic.detail;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -18,15 +17,13 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.BitmapRequestBuilder;
-import com.bumptech.glide.DrawableRequestBuilder;
 import com.bumptech.glide.GifRequestBuilder;
-import com.bumptech.glide.GifTypeRequest;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.klinker.android.link_builder.Link;
 import com.klinker.android.link_builder.LinkMetadata;
 import com.klinker.android.link_builder.NetUrlHandleBean;
-import com.tym.shortvideo.view.ZhiyiVideoView;
+import com.zhiyicx.thinksnsplus.modules.shortvideo.helper.ZhiyiVideoView;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.config.MarkdownConfig;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
@@ -60,11 +57,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cn.jzvd.JZMediaManager;
-import cn.jzvd.JZUtils;
-import cn.jzvd.JZVideoPlayerManager;
 import cn.jzvd.JZVideoPlayerStandard;
-
-import static com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2.ImagesBean.FILE_MIME_TYPE_GIF;
 
 /**
  * @Describe 动态详情头部信息
@@ -192,6 +185,9 @@ public class DynamicDetailHeader {
                 if (state > 0) {
                     videoView.setState(state);
                     videoView.addTextureView();
+                    if (state==ZhiyiVideoView.CURRENT_STATE_PLAYING){
+                        JZMediaManager.start();
+                    }
                 }
 //                JZVideoPlayerManager.setSecondFloor(videoView);
 

@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.modules.dynamic.list;
 
 import android.graphics.Bitmap;
 
+import com.umeng.socialize.bean.SHARE_MEDIA;
 import com.zhiyicx.baseproject.base.ITSListPresenter;
 import com.zhiyicx.baseproject.base.ITSListView;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
@@ -124,6 +125,8 @@ public interface DynamicContract {
          * 动态分享
          */
         void shareDynamic(DynamicDetailBeanV2 dynamicBean, Bitmap bitmap);
+
+        void shareDynamic(DynamicDetailBeanV2 dynamicBean, Bitmap bitmap, SHARE_MEDIA type);
 
         List<RealAdvertListBean> getBannerAdvert();
         List<RealAdvertListBean> getListAdvert();

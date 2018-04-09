@@ -1,7 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.dynamic.list;
 
 import android.content.Intent;
-import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -13,6 +12,8 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import com.tym.shortvideo.view.AutoPlayScrollListener;
+import com.zhiyicx.common.utils.log.LogUtils;
+import com.zhiyicx.thinksnsplus.modules.shortvideo.helper.ZhiyiVideoView;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.config.TouristConfig;
@@ -77,9 +78,7 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import cn.jzvd.JZMediaManager;
-import cn.jzvd.JZUtils;
 import cn.jzvd.JZVideoPlayer;
-import cn.jzvd.JZVideoPlayerManager;
 import cn.jzvd.JZVideoPlayerStandard;
 import rx.Observable;
 import rx.Subscriber;
@@ -107,7 +106,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
         DynamicListBaseItem.OnReSendClickListener, DynamicListBaseItem.OnMenuItemClickLisitener,
         DynamicListBaseItem.OnImageClickListener, OnUserInfoClickListener,
         MultiItemTypeAdapter.OnItemClickListener, TextViewUtils.OnSpanTextClickListener,
-        DynamicBannerHeader.DynamicBannerHeadlerClickEvent {
+        DynamicBannerHeader.DynamicBannerHeadlerClickEvent,ZhiyiVideoView.ShareInterface {
 
     protected static final String BUNDLE_DYNAMIC_TYPE = "dynamic_type";
 
@@ -376,7 +375,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
         setAdapter(adapter, new DynamicListItemForEightImage(getContext()));
         setAdapter(adapter, new DynamicListItemForNineImage(getContext()));
         setAdapter(adapter, new DynamicListItemForAdvert(getContext()));
-        setAdapter(adapter, new DynamicListItemForShorVideo(getContext()));
+        setAdapter(adapter, new DynamicListItemForShorVideo(getContext(),this));
         adapter.setOnItemClickListener(this);
         return adapter;
     }
@@ -793,9 +792,40 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
         if (!TouristConfig.MORE_COMMENT_CAN_LOOK && mPresenter.handleTouristControl()) {
             return;
         }
-
         int position = mPresenter.getCurrenPosiotnInDataList(dynamicBean.getFeed_mark());
         goDynamicDetail(position, true, (ViewHolder) mRvList.getChildViewHolder(view));
+    }
+
+    @Override
+    public void share(int position) {
+        Bitmap shareBitMap = getShareBitmap(position,R.id.thumb);
+        mPresenter.shareDynamic(mListDatas.get(position), shareBitMap);
+        showBottomView(true);
+    }
+
+    @Override
+    public void shareQQ(int position) {
+
+    }
+
+    @Override
+    public void shareQQZone(int position) {
+
+    }
+
+    @Override
+    public void shareWX(int position) {
+
+    }
+
+    @Override
+    public void shareWXZone(int position) {
+
+    }
+
+    @Override
+    public void shareWeiBo(int position) {
+
     }
 
     /**
@@ -1096,6 +1126,18 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
         }
     }
 
+    private Bitmap getShareBitmap(int position,int id) {
+        Bitmap shareBitMap = null;
+        try {
+            ImageView imageView = (ImageView) layoutManager.findViewByPosition
+                    (position + mHeaderAndFooterWrapper.getHeadersCount()).findViewById(id);
+            shareBitMap = ConvertUtils.drawable2BitmapWithWhiteBg(getContext(), imageView
+                    .getDrawable(), R.mipmap.icon);
+        } catch (Exception e) {
+        }
+        return shareBitMap;
+    }
+
     private void goDynamicDetail(int position, boolean isLookMoreComment, ViewHolder holder) {
         // 还未发送成功的动态列表不查看详情
         if (mListDatas.get(position).getId() == null || mListDatas.get(position).getId() <= 0) {
@@ -1120,7 +1162,9 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
         if (playView != null && playView.currentState > 0) {
             playView.textureViewContainer.removeView(JZMediaManager.textureView);
             bundle.putInt(DYNAMIC_VIDEO_STATE, playView.currentState);
-            playView.onStatePause();
+            if (playView.currentState == ZhiyiVideoView.CURRENT_STATE_PLAYING) {
+                JZMediaManager.pause();
+            }
         }
 
         intent.putExtras(bundle);

@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.provider.MediaStore;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -17,16 +16,12 @@ import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.FileUtils;
-import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.common.utils.recycleviewdecoration.TGridDecoration;
-import com.zhiyicx.common.utils.recycleviewdecoration.VideoSelectItemDecoration;
 import com.zhiyicx.thinksnsplus.R;
-import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.SendDynamicDataBean;
 import com.zhiyicx.thinksnsplus.modules.dynamic.send.SendDynamicActivity;
 import com.zhiyicx.thinksnsplus.modules.shortvideo.adapter.VideoGridViewAdapter;
 import com.zhiyicx.thinksnsplus.modules.shortvideo.clipe.TrimmerActivity;
-import com.zhiyicx.thinksnsplus.modules.shortvideo.preview.PreviewActivity;
 import com.zhiyicx.thinksnsplus.modules.shortvideo.record.RecordActivity;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 
@@ -73,6 +68,11 @@ public class VideoSelectFragment extends TSListFragment {
     @Override
     protected void initData() {
         super.initData();
+
+        mRvList.setOverScrollMode(View.OVER_SCROLL_NEVER);
+        mRvList.setPadding(20, 20, 0, 0);
+        mRvList.setBackgroundColor(0xffffffff);
+
         TrimVideoUtil.getAllVideoFiles(mActivity, (videoInfos, integer) -> {
             mActivity.runOnUiThread(() -> {
                 mListDatas.clear();
@@ -112,7 +112,7 @@ public class VideoSelectFragment extends TSListFragment {
 
     @Override
     protected RecyclerView.ItemDecoration getItemDecoration() {
-        return new VideoSelectItemDecoration(20, 20);
+        return new TGridDecoration(20, 20, true);
     }
 
     @Override
@@ -126,7 +126,7 @@ public class VideoSelectFragment extends TSListFragment {
     private void initReSendDynamicPopupWindow(VideoInfo videoInfo) {
         if (mPopWindow == null) {
             mPopWindow = ActionPopupWindow.builder()
-                    .item1Str(getString(R.string.direct_upload))
+                    .item1Str(videoInfo.getDuration() >= 300000 ? "" : getString(R.string.direct_upload))
                     .item2Str(getString(R.string.edite_upload))
                     .bottomStr(getString(R.string.cancel))
                     .isOutsideTouch(true)
@@ -157,7 +157,7 @@ public class VideoSelectFragment extends TSListFragment {
                     })
                     .item2ClickListener(() -> {
                         mPopWindow.hide();
-                        TrimmerActivity.startTrimmerActivity(mActivity,videoInfo);
+                        TrimmerActivity.startTrimmerActivity(mActivity, videoInfo);
                         mActivity.finish();
                     })
                     .bottomClickListener(() -> mPopWindow.hide())

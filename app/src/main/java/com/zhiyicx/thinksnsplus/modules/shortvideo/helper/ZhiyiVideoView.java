@@ -1,4 +1,4 @@
-package com.tym.shortvideo.view;
+package com.zhiyicx.thinksnsplus.modules.shortvideo.helper;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -6,17 +6,17 @@ import android.content.DialogInterface;
 import android.content.pm.ActivityInfo;
 import android.media.AudioManager;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
-import com.nineoldandroids.view.ViewHelper;
-import com.tym.video.R;
 import com.zhiyicx.common.utils.log.LogUtils;
+import com.zhiyicx.thinksnsplus.R;
 
 import java.lang.reflect.Constructor;
 
@@ -35,6 +35,19 @@ import cn.jzvd.JZVideoPlayerStandard;
  */
 public class ZhiyiVideoView extends JZVideoPlayerStandard {
 
+    public ImageView mShareImageView;
+
+    public LinearLayout mShareLineLinearLayout;
+
+    public LinearLayout mShareLinearLayout;
+
+    public TextView mShareToQQ;
+    public TextView mShareToQQZone;
+    public TextView mShareToWX;
+    public TextView mShareToWXZone;
+    public TextView mShareToWeiBo;
+
+    public TextView mShareTextView;
 
     public ZhiyiVideoView(Context context) {
         super(context);
@@ -47,6 +60,24 @@ public class ZhiyiVideoView extends JZVideoPlayerStandard {
     @Override
     public void init(Context context) {
         super.init(context);
+        mShareImageView = (ImageView) findViewById(R.id.share);
+        mShareLineLinearLayout = (LinearLayout) findViewById(R.id.ll_share_line_container);
+        mShareLinearLayout = (LinearLayout) findViewById(R.id.ll_share_container);
+
+        mShareToQQ = (TextView) findViewById(R.id.share_qq);
+        mShareToQQZone = (TextView) findViewById(R.id.share_qq_zone);
+        mShareToWX = (TextView) findViewById(R.id.share_wx);
+        mShareToWXZone = (TextView) findViewById(R.id.share_wx_zone);
+        mShareToWeiBo = (TextView) findViewById(R.id.share_weibo);
+        mShareTextView = (TextView) findViewById(R.id.share_text);
+
+        mShareImageView.setOnClickListener(this);
+        mShareToQQ.setOnClickListener(this);
+        mShareToQQZone.setOnClickListener(this);
+        mShareToWXZone.setOnClickListener(this);
+        mShareToWeiBo.setOnClickListener(this);
+        mShareToWX.setOnClickListener(this);
+
     }
 
     @Override
@@ -77,10 +108,97 @@ public class ZhiyiVideoView extends JZVideoPlayerStandard {
     public void onAutoCompletion() {
         if (currentScreen == SCREEN_WINDOW_FULLSCREEN) {
             onStateAutoComplete();
+            mShareImageView.setVisibility(GONE);
+            mShareLineLinearLayout.setVisibility(VISIBLE);
+            mShareLinearLayout.setVisibility(VISIBLE);
         } else {
             super.onAutoCompletion();
+            mShareImageView.setVisibility(VISIBLE);
         }
+    }
 
+    @Override
+    public void changeUiToNormal() {
+        super.changeUiToNormal();
+        mShareImageView.setVisibility(GONE);
+        mShareLineLinearLayout.setVisibility(GONE);
+        mShareLinearLayout.setVisibility(GONE);
+    }
+
+    @Override
+    public void changeUiToPreparing() {
+        super.changeUiToPreparing();
+        mShareImageView.setVisibility(GONE);
+        mShareLineLinearLayout.setVisibility(GONE);
+        mShareLinearLayout.setVisibility(GONE);
+    }
+
+    @Override
+    public void changeUiToPlayingShow() {
+        super.changeUiToPlayingShow();
+        mShareImageView.setVisibility(GONE);
+        mShareLineLinearLayout.setVisibility(GONE);
+        mShareLinearLayout.setVisibility(GONE);
+    }
+
+    @Override
+    public void changeUiToPlayingClear() {
+        super.changeUiToPlayingClear();
+        mShareImageView.setVisibility(GONE);
+        mShareLineLinearLayout.setVisibility(GONE);
+        mShareLinearLayout.setVisibility(GONE);
+    }
+
+    @Override
+    public void changeUiToPauseShow() {
+        super.changeUiToPauseShow();
+        mShareImageView.setVisibility(GONE);
+        mShareLineLinearLayout.setVisibility(GONE);
+        mShareLinearLayout.setVisibility(GONE);
+    }
+
+    @Override
+    public void changeUiToPauseClear() {
+        super.changeUiToPauseClear();
+        mShareImageView.setVisibility(GONE);
+        mShareLineLinearLayout.setVisibility(GONE);
+        mShareLinearLayout.setVisibility(GONE);
+    }
+
+    @Override
+    public void changeUiToError() {
+        super.changeUiToError();
+        mShareImageView.setVisibility(GONE);
+        mShareLineLinearLayout.setVisibility(GONE);
+        mShareLinearLayout.setVisibility(GONE);
+    }
+
+    @Override
+    public void changeUiToComplete() {
+        super.changeUiToComplete();
+        switch (currentScreen) {
+            case SCREEN_WINDOW_NORMAL:
+            case SCREEN_WINDOW_LIST:
+                mShareImageView.setVisibility(VISIBLE);
+                mShareLineLinearLayout.setVisibility(GONE);
+                mShareLinearLayout.setVisibility(GONE);
+                break;
+            case SCREEN_WINDOW_FULLSCREEN:
+                mShareImageView.setVisibility(GONE);
+                mShareLineLinearLayout.setVisibility(VISIBLE);
+                mShareLinearLayout.setVisibility(VISIBLE);
+                break;
+            case SCREEN_WINDOW_TINY:
+                break;
+            default:
+        }
+    }
+
+
+    @Override
+    public void updateStartImage() {
+        super.updateStartImage();
+        mShareTextView.setVisibility(replayTextView.getVisibility() == INVISIBLE ? GONE : VISIBLE);
     }
 
     @Override
@@ -168,5 +286,56 @@ public class ZhiyiVideoView extends JZVideoPlayerStandard {
             }
         });
         builder.create().show();
+    }
+
+    @Override
+    public void onClick(View v) {
+        super.onClick(v);
+        if (mShareInterface == null) {
+            return;
+        }
+        int i = v.getId();
+        switch (i) {
+            case R.id.share:
+                mShareInterface.share(positionInList);
+                break;
+            case R.id.share_qq:
+                mShareInterface.shareQQ(positionInList);
+                break;
+            case R.id.share_qq_zone:
+                mShareInterface.shareQQZone(positionInList);
+                break;
+            case R.id.share_wx:
+                mShareInterface.shareWX(positionInList);
+                break;
+            case R.id.share_wx_zone:
+                mShareInterface.shareWXZone(positionInList);
+                break;
+            case R.id.share_weibo:
+                mShareInterface.shareWeiBo(positionInList);
+                break;
+            default:
+        }
+
+    }
+
+    protected ShareInterface mShareInterface;
+
+    public void setShareInterface(ShareInterface shareInterface) {
+        mShareInterface = shareInterface;
+    }
+
+    public interface ShareInterface {
+        void share(int position);
+
+        void shareQQ(int position);
+
+        void shareQQZone(int position);
+
+        void shareWX(int position);
+
+        void shareWXZone(int position);
+
+        void shareWeiBo(int position);
     }
 }

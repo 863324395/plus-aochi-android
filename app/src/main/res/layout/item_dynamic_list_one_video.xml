@@ -106,7 +106,7 @@
         android:paddingBottom="@dimen/dynamic_image_padding_bottom">
 
 
-        <com.tym.shortvideo.view.ZhiyiVideoView
+        <com.zhiyicx.thinksnsplus.modules.shortvideo.helper.ZhiyiVideoView
             android:id="@+id/videoplayer"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>

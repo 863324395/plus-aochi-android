@@ -15,14 +15,10 @@ import com.tym.shortvideo.utils.FileUtils;
 import com.tym.shortvideo.utils.TrimVideoUtil;
 import com.tym.shortvideo.view.VideoTrimmerView;
 import com.zhiyicx.baseproject.base.TSFragment;
-import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.thinksnsplus.R;
-import com.zhiyicx.thinksnsplus.data.beans.SendDynamicDataBean;
-import com.zhiyicx.thinksnsplus.modules.dynamic.send.SendDynamicActivity;
 import com.zhiyicx.thinksnsplus.modules.shortvideo.preview.PreviewActivity;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
@@ -112,12 +108,19 @@ public class TrimmerFragment extends TSFragment implements TrimVideoListener {
         RxView.clicks(mToolbarRight)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .compose(this.bindToLifecycle())
-                .subscribe(aVoid -> mVideoTrimmerView.onSaveClicked());
+                .subscribe(aVoid -> {
+                    mVideoTrimmerView.destroy();
+                    mVideoTrimmerView.onSaveClicked();
+                });
 
         RxView.clicks(mToolbarLeft)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .compose(this.bindToLifecycle())
-                .subscribe(aVoid -> mActivity.finish());
+                .subscribe(aVoid -> {
+                            mVideoTrimmerView.destroy();
+                            mActivity.finish();
+                        }
+                );
     }
 
     @Override
@@ -141,7 +144,7 @@ public class TrimmerFragment extends TSFragment implements TrimVideoListener {
         FileUtils.updateMediaStore(mActivity, url, (path, uri) -> {
             ArrayList<String> arrayList = new ArrayList<>();
             arrayList.add(path);
-            VideoListManager.getInstance().addSubVideo(path,mVideoTrimmerView.getDuration());
+            VideoListManager.getInstance().addSubVideo(path, mVideoTrimmerView.getDuration());
             PreviewActivity.startPreviewActivity(mActivity, arrayList);
             mActivity.finish();
         });

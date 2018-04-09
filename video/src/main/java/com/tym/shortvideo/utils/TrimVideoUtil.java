@@ -259,6 +259,10 @@ public class TrimVideoUtil {
                                                            retriever.setDataSource(mContext, Uri
                                                                    .parse(video.getPath()));
 
+                                                           String mime = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_MIMETYPE);
+                                                           if (!"video/mp4".equals(mime)) {
+                                                               continue;
+                                                           }
                                                            int duration = Integer.parseInt(retriever
                                                                    .extractMetadata
                                                                            (MediaMetadataRetriever

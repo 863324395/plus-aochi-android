@@ -10,6 +10,7 @@ import android.text.TextUtils;
 import android.util.SparseArray;
 
 import com.klinker.android.link_builder.Link;
+import com.umeng.socialize.bean.SHARE_MEDIA;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.config.MarkdownConfig;
@@ -35,7 +36,6 @@ import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.PurChasesBean;
 import com.zhiyicx.thinksnsplus.data.beans.RealAdvertListBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
-import com.zhiyicx.thinksnsplus.data.beans.WalletBean;
 import com.zhiyicx.thinksnsplus.data.source.local.AllAdvertListBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicCommentBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicDetailBeanV2GreenDaoImpl;
@@ -476,6 +476,48 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.View>
     }
 
     @Override
+    public void shareDynamic(DynamicDetailBeanV2 dynamicBean, Bitmap bitmap, SHARE_MEDIA type) {
+        if (mSharePolicy == null) {
+            if (mRootView instanceof Fragment) {
+                mSharePolicy = new UmengSharePolicyImpl(((Fragment) mRootView).getActivity());
+            } else {
+                return;
+            }
+        }
+        ShareContent shareContent = new ShareContent();
+        shareContent.setTitle(mContext.getString(R.string.share));
+        shareContent.setContent(TextUtils.isEmpty(dynamicBean.getFeed_content()) ? mContext.getString(R.string
+                .share_dynamic) : dynamicBean.getFeed_content());
+        if (bitmap != null) {
+            shareContent.setBitmap(bitmap);
+        } else {
+            shareContent.setBitmap(ConvertUtils.drawBg4Bitmap(Color.WHITE, BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.icon)));
+        }
+        shareContent.setUrl(String.format(ApiConfig.APP_DOMAIN + ApiConfig.APP_PATH_SHARE_DYNAMIC, dynamicBean.getId()
+                == null ? "" : dynamicBean.getId()));
+        mSharePolicy.setShareContent(shareContent);
+        switch (type) {
+            case QQ:
+                mSharePolicy.shareQQ(((TSFragment) mRootView).getActivity(), this);
+                break;
+            case QZONE:
+                mSharePolicy.shareZone(((TSFragment) mRootView).getActivity(), this);
+                break;
+            case WEIXIN:
+                mSharePolicy.shareWechat(((TSFragment) mRootView).getActivity(), this);
+                break;
+            case WEIXIN_CIRCLE:
+                mSharePolicy.shareMoment(((TSFragment) mRootView).getActivity(), this);
+                break;
+            case SINA:
+                mSharePolicy.shareWeibo(((TSFragment) mRootView).getActivity(), this);
+                break;
+            default:
+        }
+
+    }
+
+    @Override
     public List<RealAdvertListBean> getBannerAdvert() {
         if (!com.zhiyicx.common.BuildConfig.USE_ADVERT || mAllAdvertListBeanGreenDao.getDynamicBannerAdvert() == null) {
             return new ArrayList<>();
@@ -544,7 +586,7 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.View>
                             mRootView.getListDatas().get(dynamicPosition).getPaid_node().setPaid(true);
                             mRootView.getListDatas().get(dynamicPosition).setFeed_content(data.getData());
                             if (data.getData() != null) {
-                                String friendlyContent = data.getData().replaceAll(MarkdownConfig.NETSITE_FORMAT,  Link
+                                String friendlyContent = data.getData().replaceAll(MarkdownConfig.NETSITE_FORMAT, Link
                                         .DEFAULT_NET_SITE);
                                 if (friendlyContent.length() > DYNAMIC_LIST_CONTENT_MAX_SHOW_SIZE) {
                                     friendlyContent = friendlyContent.substring(0, DYNAMIC_LIST_CONTENT_MAX_SHOW_SIZE) + "...";

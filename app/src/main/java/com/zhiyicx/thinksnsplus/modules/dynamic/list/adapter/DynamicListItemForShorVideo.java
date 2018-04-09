@@ -16,6 +16,7 @@ import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.FastBlur;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
+import com.zhiyicx.thinksnsplus.modules.shortvideo.helper.ZhiyiVideoView;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
 import cn.jzvd.JZVideoPlayerStandard;
@@ -38,10 +39,19 @@ public class DynamicListItemForShorVideo extends DynamicListBaseItem {
      */
     private static final int CURREN_CLOUMS = 1;
 
+    private ZhiyiVideoView.ShareInterface mShareInterface;
+
     public DynamicListItemForShorVideo(Context context) {
         super(context);
         int maxWidth = context.getResources().getDimensionPixelOffset(R.dimen.dynamic_image_max_width);
         mImageContainerWith = mImageContainerWith > maxWidth ? maxWidth : mImageContainerWith;
+    }
+
+    public DynamicListItemForShorVideo(Context context, ZhiyiVideoView.ShareInterface shareInterface) {
+        super(context);
+        int maxWidth = context.getResources().getDimensionPixelOffset(R.dimen.dynamic_image_max_width);
+        mImageContainerWith = mImageContainerWith > maxWidth ? maxWidth : mImageContainerWith;
+        mShareInterface = shareInterface;
     }
 
     @Override
@@ -58,7 +68,7 @@ public class DynamicListItemForShorVideo extends DynamicListBaseItem {
     @Override
     public void convert(ViewHolder holder, final DynamicDetailBeanV2 dynamicBean, DynamicDetailBeanV2 lastT, int position, int itemCounts) {
         super.convert(holder, dynamicBean, lastT, position, itemCounts);
-        initVideoView(holder, holder.getView(R.id.videoplayer), dynamicBean, 0, 1);
+        initVideoView(holder, holder.getView(R.id.videoplayer), dynamicBean, position);
     }
 
     /**
@@ -67,9 +77,8 @@ public class DynamicListItemForShorVideo extends DynamicListBaseItem {
      * @param view        the target
      * @param dynamicBean item data
      * @param positon     image item position
-     * @param part        this part percent of imageContainer
      */
-    protected void initVideoView(final ViewHolder holder, JZVideoPlayerStandard view, final DynamicDetailBeanV2 dynamicBean, final int positon, int part) {
+    protected void initVideoView(final ViewHolder holder, JZVideoPlayerStandard view, final DynamicDetailBeanV2 dynamicBean, final int positon) {
         int with;
         int height;
 
@@ -79,7 +88,10 @@ public class DynamicListItemForShorVideo extends DynamicListBaseItem {
 
             videoUrl = String.format(ApiConfig.APP_DOMAIN + ApiConfig.FILE_PATH,
                     dynamicBean.getVideo().getVideo_id());
-
+            if (view instanceof ZhiyiVideoView) {
+                ZhiyiVideoView zhiyiVideoView = (ZhiyiVideoView) view;
+                zhiyiVideoView.setShareInterface(mShareInterface);
+            }
             with = video.getWidth();
             height = video.getHeight();
             view.getLayoutParams().height = height;
@@ -108,7 +120,7 @@ public class DynamicListItemForShorVideo extends DynamicListBaseItem {
             // 本地
             videoUrl = video.getUrl();
             with = video.getWidth();
-            height= video.getHeight();
+            height = video.getHeight();
 
             view.getLayoutParams().height = height;
             Glide.with(mContext)
