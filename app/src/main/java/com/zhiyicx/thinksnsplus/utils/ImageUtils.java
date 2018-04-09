@@ -483,7 +483,6 @@ public class ImageUtils {
      * @param token 图片token
      */
     public static GlideUrl imagePathConvertV2(String url, String token) {
-//        LogUtils.d("imagePathConvertV2:" + url);
         return new GlideUrl(url, new LazyHeaders.Builder()
                 .addHeader("Authorization", token)
                 .build());
@@ -503,12 +502,8 @@ public class ImageUtils {
     }
 
     public static String imagePathConvertV2(int storage, int w, int h, int part) {
-        if (part == 100) {
-            //原图
-            return String.format(Locale.getDefault(), ApiConfig.APP_DOMAIN + ApiConfig.IMAGE_PATH_V2_ORIGIN, storage);
-        } else {
             return String.format(Locale.getDefault(), ApiConfig.APP_DOMAIN + ApiConfig.IMAGE_PATH_V2, storage, w, h, part);
-        }
+
     }
 
     public static long[] getBitmapSize(String url) {
@@ -553,6 +548,7 @@ public class ImageUtils {
 
     /**
      * 图片是否是 gif
+     *
      * @param imageMinityp
      * @return
      */

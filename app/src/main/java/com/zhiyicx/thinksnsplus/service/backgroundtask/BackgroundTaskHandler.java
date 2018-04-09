@@ -845,7 +845,7 @@ public class BackgroundTaskHandler {
                                 BaseJson<Object> baseJson = new BaseJson<>();
                                 baseJson.setData((double) objectBaseJsonV2.getId());
                                 String msg = objectBaseJsonV2.getMessage().get(0);
-                                baseJson.setStatus(msg.equals("发布成功"));
+                                baseJson.setStatus(mContext.getString(R.string.send_success).equals(msg));
                                 baseJson.setMessage(msg);
                                 return Observable.just(baseJson);
                             }));
@@ -855,7 +855,7 @@ public class BackgroundTaskHandler {
                         BaseJson<Object> baseJson = new BaseJson<>();
                         baseJson.setData((double) objectBaseJsonV2.getId());
                         String msg = objectBaseJsonV2.getMessage().get(0);
-                        baseJson.setStatus(msg.equals("发布成功"));
+                        baseJson.setStatus(mContext.getString(R.string.send_success).equals(msg));
                         baseJson.setMessage(msg);
                         return Observable.just(baseJson);
                     });
@@ -863,9 +863,9 @@ public class BackgroundTaskHandler {
         observable.subscribeOn(Schedulers.io())
                 .retryWhen(new RetryWithInterceptDelay(RETRY_MAX_COUNT, RETRY_INTERVAL_TIME))
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new BaseSubscribe<Object>() {
+                .subscribe(new BaseSubscribeForV2<BaseJson<Object>>() {
                     @Override
-                    protected void onSuccess(Object data) {
+                    protected void onSuccess(BaseJson<Object> data) {
                         // 发送动态到动态列表：状态为发送成功
                         detailBeanV2.setSendFailMessage("");
                         sendDynamicByEventBus(SendDynamicDataBean.NORMAL_DYNAMIC, detailBeanV2, true, backgroundRequestTaskBean, data);
@@ -970,7 +970,7 @@ public class BackgroundTaskHandler {
                         BaseJson<Object> baseJson = new BaseJson<>();
                         baseJson.setData((double) objectBaseJsonV2.getId());
                         String msg = objectBaseJsonV2.getMessage().get(0);
-                        baseJson.setStatus(msg.equals("发布成功"));
+                        baseJson.setStatus(mContext.getString(R.string.send_success).equals(msg));
                         baseJson.setMessage(msg);
                         return Observable.just(baseJson);
                     }));
@@ -982,7 +982,7 @@ public class BackgroundTaskHandler {
                         BaseJson<Object> baseJson = new BaseJson<>();
                         baseJson.setData((double) objectBaseJsonV2.getId());
                         String msg = objectBaseJsonV2.getMessage().get(0);
-                        baseJson.setStatus(msg.equals("发布成功"));
+                        baseJson.setStatus(mContext.getString(R.string.send_success).equals(msg));
                         baseJson.setMessage(msg);
                         return Observable.just(baseJson);
                     });
@@ -1007,13 +1007,13 @@ public class BackgroundTaskHandler {
     }
 
     private void sendDynamicByEventBus(int dynamicBelong, DynamicDetailBeanV2 dynamicBean, boolean sendSuccess
-            , BackgroundRequestTaskBean backgroundRequestTaskBean, Object data) {
+            , BackgroundRequestTaskBean backgroundRequestTaskBean, BaseJson<Object> data) {
         switch (dynamicBelong) {
             case SendDynamicDataBean.NORMAL_DYNAMIC:
                 if (sendSuccess) {
                     // 动态发送成功
                     dynamicBean.setState(DynamicBean.SEND_SUCCESS);
-                    dynamicBean.setId(((Double) data).longValue());
+                    dynamicBean.setId(((Double)data.getData()).longValue());
                     mSendDynamicDataBeanV2Dao.delteSendDynamicDataBeanV2ByFeedMark(String.valueOf(dynamicBean.getFeed_mark()));
                     mDynamicDetailBeanV2GreenDao.insertOrReplace(dynamicBean);
                 } else {
@@ -1402,7 +1402,7 @@ public class BackgroundTaskHandler {
                         BaseJson<Object> baseJson = new BaseJson<>();
                         baseJson.setData((double) objectBaseJsonV2.getId());
                         String msg = objectBaseJsonV2.getMessage().get(0);
-                        baseJson.setStatus(msg.equals("发布成功"));
+                        baseJson.setStatus(mContext.getString(R.string.send_success).equals(msg));
                         baseJson.setMessage(msg);
                         return Observable.just(baseJson);
                     }));
