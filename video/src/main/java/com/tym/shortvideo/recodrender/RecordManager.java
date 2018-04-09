@@ -9,6 +9,7 @@ import android.util.Log;
 
 import com.tym.shortvideo.recordcore.multimedia.EncoderManager;
 import com.tym.shortvideo.recordcore.multimedia.MediaEncoder;
+import com.tym.shortvideo.utils.DeviceUtils;
 
 import java.lang.ref.WeakReference;
 
@@ -22,8 +23,8 @@ public final class RecordManager {
     private static final String TAG = "RecordManager";
     private static final boolean VERBOSE = false;
 
-    public static final int RECORD_WIDTH = 540;
-    public static final int RECORD_HEIGHT = 960;
+    public static final int RECORD_WIDTH = DeviceUtils.getScreenWidth();
+    public static final int RECORD_HEIGHT = DeviceUtils.getScreenHeight();
 
     private static RecordManager mInstance;
 

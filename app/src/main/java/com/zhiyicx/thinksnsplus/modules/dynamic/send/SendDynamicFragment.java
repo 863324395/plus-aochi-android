@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.dynamic.send;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.os.Build;
@@ -290,7 +291,6 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
     }
 
 
-
     @Override
     public double getTollMoney() {
         return mTollMoney;
@@ -470,7 +470,7 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                 tollBundle.putParcelableArrayList(TOLLBUNDLE, new ArrayList<>(oldData));
             }
             mPhotoSelector.onActivityResult(requestCode, resultCode, data);
-        }else if(dynamicType == SendDynamicDataBean.VIDEO_TEXT_DYNAMIC){
+        } else if (dynamicType == SendDynamicDataBean.VIDEO_TEXT_DYNAMIC && resultCode == Activity.RESULT_OK) {
             selectedPhotos.clear();
             addPlaceHolder();
             setSendDynamicState();// 每次刷新图片后都要判断发布按钮状态

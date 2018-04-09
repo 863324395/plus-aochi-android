@@ -87,6 +87,11 @@ public class CoverFragment extends TSFragment implements MediaPlayerWrapper.IMed
     }
 
     @Override
+    protected int setLeftImg() {
+        return R.mipmap.topbar_back_white;
+    }
+
+    @Override
     protected void initView(View rootView) {
         mToolbarCenter.setText(R.string.clip_cover);
         mToolbarLeft.setText(R.string.cancel);
@@ -110,7 +115,10 @@ public class CoverFragment extends TSFragment implements MediaPlayerWrapper.IMed
         RxView.clicks(mToolbarLeft)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .compose(this.bindToLifecycle())
-                .subscribe(aVoid -> mActivity.finish());
+                .subscribe(aVoid -> {
+                    mActivity.setResult(Activity.RESULT_CANCELED);
+                    mActivity.finish();
+                });
 
         mVideoView.setIMediaCallback(this);
 
@@ -145,6 +153,7 @@ public class CoverFragment extends TSFragment implements MediaPlayerWrapper.IMed
 
         if (isPre) {
             mToolbarCenter.setText(R.string.preview);
+            mToolbarLeft.setText("");
             mToolbarLeft.setCompoundDrawables(UIUtils.getCompoundDrawables(getContext(), setLeftImg()), null, null, null);
             mToolbarRight.setText(R.string.delete);
             mToolbarRight.setTextColor(ContextCompat.getColorStateList(getContext(), com.zhiyicx.baseproject.R.color.selector_text_color));
