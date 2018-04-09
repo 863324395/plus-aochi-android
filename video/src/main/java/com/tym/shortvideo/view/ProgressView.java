@@ -12,12 +12,16 @@ import android.view.View;
 import com.tym.shortvideo.recordcore.CountDownManager;
 import com.tym.video.R;
 import com.tym.shortvideo.utils.DeviceUtils;
-import com.zhiyicx.common.utils.log.LogUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 
-
+/**
+ * @author Jliuer
+ * @Date 18/04/09 14:20
+ * @Email Jliuer@aliyun.com
+ * @Description
+ */
 public class ProgressView extends View {
 
     /**
@@ -224,7 +228,6 @@ public class ProgressView extends View {
      * 设置段点
      */
     public void addSplitView() {
-        LogUtils.d("addSplitView", "mGrithPro = " + mCurrentLenght);
         mSplitList.add(mCurrentLenght);
         CountDownManager.getInstance().setSplitList(mSplitList);
         postInvalidate();

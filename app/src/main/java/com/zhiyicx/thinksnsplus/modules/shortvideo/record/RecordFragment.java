@@ -39,6 +39,7 @@ import com.tym.shortvideo.view.CainSurfaceView;
 import com.tym.shortvideo.view.ProgressView;
 import com.tym.shortvideo.view.ShutterButton;
 import com.zhiyicx.baseproject.base.TSFragment;
+import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.modules.shortvideo.adapter.EffectFilterAdapter;
@@ -81,14 +82,15 @@ public class RecordFragment extends TSFragment implements SurfaceHolder.Callback
     @BindView(R.id.tv_countdown)
     TextView mTvCountdown;
 
-    @BindView(R.id.iv_back)
-    ImageView mIvBack;
+    @BindView(R.id.tv_toolbar_right)
+    TextView mToolbarRight;
+    @BindView(R.id.tv_toolbar_left)
+    TextView mToolbarLeft;
+
     @BindView(R.id.iv_left)
     ImageView mIvLeft;
     @BindView(R.id.iv_right)
     ImageView mIvRight;
-    @BindView(R.id.tv_next_setup)
-    TextView mTvNextSetUp;
 
     private CainSurfaceView mCameraSurfaceView;
 
@@ -130,6 +132,11 @@ public class RecordFragment extends TSFragment implements SurfaceHolder.Callback
     }
 
     @Override
+    protected int setLeftImg() {
+        return R.mipmap.ico_video_close;
+    }
+
+    @Override
     protected void initView(View rootView) {
         String phoneName = Build.MODEL;
         if (phoneName.toLowerCase().contains("bullhead")
@@ -137,6 +144,8 @@ public class RecordFragment extends TSFragment implements SurfaceHolder.Callback
             TextureRotationUtils.setBackReverse(true);
             ParamsManager.mBackReverse = true;
         }
+        mToolbarRight.setText(getString(R.string.next_setup));
+        mToolbarLeft.setCompoundDrawables(UIUtils.getCompoundDrawables(getContext(), setLeftImg()), null, null, null);
     }
 
     @Override
@@ -167,7 +176,7 @@ public class RecordFragment extends TSFragment implements SurfaceHolder.Callback
 
     private void initListener() {
 
-        RxView.clicks(mIvBack)
+        RxView.clicks(mToolbarLeft)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .compose(this.bindToLifecycle())
                 .subscribe(aVoid -> mActivity.finish());
@@ -195,7 +204,7 @@ public class RecordFragment extends TSFragment implements SurfaceHolder.Callback
                         }
                 );
 
-        RxView.clicks(mTvNextSetUp)
+        RxView.clicks(mToolbarRight)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .compose(this.bindToLifecycle())
                 .subscribe(aVoid -> {
@@ -272,34 +281,31 @@ public class RecordFragment extends TSFragment implements SurfaceHolder.Callback
 
     @Override
     public void onFrameCallback(ByteBuffer buffer, int width, int height) {
-        mMainHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                String filePath = ParamsManager.ImagePath + "CainCamera_"
-                        + System.currentTimeMillis() + ".jpeg";
-                File file = new File(filePath);
-                if (!file.getParentFile().exists()) {
-                    file.getParentFile().mkdirs();
-                }
-                BufferedOutputStream bos = null;
-                try {
-                    bos = new BufferedOutputStream(new FileOutputStream(file));
-                    Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
-                    bitmap.copyPixelsFromBuffer(buffer);
-                    bitmap = BitmapUtils.rotateBitmap(bitmap, 180, true);
-                    bitmap = BitmapUtils.flipBitmap(bitmap, true);
-                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bos);
-                    bitmap.recycle();
-                    bitmap = null;
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                } finally {
-                    if (bos != null) {
-                        try {
-                            bos.close();
-                        } catch (IOException e) {
-                            // do nothing
-                        }
+        mMainHandler.post(() -> {
+            String filePath = ParamsManager.ImagePath + "CainCamera_"
+                    + System.currentTimeMillis() + ".jpeg";
+            File file = new File(filePath);
+            if (!file.getParentFile().exists()) {
+                file.getParentFile().mkdirs();
+            }
+            BufferedOutputStream bos = null;
+            try {
+                bos = new BufferedOutputStream(new FileOutputStream(file));
+                Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+                bitmap.copyPixelsFromBuffer(buffer);
+                bitmap = BitmapUtils.rotateBitmap(bitmap, 180, true);
+                bitmap = BitmapUtils.flipBitmap(bitmap, true);
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bos);
+                bitmap.recycle();
+                bitmap = null;
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } finally {
+                if (bos != null) {
+                    try {
+                        bos.close();
+                    } catch (IOException e) {
+                        // do nothing
                     }
                 }
             }
