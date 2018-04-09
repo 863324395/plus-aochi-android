@@ -18,6 +18,8 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.signature.StringSignature;
 import com.jakewharton.rxbinding.widget.RxRadioGroup;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.tym.shortvideo.media.VideoInfo;
@@ -48,6 +50,7 @@ import com.zhiyicx.thinksnsplus.data.beans.GroupSendDynamicDataBean;
 import com.zhiyicx.thinksnsplus.data.beans.SendDynamicDataBean;
 import com.zhiyicx.thinksnsplus.data.beans.SendDynamicDataBeanV2;
 import com.zhiyicx.thinksnsplus.modules.photopicker.PhotoViewActivity;
+import com.zhiyicx.thinksnsplus.modules.shortvideo.cover.CoverActivity;
 import com.zhiyicx.thinksnsplus.modules.shortvideo.record.RecordActivity;
 import com.zhiyicx.thinksnsplus.widget.UserInfoInroduceInputView;
 import com.zhy.adapter.recyclerview.CommonAdapter;
@@ -759,6 +762,7 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                     }
                     Glide.with(getContext())
                             .load(imageBean.getImgUrl())
+                            .signature(new StringSignature(String.valueOf(System.currentTimeMillis())))
                             .placeholder(R.drawable.shape_default_image)
                             .error(R.drawable.shape_default_image)
                             .override(convertView.getLayoutParams().width, convertView.getLayoutParams().height)
@@ -782,6 +786,13 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                         }
                         mPhotoSelector.getPhotoListFromSelector(MAX_PHOTOS, photos);
                     } else {
+                        if (dynamicType == SendDynamicDataBean.VIDEO_TEXT_DYNAMIC) {
+                            ArrayList<String> srcList = new ArrayList<>();
+                            srcList.add(mSendDynamicDataBean.getVideoInfo().getPath());
+                            CoverActivity.startCoverActivity(mActivity, srcList, true);
+                            return;
+                        }
+
                         // 预览图片
                         ArrayList<String> photos = new ArrayList<>();
                         // 最后一张是占位图

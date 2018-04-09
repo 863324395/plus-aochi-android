@@ -14,14 +14,19 @@
 
     <android.support.v7.widget.AppCompatSeekBar
         android:id="@+id/sk_cover"
-        android:progressDrawable="@drawable/jz_bottom_seek_progress"
-        android:thumb="@drawable/jz_bottom_seek_thumb"
-        android:layout_gravity="center_vertical"
         android:layout_width="match_parent"
-        android:layout_height="10dp"
-        android:visibility="visible"
-        android:max="1000"
-        android:secondaryProgress="0" />
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:background="@null"
+        android:max="100"
+        android:maxHeight="1dp"
+        android:minHeight="1dp"
+        android:paddingBottom="8dp"
+        android:paddingLeft="12dp"
+        android:paddingRight="12dp"
+        android:paddingTop="8dp"
+        android:progressDrawable="@drawable/video_progress"
+        android:thumb="@drawable/jz_bottom_seek_thumb"/>
 
     <include layout="@layout/toolbar_video"/>
 

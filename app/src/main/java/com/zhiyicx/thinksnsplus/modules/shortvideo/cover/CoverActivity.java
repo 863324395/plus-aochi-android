@@ -29,9 +29,10 @@ public class CoverActivity extends TSActivity {
 
     }
 
-    public static void startCoverActivity(Context context, ArrayList<String> path) {
+    public static void startCoverActivity(Context context, ArrayList<String> path,boolean pre) {
         Bundle bundle = new Bundle();
         bundle.putStringArrayList(CoverFragment.PATH, path);
+        bundle.putBoolean(CoverFragment.PREVIEW,pre);
         Intent intent = new Intent(context, CoverActivity.class);
         intent.putExtras(bundle);
         if (context instanceof Activity) {
