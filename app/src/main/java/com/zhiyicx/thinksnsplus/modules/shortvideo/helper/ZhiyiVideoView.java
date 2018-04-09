@@ -15,6 +15,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.umeng.socialize.bean.SHARE_MEDIA;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 
@@ -26,6 +27,8 @@ import cn.jzvd.JZUtils;
 import cn.jzvd.JZVideoPlayer;
 import cn.jzvd.JZVideoPlayerManager;
 import cn.jzvd.JZVideoPlayerStandard;
+
+import static com.umeng.socialize.bean.SHARE_MEDIA.QQ;
 
 /**
  * @Author Jliuer
@@ -91,12 +94,16 @@ public class ZhiyiVideoView extends JZVideoPlayerStandard {
             LogUtils.d(TAG, "startVideo [" + this.hashCode() + "] ");
             initTextureView();
             addTextureView();
-            AudioManager mAudioManager = (AudioManager) getContext().getSystemService(Context.AUDIO_SERVICE);
-            mAudioManager.requestAudioFocus(onAudioFocusChangeListener, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN_TRANSIENT);
-            JZUtils.scanForActivity(getContext()).getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+            AudioManager mAudioManager = (AudioManager) getContext().getSystemService(Context
+                    .AUDIO_SERVICE);
+            mAudioManager.requestAudioFocus(onAudioFocusChangeListener, AudioManager
+                    .STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN_TRANSIENT);
+            JZUtils.scanForActivity(getContext()).getWindow().addFlags(WindowManager.LayoutParams
+                    .FLAG_KEEP_SCREEN_ON);
 
             JZMediaManager.setDataSource(dataSourceObjects);
-            JZMediaManager.setCurrentDataSource(JZUtils.getCurrentFromDataSource(dataSourceObjects, currentUrlMapIndex));
+            JZMediaManager.setCurrentDataSource(JZUtils.getCurrentFromDataSource
+                    (dataSourceObjects, currentUrlMapIndex));
             JZMediaManager.instance().positionInList = positionInList;
             onStatePreparing();
         } else {
@@ -109,6 +116,8 @@ public class ZhiyiVideoView extends JZVideoPlayerStandard {
         if (currentScreen == SCREEN_WINDOW_FULLSCREEN) {
             onStateAutoComplete();
             mShareImageView.setVisibility(GONE);
+            mShareTextView.setVisibility(GONE);
+            mShareTextView.setVisibility(GONE);
             mShareLineLinearLayout.setVisibility(VISIBLE);
             mShareLinearLayout.setVisibility(VISIBLE);
         } else {
@@ -208,7 +217,8 @@ public class ZhiyiVideoView extends JZVideoPlayerStandard {
             if (videoRotation != 0) {
                 JZMediaManager.textureView.setRotation(videoRotation);
             }
-            JZMediaManager.textureView.setVideoSize(JZMediaManager.instance().currentVideoWidth, JZMediaManager.instance().currentVideoHeight);
+            JZMediaManager.textureView.setVideoSize(JZMediaManager.instance().currentVideoWidth,
+                    JZMediaManager.instance().currentVideoHeight);
         }
     }
 
@@ -225,23 +235,29 @@ public class ZhiyiVideoView extends JZVideoPlayerStandard {
         }
         textureViewContainer.removeView(JZMediaManager.textureView);
         try {
-            Constructor<ZhiyiVideoView> constructor = (Constructor<ZhiyiVideoView>) ZhiyiVideoView.this.getClass().getConstructor(Context.class);
-            JZVideoPlayer jzVideoPlayer = constructor.newInstance(getContext());
+            Constructor<ZhiyiVideoView> constructor = (Constructor<ZhiyiVideoView>)
+                    ZhiyiVideoView.this.getClass().getConstructor(Context.class);
+            ZhiyiVideoView jzVideoPlayer = constructor.newInstance(getContext());
             jzVideoPlayer.setId(cn.jzvd.R.id.jz_fullscreen_id);
+            jzVideoPlayer.setShareInterface(mShareInterface);
             FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
             vp.addView(jzVideoPlayer, lp);
             jzVideoPlayer.setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
                     | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY | View.SYSTEM_UI_FLAG_FULLSCREEN);
-            jzVideoPlayer.setUp(dataSourceObjects, currentUrlMapIndex, JZVideoPlayerStandard.SCREEN_WINDOW_FULLSCREEN, objects);
+            jzVideoPlayer.setUp(dataSourceObjects, currentUrlMapIndex, JZVideoPlayerStandard
+                    .SCREEN_WINDOW_FULLSCREEN, objects);
             jzVideoPlayer.setState(currentState);
+            jzVideoPlayer.positionInList = this.positionInList;
             jzVideoPlayer.addTextureView();
             JZVideoPlayerManager.setSecondFloor(jzVideoPlayer);
-//            final Animation ra = AnimationUtils.loadAnimation(getContext(), R.anim.start_fullscreen);
+//            final Animation ra = AnimationUtils.loadAnimation(getContext(), R.anim
+// .start_fullscreen);
 //            jzVideoPlayer.setAnimation(ra);
 
             int orientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE;
-            if (JZMediaManager.instance().currentVideoWidth > JZMediaManager.instance().currentVideoHeight) {
+            if (JZMediaManager.instance().currentVideoWidth > JZMediaManager.instance()
+                    .currentVideoHeight) {
                 // 横屏
                 orientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE;
             } else {
@@ -263,28 +279,19 @@ public class ZhiyiVideoView extends JZVideoPlayerStandard {
     public void showWifiDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setMessage(getResources().getString(R.string.tips_not_wifi));
-        builder.setPositiveButton(getResources().getString(R.string.tips_not_wifi_confirm), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-                onEvent(JZUserActionStandard.ON_CLICK_START_WIFIDIALOG);
-                startVideo();
-                WIFI_TIP_DIALOG_SHOWED = true;
-            }
-        });
-        builder.setNegativeButton(getResources().getString(R.string.tips_not_wifi_cancel), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-                clearFloatScreen();
-            }
-        });
-        builder.setOnCancelListener(new DialogInterface.OnCancelListener() {
-            @Override
-            public void onCancel(DialogInterface dialog) {
-                dialog.dismiss();
-            }
-        });
+        builder.setPositiveButton(getResources().getString(R.string.tips_not_wifi_confirm),
+                (dialog, which) -> {
+                    dialog.dismiss();
+                    onEvent(JZUserActionStandard.ON_CLICK_START_WIFIDIALOG);
+                    startVideo();
+                    WIFI_TIP_DIALOG_SHOWED = true;
+                });
+        builder.setNegativeButton(getResources().getString(R.string.tips_not_wifi_cancel),
+                (dialog, which) -> {
+                    dialog.dismiss();
+                    clearFloatScreen();
+                });
+        builder.setOnCancelListener(dialog -> dialog.dismiss());
         builder.create().show();
     }
 
@@ -295,26 +302,31 @@ public class ZhiyiVideoView extends JZVideoPlayerStandard {
             return;
         }
         int i = v.getId();
+        SHARE_MEDIA type = null;
         switch (i) {
             case R.id.share:
                 mShareInterface.share(positionInList);
                 break;
             case R.id.share_qq:
-                mShareInterface.shareQQ(positionInList);
+                type = SHARE_MEDIA.QQ;
                 break;
             case R.id.share_qq_zone:
-                mShareInterface.shareQQZone(positionInList);
+                type = SHARE_MEDIA.QZONE;
                 break;
             case R.id.share_wx:
-                mShareInterface.shareWX(positionInList);
+                type = SHARE_MEDIA.WEIXIN;
                 break;
             case R.id.share_wx_zone:
-                mShareInterface.shareWXZone(positionInList);
+                type = SHARE_MEDIA.WEIXIN_CIRCLE;
                 break;
             case R.id.share_weibo:
-                mShareInterface.shareWeiBo(positionInList);
+                type = SHARE_MEDIA.SINA;
                 break;
             default:
+        }
+
+        if (type != null) {
+            mShareInterface.shareWihtType(positionInList, type);
         }
 
     }
@@ -328,14 +340,6 @@ public class ZhiyiVideoView extends JZVideoPlayerStandard {
     public interface ShareInterface {
         void share(int position);
 
-        void shareQQ(int position);
-
-        void shareQQZone(int position);
-
-        void shareWX(int position);
-
-        void shareWXZone(int position);
-
-        void shareWeiBo(int position);
+        void shareWihtType(int position, SHARE_MEDIA type);
     }
 }

@@ -25,7 +25,7 @@
     <LinearLayout
         android:id="@+id/layout_bottom"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="@dimen/dp50"
         android:layout_alignParentBottom="true"
         android:background="@drawable/jz_bottom_bg"
         android:gravity="center_vertical"
@@ -38,7 +38,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="14dp"
             android:text="00:00"
-            android:textColor="#ffffff"/>
+            android:textColor="@color/white"/>
 
         <SeekBar
             android:id="@+id/bottom_seek_progress"
@@ -51,8 +51,8 @@
             android:maxHeight="1dp"
             android:minHeight="1dp"
             android:paddingBottom="8dp"
-            android:paddingLeft="12dp"
-            android:paddingRight="12dp"
+            android:paddingLeft="@dimen/spacing_normal"
+            android:paddingRight="@dimen/spacing_normal"
             android:paddingTop="8dp"
             android:progressDrawable="@drawable/video_progress"
             android:thumb="@drawable/jz_bottom_seek_thumb"/>
@@ -62,17 +62,17 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="00:00"
-            android:textColor="#ffffff"/>
+            android:textColor="@color/white"/>
 
         <TextView
             android:id="@+id/clarity"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:clickable="true"
-            android:paddingLeft="20dp"
+            android:paddingLeft="@dimen/spacing_large"
             android:text="clarity"
             android:textAlignment="center"
-            android:textColor="#ffffff"/>
+            android:textColor="@color/white"/>
 
         <ImageView
             android:id="@+id/fullscreen"
@@ -193,10 +193,7 @@
             android:id="@+id/ll_start_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
-            android:gravity="center"
-            android:orientation="horizontal">
+            android:gravity="center">
 
             <ImageView
                 android:id="@+id/start"
@@ -275,8 +272,8 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/ll_share_container"
             android:visibility="gone"
+            android:id="@+id/ll_share_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/ll_share_line_container"
@@ -288,6 +285,7 @@
                 style="@style/ThirdLoginButton"
                 android:layout_width="0dp"
                 android:layout_weight="1"
+                android:textColor="@color/white"
                 android:drawableTop="@mipmap/detail_share_qq_white"
                 android:text="@string/qq_share"/>
 
@@ -296,6 +294,7 @@
                 style="@style/ThirdLoginButton"
                 android:layout_width="0dp"
                 android:layout_weight="1"
+                android:textColor="@color/white"
                 android:drawableTop="@mipmap/detail_share_zone_white"
                 android:text="@string/qZone_share"/>
 
@@ -303,6 +302,7 @@
                 android:id="@+id/share_wx"
                 style="@style/ThirdLoginButton"
                 android:layout_width="0dp"
+                android:textColor="@color/white"
                 android:layout_weight="1"
                 android:drawableTop="@mipmap/detail_share_wechat_white"
                 android:text="@string/weChat_share"/>
@@ -312,6 +312,7 @@
                 style="@style/ThirdLoginButton"
                 android:layout_width="0dp"
                 android:layout_weight="1"
+                android:textColor="@color/white"
                 android:drawableTop="@mipmap/detail_share_friends_white"
                 android:text="@string/weCircle_share"/>
 
@@ -319,6 +320,7 @@
                 android:id="@+id/share_weibo"
                 style="@style/ThirdLoginButton"
                 android:layout_width="0dp"
+                android:textColor="@color/white"
                 android:layout_weight="1"
                 android:drawableTop="@mipmap/detail_share_weibo_white"
                 android:text="@string/weibo_share"/>

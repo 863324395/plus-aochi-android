@@ -12,8 +12,7 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import com.tym.shortvideo.view.AutoPlayScrollListener;
-import com.zhiyicx.common.utils.log.LogUtils;
-import com.zhiyicx.thinksnsplus.modules.shortvideo.helper.ZhiyiVideoView;
+import com.umeng.socialize.bean.SHARE_MEDIA;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.config.TouristConfig;
@@ -61,6 +60,7 @@ import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
 import com.zhiyicx.thinksnsplus.modules.report.ReportActivity;
 import com.zhiyicx.thinksnsplus.modules.report.ReportType;
 import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBActivity;
+import com.zhiyicx.thinksnsplus.modules.shortvideo.helper.ZhiyiVideoView;
 import com.zhiyicx.thinksnsplus.modules.wallet.sticktop.StickTopActivity;
 import com.zhiyicx.thinksnsplus.modules.wallet.sticktop.StickTopFragment;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
@@ -85,13 +85,21 @@ import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
+import static com.umeng.socialize.bean.SHARE_MEDIA.QQ;
+import static com.umeng.socialize.bean.SHARE_MEDIA.QZONE;
 import static com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.POPUPWINDOW_ALPHA;
-import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment.DYNAMIC_DETAIL_DATA;
-import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment.DYNAMIC_DETAIL_DATA_POSITION;
-import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment.DYNAMIC_DETAIL_DATA_TYPE;
-import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment.DYNAMIC_VIDEO_STATE;
-import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment.LOOK_COMMENT_MORE;
-import static com.zhiyicx.thinksnsplus.modules.dynamic.tollcomment.DynamicCommentTollFragment.TOLL_DYNAMIC_COMMENT;
+import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment
+        .DYNAMIC_DETAIL_DATA;
+import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment
+        .DYNAMIC_DETAIL_DATA_POSITION;
+import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment
+        .DYNAMIC_DETAIL_DATA_TYPE;
+import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment
+        .DYNAMIC_VIDEO_STATE;
+import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment
+        .LOOK_COMMENT_MORE;
+import static com.zhiyicx.thinksnsplus.modules.dynamic.tollcomment.DynamicCommentTollFragment
+        .TOLL_DYNAMIC_COMMENT;
 
 /**
  * @Describe 动态列表
@@ -106,7 +114,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
         DynamicListBaseItem.OnReSendClickListener, DynamicListBaseItem.OnMenuItemClickLisitener,
         DynamicListBaseItem.OnImageClickListener, OnUserInfoClickListener,
         MultiItemTypeAdapter.OnItemClickListener, TextViewUtils.OnSpanTextClickListener,
-        DynamicBannerHeader.DynamicBannerHeadlerClickEvent,ZhiyiVideoView.ShareInterface {
+        DynamicBannerHeader.DynamicBannerHeadlerClickEvent, ZhiyiVideoView.ShareInterface {
 
     protected static final String BUNDLE_DYNAMIC_TYPE = "dynamic_type";
 
@@ -166,7 +174,8 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
 
     @Override
     public void headClick(int position) {
-        toAdvert(mHeaderAdvert.get(position).getAdvertFormat().getImage().getLink(), mHeaderAdvert.get(position).getTitle());
+        toAdvert(mHeaderAdvert.get(position).getAdvertFormat().getImage().getLink(),
+                mHeaderAdvert.get(position).getTitle());
     }
 
     private void toAdvert(String link, String title) {
@@ -259,7 +268,8 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
                     }
                 });
 
-        mRvList.addOnChildAttachStateChangeListener(new RecyclerView.OnChildAttachStateChangeListener() {
+        mRvList.addOnChildAttachStateChangeListener(new RecyclerView
+                .OnChildAttachStateChangeListener() {
             @Override
             public void onChildViewAttachedToWindow(View view) {
                 JZVideoPlayer.onChildViewAttachedToWindow(view, R.id.videoplayer);
@@ -338,7 +348,8 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
         }
         mDynamicBannerHeader = new DynamicBannerHeader(mActivity);
         mDynamicBannerHeader.setHeadlerClickEvent(this);
-        DynamicBannerHeader.DynamicBannerHeaderInfo headerInfo = mDynamicBannerHeader.new DynamicBannerHeaderInfo();
+        DynamicBannerHeader.DynamicBannerHeaderInfo headerInfo = mDynamicBannerHeader.new
+                DynamicBannerHeaderInfo();
         headerInfo.setTitles(advertTitle);
         headerInfo.setLinks(advertLinks);
         headerInfo.setUrls(advertUrls);
@@ -375,7 +386,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
         setAdapter(adapter, new DynamicListItemForEightImage(getContext()));
         setAdapter(adapter, new DynamicListItemForNineImage(getContext()));
         setAdapter(adapter, new DynamicListItemForAdvert(getContext()));
-        setAdapter(adapter, new DynamicListItemForShorVideo(getContext(),this));
+        setAdapter(adapter, new DynamicListItemForShorVideo(getContext(), this));
         adapter.setOnItemClickListener(this);
         return adapter;
     }
@@ -449,7 +460,8 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
             toAdvert(dynamicBean.getDeleted_at(), dynamicBean.getFeed_content());
             return;
         }
-        int dynamicPosition = holder.getAdapterPosition() - mHeaderAndFooterWrapper.getHeadersCount();
+        int dynamicPosition = holder.getAdapterPosition() - mHeaderAndFooterWrapper
+                .getHeadersCount();
 
         DynamicDetailBeanV2.ImagesBean img = dynamicBean.getImages().get(position);
         boolean canLook = !(img.isPaid() != null && !img.isPaid() && img.getType().equals(Toll
@@ -493,7 +505,8 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
     }
 
     @Override
-    public void setSpanText(int position, int note, long amount, TextView view, boolean canNotRead) {
+    public void setSpanText(int position, int note, long amount, TextView view, boolean
+            canNotRead) {
         position -= mHeaderAndFooterWrapper.getHeadersCount();
         initImageCenterPopWindow(position, position, amount,
                 note, R.string.buy_pay_words_desc, false);
@@ -648,7 +661,8 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
                 Bitmap shareBitMap = null;
                 try {
                     ImageView imageView = (ImageView) layoutManager.findViewByPosition
-                            (dataPosition + mHeaderAndFooterWrapper.getHeadersCount()).findViewById(R.id.siv_0);
+                            (dataPosition + mHeaderAndFooterWrapper.getHeadersCount())
+                            .findViewById(R.id.siv_0);
                     shareBitMap = ConvertUtils.drawable2BitmapWithWhiteBg(getContext(), imageView
                             .getDrawable(), R.mipmap.icon);
                 } catch (Exception e) {
@@ -744,11 +758,14 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
         }
         mCurrentPostion = mPresenter.getCurrenPosiotnInDataList(dynamicBean.getFeed_mark());
         // 举报
-        if (dynamicBean.getComments().get(position).getUser_id() != AppApplication.getMyUserIdWithdefault()) {
-            ReportActivity.startReportActivity(mActivity, new ReportResourceBean(dynamicBean.getComments().get
+        if (dynamicBean.getComments().get(position).getUser_id() != AppApplication
+                .getMyUserIdWithdefault()) {
+            ReportActivity.startReportActivity(mActivity, new ReportResourceBean(dynamicBean
+                    .getComments().get
                     (position).getCommentUser(), dynamicBean.getComments().get
                     (position).getComment_id().toString(),
-                    null, null, dynamicBean.getComments().get(position).getComment_content(), ReportType.COMMENT));
+                    null, null, dynamicBean.getComments().get(position).getComment_content(),
+                    ReportType.COMMENT));
 
         } else {
 
@@ -798,34 +815,15 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
 
     @Override
     public void share(int position) {
-        Bitmap shareBitMap = getShareBitmap(position,R.id.thumb);
+        Bitmap shareBitMap = getShareBitmap(position, R.id.thumb);
         mPresenter.shareDynamic(mListDatas.get(position), shareBitMap);
         showBottomView(true);
     }
 
     @Override
-    public void shareQQ(int position) {
-
-    }
-
-    @Override
-    public void shareQQZone(int position) {
-
-    }
-
-    @Override
-    public void shareWX(int position) {
-
-    }
-
-    @Override
-    public void shareWXZone(int position) {
-
-    }
-
-    @Override
-    public void shareWeiBo(int position) {
-
+    public void shareWihtType(int position, SHARE_MEDIA type) {
+        mPresenter.shareDynamic(mListDatas.get(position), getShareBitmap(position, R.id.thumb),
+                type);
     }
 
     /**
@@ -854,7 +852,8 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
                     bundle.putString(StickTopFragment.TYPE, StickTopFragment.TYPE_DYNAMIC);// 资源类型
                     bundle.putLong(StickTopFragment.PARENT_ID, dynamicBean.getId());// 资源id
                     bundle.putLong(StickTopFragment.CHILD_ID, dynamicBean
-                            .getComments().get(commentPosition).getComment_id());// 该资源的评论id,非评论置顶不传这个
+                            .getComments().get(commentPosition).getComment_id());// 该资源的评论id,
+                    // 非评论置顶不传这个
                     Intent intent = new Intent(getActivity(), StickTopActivity.class);
                     intent.putExtras(bundle);
                     startActivity(intent);
@@ -905,15 +904,19 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
 
                     String img = "";
                     if (dynamicBean.getImages() != null && !dynamicBean.getImages().isEmpty()) {
-                        img = ImageUtils.imagePathConvertV2(dynamicBean.getImages().get(0).getFile(), getResources()
-                                        .getDimensionPixelOffset(R.dimen.report_resource_img), getResources()
+                        img = ImageUtils.imagePathConvertV2(dynamicBean.getImages().get(0)
+                                        .getFile(), getResources()
+                                        .getDimensionPixelOffset(R.dimen.report_resource_img),
+                                getResources()
                                         .getDimensionPixelOffset(R.dimen.report_resource_img),
                                 100);
                     }
-                    ReportResourceBean reportResourceBean = new ReportResourceBean(dynamicBean.getUserInfoBean(), String.valueOf(dynamicBean
+                    ReportResourceBean reportResourceBean = new ReportResourceBean(dynamicBean
+                            .getUserInfoBean(), String.valueOf(dynamicBean
                             .getId()),
                             "", img, dynamicBean.getFeed_content(), ReportType.DYNAMIC);
-                    reportResourceBean.setDesCanlook(dynamicBean.getPaid_node() == null || dynamicBean
+                    reportResourceBean.setDesCanlook(dynamicBean.getPaid_node() == null ||
+                            dynamicBean
                             .getPaid_node().isPaid());
                     ReportActivity.startReportActivity(mActivity, reportResourceBean);
                     mOtherDynamicPopWindow.hide();
@@ -959,10 +962,13 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
                         (isCollected ? R.string.dynamic_list_uncollect_dynamic : R.string
                                 .dynamic_list_collect_dynamic)))
                 // 付费评论功能 移除
-//                .item3Str(BuildConfig.USE_TOLL ? getString(R.string.dynamic_comment_toll) : null)// 付费评论功能 移除
-//                .item4Str(BuildConfig.USE_TOLL && !getDynamicType().equals(ApiConfig.DYNAMIC_TYPE_FOLLOWS) && !feedIdIsNull ? getString(R.string
+//                .item3Str(BuildConfig.USE_TOLL ? getString(R.string.dynamic_comment_toll) :
+// null)// 付费评论功能 移除
+//                .item4Str(BuildConfig.USE_TOLL && !getDynamicType().equals(ApiConfig
+// .DYNAMIC_TYPE_FOLLOWS) && !feedIdIsNull ? getString(R.string
 // .dynamic_list_top_dynamic) : null)
-                .item4Str(BuildConfig.USE_TOLL && !feedIdIsNull ? getString(R.string.dynamic_list_top_dynamic) : null)
+                .item4Str(BuildConfig.USE_TOLL && !feedIdIsNull ? getString(R.string
+                        .dynamic_list_top_dynamic) : null)
                 .item5Str(getString(R.string.dynamic_list_delete_dynamic))
                 .bottomStr(getString(R.string.cancel))
                 .isOutsideTouch(true)
@@ -989,12 +995,14 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
                     mMyDynamicPopWindow.hide();
                 })
                 .item4ClickListener(() -> {// 申请置顶
-                    StickTopFragment.startSticTopActivity(getContext(), StickTopFragment.TYPE_DYNAMIC, dynamicBean.getId());
+                    StickTopFragment.startSticTopActivity(getContext(), StickTopFragment
+                            .TYPE_DYNAMIC, dynamicBean.getId());
                     mMyDynamicPopWindow.hide();
                 })
                 .item5ClickListener(() -> {// 删除
                     mMyDynamicPopWindow.hide();
-                    showDeleteTipPopupWindow(getString(R.string.dynamic_list_delete_dynamic), () -> {
+                    showDeleteTipPopupWindow(getString(R.string.dynamic_list_delete_dynamic), ()
+                            -> {
                         mPresenter.deleteDynamic(dynamicBean, position);
                         showBottomView(true);
                     }, true);
@@ -1126,7 +1134,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
         }
     }
 
-    private Bitmap getShareBitmap(int position,int id) {
+    private Bitmap getShareBitmap(int position, int id) {
         Bitmap shareBitMap = null;
         try {
             ImageView imageView = (ImageView) layoutManager.findViewByPosition
