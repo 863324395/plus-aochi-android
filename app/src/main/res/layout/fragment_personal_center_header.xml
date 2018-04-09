@@ -24,7 +24,22 @@
             android:layout_gravity="center_horizontal|top"
             android:scaleType="centerCrop"
             android:src="@mipmap/default_pic_personal"/>
+        <ImageView
+            android:id="@+id/iv_background_cover_top_hint"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal|top"
 
+            android:scaleType="centerCrop"
+            android:background="@mipmap/pic_mask_zy"/>
+        <ImageView
+            android:id="@+id/iv_background_cover_bottom_hint"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal|bottom"
+            android:rotation="180"
+            android:scaleType="centerCrop"
+            android:background="@mipmap/pic_mask_zy"/>
         <com.zhiyicx.baseproject.widget.UserAvatarView
             android:id="@+id/iv_head_icon"
             android:layout_width="@dimen/headpic_for_user_home"

@@ -54,12 +54,8 @@ import java.util.Arrays;
 
 public class PersonalCenterHeaderViewItem implements TypeChoosePopAdapter.OnTypeChoosedListener {
     private static final String TAG = "PersonalCenterHeaderVie";
-    /**********************************
-     * headerView控件
-     ********************************/
-    private FrameLayout fl_cover_contaner;// 封面图的容器
-    private ImageView iv_background_cover;// 封面
-    private UserAvatarView iv_head_icon;// 用户头像
+    private ImageView mIvBackgroundCover;// 封面
+    private UserAvatarView mIvHeadIcon;// 用户头像
     private TextView tv_user_name;// 用户名
     private TextView tv_user_intro;// 用户简介
     private TextView tv_user_follow;// 用户关注数量
@@ -76,7 +72,6 @@ public class PersonalCenterHeaderViewItem implements TypeChoosePopAdapter.OnType
     private HeaderAndFooterWrapper mHeaderAndFooterWrapper;
     private int mDistanceY;// recylerView 滑动距离的累计
     private View mToolBarContainer;// 需要变换透明度的标题栏
-    private View mToolBar;
     private ImageView back;
     private ImageView more;
     private TextView userName;
@@ -84,7 +79,6 @@ public class PersonalCenterHeaderViewItem implements TypeChoosePopAdapter.OnType
 
     private ActionPopupWindow mPhotoPopupWindow;// 图片选择弹框
     private PhotoSelectorImpl mPhotoSelector;
-    private ImageLoader mImageLoader;
 
     private TypeChoosePopupWindow mTypeChoosePopupWindow;// 类型选择框 付费、置顶
     private PersonalCenterContract.View mView;
@@ -121,7 +115,6 @@ public class PersonalCenterHeaderViewItem implements TypeChoosePopAdapter.OnType
 
     private View headerView;
     private int userNameFirstY = 0;
-    private UserInfoTagsAdapter mUserInfoTagsAdapter;
 
     public PersonalCenterHeaderViewItem(Activity activity, PersonalCenterContract.View view, PhotoSelectorImpl photoSelector, RecyclerView
             recyclerView, HeaderAndFooterWrapper headerAndFooterWrapper, View mToolBarContainer) {
@@ -131,8 +124,6 @@ public class PersonalCenterHeaderViewItem implements TypeChoosePopAdapter.OnType
         mRecyclerView = recyclerView;
         mHeaderAndFooterWrapper = headerAndFooterWrapper;
         this.mToolBarContainer = mToolBarContainer;
-        mImageLoader = AppApplication.AppComponentHolder.getAppComponent().imageLoader();
-        mToolBar = mToolBarContainer.findViewById(R.id.rl_toolbar_container);
         back = (ImageView) mToolBarContainer.findViewById(R.id.iv_back);
         more = (ImageView) mToolBarContainer.findViewById(R.id.iv_more);
         userName = (TextView) mToolBarContainer.findViewById(R.id.tv_user_name);
@@ -240,7 +231,7 @@ public class PersonalCenterHeaderViewItem implements TypeChoosePopAdapter.OnType
     public void initHeaderViewData(final UserInfoBean userInfoBean, BaseDynamicRepository.MyDynamicTypeEnum dynamicType) {
 
         // 显示头像
-        ImageUtils.loadCircleUserHeadPicWithBorder(userInfoBean, iv_head_icon);
+        ImageUtils.loadCircleUserHeadPicWithBorder(userInfoBean, mIvHeadIcon);
 
         // 设置用户名
         tv_user_name.setText(userInfoBean.getName());
@@ -285,7 +276,7 @@ public class PersonalCenterHeaderViewItem implements TypeChoosePopAdapter.OnType
         // 设置封面
         setUserCover(userInfoBean);
         // 设置封面切换
-        iv_background_cover.setOnClickListener(v -> {
+        mIvBackgroundCover.setOnClickListener(v -> {
             AuthBean authBean = AppApplication.getmCurrentLoginAuth();
             // 如果进入的是自己的个人中心，才允许修改背景封面
             if (authBean != null && authBean.getUser_id() == userInfoBean.getUser_id()) {
@@ -294,7 +285,7 @@ public class PersonalCenterHeaderViewItem implements TypeChoosePopAdapter.OnType
             }
         });
         // 点击头像
-        iv_head_icon.setOnClickListener(v -> {
+        mIvHeadIcon.setOnClickListener(v -> {
             // 跳转查看头像页面，暂时先屏蔽
 //            Intent intent = new Intent(mActivity, HeadPortraitViewActivity.class);
 //            Bundle bundle = new Bundle();
@@ -338,8 +329,8 @@ public class PersonalCenterHeaderViewItem implements TypeChoosePopAdapter.OnType
             tv_addres.setVisibility(View.VISIBLE);
             tv_addres.setText(mActivity.getString(R.string.default_location_format, userInfoBean.getLocation()));
         }
-        mUserInfoTagsAdapter = new UserInfoTagsAdapter(userInfoBean.getTags(), mActivity, true);
-        mFlTags.setAdapter(mUserInfoTagsAdapter);
+        UserInfoTagsAdapter userInfoTagsAdapter = new UserInfoTagsAdapter(userInfoBean.getTags(), mActivity, true);
+        mFlTags.setAdapter(userInfoTagsAdapter);
         // 当前登录用户才可以操作
         if (AppApplication.getMyUserIdWithdefault() == userInfoBean.getUser_id()) {
             tv_type.setVisibility(View.VISIBLE);
@@ -372,9 +363,11 @@ public class PersonalCenterHeaderViewItem implements TypeChoosePopAdapter.OnType
         ViewGroup.LayoutParams headerLayoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT);
         headerView.setLayoutParams(headerLayoutParams);
-        fl_cover_contaner = (FrameLayout) headerView.findViewById(R.id.fl_cover_contaner);
-        iv_background_cover = (ImageView) headerView.findViewById(R.id.iv_background_cover);
-        iv_head_icon = (UserAvatarView) headerView.findViewById(R.id.iv_head_icon);
+        /*********************************
+         headerView控件
+         */FrameLayout fl_cover_contaner = (FrameLayout) headerView.findViewById(R.id.fl_cover_contaner);
+        mIvBackgroundCover = (ImageView) headerView.findViewById(R.id.iv_background_cover);
+        mIvHeadIcon = (UserAvatarView) headerView.findViewById(R.id.iv_head_icon);
         tv_user_name = (TextView) headerView.findViewById(R.id.tv_user_name);
         tv_user_intro = (TextView) headerView.findViewById(R.id.tv_user_intro);
         tv_user_follow = (TextView) headerView.findViewById(R.id.tv_user_follow);
@@ -441,7 +434,7 @@ public class PersonalCenterHeaderViewItem implements TypeChoosePopAdapter.OnType
      */
     private void setUserCover(UserInfoBean userInfoBean) {
         // 设置封面
-        ImageUtils.loadUserCover(userInfoBean, iv_background_cover);
+        ImageUtils.loadUserCover(userInfoBean, mIvBackgroundCover);
 
     }
 
@@ -471,7 +464,7 @@ public class PersonalCenterHeaderViewItem implements TypeChoosePopAdapter.OnType
     }
 
     public ImageView getHeadView() {
-        return iv_head_icon.getIvAvatar();
+        return mIvHeadIcon.getIvAvatar();
     }
 
     @Override

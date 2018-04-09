@@ -143,7 +143,6 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
     // 上一个页面传过来的用户信息
     private UserInfoBean mUserInfoBean;
     private PhotoSelectorImpl mPhotoSelector;
-    private String imagePath;// 上传的封面图片的本地路径
     private ActionPopupWindow mDeletCommentPopWindow;
     private ActionPopupWindow mDeletDynamicPopWindow;
     private ActionPopupWindow mReSendCommentPopWindow;
@@ -619,7 +618,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
         }
         // 选择图片完毕后，开始上传封面图片
         ImageBean imageBean = photoList.get(0);
-        imagePath = imageBean.getImgUrl();
+        String imagePath = imageBean.getImgUrl();
         // 上传本地图片
         mPresenter.uploadUserCover(imagePath, mUserInfoBean);
         mUserInfoBean.setCover(imagePath);
@@ -1057,12 +1056,12 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
 
     @Override
     public void onDestroyView() {
-        super.onDestroyView();
         dismissPop(mPayImagePopWindow);
         dismissPop(mDeletCommentPopWindow);
         dismissPop(mDeletDynamicPopWindow);
         dismissPop(mReSendCommentPopWindow);
         dismissPop(mReSendDynamicPopWindow);
         dismissPop(mTopBarMorePopWindow);
+        super.onDestroyView();
     }
 }
