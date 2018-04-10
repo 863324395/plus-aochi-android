@@ -303,7 +303,7 @@ public class PreviewFragment extends TSFragment implements MediaPlayerWrapper.IM
      * 合并视频
      */
     private void combineVideo() {
-        final String fileName = "CainCamera_" + System.currentTimeMillis() + ".mp4";
+        final String fileName = ParamsManager.CombineVideo;
         final String path = ParamsManager.AlbumPath
                 + fileName;
         final File file = new File(path);
@@ -344,8 +344,8 @@ public class PreviewFragment extends TSFragment implements MediaPlayerWrapper.IM
         VideoClipper clipper = new VideoClipper();
         clipper.showBeauty();
         clipper.setInputVideoPath(mActivity, path);
-        final String fileName = "tym_preview.mp4";
-        mOutputPath = FileUtils.getPath("tym/tym/", fileName);
+        final String fileName = System.currentTimeMillis() + ParamsManager.ClipVideo;
+        mOutputPath = FileUtils.getPath(ParamsManager.SaveVideo, fileName);
         clipper.setFilterType(mFilterType);
         clipper.setOutputVideoPath(mOutputPath);
         clipper.setOnVideoCutFinishListener(() -> mSubscription = Observable.empty()

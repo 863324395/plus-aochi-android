@@ -216,7 +216,6 @@ public class TrimVideoUtil {
 
     public static void getAllVideoFiles(final Context mContext, final
     SingleCallback<ArrayList<VideoInfo>, Integer> callback) {
-
         BackgroundExecutor.execute(new BackgroundExecutor.Task("", 0L, "") {
                                        @Override
                                        public void execute() {

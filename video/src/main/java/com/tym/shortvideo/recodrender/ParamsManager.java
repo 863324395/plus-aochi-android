@@ -12,7 +12,8 @@ import com.tym.shortvideo.filter.helper.type.GLType;
  */
 public class ParamsManager {
 
-    private ParamsManager() {}
+    private ParamsManager() {
+    }
 
     // 上下文，方便滤镜使用
     public static Context context;
@@ -28,6 +29,18 @@ public class ParamsManager {
 
     // 视频存放地址
     public static final String VideoPath = StoragePath + "/Zhiyi/Video/";
+
+    // 合并后的视频
+    public static final String CombineVideo = "zhiyi_combine.mp4";
+
+    // 处理完准备发送的视频
+    public static final String ClipVideo = "zhiyi_done.mp4";
+
+    // 处理完准备发送的视频存放目录
+    public static final String SaveVideo = "Zhiyi/shortvideo/";
+
+    // 视频封面图
+    public static final String VideoCover = "video_cover.jpg";
 
     // 存放预览类型，GIF表情包、PICTURE拍照、VIDEO视频等
     public static GLType sMGLType = GLType.PICTURE;

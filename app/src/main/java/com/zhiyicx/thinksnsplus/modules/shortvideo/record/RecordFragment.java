@@ -187,6 +187,7 @@ public class RecordFragment extends TSFragment implements SurfaceHolder.Callback
                 .subscribe(aVoid -> {
                     onStopRecord();
                     mBtnTake.closeButton();
+                    VideoListManager.getInstance().delete(mActivity);
                     mActivity.finish();
                 });
 
@@ -290,7 +291,7 @@ public class RecordFragment extends TSFragment implements SurfaceHolder.Callback
     @Override
     public void onFrameCallback(ByteBuffer buffer, int width, int height) {
         mMainHandler.post(() -> {
-            String filePath = ParamsManager.ImagePath + "CainCamera_"
+            String filePath = ParamsManager.ImagePath
                     + System.currentTimeMillis() + ".jpeg";
             File file = new File(filePath);
             if (!file.getParentFile().exists()) {
@@ -373,8 +374,7 @@ public class RecordFragment extends TSFragment implements SurfaceHolder.Callback
         // 初始化录制线程
         RecordManager.getInstance().initThread();
         // 设置输出路径
-        String path = ParamsManager.VideoPath
-                + "Zhiyi_" + System.currentTimeMillis() + ".mp4";
+        String path = ParamsManager.VideoPath + System.currentTimeMillis() + ".mp4";
         RecordManager.getInstance().setOutputPath(path);
         // 是否允许录音，只有录制视频才有音频
         RecordManager.getInstance().setEnableAudioRecording(ParamsManager.canRecordingAudio

@@ -21,6 +21,7 @@ import android.widget.SeekBar;
 import android.widget.Toast;
 import android.widget.VideoView;
 
+import com.tym.shortvideo.recodrender.ParamsManager;
 import com.tym.video.R;
 import com.tym.shortvideo.interfaces.ProgressVideoListener;
 import com.tym.shortvideo.interfaces.RangeSeekBarListener;
@@ -144,7 +145,7 @@ public class VideoTrimmerView extends FrameLayout {
                 UiThreadExecutor.runTask("", new Runnable() {
                     @Override
                     public void run() {
-                        FileUtils.saveBitmapToFile(mContext, bitmap.get(0), "video_cover.jpg");
+                        FileUtils.saveBitmapToFile(mContext, bitmap.get(0), ParamsManager.VideoCover);
                         videoThumbAdapter.addAll(bitmap);
                         videoThumbAdapter.notifyDataSetChanged();
                     }

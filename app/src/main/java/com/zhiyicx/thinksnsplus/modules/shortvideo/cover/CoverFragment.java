@@ -15,6 +15,7 @@ import android.widget.TextView;
 import com.jakewharton.rxbinding.view.RxView;
 import com.tym.shortvideo.media.MediaPlayerWrapper;
 import com.tym.shortvideo.media.VideoInfo;
+import com.tym.shortvideo.recodrender.ParamsManager;
 import com.tym.shortvideo.utils.TrimVideoUtil;
 import com.tym.shortvideo.view.VideoPreviewView;
 import com.zhiyicx.baseproject.base.TSFragment;
@@ -130,7 +131,7 @@ public class CoverFragment extends TSFragment implements MediaPlayerWrapper.IMed
                 .getProgress(), (bitmap, integer) -> {
             String cover = com.zhiyicx.common.utils.FileUtils.saveBitmapToFile(mActivity,
                     bitmap,
-                    "video_cover.jpg");
+                    ParamsManager.VideoCover);
             mProgressDialog.dismiss();
             Bundle bundle = new Bundle();
             bundle.putString(PATH, cover);

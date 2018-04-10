@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.PopupWindow;
 
 import com.tym.shortvideo.media.VideoInfo;
+import com.tym.shortvideo.recodrender.ParamsManager;
 import com.tym.shortvideo.utils.TrimVideoUtil;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
@@ -140,7 +141,7 @@ public class VideoSelectFragment extends TSListFragment {
                         options.inPreferredConfig = Bitmap.Config.RGB_565;
                         Bitmap bitmap = MediaStore.Video.Thumbnails.getThumbnail(mActivity.getContentResolver(), videoInfo.getStoreId(), MediaStore.Images.Thumbnails.MINI_KIND,
                                 options);
-                        videoInfo.setCover(FileUtils.saveBitmapToFile(mActivity, bitmap, "video_cover.jpg"));
+                        videoInfo.setCover(FileUtils.saveBitmapToFile(mActivity, bitmap, ParamsManager.VideoCover));
                         SendDynamicDataBean sendDynamicDataBean = new SendDynamicDataBean();
                         sendDynamicDataBean.setDynamicBelong(SendDynamicDataBean.NORMAL_DYNAMIC);
 
