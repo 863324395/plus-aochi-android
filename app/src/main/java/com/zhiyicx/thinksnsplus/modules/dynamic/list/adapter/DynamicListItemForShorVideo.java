@@ -147,7 +147,7 @@ public class DynamicListItemForShorVideo extends DynamicListBaseItem {
                     .into(view.thumbImageView);
 
         }
-        view.setUp(videoUrl, JZVideoPlayerStandard.SCREEN_WINDOW_LIST, "tym");
+        view.setUp(videoUrl, JZVideoPlayerStandard.SCREEN_WINDOW_LIST);
         view.positionInList = positon;
     }
 

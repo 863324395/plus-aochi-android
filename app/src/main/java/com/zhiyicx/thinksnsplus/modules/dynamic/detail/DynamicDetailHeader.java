@@ -181,7 +181,7 @@ public class DynamicDetailHeader {
 
                 String videoUrl = String.format(ApiConfig.APP_DOMAIN + ApiConfig.FILE_PATH,
                         dynamicBean.getVideo().getVideo_id());
-                videoView.setUp(videoUrl, JZVideoPlayerStandard.SCREEN_WINDOW_LIST, "tym");
+                videoView.setUp(videoUrl, JZVideoPlayerStandard.SCREEN_WINDOW_LIST);
                 if (state > 0) {
                     videoView.setState(state);
                     videoView.addTextureView();
