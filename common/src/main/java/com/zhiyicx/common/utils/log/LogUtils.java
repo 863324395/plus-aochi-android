@@ -1,8 +1,10 @@
 package com.zhiyicx.common.utils.log;
 
-import com.orhanobut.logger.LogLevel;
+import com.orhanobut.logger.AndroidLogAdapter;
+import com.orhanobut.logger.FormatStrategy;
 import com.orhanobut.logger.Logger;
-import com.zhiyicx.common.BuildConfig;
+import com.orhanobut.logger.PrettyFormatStrategy;
+
 
 /**
  * @Describe
@@ -13,25 +15,34 @@ import com.zhiyicx.common.BuildConfig;
 
 public class LogUtils {
     private static final String APPLICATION_TAG = "LogUtils";
-    public static final int LOGGER_METHODCOUNT = 5;
-    public static final int LOGGER_METHODOFFSET = 2;
+    private static final int LOGGER_METHODCOUNT = 5;
+    private static final int LOGGER_METHODOFFSET = 2;
 
     public static void init() {
-        Logger
-                .init(APPLICATION_TAG)           // default PRETTYLOGGER or use just init()
-                .methodCount(LOGGER_METHODCOUNT)                 // default 2
-//                .hideThreadInfo()               // default shown
-                .logLevel(BuildConfig.USE_LOG?LogLevel.FULL:LogLevel.NONE)        // default LogLevel.FULL
-                .methodOffset(LOGGER_METHODOFFSET);              // default 0
-        // .logAdapter(new AndroidLogAdapter()); //default AndroidLogAdapter
+        FormatStrategy formatStrategy = PrettyFormatStrategy.newBuilder()
+//                .showThreadInfo(false)  // (Optional) Whether to show thread info or not. Default true
+                .methodCount(LOGGER_METHODCOUNT)         // (Optional) How many method line to show. Default 2
+                .methodOffset(LOGGER_METHODOFFSET)        // (Optional) Hides internal method calls up to offset. Default 5
+//                .logStrategy(customLog) // (Optional) Changes the log strategy to print out. Default LogCat
+                .tag(APPLICATION_TAG)   // (Optional) Global tag for every log. Default PRETTY_LOGGER
+                .build();
+
+        Logger.addLogAdapter(new AndroidLogAdapter(formatStrategy) {
+            @Override
+            public boolean isLoggable(int priority, String tag) {
+                return com.zhiyicx.common.BuildConfig.USE_LOG;
+            }
+        });
     }
 
     public static void d(String tag, Object object) {
         Logger.t(tag).d(object);
     }
-    public static void d(String tag,String message, Object... args) {
+
+    public static void d(String tag, String message, Object... args) {
         Logger.t(tag).d(message, args);
     }
+
     public static void d(String message, Object... args) {
         Logger.d(message, args);
     }

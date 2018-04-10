@@ -89,7 +89,7 @@ dependencies {
     // Eventbus
     compile dataDependences.androideventbus
     // Log
-    implementation dataDependences.logger
+    compile dataDependences.logger
     // Dagger dependencies
     compile dataDependences.dagger
     provided dataDependences.javaxAnnotation
