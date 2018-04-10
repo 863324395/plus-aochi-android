@@ -832,7 +832,7 @@ public class RecordFragment extends TSFragment implements SurfaceHolder.Callback
                     .item2ClickListener(() -> {
                         onStopRecord();
                         mBtnTake.closeButton();
-                        VideoListManager.getInstance().delete(mActivity);
+                        VideoListManager.getInstance().removeAllSubVideo();
                         mWarnPopupWindow.dismiss();
                         mActivity.finish();
                     })

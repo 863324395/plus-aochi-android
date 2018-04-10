@@ -12,6 +12,8 @@ import android.widget.PopupWindow;
 
 import com.tym.shortvideo.media.VideoInfo;
 import com.tym.shortvideo.recodrender.ParamsManager;
+import com.tym.shortvideo.recordcore.CountDownManager;
+import com.tym.shortvideo.recordcore.VideoListManager;
 import com.tym.shortvideo.utils.TrimVideoUtil;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
@@ -23,6 +25,7 @@ import com.zhiyicx.thinksnsplus.data.beans.SendDynamicDataBean;
 import com.zhiyicx.thinksnsplus.modules.dynamic.send.SendDynamicActivity;
 import com.zhiyicx.thinksnsplus.modules.shortvideo.adapter.VideoGridViewAdapter;
 import com.zhiyicx.thinksnsplus.modules.shortvideo.clipe.TrimmerActivity;
+import com.zhiyicx.thinksnsplus.modules.shortvideo.preview.PreviewActivity;
 import com.zhiyicx.thinksnsplus.modules.shortvideo.record.RecordActivity;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 
@@ -158,7 +161,13 @@ public class VideoSelectFragment extends TSListFragment {
                     })
                     .item2ClickListener(() -> {
                         mPopWindow.hide();
-                        TrimmerActivity.startTrimmerActivity(mActivity, videoInfo);
+                        if (videoInfo.getDuration() <= CountDownManager.getInstance().getMinMilliSeconds()) {
+                            ArrayList<String> arrayList = new ArrayList<>();
+                            arrayList.add(videoInfo.getPath());
+                            PreviewActivity.startPreviewActivity(mActivity, arrayList);
+                        } else {
+                            TrimmerActivity.startTrimmerActivity(mActivity, videoInfo);
+                        }
                         mActivity.finish();
                     })
                     .bottomClickListener(() -> mPopWindow.hide())
