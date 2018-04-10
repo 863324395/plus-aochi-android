@@ -54,10 +54,7 @@ public class NetUtils {
      */
     public static boolean isWifiConnected(Context context) {
         int type = getNetworkType(context);
-        if (type == NETTYPE_WIFI)
-            return true;
-        else
-            return false;
+        return type == NETTYPE_WIFI;
     }
 
     /**
@@ -71,10 +68,6 @@ public class NetUtils {
         NetworkInfo mobNetInfo = connectMgr.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
         //WIFI连接状态
         NetworkInfo wifiNetInfo = connectMgr.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
-        if (!mobNetInfo.isConnected() && !wifiNetInfo.isConnected()) {
-            //当前无可用的网络
-            return false;
-        }
-        return true;
+        return !(!mobNetInfo.isConnected() && !wifiNetInfo.isConnected());
     }
 }

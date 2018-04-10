@@ -43,7 +43,9 @@ public abstract class AutoPlayScrollListener extends RecyclerView.OnScrollListen
 
         switch (newState) {
             case RecyclerView.SCROLL_STATE_IDLE:
-                autoPlayVideo(recyclerView, VideoTagEnum.TAG_AUTO_PLAY_VIDEO);
+                if (canAutoPlay()){
+                    autoPlayVideo(recyclerView, VideoTagEnum.TAG_AUTO_PLAY_VIDEO);
+                }
             default:
                 // 滑动时暂停视频 autoPlayVideo(recyclerView, VideoTagEnum.TAG_PAUSE_VIDEO);
                 break;
@@ -147,5 +149,5 @@ public abstract class AutoPlayScrollListener extends RecyclerView.OnScrollListen
 
     public abstract int getPlayerViewId();
 
-
+    public abstract boolean canAutoPlay();
 }

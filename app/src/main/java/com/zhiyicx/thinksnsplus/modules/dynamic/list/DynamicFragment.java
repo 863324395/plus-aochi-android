@@ -25,6 +25,7 @@ import com.zhiyicx.common.BuildConfig;
 import com.zhiyicx.common.utils.AndroidBug5497Workaround;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.DeviceUtils;
+import com.zhiyicx.common.utils.NetUtils;
 import com.zhiyicx.common.utils.TextViewUtils;
 import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.thinksnsplus.R;
@@ -286,6 +287,11 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
             @Override
             public int getPlayerViewId() {
                 return R.id.videoplayer;
+            }
+
+            @Override
+            public boolean canAutoPlay() {
+                return NetUtils.isWifiConnected(getContext().getApplicationContext());
             }
         });
     }
