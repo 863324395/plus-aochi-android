@@ -53,6 +53,7 @@ import com.zhiyicx.thinksnsplus.data.beans.SendDynamicDataBeanV2;
 import com.zhiyicx.thinksnsplus.modules.photopicker.PhotoViewActivity;
 import com.zhiyicx.thinksnsplus.modules.shortvideo.cover.CoverActivity;
 import com.zhiyicx.thinksnsplus.modules.shortvideo.record.RecordActivity;
+import com.zhiyicx.thinksnsplus.modules.shortvideo.videostore.VideoSelectActivity;
 import com.zhiyicx.thinksnsplus.widget.UserInfoInroduceInputView;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
@@ -780,7 +781,7 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                     DeviceUtils.hideSoftKeyboard(getContext(), v);
                     if (TextUtils.isEmpty(imageBean.getImgUrl())) {
                         if (dynamicType == SendDynamicDataBean.VIDEO_TEXT_DYNAMIC) {
-                            startActivity(new Intent(mActivity, RecordActivity.class));
+                            startActivity(new Intent(getActivity(), VideoSelectActivity.class));
                             mActivity.finish();
                             return;
                         }
