@@ -7,6 +7,7 @@ import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Handler;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -40,6 +41,7 @@ import com.tym.shortvideo.view.CainSurfaceView;
 import com.tym.shortvideo.view.ProgressView;
 import com.tym.shortvideo.view.ShutterButton;
 import com.zhiyicx.baseproject.base.TSFragment;
+import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
@@ -59,6 +61,7 @@ import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 
+import static com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.POPUPWINDOW_ALPHA;
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 
 /**
@@ -117,6 +120,8 @@ public class RecordFragment extends TSFragment implements SurfaceHolder.Callback
 
     // 对焦大小
     private static final int sFocusSize = 100;
+
+    private ActionPopupWindow mWarnPopupWindow;
 
     @Override
     protected boolean showToolBarDivider() {
@@ -184,12 +189,7 @@ public class RecordFragment extends TSFragment implements SurfaceHolder.Callback
         RxView.clicks(mToolbarLeft)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .compose(this.bindToLifecycle())
-                .subscribe(aVoid -> {
-                    onStopRecord();
-                    mBtnTake.closeButton();
-                    VideoListManager.getInstance().delete(mActivity);
-                    mActivity.finish();
-                });
+                .subscribe(aVoid -> initWarnPopupWindow());
 
         RxView.clicks(mIvRight)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
@@ -256,6 +256,9 @@ public class RecordFragment extends TSFragment implements SurfaceHolder.Callback
     @Override
     public void onDestroyView() {
         DrawerManager.getInstance().destoryTrhead();
+        if (mWarnPopupWindow != null && mWarnPopupWindow.isShowing()) {
+            mWarnPopupWindow.dismiss();
+        }
         // 在停止时需要释放上下文，防止内存泄漏
 //        ParamsManager.context = null;
         super.onDestroyView();
@@ -811,6 +814,35 @@ public class RecordFragment extends TSFragment implements SurfaceHolder.Callback
             }
         }
     };
+
+    /**
+     * 初始化登录选择弹框
+     */
+    private void initWarnPopupWindow() {
+        if (mWarnPopupWindow == null) {
+            mWarnPopupWindow = ActionPopupWindow.builder()
+                    .item1Str(getString(R.string.drop_reord))
+                    .item2Str(getString(R.string.is_sure))
+                    .item2Color(ContextCompat.getColor(mActivity, R.color.important_for_note))
+                    .bottomStr(getString(R.string.cancel))
+                    .isOutsideTouch(true)
+                    .isFocus(true)
+                    .backgroundAlpha(POPUPWINDOW_ALPHA)
+                    .with(mActivity)
+                    .item2ClickListener(() -> {
+                        onStopRecord();
+                        mBtnTake.closeButton();
+                        VideoListManager.getInstance().delete(mActivity);
+                        mWarnPopupWindow.dismiss();
+                        mActivity.finish();
+                    })
+                    .bottomClickListener(() -> mWarnPopupWindow.dismiss())
+                    .build();
+        }
+
+        mWarnPopupWindow.show();
+
+    }
 
     private void restoreRecord() {
         LinkedList<SubVideo> localData = VideoListManager.getInstance().getSubVideoList();

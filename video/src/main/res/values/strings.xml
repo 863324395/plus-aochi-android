@@ -19,6 +19,8 @@
     <string name="covering">正在截取封面...</string>
     <string name="compressing">正在压缩视频...</string>
     <string name="compressed_done">视频压缩完成！</string>
+    <string name="drop_reord">你确定要放弃本次视频录制吗?</string>
+    <string name="is_sure">是的</string>
 
     <string name="next_setup">下一步</string>
     <string name="filter">滤镜</string>
