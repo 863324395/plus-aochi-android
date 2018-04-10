@@ -193,7 +193,6 @@ public class RecordFragment extends TSFragment implements SurfaceHolder.Callback
         mBtnTake.setGestureListener(this);
 
         RxView.clicks(mIvLeft)
-                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .compose(this.bindToLifecycle())
                 .subscribe(aVoid -> {
                             if (mTymTest.getSplitList().isEmpty()) {
@@ -445,10 +444,11 @@ public class RecordFragment extends TSFragment implements SurfaceHolder.Callback
     private void switchBeauty() {
         if (RenderManager.getInstance().getBeautiLevel() > 0) {
             DrawerManager.getInstance().setBeautifyLevel(0);
+            mIvLeft.setImageResource(R.mipmap.ico_video_beauty_close);
         } else {
+            mIvLeft.setImageResource(R.mipmap.ico_video_beauty_on);
             DrawerManager.getInstance().setBeautifyLevel(100);
         }
-        setLeftImage(RenderManager.getInstance().getBeautiLevel() > 0);
     }
 
     private void setLeftImage(boolean beautyOn) {
@@ -626,7 +626,6 @@ public class RecordFragment extends TSFragment implements SurfaceHolder.Callback
             mTvCountdown.setText(CountDownManager.getInstance().getVisibleDurationString());
             // 如果此时没有了视频，则隐藏删除按钮
             if (VideoListManager.getInstance().getSubVideoList().size() <= 0) {
-
                 setLeftImage(RenderManager.getInstance().getBeautiLevel() > 0);
 
                 // 复位状态
