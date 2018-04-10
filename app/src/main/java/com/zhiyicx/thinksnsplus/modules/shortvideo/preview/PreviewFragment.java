@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.shortvideo.preview;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.media.MediaPlayer;
 import android.net.Uri;
@@ -193,7 +194,7 @@ public class PreviewFragment extends TSFragment implements MediaPlayerWrapper.IM
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == CoverFragment.REQUEST_COVER_CODE && data.getExtras() != null) {
+        if (resultCode == Activity.RESULT_OK && requestCode == CoverFragment.REQUEST_COVER_CODE && data != null && data.getExtras() != null) {
             mVideoInfo.setCover(data.getExtras().getString(CoverFragment.PATH));
         }
     }
