@@ -210,7 +210,7 @@
     <string name="dynamic_content_hint">输入要说的话，图文结合更精彩哦</string>
     <string name="dynamic_content_no_pic_hint">输入要说的话</string>
     <string name="dynamic_send_cancel_hint">你还有没有发布的内容，是否放弃发布？</string>
-    <string name="video_dynamic_send_cancel_hint">动态编辑未完成，是否保存草稿？</string>
+    <string name="video_dynamic_send_cancel_hint">动态编辑未完成，是否保存本次编辑？</string>
     <string name="dynamic_send_toll">是否收费</string>
     <string name="dynamic_send_toll_way">选择图片收费方式</string>
     <string name="dynamic_send_toll_count">选择图片收费金额</string>
@@ -554,8 +554,6 @@
 
     <!--用户标签-->
     <string name="jump_over">跳过</string>
-    <string name="save">保存</string>
-    <string name="drop">丢弃</string>
     <string name="next">下一步</string>
     <string name="user_tag_choose_tag">选择标签</string>
     <string name="user_tag_choosed_tag_format">可选择%1$d个标签，已选择%2$d个标签</string>

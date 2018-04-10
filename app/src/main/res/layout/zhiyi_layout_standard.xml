@@ -167,8 +167,8 @@
                 android:layout_gravity="center_horizontal"
                 android:gravity="center_vertical"
                 android:maxLines="1"
-                android:textColor="#ffffffff"
-                android:textSize="12.0sp"/>
+                android:textColor="@color/white"
+                android:textSize="@dimen/size_icon_assist"/>
         </LinearLayout>
     </RelativeLayout>
 
@@ -190,12 +190,14 @@
         android:layout_marginRight="@dimen/spacing_bigger_large_35">
 
         <RelativeLayout
+            android:layout_centerHorizontal="true"
             android:id="@+id/ll_start_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center">
 
             <ImageView
+                android:visibility="gone"
                 android:id="@+id/start"
                 android:layout_width="@dimen/jz_start_button_w_h_normal"
                 android:layout_height="@dimen/jz_start_button_w_h_normal"
@@ -210,8 +212,8 @@
                 android:layout_below="@+id/start"
                 android:layout_marginTop="6dp"
                 android:text="@string/replay"
-                android:textColor="#ffffff"
-                android:textSize="12sp"/>
+                android:textColor="@color/white"
+                android:textSize="@dimen/size_icon_assist"/>
 
             <ImageView
                 android:id="@+id/share"
@@ -232,8 +234,8 @@
                 android:layout_below="@+id/start"
                 android:layout_marginTop="6dp"
                 android:text="@string/share"
-                android:textColor="#ffffff"
-                android:textSize="12sp"/>
+                android:textColor="@color/white"
+                android:textSize="@dimen/size_icon_assist"/>
 
         </RelativeLayout>
 
@@ -358,4 +360,14 @@
             android:textColor="@android:color/white"
             android:textSize="14sp"/>
     </LinearLayout>
+
+    <ImageView
+        android:id="@+id/first_start"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="@dimen/spacing_large"
+        android:layout_marginLeft="@dimen/spacing_large"
+        android:layout_width="@dimen/jz_start_button_w_h_normal"
+        android:layout_height="@dimen/jz_start_button_w_h_normal"
+        android:src="@mipmap/ico_video_play_list"/>
+
 </RelativeLayout>

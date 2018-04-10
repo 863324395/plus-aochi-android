@@ -42,8 +42,10 @@ import com.tym.shortvideo.view.ProgressView;
 import com.tym.shortvideo.view.ShutterButton;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
+import com.zhiyicx.common.utils.SharePreferenceUtils;
 import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
+import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.modules.shortvideo.adapter.EffectFilterAdapter;
 import com.zhiyicx.thinksnsplus.modules.shortvideo.preview.PreviewActivity;
@@ -821,22 +823,22 @@ public class RecordFragment extends TSFragment implements SurfaceHolder.Callback
     private void initWarnPopupWindow() {
         if (mWarnPopupWindow == null) {
             mWarnPopupWindow = ActionPopupWindow.builder()
-                    .item1Str(getString(R.string.drop_reord))
-                    .item2Str(getString(R.string.is_sure))
-                    .item2Color(ContextCompat.getColor(mActivity, R.color.important_for_note))
-                    .bottomStr(getString(R.string.cancel))
+                    .item1Str(getString(R.string.info_publish_hint))
+                    .desStr(getString(R.string.drop_reord))
+                    .item2Str(getString(R.string.keepon))
+                    .bottomStr(getString(R.string.giveup))
                     .isOutsideTouch(true)
                     .isFocus(true)
-                    .backgroundAlpha(POPUPWINDOW_ALPHA)
-                    .with(mActivity)
-                    .item2ClickListener(() -> {
+                    .backgroundAlpha(CustomPopupWindow.POPUPWINDOW_ALPHA)
+                    .with(getActivity())
+                    .item2ClickListener(() -> mWarnPopupWindow.dismiss())
+                    .bottomClickListener(() -> {
                         onStopRecord();
                         mBtnTake.closeButton();
                         VideoListManager.getInstance().removeAllSubVideo();
                         mWarnPopupWindow.dismiss();
                         mActivity.finish();
                     })
-                    .bottomClickListener(() -> mWarnPopupWindow.dismiss())
                     .build();
         }
 

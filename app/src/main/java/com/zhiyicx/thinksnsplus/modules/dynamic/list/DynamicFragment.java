@@ -1174,11 +1174,11 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
 
         }
         if (playView != null && playView.currentState > 0) {
+            if (playView.currentState == ZhiyiVideoView.CURRENT_STATE_PLAYING) {
+                playView.startButton.callOnClick();
+            }
             playView.textureViewContainer.removeView(JZMediaManager.textureView);
             bundle.putInt(DYNAMIC_VIDEO_STATE, playView.currentState);
-            if (playView.currentState == ZhiyiVideoView.CURRENT_STATE_PLAYING) {
-                JZMediaManager.pause();
-            }
         }
 
         intent.putExtras(bundle);

@@ -108,8 +108,10 @@ public class DynamicDetailHeader {
         picWidth = UIUtils.getWindowWidth(context);
         screenWidth = UIUtils.getWindowWidth(context);
         screenHeight = UIUtils.getWindowHeight(context) - DeviceUtils.getStatuBarHeight(mContext)
-                - mContext.getResources().getDimensionPixelOffset(com.zhiyicx.baseproject.R.dimen.toolbar_height)
-                - mContent.getResources().getDimensionPixelOffset(com.zhiyicx.baseproject.R.dimen.divider_line);
+                - mContext.getResources().getDimensionPixelOffset(com.zhiyicx.baseproject.R.dimen
+                .toolbar_height)
+                - mContent.getResources().getDimensionPixelOffset(com.zhiyicx.baseproject.R.dimen
+                .divider_line);
 //        picWidth = UIUtils.getWindowWidth(context) - context.getResources().getDimensionPixelSize
 //                (R.dimen.spacing_normal) * 2;
         picWidth = screenWidth;
@@ -117,8 +119,9 @@ public class DynamicDetailHeader {
     }
 
     private void initAdvert(Context context, List<RealAdvertListBean> adverts) {
-        DynamicDetailAdvertHeader dynamicDetailAdvertHeader = new DynamicDetailAdvertHeader(context, mDynamicDetailHeader
-                .findViewById(R.id.ll_advert));
+        DynamicDetailAdvertHeader dynamicDetailAdvertHeader = new DynamicDetailAdvertHeader
+                (context, mDynamicDetailHeader
+                        .findViewById(R.id.ll_advert));
         if (!com.zhiyicx.common.BuildConfig.USE_ADVERT || adverts.isEmpty()) {
             dynamicDetailAdvertHeader.hideAdvert();
             return;
@@ -126,7 +129,8 @@ public class DynamicDetailHeader {
         dynamicDetailAdvertHeader.setTitle(context.getString(R.string.advert));
         dynamicDetailAdvertHeader.setAdverts(adverts);
         dynamicDetailAdvertHeader.setOnItemClickListener((v, position1, url) ->
-                toAdvert(adverts.get(position1).getAdvertFormat().getImage().getLink(), adverts.get(position1).getTitle())
+                toAdvert(adverts.get(position1).getAdvertFormat().getImage().getLink(), adverts
+                        .get(position1).getTitle())
         );
     }
 
@@ -169,6 +173,7 @@ public class DynamicDetailHeader {
             if (video != null) {
                 ZhiyiVideoView videoView = new ZhiyiVideoView(mContext);
                 mPhotoContainer.addView(videoView);
+                videoView.setId(R.id.detail_videoplayer);
 
                 int width = picWidth;
                 int height = (video.getHeight() * picWidth / video.getWidth());
@@ -183,10 +188,10 @@ public class DynamicDetailHeader {
                         dynamicBean.getVideo().getVideo_id());
                 videoView.setUp(videoUrl, JZVideoPlayerStandard.SCREEN_WINDOW_LIST);
                 if (state > 0) {
-                    videoView.setState(state);
                     videoView.addTextureView();
-                    if (state==ZhiyiVideoView.CURRENT_STATE_PLAYING){
-                        JZMediaManager.start();
+                    videoView.currentState = state;
+                    if (state == ZhiyiVideoView.CURRENT_STATE_PAUSE) {
+                        videoView.startButton.callOnClick();
                     }
                 }
 //                JZVideoPlayerManager.setSecondFloor(videoView);
@@ -198,7 +203,8 @@ public class DynamicDetailHeader {
             for (int i = 0; i < photoList.size(); i++) {
                 showContentImage(context, photoList, i, i == photoList.size() - 1, mPhotoContainer);
             }
-            FilterImageView imageView = (FilterImageView) mPhotoContainer.getChildAt(0).findViewById(R.id.dynamic_content_img);
+            FilterImageView imageView = (FilterImageView) mPhotoContainer.getChildAt(0)
+                    .findViewById(R.id.dynamic_content_img);
             sharBitmap = ConvertUtils.drawable2BitmapWithWhiteBg(mContext, imageView
                     .getDrawable(), R.mipmap.icon);
             setImageClickListener(photoList, dynamicBean);
@@ -214,7 +220,8 @@ public class DynamicDetailHeader {
     private void dealLinkWords(DynamicDetailBeanV2 dynamicBean, String content) {
         content = content.replaceAll(MarkdownConfig.NETSITE_FORMAT, Link.DEFAULT_NET_SITE);
         mContent.setText(content);
-        ConvertUtils.stringLinkConvert(mContent, setLiknks(dynamicBean, mContent.getText().toString()), false);
+        ConvertUtils.stringLinkConvert(mContent, setLiknks(dynamicBean, mContent.getText()
+                .toString()), false);
     }
 
     /**
@@ -224,7 +231,8 @@ public class DynamicDetailHeader {
      * @param contentText
      */
     private void dealTollWords(DynamicDetailBeanV2 dynamicBean, String contentText) {
-        if (contentText.length() == 50 && dynamicBean.getPaid_node() != null && !dynamicBean.getPaid_node().isPaid()) {
+        if (contentText.length() == 50 && dynamicBean.getPaid_node() != null && !dynamicBean
+                .getPaid_node().isPaid()) {
             contentText += mContext.getString(R.string.words_holder);
         }
 
@@ -232,7 +240,8 @@ public class DynamicDetailHeader {
                 .spanTextColor(SkinUtils.getColor(R
                         .color.normal_for_assist_text))
                 .position(50, contentText.length())
-                .maxLines(mContext.getResources().getInteger(R.integer.dynamic_list_content_show_lines))
+                .maxLines(mContext.getResources().getInteger(R.integer
+                        .dynamic_list_content_show_lines))
                 .onSpanTextClickListener(mOnSpanTextClickListener)
                 .disPlayText(true);
 
@@ -262,7 +271,8 @@ public class DynamicDetailHeader {
         for (int i = 0; i < photoList.size(); i++) {
             showContentImage(mContext, photoList, i, i == photoList.size() - 1, mPhotoContainer);
         }
-        FilterImageView imageView = (FilterImageView) mPhotoContainer.getChildAt(0).findViewById(R.id.dynamic_content_img);
+        FilterImageView imageView = (FilterImageView) mPhotoContainer.getChildAt(0).findViewById
+                (R.id.dynamic_content_img);
         sharBitmap = ConvertUtils.drawable2BitmapWithWhiteBg(mContext, imageView
                 .getDrawable(), R.mipmap.icon);
         setImageClickListener(photoList, dynamicBean);
@@ -314,7 +324,8 @@ public class DynamicDetailHeader {
      * @param rewardsCountBean all reward data
      * @param rewardType       reward type
      */
-    public void updateReward(long sourceId, List<RewardsListBean> data, RewardsCountBean rewardsCountBean,
+    public void updateReward(long sourceId, List<RewardsListBean> data, RewardsCountBean
+            rewardsCountBean,
                              RewardType rewardType, String moneyName) {
         mReWardView.initData(sourceId, data, rewardsCountBean, rewardType, moneyName);
     }
@@ -328,7 +339,8 @@ public class DynamicDetailHeader {
      * @param lastImg
      * @param photoContainer
      */
-    private void showContentImage(Context context, List<DynamicDetailBeanV2.ImagesBean> photoList, final int position,
+    private void showContentImage(Context context, List<DynamicDetailBeanV2.ImagesBean>
+            photoList, final int position,
                                   boolean lastImg, LinearLayout photoContainer) {
         DynamicDetailBeanV2.ImagesBean imageBean = photoList.get(position);
         View view = LayoutInflater.from(context).inflate(R.layout.view_dynamic_detail_photos, null);
@@ -354,7 +366,8 @@ public class DynamicDetailHeader {
             imageView.setIshowGifTag(ImageUtils.imageIsGif(imageBean.getImgMimeType()));
             if (ImageUtils.imageIsGif(imageBean.getImgMimeType()) && mIsGifPlay) {
                 GifRequestBuilder requestBuilder = Glide.with(mContext)
-                        .load(ImageUtils.imagePathConvertV2(canLook, imageBean.getFile(), canLook ? picWidth : 0,
+                        .load(ImageUtils.imagePathConvertV2(canLook, imageBean.getFile(), canLook
+                                        ? picWidth : 0,
                                 canLook ? height : 0, part, AppApplication.getTOKEN()))
                         .asGif()
                         .override(picWidth, height)
@@ -367,7 +380,8 @@ public class DynamicDetailHeader {
                 requestBuilder.into(imageView);
             } else {
                 BitmapRequestBuilder requestBuilder = Glide.with(mContext)
-                        .load(ImageUtils.imagePathConvertV2(canLook, imageBean.getFile(), canLook ? picWidth : 0,
+                        .load(ImageUtils.imagePathConvertV2(canLook, imageBean.getFile(), canLook
+                                        ? picWidth : 0,
                                 canLook ? height : 0, part, AppApplication.getTOKEN()))
                         .asBitmap()
                         .override(picWidth, height)
@@ -394,7 +408,8 @@ public class DynamicDetailHeader {
     /**
      * 设置图片点击事件
      */
-    private void setImageClickListener(final List<DynamicDetailBeanV2.ImagesBean> photoList, final DynamicDetailBeanV2 dynamicBean) {
+    private void setImageClickListener(final List<DynamicDetailBeanV2.ImagesBean> photoList,
+                                       final DynamicDetailBeanV2 dynamicBean) {
         final ArrayList<AnimationRectBean> animationRectBeanArrayList
                 = new ArrayList<>();
         final List<ImageBean> imageBeans = new ArrayList<>();
@@ -405,9 +420,11 @@ public class DynamicDetailHeader {
             imageView.setOnClickListener(v -> {
                 animationRectBeanArrayList.clear();
                 DynamicDetailBeanV2.ImagesBean img = photoList.get(imagePosition);
-                Boolean canLook = !(img.isPaid() != null && !img.isPaid() && img.getType().equals(Toll.LOOK_TOLL_TYPE));
+                Boolean canLook = !(img.isPaid() != null && !img.isPaid() && img.getType().equals
+                        (Toll.LOOK_TOLL_TYPE));
                 if (!canLook) {
-                    mOnImageClickLisenter.onImageClick(imagePosition, img.getAmount(), photoList.get(imagePosition).getPaid_node());
+                    mOnImageClickLisenter.onImageClick(imagePosition, img.getAmount(), photoList
+                            .get(imagePosition).getPaid_node());
                     return;
                 }
                 imageBeans.clear();
@@ -429,7 +446,8 @@ public class DynamicDetailHeader {
                     imageBean.setHeight(task.getHeight());
                     imageBean.setStorage_id(task.getFile());// 图片附件id
                     imageBeans.add(imageBean);
-                    AnimationRectBean rect = AnimationRectBean.buildFromImageView(imageView1);// 动画矩形
+                    AnimationRectBean rect = AnimationRectBean.buildFromImageView(imageView1);//
+                    // 动画矩形
                     animationRectBeanArrayList.add(rect);
                 }
 
@@ -458,8 +476,10 @@ public class DynamicDetailHeader {
                     .setTextColor(ContextCompat.getColor(mContext, R.color
                             .themeColor))
                     .setLinkMetadata(LinkMetadata.builder()
-                            .putSerializableObj(LinkMetadata.METADATA_KEY_COTENT, new NetUrlHandleBean(dynamicDetailBeanV2.getFeed_content()))
-                            .putSerializableObj(LinkMetadata.METADATA_KEY_TYPE, LinkMetadata.SpanType.NET_SITE)
+                            .putSerializableObj(LinkMetadata.METADATA_KEY_COTENT, new
+                                    NetUrlHandleBean(dynamicDetailBeanV2.getFeed_content()))
+                            .putSerializableObj(LinkMetadata.METADATA_KEY_TYPE, LinkMetadata
+                                    .SpanType.NET_SITE)
                             .build())
                     .setTextColorOfHighlightedLink(ContextCompat.getColor(mContext, R.color
                             .general_for_hint))

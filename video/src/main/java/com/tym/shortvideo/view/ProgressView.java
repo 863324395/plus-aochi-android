@@ -99,14 +99,14 @@ public class ProgressView extends View {
         mVLineWidth = DeviceUtils.dipToPX(getContext(), 1);
 
         setBackgroundColor(getResources().getColor(R.color.camera_bg));
-        mProgressPaint.setColor(0xFF45C01A);
+        mProgressPaint.setColor(getResources().getColor(R.color.camera_progress));
         mProgressPaint.setStyle(Paint.Style.FILL);
 
         mActivePaint.setColor(getResources().getColor(android.R.color.white));
         mActivePaint.setStyle(Paint.Style.FILL);
 
         mPausePaint.setColor(getResources().getColor(
-                R.color.camera_progress_split));
+                R.color.white));
         mPausePaint.setStyle(Paint.Style.FILL);
 
         mRemovePaint.setColor(getResources().getColor(
@@ -114,7 +114,7 @@ public class ProgressView extends View {
         mRemovePaint.setStyle(Paint.Style.FILL);
 
         mThreePaint.setColor(getResources().getColor(
-                R.color.camera_progress_three));
+                R.color.camera_progress));
         mThreePaint.setStyle(Paint.Style.FILL);
 
         mOverflowPaint.setColor(getResources().getColor(

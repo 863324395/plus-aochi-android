@@ -93,7 +93,7 @@ public abstract class AutoPlayScrollListener extends RecyclerView.OnScrollListen
                     int current = recyclerView.getChildAdapterPosition(recyclerView.getChildAt(i));
                     // 当前正在播放的 view 少于 1/3 的可见高度
                     if (playViewRect.bottom - playViewRect.top < (float) currentPlayView.getHeight() / 3f) {
-                        currentPlayView.startButton.performClick();
+                        currentPlayView.startButton.callOnClick();
                         JZVideoPlayerStandard view = null;
                         if (current + 1 == firstCompoleteVisibleItem) {
                             View itemView = recyclerView.getChildAt(i + 1);
@@ -122,7 +122,7 @@ public abstract class AutoPlayScrollListener extends RecyclerView.OnScrollListen
         }
         if (currentPlayView == null && nextplayView != null) {
             if (nextplayView.currentState == JZVideoPlayerStandard.CURRENT_STATE_PAUSE) {
-                nextplayView.startButton.performClick();
+                nextplayView.startButton.callOnClick();
             } else {
                 nextplayView.startVideo();
             }
@@ -147,7 +147,7 @@ public abstract class AutoPlayScrollListener extends RecyclerView.OnScrollListen
             case TAG_PAUSE_VIDEO:
                 if (homeGSYVideoPlayer.currentState != JZVideoPlayerStandard.CURRENT_STATE_PAUSE) {
                     // 模拟点击,暂停视频
-                    homeGSYVideoPlayer.startButton.performClick();
+                    homeGSYVideoPlayer.startButton.callOnClick();
                 }
                 break;
             default:

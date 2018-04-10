@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.ActivityInfo;
+import android.graphics.Color;
 import android.media.AudioManager;
 import android.util.AttributeSet;
 import android.view.View;
@@ -39,6 +40,7 @@ import static com.umeng.socialize.bean.SHARE_MEDIA.QQ;
 public class ZhiyiVideoView extends JZVideoPlayerStandard {
 
     public ImageView mShareImageView;
+    public ImageView mDefaultStartImageView;
 
     public LinearLayout mShareLineLinearLayout;
 
@@ -64,6 +66,7 @@ public class ZhiyiVideoView extends JZVideoPlayerStandard {
     public void init(Context context) {
         super.init(context);
         mShareImageView = (ImageView) findViewById(R.id.share);
+        mDefaultStartImageView = (ImageView) findViewById(R.id.first_start);
         mShareLineLinearLayout = (LinearLayout) findViewById(R.id.ll_share_line_container);
         mShareLinearLayout = (LinearLayout) findViewById(R.id.ll_share_container);
 
@@ -124,13 +127,22 @@ public class ZhiyiVideoView extends JZVideoPlayerStandard {
             super.onAutoCompletion();
             mShareImageView.setVisibility(VISIBLE);
         }
-        thumbImageView.setVisibility(View.GONE);
+        mDefaultStartImageView.setVisibility(GONE);
+        thumbImageView.setBackgroundColor(Color.parseColor("#80000000"));
+//        thumbImageView.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onStatePreparingChangingUrl(int urlMapIndex, long seekToInAdvance) {
+        super.onStatePreparingChangingUrl(urlMapIndex, seekToInAdvance);
+        mDefaultStartImageView.setVisibility(GONE);
     }
 
     @Override
     public void changeUiToNormal() {
         super.changeUiToNormal();
         mShareImageView.setVisibility(GONE);
+        mDefaultStartImageView.setVisibility(VISIBLE);
         mShareLineLinearLayout.setVisibility(GONE);
         mShareLinearLayout.setVisibility(GONE);
     }
@@ -139,6 +151,7 @@ public class ZhiyiVideoView extends JZVideoPlayerStandard {
     public void changeUiToPreparing() {
         super.changeUiToPreparing();
         mShareImageView.setVisibility(GONE);
+        mDefaultStartImageView.setVisibility(GONE);
         mShareLineLinearLayout.setVisibility(GONE);
         mShareLinearLayout.setVisibility(GONE);
     }
@@ -209,24 +222,27 @@ public class ZhiyiVideoView extends JZVideoPlayerStandard {
     public void updateStartImage() {
         if (currentState == CURRENT_STATE_PLAYING) {
             startButton.setVisibility(VISIBLE);
-                startButton.setImageResource(R.mipmap.icon_video_suspend);
-            replayTextView.setVisibility(INVISIBLE);
+            startButton.setImageResource(R.mipmap.icon_video_suspend);
+            replayTextView.setVisibility(GONE);
         } else if (currentState == CURRENT_STATE_ERROR) {
-            startButton.setVisibility(INVISIBLE);
-            replayTextView.setVisibility(INVISIBLE);
+            startButton.setVisibility(GONE);
+            replayTextView.setVisibility(GONE);
         } else if (currentState == CURRENT_STATE_AUTO_COMPLETE) {
             startButton.setVisibility(VISIBLE);
             startButton.setImageResource(R.mipmap.ico_video_replay);
             replayTextView.setVisibility(VISIBLE);
         } else {
+            startButton.setVisibility(GONE);
             if (currentScreen == SCREEN_WINDOW_FULLSCREEN){
                 startButton.setImageResource(R.mipmap.ico_video_play_fullscreen);
+                mDefaultStartImageView.setImageResource(R.mipmap.ico_video_play_fullscreen);
             }else{
                 startButton.setImageResource(R.mipmap.ico_video_play_list);
+                mDefaultStartImageView.setImageResource(R.mipmap.ico_video_play_list);
             }
-            replayTextView.setVisibility(INVISIBLE);
+            replayTextView.setVisibility(GONE);
         }
-        mShareTextView.setVisibility(replayTextView.getVisibility() == INVISIBLE ? GONE : VISIBLE);
+        mShareTextView.setVisibility(replayTextView.getVisibility());
     }
 
     @Override
