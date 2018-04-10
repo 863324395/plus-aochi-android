@@ -146,26 +146,11 @@ public class RecordFragment extends TSFragment implements SurfaceHolder.Callback
             TextureRotationUtils.setBackReverse(true);
             ParamsManager.mBackReverse = true;
         }
+        mToolbarRight.setVisibility(View.GONE);
         mToolbarRight.setText(getString(R.string.next_setup));
         mToolbarLeft.setCompoundDrawables(UIUtils.getCompoundDrawables(getContext(), setLeftImg()), null, null, null);
 
-        LinkedList<SubVideo> localData = VideoListManager.getInstance().getSubVideoList();
-        int duration = 0;
-        if (localData != null && !localData.isEmpty()) {
-            mBtnTake.setProgressMax((int) CountDownManager.getInstance().getMaxMilliSeconds());
-            mTymTest.setProgressMax((int) CountDownManager.getInstance().getMaxMilliSeconds());
-            mTymTest.setProgressMin((int) CountDownManager.getInstance().getMinMilliSeconds());
-            // 添加分割线
-            mBtnTake.addSplitView();
-            mTymTest.addSplitView();
-            for (SubVideo subVideo : localData) {
-                duration += subVideo.getDuration();
-                mBtnTake.setProgress(duration);
-                mTymTest.setProgress(duration);
-                mBtnTake.addSplitView();
-                mTymTest.addSplitView();
-            }
-        }
+        restoreRecord();
     }
 
     @Override
@@ -648,6 +633,8 @@ public class RecordFragment extends TSFragment implements SurfaceHolder.Callback
             mTymTest.setProgress(CountDownManager.getInstance().getVisibleDuration());
             // 更新时间
             mTvCountdown.setText(CountDownManager.getInstance().getVisibleDurationString());
+            mToolbarRight.setVisibility(CountDownManager.getInstance().getVisibleDuration() >= CountDownManager.getInstance().getMinMilliSeconds()
+                    ? View.VISIBLE : View.GONE);
             // 如果此时没有了视频，则隐藏删除按钮
             if (VideoListManager.getInstance().getSubVideoList().size() <= 0) {
                 setLeftImage(RenderManager.getInstance().getBeautiLevel() > 0);
@@ -819,6 +806,32 @@ public class RecordFragment extends TSFragment implements SurfaceHolder.Callback
             mTymTest.setProgress(duration);
             // 设置时间
             mTvCountdown.setText(StringUtils.generateMillisTime((int) duration));
+            if (duration >= CountDownManager.getInstance().getMinMilliSeconds() && mToolbarRight.getVisibility() == View.GONE) {
+                mToolbarRight.setVisibility(View.VISIBLE);
+            }
         }
     };
+
+    private void restoreRecord() {
+        LinkedList<SubVideo> localData = VideoListManager.getInstance().getSubVideoList();
+        int duration = 0;
+        if (localData != null && !localData.isEmpty()) {
+            mBtnTake.setProgressMax((int) CountDownManager.getInstance().getMaxMilliSeconds());
+            mTymTest.setProgressMax((int) CountDownManager.getInstance().getMaxMilliSeconds());
+            mTymTest.setProgressMin((int) CountDownManager.getInstance().getMinMilliSeconds());
+            // 添加分割线
+            mBtnTake.addSplitView();
+            mTymTest.addSplitView();
+            for (SubVideo subVideo : localData) {
+                duration += subVideo.getDuration();
+                mBtnTake.setProgress(duration);
+                mTymTest.setProgress(duration);
+                mBtnTake.addSplitView();
+                mTymTest.addSplitView();
+            }
+        }
+        if (duration >= CountDownManager.getInstance().getMinMilliSeconds()) {
+            mToolbarRight.setVisibility(View.VISIBLE);
+        }
+    }
 }
