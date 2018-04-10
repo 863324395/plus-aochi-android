@@ -43,7 +43,7 @@ public abstract class AutoPlayScrollListener extends RecyclerView.OnScrollListen
 
         switch (newState) {
             case RecyclerView.SCROLL_STATE_IDLE:
-                if (canAutoPlay()){
+                if (canAutoPlay()) {
                     autoPlayVideo(recyclerView, VideoTagEnum.TAG_AUTO_PLAY_VIDEO);
                 }
             default:
@@ -79,7 +79,9 @@ public abstract class AutoPlayScrollListener extends RecyclerView.OnScrollListen
      * @param handleVideoTag 视频需要进行状态
      */
     private void autoPlayVideo(RecyclerView recyclerView, VideoTagEnum handleVideoTag) {
+        // 当前正在播放的 view
         JZVideoPlayerStandard currentPlayView = null;
+        // 准备播放的 view
         JZVideoPlayerStandard nextplayView = null;
         for (int i = 0; i < visibleCount; i++) {
             if (recyclerView != null && recyclerView.getChildAt(i) != null && recyclerView.getChildAt(i).findViewById(getPlayerViewId()) != null) {
@@ -89,6 +91,7 @@ public abstract class AutoPlayScrollListener extends RecyclerView.OnScrollListen
                 if (playView.currentState == JZVideoPlayerStandard.CURRENT_STATE_PLAYING) {
                     currentPlayView = playView;
                     int current = recyclerView.getChildAdapterPosition(recyclerView.getChildAt(i));
+                    // 当前正在播放的 view 少于 1/3 的可见高度
                     if (playViewRect.bottom - playViewRect.top < (float) currentPlayView.getHeight() / 3f) {
                         currentPlayView.startButton.performClick();
                         JZVideoPlayerStandard view = null;
@@ -103,6 +106,7 @@ public abstract class AutoPlayScrollListener extends RecyclerView.OnScrollListen
                                 view = (JZVideoPlayerStandard) itemView.findViewById(getPlayerViewId());
                             }
                         }
+                        // 滑动方向上的第一个完全可见的 view
                         if (view != null) {
                             view.startVideo();
                         }
@@ -117,7 +121,11 @@ public abstract class AutoPlayScrollListener extends RecyclerView.OnScrollListen
             }
         }
         if (currentPlayView == null && nextplayView != null) {
-            nextplayView.startVideo();
+            if (nextplayView.currentState == JZVideoPlayerStandard.CURRENT_STATE_PAUSE) {
+                nextplayView.startButton.performClick();
+            } else {
+                nextplayView.startVideo();
+            }
         }
 
     }
