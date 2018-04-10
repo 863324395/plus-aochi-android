@@ -35,6 +35,7 @@ import com.zhiyicx.thinksnsplus.data.beans.SendDynamicDataBean;
 import com.zhiyicx.thinksnsplus.modules.dynamic.send.SendDynamicActivity;
 import com.zhiyicx.thinksnsplus.modules.shortvideo.cover.CoverActivity;
 import com.zhiyicx.thinksnsplus.modules.shortvideo.cover.CoverFragment;
+import com.zhiyicx.thinksnsplus.modules.shortvideo.record.RecordActivity;
 
 import java.io.File;
 import java.io.IOException;
@@ -180,7 +181,10 @@ public class PreviewFragment extends TSFragment implements MediaPlayerWrapper.IM
         RxView.clicks(mToolbarLeft)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .compose(this.bindToLifecycle())
-                .subscribe(aVoid -> mActivity.finish());
+                .subscribe(aVoid -> {
+                    startActivity(new Intent(mActivity, RecordActivity.class));
+                    mActivity.finish();
+                });
 
         RxView.clicks(mCover)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
@@ -244,7 +248,7 @@ public class PreviewFragment extends TSFragment implements MediaPlayerWrapper.IM
         if (isLoading()) {
             super.onBackPressed();
         } else {
-            mActivity.finish();
+            mToolbarLeft.performLongClick();
         }
     }
 
