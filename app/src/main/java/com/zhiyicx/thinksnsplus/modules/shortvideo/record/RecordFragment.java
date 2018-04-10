@@ -179,7 +179,11 @@ public class RecordFragment extends TSFragment implements SurfaceHolder.Callback
         RxView.clicks(mToolbarLeft)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .compose(this.bindToLifecycle())
-                .subscribe(aVoid -> mActivity.finish());
+                .subscribe(aVoid -> {
+                    onStopRecord();
+                    mBtnTake.closeButton();
+                    mActivity.finish();
+                });
 
         RxView.clicks(mIvRight)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
