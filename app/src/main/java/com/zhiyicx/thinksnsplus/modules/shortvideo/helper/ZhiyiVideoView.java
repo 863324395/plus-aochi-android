@@ -117,13 +117,14 @@ public class ZhiyiVideoView extends JZVideoPlayerStandard {
             onStateAutoComplete();
             mShareImageView.setVisibility(GONE);
             mShareTextView.setVisibility(GONE);
-            mShareTextView.setVisibility(GONE);
+            replayTextView.setVisibility(GONE);
             mShareLineLinearLayout.setVisibility(VISIBLE);
             mShareLinearLayout.setVisibility(VISIBLE);
         } else {
             super.onAutoCompletion();
             mShareImageView.setVisibility(VISIBLE);
         }
+        thumbImageView.setVisibility(View.GONE);
     }
 
     @Override
@@ -206,7 +207,25 @@ public class ZhiyiVideoView extends JZVideoPlayerStandard {
 
     @Override
     public void updateStartImage() {
-        super.updateStartImage();
+        if (currentState == CURRENT_STATE_PLAYING) {
+            startButton.setVisibility(VISIBLE);
+                startButton.setImageResource(R.mipmap.icon_video_suspend);
+            replayTextView.setVisibility(INVISIBLE);
+        } else if (currentState == CURRENT_STATE_ERROR) {
+            startButton.setVisibility(INVISIBLE);
+            replayTextView.setVisibility(INVISIBLE);
+        } else if (currentState == CURRENT_STATE_AUTO_COMPLETE) {
+            startButton.setVisibility(VISIBLE);
+            startButton.setImageResource(R.mipmap.ico_video_replay);
+            replayTextView.setVisibility(VISIBLE);
+        } else {
+            if (currentScreen == SCREEN_WINDOW_FULLSCREEN){
+                startButton.setImageResource(R.mipmap.ico_video_play_fullscreen);
+            }else{
+                startButton.setImageResource(R.mipmap.ico_video_play_list);
+            }
+            replayTextView.setVisibility(INVISIBLE);
+        }
         mShareTextView.setVisibility(replayTextView.getVisibility() == INVISIBLE ? GONE : VISIBLE);
     }
 
