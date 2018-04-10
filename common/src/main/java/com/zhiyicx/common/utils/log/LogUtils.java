@@ -20,7 +20,7 @@ public class LogUtils {
         Logger
                 .init(APPLICATION_TAG)           // default PRETTYLOGGER or use just init()
                 .methodCount(LOGGER_METHODCOUNT)                 // default 2
-                .hideThreadInfo()               // default shown
+//                .hideThreadInfo()               // default shown
                 .logLevel(BuildConfig.USE_LOG?LogLevel.FULL:LogLevel.NONE)        // default LogLevel.FULL
                 .methodOffset(LOGGER_METHODOFFSET);              // default 0
         // .logAdapter(new AndroidLogAdapter()); //default AndroidLogAdapter
