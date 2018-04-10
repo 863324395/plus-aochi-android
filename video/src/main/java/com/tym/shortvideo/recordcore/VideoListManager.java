@@ -1,6 +1,11 @@
 package com.tym.shortvideo.recordcore;
 
 
+import android.content.Context;
+
+import com.tym.shortvideo.recodrender.ParamsManager;
+import com.zhiyicx.common.utils.SharePreferenceUtils;
+
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -23,6 +28,7 @@ public class VideoListManager {
 
     // 视频最大时长，默认10秒
     private int mMaxDuration = DURATION_TEN_SECOND;
+    public static final String VIDEO_SUB = "video_sub";
 
     // 获取所有分块
     private LinkedList<SubVideo> mVideoList = new LinkedList<>();
@@ -36,6 +42,7 @@ public class VideoListManager {
 
     /**
      * 设置最大时长，必须大于1秒
+     *
      * @param duration
      */
     public void setMaxDuration(int duration) {
@@ -46,6 +53,7 @@ public class VideoListManager {
 
     /**
      * 获取视频最大长度
+     *
      * @return
      */
     public int getMaxDuration() {
@@ -54,11 +62,12 @@ public class VideoListManager {
 
     /**
      * 获取录制的总时长
+     *
      * @return
      */
     public int getDuration() {
         int duration = 0;
-        if (mVideoList != null) {
+        if (getSubVideoList() != null) {
             for (SubVideo subVideo : mVideoList) {
                 duration += subVideo.getDuration();
             }
@@ -68,8 +77,9 @@ public class VideoListManager {
 
     /**
      * 添加分段视频
-     * @param path      视频路径
-     * @param duration  视频时长
+     *
+     * @param path     视频路径
+     * @param duration 视频时长
      */
     public void addSubVideo(String path, int duration) {
         if (mVideoList == null) {
@@ -79,10 +89,12 @@ public class VideoListManager {
         subVideo.mediaPath = path;
         subVideo.duration = duration;
         mVideoList.add(subVideo);
+        save(ParamsManager.context);
     }
 
     /**
      * 添加分段视频
+     *
      * @param subVideo
      */
     public void addSubVideo(SubVideo subVideo) {
@@ -94,8 +106,9 @@ public class VideoListManager {
 
     /**
      * 移除分段视频
-     * @param subVideo     分段视频
-     * @param deleteFile   是否删除文件
+     *
+     * @param subVideo   分段视频
+     * @param deleteFile 是否删除文件
      */
     public void removeSubVideo(SubVideo subVideo, boolean deleteFile) {
         if (mVideoList != null) {
@@ -108,10 +121,12 @@ public class VideoListManager {
             }
             mVideoList.remove(subVideo);
         }
+        save(ParamsManager.context);
     }
 
     /**
      * 移除分段视频
+     *
      * @param subVideo
      */
     public void removeSubVideo(SubVideo subVideo) {
@@ -120,6 +135,7 @@ public class VideoListManager {
 
     /**
      * 移除分段视频
+     *
      * @param index
      */
     public void removeSubVideo(int index) {
@@ -142,6 +158,7 @@ public class VideoListManager {
 
     /**
      * 获取视频文件
+     *
      * @param index
      * @return
      */
@@ -162,19 +179,25 @@ public class VideoListManager {
             }
             mVideoList.clear();
         }
+        delete(ParamsManager.context);
     }
 
     /**
      * 获取分段视频列表
+     *
      * @return
      */
     public LinkedList<SubVideo> getSubVideoList() {
+        if (mVideoList == null || mVideoList.isEmpty()) {
+            mVideoList = getVideoList(ParamsManager.context);
+        }
         return mVideoList;
     }
 
 
     /**
      * 获取分段视频路径
+     *
      * @return
      */
     public List<String> getSubVideoPathList() {
@@ -187,6 +210,19 @@ public class VideoListManager {
         }
         return mediaPaths;
     }
+
+    public void save(Context context) {
+        SharePreferenceUtils.saveObject(context, VIDEO_SUB, mVideoList);
+    }
+
+    public void delete(Context context) {
+        SharePreferenceUtils.remove(context, VIDEO_SUB);
+    }
+
+    public LinkedList<SubVideo> getVideoList(Context context) {
+        return SharePreferenceUtils.getObject(context, VIDEO_SUB);
+    }
+
 
     @Override
     public String toString() {

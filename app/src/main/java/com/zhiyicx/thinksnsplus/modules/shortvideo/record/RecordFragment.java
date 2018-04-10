@@ -27,6 +27,7 @@ import com.tym.shortvideo.recodrender.RecordManager;
 import com.tym.shortvideo.recodrender.RenderManager;
 import com.tym.shortvideo.recodrender.RenderStateChangedListener;
 import com.tym.shortvideo.recordcore.CountDownManager;
+import com.tym.shortvideo.recordcore.SubVideo;
 import com.tym.shortvideo.recordcore.VideoListManager;
 import com.tym.shortvideo.recordcore.multimedia.MediaEncoder;
 import com.tym.shortvideo.utils.BitmapUtils;
@@ -53,6 +54,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
@@ -146,6 +148,24 @@ public class RecordFragment extends TSFragment implements SurfaceHolder.Callback
         }
         mToolbarRight.setText(getString(R.string.next_setup));
         mToolbarLeft.setCompoundDrawables(UIUtils.getCompoundDrawables(getContext(), setLeftImg()), null, null, null);
+
+        LinkedList<SubVideo> localData = VideoListManager.getInstance().getSubVideoList();
+        int duration = 0;
+        if (localData != null && !localData.isEmpty()) {
+            mBtnTake.setProgressMax((int) CountDownManager.getInstance().getMaxMilliSeconds());
+            mTymTest.setProgressMax((int) CountDownManager.getInstance().getMaxMilliSeconds());
+            mTymTest.setProgressMin((int) CountDownManager.getInstance().getMinMilliSeconds());
+            // 添加分割线
+            mBtnTake.addSplitView();
+            mTymTest.addSplitView();
+            for (SubVideo subVideo : localData) {
+                duration += subVideo.getDuration();
+                mBtnTake.setProgress(duration);
+                mTymTest.setProgress(duration);
+                mBtnTake.addSplitView();
+                mTymTest.addSplitView();
+            }
+        }
     }
 
     @Override
