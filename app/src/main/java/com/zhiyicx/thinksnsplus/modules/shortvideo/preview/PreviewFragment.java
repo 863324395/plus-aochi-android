@@ -168,8 +168,7 @@ public class PreviewFragment extends TSFragment implements MediaPlayerWrapper.IM
                                 Uri.parse(VideoListManager.getInstance().getSubVideoPathList()
                                         .get(0)), 1, (bitmap, integer) -> {
                                     mVideoInfo.setCover(com.zhiyicx.common.utils.FileUtils
-                                            .saveBitmapToFile(mActivity, bitmap, "video_cover" +
-                                                    ".jpg"));
+                                            .saveBitmapToFile(mActivity, bitmap, ParamsManager.VideoCover));
                                     combineVideo();
                                 });
                     } else {
@@ -344,7 +343,7 @@ public class PreviewFragment extends TSFragment implements MediaPlayerWrapper.IM
         VideoClipper clipper = new VideoClipper();
         clipper.showBeauty();
         clipper.setInputVideoPath(mActivity, path);
-        final String fileName = System.currentTimeMillis() + ParamsManager.ClipVideo;
+        final String fileName = ParamsManager.ClipVideo;
         mOutputPath = FileUtils.getPath(ParamsManager.SaveVideo, fileName);
         clipper.setFilterType(mFilterType);
         clipper.setOutputVideoPath(mOutputPath);

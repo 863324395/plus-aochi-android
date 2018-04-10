@@ -7,11 +7,13 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.view.ViewCompat;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.animation.OvershootInterpolator;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
+import com.tym.shortvideo.recodrender.ParamsManager;
 import com.zhiyicx.baseproject.base.SystemConfigBean;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.impl.photoselector.DaggerPhotoSelectorImplComponent;
@@ -19,6 +21,7 @@ import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl;
 import com.zhiyicx.baseproject.impl.photoselector.PhotoSeletorImplModule;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
+import com.zhiyicx.common.utils.FileUtils;
 import com.zhiyicx.common.utils.SharePreferenceUtils;
 import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
@@ -36,6 +39,7 @@ import com.zhiyicx.thinksnsplus.widget.IconTextView;
 
 import org.simple.eventbus.EventBus;
 
+import java.io.File;
 import java.util.List;
 
 import butterknife.BindView;
@@ -245,7 +249,13 @@ public class SelectDynamicTypeFragment extends TSFragment<SelectDynamicTypeContr
                 mRxPermissions.request(Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO)
                         .subscribe(aBoolean -> {
                             if (aBoolean) {
-                                startActivity(new Intent(getActivity(), VideoSelectActivity.class));
+                                SendDynamicDataBean sendDynamicDataBean = SharePreferenceUtils.getObject(mActivity, SharePreferenceUtils.VIDEO_DYNAMIC);
+                                if (checkVideoDraft(sendDynamicDataBean)) {
+                                    SendDynamicActivity.startToSendDynamicActivity(getContext(),
+                                            sendDynamicDataBean);
+                                } else {
+                                    startActivity(new Intent(getActivity(), VideoSelectActivity.class));
+                                }
                                 closeActivity();
                             } else {
 
@@ -380,6 +390,16 @@ public class SelectDynamicTypeFragment extends TSFragment<SelectDynamicTypeContr
     public void closeActivity() {
         getActivity().finish();
         getActivity().overridePendingTransition(0, R.anim.fade_out);
+    }
+
+    private boolean checkVideoDraft(SendDynamicDataBean sendDynamicDataBean) {
+
+        if (sendDynamicDataBean != null) {
+            boolean hasVideo = FileUtils.isFileExists(sendDynamicDataBean.getVideoInfo().getPath());
+            boolean hasCover = FileUtils.isFileExists(sendDynamicDataBean.getVideoInfo().getCover());
+            return hasCover && hasVideo;
+        }
+        return false;
     }
 
     @Override

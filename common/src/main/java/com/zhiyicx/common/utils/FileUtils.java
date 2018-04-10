@@ -141,6 +141,19 @@ public class FileUtils {
     }
 
     /**
+     * 删除文件
+     * @param filePath
+     * @return
+     */
+    public static boolean deleteFile(String filePath) {
+        File file = getFileByPath(filePath);
+        if (isFileExists(file)) {
+            return file.delete();
+        }
+        return false;
+    }
+
+    /**
      * 判断文件是否存在
      *
      * @param file 文件

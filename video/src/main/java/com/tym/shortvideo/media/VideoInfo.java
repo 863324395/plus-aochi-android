@@ -33,6 +33,17 @@ public class VideoInfo implements Parcelable,Serializable{
 
     public int storeId;
 
+    // 动态文本内容
+    public String dynamicContent;
+
+    public String getDynamicContent() {
+        return dynamicContent;
+    }
+
+    public void setDynamicContent(String dynamicContent) {
+        this.dynamicContent = dynamicContent;
+    }
+
     public int getStoreId() {
         return storeId;
     }
@@ -193,6 +204,7 @@ public class VideoInfo implements Parcelable,Serializable{
         dest.writeInt(this.cutPoint);
         dest.writeInt(this.cutDuration);
         dest.writeInt(this.storeId);
+        dest.writeString(this.dynamicContent);
     }
 
     protected VideoInfo(Parcel in) {
@@ -212,6 +224,7 @@ public class VideoInfo implements Parcelable,Serializable{
         this.cutPoint = in.readInt();
         this.cutDuration = in.readInt();
         this.storeId = in.readInt();
+        this.dynamicContent = in.readString();
     }
 
     public static final Creator<VideoInfo> CREATOR = new Creator<VideoInfo>() {

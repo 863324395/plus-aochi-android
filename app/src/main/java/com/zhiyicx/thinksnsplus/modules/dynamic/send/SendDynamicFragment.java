@@ -19,11 +19,11 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.signature.StringSignature;
 import com.jakewharton.rxbinding.widget.RxRadioGroup;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.tym.shortvideo.media.VideoInfo;
+import com.tym.shortvideo.recodrender.ParamsManager;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.config.PayConfig;
@@ -36,6 +36,8 @@ import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.AndroidBug5497Workaround;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.DrawableProvider;
+import com.zhiyicx.common.utils.FileUtils;
+import com.zhiyicx.common.utils.SharePreferenceUtils;
 import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.common.utils.UIUtils;
@@ -52,12 +54,12 @@ import com.zhiyicx.thinksnsplus.data.beans.SendDynamicDataBean;
 import com.zhiyicx.thinksnsplus.data.beans.SendDynamicDataBeanV2;
 import com.zhiyicx.thinksnsplus.modules.photopicker.PhotoViewActivity;
 import com.zhiyicx.thinksnsplus.modules.shortvideo.cover.CoverActivity;
-import com.zhiyicx.thinksnsplus.modules.shortvideo.record.RecordActivity;
 import com.zhiyicx.thinksnsplus.modules.shortvideo.videostore.VideoSelectActivity;
 import com.zhiyicx.thinksnsplus.widget.UserInfoInroduceInputView;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -289,8 +291,9 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
         }
         initSelectMoney(mSelectMoney);
         mCustomMoney.setText(mPresenter.getGoldName());
-    }
 
+
+    }
 
     @Override
     public double getTollMoney() {
@@ -403,19 +406,51 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
         if (mCanclePopupWindow != null) {
             return;
         }
-        mCanclePopupWindow = ActionPopupWindow.builder()
-                .item1Str(getString(R.string.dynamic_send_cancel_hint))
-                .item2Str(getString(R.string.determine))
-                .bottomStr(getString(R.string.cancel))
-                .isOutsideTouch(true)
-                .isFocus(true)
-                .backgroundAlpha(0.8f)
-                .with(getActivity())
-                .item2ClickListener(() -> {
-                    mCanclePopupWindow.hide();
-                    getActivity().finish();
-                })
-                .bottomClickListener(() -> mCanclePopupWindow.hide()).build();
+
+        if (dynamicType == SendDynamicDataBean.VIDEO_TEXT_DYNAMIC) {
+            mCanclePopupWindow = ActionPopupWindow.builder()
+                    .item1Str(getString(R.string.info_publish_hint))
+                    .desStr(getString(R.string.video_dynamic_send_cancel_hint))
+                    .item2Str(getString(R.string.save))
+                    .bottomStr(getString(R.string.drop))
+                    .isOutsideTouch(true)
+                    .isFocus(true)
+                    .backgroundAlpha(CustomPopupWindow.POPUPWINDOW_ALPHA)
+                    .with(getActivity())
+                    .item2ClickListener(() -> {
+                        if (FileUtils.isFileExists(mSendDynamicDataBean.getVideoInfo().getPath())) {
+                            String content = mEtDynamicContent.getInputContent();
+                            if (TextUtils.isEmpty(content)) {
+                                content = SharePreferenceUtils.VIDEO_DYNAMIC;
+                            }
+                            mSendDynamicDataBean.getVideoInfo().setDynamicContent(content);
+                            SharePreferenceUtils.saveObject(mActivity, SharePreferenceUtils.VIDEO_DYNAMIC, mSendDynamicDataBean);
+                        }
+                        mCanclePopupWindow.hide();
+                        mActivity.finish();
+                    })
+                    .bottomClickListener(() -> {
+                        SharePreferenceUtils.remove(mActivity, SharePreferenceUtils.VIDEO_DYNAMIC);
+                        mCanclePopupWindow.hide();
+                        mActivity.finish();
+                    })
+                    .build();
+        } else {
+            mCanclePopupWindow = ActionPopupWindow.builder()
+                    .item1Str(getString(R.string.dynamic_send_cancel_hint))
+                    .item2Str(getString(R.string.determine))
+                    .bottomStr(getString(R.string.cancel))
+                    .isOutsideTouch(true)
+                    .isFocus(true)
+                    .backgroundAlpha(0.8f)
+                    .with(getActivity())
+                    .item2ClickListener(() -> {
+                        mCanclePopupWindow.hide();
+                        getActivity().finish();
+                    })
+                    .bottomClickListener(() -> mCanclePopupWindow.hide()).build();
+        }
+
     }
 
     /**
@@ -516,7 +551,6 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
         } else {
             mPresenter.sendDynamicV2(packageDynamicData());
         }
-
     }
 
     /**
@@ -665,6 +699,7 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                 video.setWidth(videoInfo.getWidth());
                 video.setUrl(videoInfo.getPath());
                 dynamicDetailBeanV2.setVideo(video);
+                SharePreferenceUtils.remove(mActivity, SharePreferenceUtils.VIDEO_DYNAMIC);
             }
         }
 
@@ -858,6 +893,7 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
             mSendDynamicDataBean = bundle.getParcelable(SendDynamicActivity
                     .SEND_DYNAMIC_DATA);
             dynamicType = mSendDynamicDataBean.getDynamicType();
+            restoreVideoDraft(mSendDynamicDataBean);
             List<ImageBean> originPhotos = mSendDynamicDataBean.getDynamicPrePhotos();
             if (originPhotos != null) {
                 selectedPhotos = new ArrayList<>(MAX_PHOTOS);
@@ -886,6 +922,18 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                 break;
             default:
         }
+    }
+
+    private void restoreVideoDraft(SendDynamicDataBean sendDynamicDataBean) {
+        VideoInfo videoInfo = sendDynamicDataBean.getVideoInfo();
+        if (videoInfo != null && !TextUtils.isEmpty(videoInfo.getDynamicContent())) {
+            String content = videoInfo.getDynamicContent();
+            if (SharePreferenceUtils.VIDEO_DYNAMIC.equals(content)) {
+                return;
+            }
+            mEtDynamicContent.setText(content);
+        }
+
     }
 
     /**
