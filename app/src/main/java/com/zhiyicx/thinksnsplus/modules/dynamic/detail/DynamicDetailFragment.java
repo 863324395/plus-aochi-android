@@ -438,6 +438,10 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
                 RewardType.DYNAMIC, mPresenter.getGoldName());
     }
 
+    @Override
+    public void onBackPressed() {
+
+    }
 
     /**
      * 设置底部工具栏UI

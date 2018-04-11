@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
@@ -21,9 +22,14 @@ import com.bumptech.glide.BitmapRequestBuilder;
 import com.bumptech.glide.GifRequestBuilder;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.model.GlideUrl;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.klinker.android.link_builder.Link;
 import com.klinker.android.link_builder.LinkMetadata;
 import com.klinker.android.link_builder.NetUrlHandleBean;
+import com.zhiyicx.common.utils.FastBlur;
 import com.zhiyicx.thinksnsplus.modules.shortvideo.helper.ZhiyiVideoView;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.config.MarkdownConfig;
@@ -176,7 +182,6 @@ public class DynamicDetailHeader {
             if (video != null) {
                 ZhiyiVideoView videoView = new ZhiyiVideoView(mContext);
                 mPhotoContainer.addView(videoView);
-                videoView.setId(cn.jzvd.R.id.jz_fullscreen_id);
 
                 int width = picWidth;
                 int height = (video.getHeight() * picWidth / video.getWidth());
@@ -190,13 +195,44 @@ public class DynamicDetailHeader {
                 String videoUrl = String.format(ApiConfig.APP_DOMAIN + ApiConfig.FILE_PATH,
                         dynamicBean.getVideo().getVideo_id());
                 videoView.setUp(videoUrl, JZVideoPlayerStandard.SCREEN_WINDOW_LIST);
+                videoView.positionInList = 0;
+                if (JZVideoPlayerManager.getFirstFloor() != null) {
+                    videoView.setState(state);
+                    videoView.positionInList = JZVideoPlayerManager.getFirstFloor().positionInList;
+                    videoView.addTextureView();
+                    JZVideoPlayerManager.setFirstFloor(videoView);
+                    videoView.startProgressTimer();
+                    if (state == ZhiyiVideoView.CURRENT_STATE_PAUSE) {
+                        videoView.startButton.callOnClick();
+                    }
+                }
+                Glide.with(mContext)
+                        .load(video.getGlideUrl())
+                        .placeholder(R.drawable.shape_default_image)
+                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+                        .error(R.drawable.shape_default_image)
+                        .listener(new RequestListener<GlideUrl, GlideDrawable>() {
+                            @Override
+                            public boolean onException(Exception e, GlideUrl model,
+                                                       Target<GlideDrawable> target, boolean
+                                                               isFirstResource) {
+                                return false;
+                            }
 
-//                videoView.setState(state);
-//                videoView.positionInList = 0;
-//                videoView.addTextureView();
-//                JZVideoPlayerManager.setSecondFloor(videoView);
-//                videoView.startProgressTimer();
-                Glide.with(mContext).load(video.getGlideUrl()).into(videoView.thumbImageView);
+                            @Override
+                            public boolean onResourceReady(GlideDrawable resource, GlideUrl
+                                    model, Target<GlideDrawable> target, boolean
+                                                                   isFromMemoryCache, boolean
+                                                                   isFirstResource) {
+                                Bitmap bitmap = FastBlur.blurBitmap(ConvertUtils.drawable2Bitmap
+                                        (resource), resource.getIntrinsicWidth(), resource
+                                        .getIntrinsicHeight());
+                                videoView.setBackground(new BitmapDrawable(mContext.getResources
+                                        (), bitmap));
+                                return false;
+                            }
+                        })
+                        .into(videoView.thumbImageView);
                 return;
             }
             for (int i = 0; i < photoList.size(); i++) {

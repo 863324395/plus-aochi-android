@@ -1176,17 +1176,15 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
 
         }
 
-//        if (playView != null && JZVideoPlayerManager.getFirstFloor() != null) {
-//            //&& playView.currentState > 0
-////            if (playView.currentState == ZhiyiVideoView.CURRENT_STATE_PLAYING) {
-////                playView.startButton.callOnClick();
-////            }
-//
-//            playView.textureViewContainer.removeView(JZMediaManager.textureView);
-//            bundle.putInt(DYNAMIC_VIDEO_STATE, playView.currentState);
-//            playView.onStateNormal();
-//            playView.CLICK_QUIT_FULLSCREEN_TIME = System.currentTimeMillis();
-//        }
+        if (playView != null && JZVideoPlayerManager.getFirstFloor() != null) {
+            if (playView.currentState == ZhiyiVideoView.CURRENT_STATE_PLAYING) {
+                playView.startButton.callOnClick();
+            }
+            bundle.putInt(DYNAMIC_VIDEO_STATE, playView.currentState);
+            playView.textureViewContainer.removeView(JZMediaManager.textureView);
+            playView.onStateNormal();
+            playView.CLICK_QUIT_FULLSCREEN_TIME = System.currentTimeMillis();
+        }
 
         intent.putExtras(bundle);
         startActivity(intent);

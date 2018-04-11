@@ -268,7 +268,7 @@ public class ZhiyiVideoView extends JZVideoPlayerStandard {
 
     @Override
     public void startWindowFullscreen() {
-        LogUtils.i(TAG, "startWindowFullscreen " + " [" + this.hashCode() + "] ");
+        LogUtils.d("startWindowFullscreen:::" + " [" + this.hashCode() + "] ");
         hideSupportActionBar(getContext());
         //.getWindow().getDecorView();
         ViewGroup vp = (ViewGroup) (JZUtils.scanForActivity(getContext()))
@@ -294,12 +294,14 @@ public class ZhiyiVideoView extends JZVideoPlayerStandard {
             jzVideoPlayer.setState(currentState);
             jzVideoPlayer.positionInList = this.positionInList;
             jzVideoPlayer.addTextureView();
+            JZVideoPlayer firstVideoView=JZVideoPlayerManager.getFirstFloor();
+            jzVideoPlayer.setBackground(firstVideoView.getBackground());
             JZVideoPlayerManager.setSecondFloor(jzVideoPlayer);
 //            final Animation ra = AnimationUtils.loadAnimation(getContext(), R.anim
 // .start_fullscreen);
 //            jzVideoPlayer.setAnimation(ra);
 
-            int orientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE;
+            int orientation;
             if (JZMediaManager.instance().currentVideoWidth > JZMediaManager.instance()
                     .currentVideoHeight) {
                 // 横屏
@@ -317,38 +319,6 @@ public class ZhiyiVideoView extends JZVideoPlayerStandard {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    public static boolean detailBackPress() {
-        Log.i(TAG, "detailBackPress");
-        if (JZVideoPlayerManager.getSecondFloor() != null) {
-            CLICK_QUIT_FULLSCREEN_TIME = System.currentTimeMillis();
-            if (JZUtils.dataSourceObjectsContainsUri(JZVideoPlayerManager.getFirstFloor().dataSourceObjects, JZMediaManager.getCurrentDataSource())) {
-                JZVideoPlayer jzVideoPlayer = JZVideoPlayerManager.getSecondFloor();
-                JZVideoPlayer firstFloor = JZVideoPlayerManager.getFirstFloor();
-                if (jzVideoPlayer.currentScreen == JZVideoPlayerStandard.SCREEN_WINDOW_FULLSCREEN) {
-                    return true;
-                }
-//                jzVideoPlayer.textureViewContainer.removeView(JZMediaManager.textureView);
-                jzVideoPlayer.positionInList = firstFloor.positionInList;
-                JZVideoPlayerManager.setFirstFloor(jzVideoPlayer);
-                JZVideoPlayerManager.setSecondFloor(null);
-
-
-//                JZVideoPlayerManager.getFirstFloor().playOnThisJzvd();
-                return false;
-            } else {
-                quitFullscreenOrTinyWindow();
-            }
-            return true;
-        } else if (JZVideoPlayerManager.getFirstFloor() != null &&
-                (JZVideoPlayerManager.getFirstFloor().currentScreen == SCREEN_WINDOW_FULLSCREEN ||
-                        JZVideoPlayerManager.getFirstFloor().currentScreen == SCREEN_WINDOW_TINY)) {//以前我总想把这两个判断写到一起，这分明是两个独立是逻辑
-            CLICK_QUIT_FULLSCREEN_TIME = System.currentTimeMillis();
-            quitFullscreenOrTinyWindow();
-            return true;
-        }
-        return false;
     }
 
     @Override
