@@ -1194,18 +1194,14 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
 
     @Override
     public void onDestroyView() {
+        dismissPop(mDeletCommentPopWindow);
+        dismissPop(mOtherDynamicPopWindow);
+        dismissPop(mMyDynamicPopWindow);
+        dismissPop(mReSendCommentPopWindow);
+        dismissPop(mReSendDynamicPopWindow);
+        dismissPop(mPayImagePopWindow);
         super.onDestroyView();
-        releasePop(mDeletCommentPopWindow);
-        releasePop(mOtherDynamicPopWindow);
-        releasePop(mMyDynamicPopWindow);
-        releasePop(mReSendCommentPopWindow);
-        releasePop(mReSendDynamicPopWindow);
-        releasePop(mPayImagePopWindow);
+
     }
 
-    public void releasePop(PopupWindow popupWindow) {
-        if (popupWindow != null && popupWindow.isShowing()) {
-            popupWindow.dismiss();
-        }
-    }
 }

@@ -258,6 +258,7 @@ public class SelectDynamicTypeFragment extends TSFragment<SelectDynamicTypeContr
                                 }
                                 closeActivity();
                             } else {
+                                showSnackWarningMessage(getString(R.string.please_open_camera_and_mic_permisssion));
 
                             }
                         });
