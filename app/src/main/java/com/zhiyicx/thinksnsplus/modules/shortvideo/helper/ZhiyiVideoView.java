@@ -7,6 +7,8 @@ import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.media.AudioManager;
 import android.util.AttributeSet;
+import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -16,13 +18,17 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.tym.shortvideo.recordcore.VideoListManager;
 import com.umeng.socialize.bean.SHARE_MEDIA;
+import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.log.LogUtils;
+import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
 
 import java.lang.reflect.Constructor;
 
 import cn.jzvd.JZMediaManager;
+import cn.jzvd.JZUserAction;
 import cn.jzvd.JZUserActionStandard;
 import cn.jzvd.JZUtils;
 import cn.jzvd.JZVideoPlayer;
@@ -53,6 +59,8 @@ public class ZhiyiVideoView extends JZVideoPlayerStandard {
     public TextView mShareToWeiBo;
 
     public TextView mShareTextView;
+
+    public ActionPopupWindow mWarnPopupWindow;
 
     public ZhiyiVideoView(Context context) {
         super(context);
@@ -160,6 +168,7 @@ public class ZhiyiVideoView extends JZVideoPlayerStandard {
     public void changeUiToPlayingShow() {
         super.changeUiToPlayingShow();
         mShareImageView.setVisibility(GONE);
+        mDefaultStartImageView.setVisibility(GONE);
         mShareLineLinearLayout.setVisibility(GONE);
         mShareLinearLayout.setVisibility(GONE);
     }
@@ -168,6 +177,7 @@ public class ZhiyiVideoView extends JZVideoPlayerStandard {
     public void changeUiToPlayingClear() {
         super.changeUiToPlayingClear();
         mShareImageView.setVisibility(GONE);
+        mDefaultStartImageView.setVisibility(GONE);
         mShareLineLinearLayout.setVisibility(GONE);
         mShareLinearLayout.setVisibility(GONE);
     }
@@ -176,6 +186,7 @@ public class ZhiyiVideoView extends JZVideoPlayerStandard {
     public void changeUiToPauseShow() {
         super.changeUiToPauseShow();
         mShareImageView.setVisibility(GONE);
+        mDefaultStartImageView.setVisibility(GONE);
         mShareLineLinearLayout.setVisibility(GONE);
         mShareLinearLayout.setVisibility(GONE);
     }
@@ -183,6 +194,7 @@ public class ZhiyiVideoView extends JZVideoPlayerStandard {
     @Override
     public void changeUiToPauseClear() {
         super.changeUiToPauseClear();
+        mDefaultStartImageView.setVisibility(GONE);
         mShareImageView.setVisibility(GONE);
         mShareLineLinearLayout.setVisibility(GONE);
         mShareLinearLayout.setVisibility(GONE);
@@ -191,6 +203,7 @@ public class ZhiyiVideoView extends JZVideoPlayerStandard {
     @Override
     public void changeUiToError() {
         super.changeUiToError();
+        mDefaultStartImageView.setVisibility(GONE);
         mShareImageView.setVisibility(GONE);
         mShareLineLinearLayout.setVisibility(GONE);
         mShareLinearLayout.setVisibility(GONE);
@@ -199,6 +212,7 @@ public class ZhiyiVideoView extends JZVideoPlayerStandard {
     @Override
     public void changeUiToComplete() {
         super.changeUiToComplete();
+        mDefaultStartImageView.setVisibility(GONE);
         switch (currentScreen) {
             case SCREEN_WINDOW_NORMAL:
             case SCREEN_WINDOW_LIST:
@@ -232,11 +246,13 @@ public class ZhiyiVideoView extends JZVideoPlayerStandard {
             startButton.setImageResource(R.mipmap.ico_video_replay);
             replayTextView.setVisibility(VISIBLE);
         } else {
-            startButton.setVisibility(GONE);
-            if (currentScreen == SCREEN_WINDOW_FULLSCREEN){
+            if (currentState != CURRENT_STATE_PAUSE) {
+                startButton.setVisibility(GONE);
+            }
+            if (currentScreen == SCREEN_WINDOW_FULLSCREEN) {
                 startButton.setImageResource(R.mipmap.ico_video_play_fullscreen);
                 mDefaultStartImageView.setImageResource(R.mipmap.ico_video_play_fullscreen);
-            }else{
+            } else {
                 startButton.setImageResource(R.mipmap.ico_video_play_list);
                 mDefaultStartImageView.setImageResource(R.mipmap.ico_video_play_list);
             }
@@ -310,24 +326,63 @@ public class ZhiyiVideoView extends JZVideoPlayerStandard {
         }
     }
 
+    public static boolean detailBackPress() {
+        Log.i(TAG, "detailBackPress");
+        if (JZVideoPlayerManager.getSecondFloor() != null) {
+            CLICK_QUIT_FULLSCREEN_TIME = System.currentTimeMillis();
+            if (JZUtils.dataSourceObjectsContainsUri(JZVideoPlayerManager.getFirstFloor().dataSourceObjects, JZMediaManager.getCurrentDataSource())) {
+                JZVideoPlayer jzVideoPlayer = JZVideoPlayerManager.getSecondFloor();
+                if (jzVideoPlayer.currentScreen == JZVideoPlayerStandard.SCREEN_WINDOW_FULLSCREEN) {
+                    return true;
+                }
+                jzVideoPlayer.textureViewContainer.removeView(JZMediaManager.textureView);
+                jzVideoPlayer.onStateNormal();
+                JZVideoPlayerManager.getFirstFloor().playOnThisJzvd();
+                return false;
+            } else {
+                quitFullscreenOrTinyWindow();
+            }
+            return true;
+        } else if (JZVideoPlayerManager.getFirstFloor() != null &&
+                (JZVideoPlayerManager.getFirstFloor().currentScreen == SCREEN_WINDOW_FULLSCREEN ||
+                        JZVideoPlayerManager.getFirstFloor().currentScreen == SCREEN_WINDOW_TINY)) {//以前我总想把这两个判断写到一起，这分明是两个独立是逻辑
+            CLICK_QUIT_FULLSCREEN_TIME = System.currentTimeMillis();
+            quitFullscreenOrTinyWindow();
+            return true;
+        }
+        return false;
+    }
+
     @Override
     public void showWifiDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        builder.setMessage(getResources().getString(R.string.tips_not_wifi));
-        builder.setPositiveButton(getResources().getString(R.string.tips_not_wifi_confirm),
-                (dialog, which) -> {
-                    dialog.dismiss();
-                    onEvent(JZUserActionStandard.ON_CLICK_START_WIFIDIALOG);
-                    startVideo();
-                    WIFI_TIP_DIALOG_SHOWED = true;
-                });
-        builder.setNegativeButton(getResources().getString(R.string.tips_not_wifi_cancel),
-                (dialog, which) -> {
-                    dialog.dismiss();
-                    clearFloatScreen();
-                });
-        builder.setOnCancelListener(dialog -> dialog.dismiss());
-        builder.create().show();
+        if (JZVideoPlayerManager.getCurrentJzvd() != null) {
+            if (JZMediaManager.isPlaying()) {
+                JZVideoPlayerManager.getCurrentJzvd().startButton.callOnClick();
+            }
+        }
+        if (mWarnPopupWindow == null) {
+            mWarnPopupWindow = ActionPopupWindow.builder()
+                    .item1Str(getResources().getString(R.string.info_publish_hint))
+                    .desStr(getResources().getString(R.string.tips_not_wifi))
+                    .item2Str(getResources().getString(R.string.keepon))
+                    .bottomStr(getResources().getString(R.string.giveup))
+                    .isOutsideTouch(true)
+                    .isFocus(true)
+                    .backgroundAlpha(CustomPopupWindow.POPUPWINDOW_ALPHA)
+                    .with(JZUtils.scanForActivity(getContext()))
+                    .item2ClickListener(() -> {
+                        mWarnPopupWindow.dismiss();
+                        onEvent(JZUserActionStandard.ON_CLICK_START_WIFIDIALOG);
+                        startVideo();
+                        WIFI_TIP_DIALOG_SHOWED = true;
+                    })
+                    .bottomClickListener(() -> {
+                        mWarnPopupWindow.dismiss();
+                        clearFloatScreen();
+                    })
+                    .build();
+        }
+        mWarnPopupWindow.show();
     }
 
     @Override

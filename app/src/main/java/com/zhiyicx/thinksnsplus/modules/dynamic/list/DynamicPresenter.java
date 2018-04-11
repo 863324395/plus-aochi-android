@@ -55,6 +55,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import cn.jzvd.JZMediaManager;
+import cn.jzvd.JZVideoPlayerManager;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -757,6 +759,14 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.View>
     public void deleteDynamic(DynamicDetailBeanV2 dynamicBean) {
         deleteDynamic(dynamicBean, mRootView.getListDatas().indexOf(dynamicBean));
         LogUtils.d(EventBusTagConfig.DYNAMIC_LIST_DELETE_UPDATE);
+    }
+
+    @Subscriber(tag = EventBusTagConfig.EVENT_NETSTATE_CHANGE)
+    public void netstateChange(boolean hasWifi) {
+        if (JZVideoPlayerManager.getCurrentJzvd() != null && JZMediaManager.isPlaying() && !hasWifi) {
+            JZVideoPlayerManager.getCurrentJzvd().startButton.callOnClick();
+            mRootView.showSnackErrorMessage("no wifi");
+        }
     }
 
 }

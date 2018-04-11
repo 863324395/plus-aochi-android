@@ -7,6 +7,9 @@ import com.zhiyicx.baseproject.impl.share.ShareModule;
 import com.zhiyicx.baseproject.impl.share.UmengSharePolicyImpl;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.modules.shortvideo.helper.ZhiyiVideoView;
+
+import cn.jzvd.JZVideoPlayer;
 
 public class DynamicDetailActivity extends TSActivity<DynamicDetailPresenter, DynamicDetailFragment> {
 
@@ -23,6 +26,14 @@ public class DynamicDetailActivity extends TSActivity<DynamicDetailPresenter, Dy
                 .shareModule(new ShareModule(DynamicDetailActivity.this))
                 .dynamicDetailPresenterModule(new DynamicDetailPresenterModule(mContanierFragment))
                 .build().inject(this);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (ZhiyiVideoView.detailBackPress()) {
+            return;
+        }
+        super.onBackPressed();
     }
 
     @Override

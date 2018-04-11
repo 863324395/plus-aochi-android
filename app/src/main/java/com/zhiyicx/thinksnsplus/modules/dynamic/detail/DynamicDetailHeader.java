@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.modules.dynamic.detail;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -57,6 +58,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cn.jzvd.JZMediaManager;
+import cn.jzvd.JZUtils;
+import cn.jzvd.JZVideoPlayerManager;
 import cn.jzvd.JZVideoPlayerStandard;
 
 /**
@@ -173,7 +176,7 @@ public class DynamicDetailHeader {
             if (video != null) {
                 ZhiyiVideoView videoView = new ZhiyiVideoView(mContext);
                 mPhotoContainer.addView(videoView);
-                videoView.setId(R.id.detail_videoplayer);
+                videoView.setId(cn.jzvd.R.id.jz_fullscreen_id);
 
                 int width = picWidth;
                 int height = (video.getHeight() * picWidth / video.getWidth());
@@ -187,17 +190,13 @@ public class DynamicDetailHeader {
                 String videoUrl = String.format(ApiConfig.APP_DOMAIN + ApiConfig.FILE_PATH,
                         dynamicBean.getVideo().getVideo_id());
                 videoView.setUp(videoUrl, JZVideoPlayerStandard.SCREEN_WINDOW_LIST);
-                if (state > 0) {
-                    videoView.addTextureView();
-                    videoView.currentState = state;
-                    if (state == ZhiyiVideoView.CURRENT_STATE_PAUSE) {
-                        videoView.startButton.callOnClick();
-                    }
-                }
-//                JZVideoPlayerManager.setSecondFloor(videoView);
 
-                Glide.with(mContext).load(video.getGlideUrl()).into(videoView.thumbImageView);
+                videoView.setState(state);
                 videoView.positionInList = 0;
+                videoView.addTextureView();
+                JZVideoPlayerManager.setSecondFloor(videoView);
+                videoView.startProgressTimer();
+                Glide.with(mContext).load(video.getGlideUrl()).into(videoView.thumbImageView);
                 return;
             }
             for (int i = 0; i < photoList.size(); i++) {

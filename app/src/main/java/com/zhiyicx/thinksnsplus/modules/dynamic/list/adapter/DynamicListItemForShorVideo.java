@@ -19,6 +19,10 @@ import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhiyicx.thinksnsplus.modules.shortvideo.helper.ZhiyiVideoView;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
+import cn.jzvd.JZMediaManager;
+import cn.jzvd.JZUtils;
+import cn.jzvd.JZVideoPlayer;
+import cn.jzvd.JZVideoPlayerManager;
 import cn.jzvd.JZVideoPlayerStandard;
 
 /**
@@ -148,6 +152,18 @@ public class DynamicListItemForShorVideo extends DynamicListBaseItem {
 
         }
         view.setUp(videoUrl, JZVideoPlayerStandard.SCREEN_WINDOW_LIST);
+        if (JZVideoPlayerManager.getFirstFloor() != null && JZVideoPlayerManager.getFirstFloor().positionInList == positon
+                && JZUtils.dataSourceObjectsContainsUri(JZVideoPlayerManager.getFirstFloor().dataSourceObjects, JZMediaManager.getCurrentDataSource())) {
+            JZVideoPlayer first = JZVideoPlayerManager.getFirstFloor();
+            view.setState(first.currentState);
+            view.positionInList = positon;
+            first.textureViewContainer.removeView(JZMediaManager.textureView);
+            first.onStateNormal();
+            view.addTextureView();
+            JZVideoPlayerManager.setSecondFloor(view);
+//            JZVideoPlayerManager.setFirstFloor(view);
+            view.startProgressTimer();
+        }
         view.positionInList = positon;
     }
 

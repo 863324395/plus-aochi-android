@@ -9,6 +9,8 @@ import android.net.NetworkInfo;
 
 import org.simple.eventbus.EventBus;
 
+import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_NETSTATE_CHANGE;
+
 /**
  * Created by jungle on 16/5/21.
  * com.zhiyicx.zhibo.app.receiver
@@ -37,9 +39,11 @@ public class NetChangeReceiver extends BroadcastReceiver {
                 NetworkInfo networkInfo = connMgr.getNetworkInfo(network);
                 if ("WIFI".equals(networkInfo.getTypeName())) {
                     hasWifi = networkInfo.isConnected();
+                } else {
+                    hasWifi = false;
                 }
             }
         }
-        EventBus.getDefault().post(hasWifi);
+        EventBus.getDefault().post(hasWifi, EVENT_NETSTATE_CHANGE);
     }
 }

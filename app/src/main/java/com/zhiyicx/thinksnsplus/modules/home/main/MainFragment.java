@@ -8,7 +8,6 @@ import android.view.View;
 import android.widget.RelativeLayout;
 
 import com.zhiyicx.baseproject.base.ITSListView;
-import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.base.TSViewPagerFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.config.TouristConfig;
@@ -21,7 +20,6 @@ import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.DynamicContract;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.DynamicFragment;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -29,6 +27,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import butterknife.BindView;
+import cn.jzvd.JZVideoPlayerManager;
 
 /**
  * @Describe 主页 MainFragment
@@ -61,6 +60,21 @@ public class MainFragment extends TSViewPagerFragment implements DynamicFragment
         Bundle args = new Bundle();
         fragment.setArguments(args);
         return fragment;
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (JZVideoPlayerManager.getCurrentJzvd() != null) {
+            JZVideoPlayerManager.getCurrentJzvd().startButton.callOnClick();
+        }
+        if (mFragmentList != null) {
+            for (Object fragment : mFragmentList) {
+
+            }
+        }
+
+
     }
 
     @Override

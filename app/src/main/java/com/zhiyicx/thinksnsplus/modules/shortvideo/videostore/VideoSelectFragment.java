@@ -44,6 +44,8 @@ public class VideoSelectFragment extends TSListFragment {
 
     private ActionPopupWindow mPopWindow;
 
+    private List<VideoInfo> copyData;
+
     @Override
     protected boolean isLoadingMoreEnable() {
         return false;
@@ -72,20 +74,21 @@ public class VideoSelectFragment extends TSListFragment {
     @Override
     protected void initData() {
         super.initData();
-
+        copyData = new ArrayList<>();
         mRvList.setOverScrollMode(View.OVER_SCROLL_NEVER);
         mRvList.setPadding(20, 20, 0, 0);
         mRvList.setBackgroundColor(0xffffffff);
 
         TrimVideoUtil.getAllVideoFiles(mActivity, (videoInfos, integer) -> {
             mActivity.runOnUiThread(() -> {
+                copyData.addAll(videoInfos);
+
                 mListDatas.clear();
                 VideoInfo videoInfo = new VideoInfo();
                 videoInfo.setPath(null);
                 mListDatas.add(videoInfo);
-                mListDatas.addAll(videoInfos);
+                mListDatas.addAll(copyData);
                 refreshData();
-                mRefreshlayout.finishRefresh();
                 closeLoadingView();
             });
         });

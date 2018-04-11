@@ -14,6 +14,7 @@ import com.zhiyicx.thinksnsplus.data.beans.JpushMessageBean;
 import com.zhiyicx.thinksnsplus.modules.shortvideo.helper.NetChangeReceiver;
 
 import cn.jzvd.JZVideoPlayer;
+import cn.jzvd.JZVideoPlayerManager;
 
 
 /**
@@ -51,10 +52,10 @@ public class HomeActivity extends TSActivity {
         super.onResume();
         if (mNetChangeReceiver == null) {
             mNetChangeReceiver = new NetChangeReceiver();
+            IntentFilter filter = new IntentFilter();
+            filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
+            registerReceiver(mNetChangeReceiver, filter);
         }
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
-        registerReceiver(mNetChangeReceiver, filter);
     }
 
     @Override

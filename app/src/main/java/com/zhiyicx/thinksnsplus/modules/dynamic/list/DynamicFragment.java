@@ -80,6 +80,7 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import cn.jzvd.JZMediaManager;
 import cn.jzvd.JZVideoPlayer;
+import cn.jzvd.JZVideoPlayerManager;
 import cn.jzvd.JZVideoPlayerStandard;
 import rx.Observable;
 import rx.Subscriber;
@@ -1173,12 +1174,16 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
         } catch (Exception ignore) {
 
         }
-        if (playView != null && playView.currentState > 0) {
-            if (playView.currentState == ZhiyiVideoView.CURRENT_STATE_PLAYING) {
-                playView.startButton.callOnClick();
-            }
+        int state=JZVideoPlayerManager.getFirstFloor().currentState;
+        boolean  same=JZVideoPlayerManager.getFirstFloor().equals(playView);
+        if (playView != null ) {//&& playView.currentState > 0
+//            if (playView.currentState == ZhiyiVideoView.CURRENT_STATE_PLAYING) {
+//                playView.startButton.callOnClick();
+//            }
             playView.textureViewContainer.removeView(JZMediaManager.textureView);
             bundle.putInt(DYNAMIC_VIDEO_STATE, playView.currentState);
+            playView.onStateNormal();
+            playView.CLICK_QUIT_FULLSCREEN_TIME = System.currentTimeMillis();
         }
 
         intent.putExtras(bundle);

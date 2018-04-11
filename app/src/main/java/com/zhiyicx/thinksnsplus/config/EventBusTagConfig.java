@@ -248,4 +248,6 @@ public class EventBusTagConfig {
     public static final String EVENT_NEARBY_LOCATION = "nearby_location";
     public static final String EVENT_NEARBY_LOCATION_UPDATE = "nearby_location_update";
 
+    public static final String EVENT_NETSTATE_CHANGE = "netstate_change";
+
 }
