@@ -7,6 +7,9 @@ public static final int *;
 }
 -keep class com.zhiyicx.baseproject.** { *; }
 -keep interface  com.zhiyicx.baseproject.** { *; }
+################ shortvideo ###############
+-keep class com.tym.shortvideo.** { *; }
+-keep interface  com.tym.shortvideo.** { *; }
 
 ################common###############
 -keep public class com.zhiyicx.common.R$*{

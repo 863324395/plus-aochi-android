@@ -79,7 +79,7 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
     /**
      * 加载
      */
-    private View mCenterLoadingView;
+    protected View mCenterLoadingView;
     /**
      * 头部左边的刷新控件
      */

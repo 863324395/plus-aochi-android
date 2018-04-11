@@ -80,6 +80,7 @@ public class VideoSelectFragment extends TSListFragment {
         mRvList.setBackgroundColor(0xffffffff);
 
         TrimVideoUtil.getAllVideoFiles(mActivity, (videoInfos, integer) -> {
+
             mActivity.runOnUiThread(() -> {
                 copyData.addAll(videoInfos);
 
@@ -89,7 +90,9 @@ public class VideoSelectFragment extends TSListFragment {
                 mListDatas.add(videoInfo);
                 mListDatas.addAll(copyData);
                 refreshData();
-                closeLoadingView();
+                if (mCenterLoadingView != null) {
+                    mCenterLoadingView.setVisibility(View.GONE);
+                }
             });
         });
     }

@@ -1,14 +1,11 @@
 package com.zhiyicx.thinksnsplus.modules.shortvideo.helper;
 
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.media.AudioManager;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -18,7 +15,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.tym.shortvideo.recordcore.VideoListManager;
 import com.umeng.socialize.bean.SHARE_MEDIA;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.log.LogUtils;
@@ -28,14 +24,11 @@ import com.zhiyicx.thinksnsplus.R;
 import java.lang.reflect.Constructor;
 
 import cn.jzvd.JZMediaManager;
-import cn.jzvd.JZUserAction;
 import cn.jzvd.JZUserActionStandard;
 import cn.jzvd.JZUtils;
 import cn.jzvd.JZVideoPlayer;
 import cn.jzvd.JZVideoPlayerManager;
 import cn.jzvd.JZVideoPlayerStandard;
-
-import static com.umeng.socialize.bean.SHARE_MEDIA.QQ;
 
 /**
  * @Author Jliuer
@@ -332,12 +325,17 @@ public class ZhiyiVideoView extends JZVideoPlayerStandard {
             CLICK_QUIT_FULLSCREEN_TIME = System.currentTimeMillis();
             if (JZUtils.dataSourceObjectsContainsUri(JZVideoPlayerManager.getFirstFloor().dataSourceObjects, JZMediaManager.getCurrentDataSource())) {
                 JZVideoPlayer jzVideoPlayer = JZVideoPlayerManager.getSecondFloor();
+                JZVideoPlayer firstFloor = JZVideoPlayerManager.getFirstFloor();
                 if (jzVideoPlayer.currentScreen == JZVideoPlayerStandard.SCREEN_WINDOW_FULLSCREEN) {
                     return true;
                 }
-                jzVideoPlayer.textureViewContainer.removeView(JZMediaManager.textureView);
-                jzVideoPlayer.onStateNormal();
-                JZVideoPlayerManager.getFirstFloor().playOnThisJzvd();
+//                jzVideoPlayer.textureViewContainer.removeView(JZMediaManager.textureView);
+                jzVideoPlayer.positionInList = firstFloor.positionInList;
+                JZVideoPlayerManager.setFirstFloor(jzVideoPlayer);
+                JZVideoPlayerManager.setSecondFloor(null);
+
+
+//                JZVideoPlayerManager.getFirstFloor().playOnThisJzvd();
                 return false;
             } else {
                 quitFullscreenOrTinyWindow();

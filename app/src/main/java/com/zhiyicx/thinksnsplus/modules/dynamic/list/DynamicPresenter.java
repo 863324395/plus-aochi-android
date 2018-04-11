@@ -764,8 +764,7 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.View>
     @Subscriber(tag = EventBusTagConfig.EVENT_NETSTATE_CHANGE)
     public void netstateChange(boolean hasWifi) {
         if (JZVideoPlayerManager.getCurrentJzvd() != null && JZMediaManager.isPlaying() && !hasWifi) {
-            JZVideoPlayerManager.getCurrentJzvd().startButton.callOnClick();
-            mRootView.showSnackErrorMessage("no wifi");
+            JZVideoPlayerManager.getCurrentJzvd().showWifiDialog();
         }
     }
 

@@ -298,10 +298,10 @@ public class TrimVideoUtil {
                                                            continue;
                                                        }
                                                        videos.add(video);
-                                                       if (videos.size() >= 3) {
-                                                           callback.onSingleCallback(new ArrayList<>(videos), 3);
-                                                           videos.clear();
-                                                       }
+//                                                       if (videos.size() >= 3) {
+//                                                           callback.onSingleCallback(new ArrayList<>(videos), 3);
+//                                                           videos.clear();
+//                                                       }
 
                                                    }
                                                    cursor.close();
