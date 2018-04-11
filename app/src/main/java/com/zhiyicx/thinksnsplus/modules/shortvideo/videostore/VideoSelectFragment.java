@@ -101,10 +101,13 @@ public class VideoSelectFragment extends TSListFragment {
             @Override
             public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
                 VideoInfo videoInfo = (VideoInfo) mListDatas.get(position);
+
                 if (TextUtils.isEmpty(videoInfo.getPath())) {
+                    // 自己去拍
                     startActivity(new Intent(mActivity, RecordActivity.class));
                     mActivity.finish();
                 } else {
+                    // 选择列表
                     initReSendDynamicPopupWindow(videoInfo);
                 }
             }

@@ -46,6 +46,7 @@ import com.zhiyicx.common.utils.SharePreferenceUtils;
 import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
+import com.zhiyicx.thinksnsplus.BuildConfig;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.modules.shortvideo.adapter.EffectFilterAdapter;
 import com.zhiyicx.thinksnsplus.modules.shortvideo.preview.PreviewActivity;
@@ -72,7 +73,8 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
  * @Email Jliuer@aliyun.com
  * @Description 录制
  */
-public class RecordFragment extends TSFragment implements SurfaceHolder.Callback, CainSurfaceView.OnClickListener, CainSurfaceView.OnTouchScroller, RenderStateChangedListener,
+public class RecordFragment extends TSFragment implements SurfaceHolder.Callback, CainSurfaceView.OnClickListener, CainSurfaceView.OnTouchScroller,
+        RenderStateChangedListener,
         CaptureFrameCallback, ShutterButton.GestureListener {
 
     @BindView(R.id.layout_aspect)
@@ -220,7 +222,7 @@ public class RecordFragment extends TSFragment implements SurfaceHolder.Callback
                 .compose(this.bindToLifecycle())
                 .subscribe(aVoid -> {
                     if (CountDownManager.getInstance().getVisibleDuration() < CountDownManager.getInstance().getMinMilliSeconds()) {
-                        showSnackErrorMessage("不得小于" + CountDownManager.getInstance().getMinMilliSeconds() / 1000 + "秒");
+                        showSnackErrorMessage(getString(R.string.min_short_video_time, CountDownManager.getInstance().getMinMilliSeconds() / 1000));
                         return;
                     }
                     previewRecordVideo();
@@ -538,7 +540,7 @@ public class RecordFragment extends TSFragment implements SurfaceHolder.Callback
         }
 
         // 显示时间
-        if (currentIndex == 2) {
+        if (currentIndex == 2 && com.zhiyicx.common.BuildConfig.USE_LOG) {
             mTvCountdown.setVisibility(View.VISIBLE);
         } else {
             mTvCountdown.setVisibility(View.GONE);

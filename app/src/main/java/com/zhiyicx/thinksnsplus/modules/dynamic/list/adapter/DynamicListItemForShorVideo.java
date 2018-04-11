@@ -82,7 +82,7 @@ public class DynamicListItemForShorVideo extends DynamicListBaseItem {
      * @param dynamicBean item data
      * @param positon     image item position
      */
-    protected void initVideoView(final ViewHolder holder, JZVideoPlayerStandard view, final DynamicDetailBeanV2 dynamicBean, final int positon) {
+    private void initVideoView(final ViewHolder holder, JZVideoPlayerStandard view, final DynamicDetailBeanV2 dynamicBean, final int positon) {
         int with;
         int height;
 
@@ -115,7 +115,7 @@ public class DynamicListItemForShorVideo extends DynamicListBaseItem {
                         public boolean onResourceReady(GlideDrawable resource, GlideUrl model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
                             Bitmap bitmap = FastBlur.blurBitmap(ConvertUtils.drawable2Bitmap(resource), resource.getIntrinsicWidth(), resource
                                     .getIntrinsicHeight());
-                            view.setBackgroundDrawable(new BitmapDrawable(mContext.getResources(), bitmap));
+                            view.setBackground(new BitmapDrawable(mContext.getResources(), bitmap));
                             return false;
                         }
                     })
@@ -144,7 +144,7 @@ public class DynamicListItemForShorVideo extends DynamicListBaseItem {
 
                             Bitmap bitmap = FastBlur.blurBitmap(ConvertUtils.drawable2Bitmap(resource), resource.getIntrinsicWidth(), resource
                                     .getIntrinsicHeight());
-                            view.setBackgroundDrawable(new BitmapDrawable(mContext.getResources(), bitmap));
+                            view.setBackground(new BitmapDrawable(mContext.getResources(), bitmap));
                             return false;
                         }
                     })
