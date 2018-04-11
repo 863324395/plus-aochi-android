@@ -152,20 +152,23 @@ public class DynamicListItemForShorVideo extends DynamicListBaseItem {
 
         }
         view.setUp(videoUrl, JZVideoPlayerStandard.SCREEN_WINDOW_LIST);
-        if (JZVideoPlayerManager.getFirstFloor() != null && JZVideoPlayerManager.getFirstFloor().positionInList == positon
-                && JZUtils.dataSourceObjectsContainsUri(JZVideoPlayerManager.getFirstFloor().dataSourceObjects, JZMediaManager.getCurrentDataSource())) {
-            JZVideoPlayer first = JZVideoPlayerManager.getFirstFloor();
-            view.setState(first.currentState);
-            view.positionInList = positon;
-            first.textureViewContainer.removeView(JZMediaManager.textureView);
-            view.textureViewContainer.removeView(JZMediaManager.textureView);
-            first.onStateNormal();
-            view.addTextureView();
-
-            JZVideoPlayerManager.setSecondFloor(view);
-//            JZVideoPlayerManager.setFirstFloor(view);
-            view.startProgressTimer();
-        }
+//        if (JZVideoPlayerManager.getFirstFloor() != null && JZVideoPlayerManager.getFirstFloor().positionInList == positon
+//                && JZUtils.dataSourceObjectsContainsUri(JZVideoPlayerManager.getFirstFloor().dataSourceObjects, JZMediaManager.getCurrentDataSource())) {
+//            if (!TextUtils.isEmpty(video.getUrl())) {
+//                return;
+//            }
+//            JZVideoPlayer first = JZVideoPlayerManager.getFirstFloor();
+//            view.setState(first.currentState);
+//            view.positionInList = positon;
+//            first.textureViewContainer.removeView(JZMediaManager.textureView);
+//            view.textureViewContainer.removeView(JZMediaManager.textureView);
+//            first.onStateNormal();
+//            view.addTextureView();
+//
+//            JZVideoPlayerManager.setSecondFloor(view);
+////            JZVideoPlayerManager.setFirstFloor(view);
+//            view.startProgressTimer();
+//        }
         view.positionInList = positon;
     }
 

@@ -191,11 +191,11 @@ public class DynamicDetailHeader {
                         dynamicBean.getVideo().getVideo_id());
                 videoView.setUp(videoUrl, JZVideoPlayerStandard.SCREEN_WINDOW_LIST);
 
-                videoView.setState(state);
-                videoView.positionInList = 0;
-                videoView.addTextureView();
-                JZVideoPlayerManager.setSecondFloor(videoView);
-                videoView.startProgressTimer();
+//                videoView.setState(state);
+//                videoView.positionInList = 0;
+//                videoView.addTextureView();
+//                JZVideoPlayerManager.setSecondFloor(videoView);
+//                videoView.startProgressTimer();
                 Glide.with(mContext).load(video.getGlideUrl()).into(videoView.thumbImageView);
                 return;
             }

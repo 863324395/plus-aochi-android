@@ -85,7 +85,7 @@ public class HomeActivity extends TSActivity {
     @Override
     public void onPause() {
         super.onPause();
-//        JZVideoPlayer.releaseAllVideos();
+        JZVideoPlayer.releaseAllVideos();
     }
 
     @Override

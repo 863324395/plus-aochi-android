@@ -30,7 +30,7 @@ public class DynamicDetailActivity extends TSActivity<DynamicDetailPresenter, Dy
 
     @Override
     public void onBackPressed() {
-        if (ZhiyiVideoView.detailBackPress()) {
+        if (ZhiyiVideoView.backPress()) {
             return;
         }
         super.onBackPressed();
