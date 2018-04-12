@@ -4,12 +4,17 @@ import android.app.Application;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.text.TextUtils;
 
 import com.google.gson.Gson;
+import com.tym.shortvideo.interfaces.TrimVideoListener;
 import com.tym.shortvideo.media.VideoInfo;
+import com.tym.shortvideo.recodrender.ParamsManager;
+import com.tym.shortvideo.utils.FileUtils;
+import com.tym.shortvideo.utils.TrimVideoUtil;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.base.BaseJsonV2;
@@ -22,6 +27,7 @@ import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
+import com.zhiyicx.thinksnsplus.base.EmptySubscribe;
 import com.zhiyicx.thinksnsplus.config.ErrorCodeConfig;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.AnswerCommentListBean;
@@ -81,7 +87,8 @@ import rx.schedulers.Schedulers;
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_SEND_COMMENT_TO_ANSWER_LIST;
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_SEND_COMMENT_TO_CIRCLE_POST;
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_SEND_COMMENT_TO_DYNAMIC_LIST;
-import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_SEND_COMMENT_TO_GROUOP_DYNAMIC;
+import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig
+        .EVENT_SEND_COMMENT_TO_GROUOP_DYNAMIC;
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_SEND_COMMENT_TO_INFO_LIST;
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_SEND_COMMENT_TO_QUESTION_LIST;
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_SEND_DYNAMIC_TO_LIST;
@@ -141,7 +148,8 @@ public class BackgroundTaskHandler {
     @Inject
     BaseMessageRepository mMessageRepository;
 
-    private Queue<BackgroundRequestTaskBean> mTaskBeanConcurrentLinkedQueue = new ConcurrentLinkedQueue<>();// 线程安全的队列
+    private Queue<BackgroundRequestTaskBean> mTaskBeanConcurrentLinkedQueue = new
+            ConcurrentLinkedQueue<>();// 线程安全的队列
 
     private boolean mIsExit = false; // 是否关闭
 
@@ -201,7 +209,8 @@ public class BackgroundTaskHandler {
         if (AppApplication.getmCurrentLoginAuth() == null) {
             return;
         }
-        List<BackgroundRequestTaskBean> cacheDatas = mBackgroundRequestTaskBeanGreenDao.getMultiDataFromCacheByUserId(AppApplication
+        List<BackgroundRequestTaskBean> cacheDatas = mBackgroundRequestTaskBeanGreenDao
+                .getMultiDataFromCacheByUserId(AppApplication
                 .getMyUserIdWithdefault());
         if (cacheDatas != null) {
             mTaskBeanConcurrentLinkedQueue.addAll(cacheDatas);
@@ -213,7 +222,8 @@ public class BackgroundTaskHandler {
      */
     private Runnable handleTaskRunnable = () -> {
 
-        while (!mIsExit && ActivityHandler.getActivityStack() != null) {// mIsNetConnected 网络监测可能有问题，待修改
+        while (!mIsExit && ActivityHandler.getActivityStack() != null) {// mIsNetConnected
+            // 网络监测可能有问题，待修改
             mIsNetConnected = checkNetStatus(mContext);
             if (mIsNetConnected && !mTaskBeanConcurrentLinkedQueue.isEmpty()) {
                 handleTask(mTaskBeanConcurrentLinkedQueue.poll());
@@ -223,7 +233,8 @@ public class BackgroundTaskHandler {
         mIsExit = true;
 //            // 存储未执行的数据到数据库，下次执行
 //            if (mBackgroundRequestTaskBeanCaches.size() > 0) {
-//                mBackgroundRequestTaskBeanGreenDao.saveMultiData(mBackgroundRequestTaskBeanCaches);
+//                mBackgroundRequestTaskBeanGreenDao.saveMultiData
+// (mBackgroundRequestTaskBeanCaches);
 //            }
         // 取消 event 监听
         EventBus.getDefault().unregister(BackgroundTaskHandler.this);
@@ -237,7 +248,8 @@ public class BackgroundTaskHandler {
      */
     public boolean checkNetStatus(Context context) {
         if (mobNetInfo == null) {
-            ConnectivityManager connectMgr = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+            ConnectivityManager connectMgr = (ConnectivityManager) context.getSystemService
+                    (Context.CONNECTIVITY_SERVICE);
             //手机网络连接状态
             mobNetInfo = connectMgr.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
             //WIFI连接状态
@@ -278,7 +290,8 @@ public class BackgroundTaskHandler {
                 if (tipBackgroundTaskCanNotDeal(backgroundRequestTaskBean)) {
                     return;
                 }
-                backgroundRequestTaskBean.setMax_retry_count(backgroundRequestTaskBean.getMax_retry_count() - 1);
+                backgroundRequestTaskBean.setMax_retry_count(backgroundRequestTaskBean
+                        .getMax_retry_count() - 1);
                 postMethod(backgroundRequestTaskBean);
                 break;
 
@@ -286,14 +299,16 @@ public class BackgroundTaskHandler {
                 if (tipBackgroundTaskCanNotDeal(backgroundRequestTaskBean)) {
                     return;
                 }
-                backgroundRequestTaskBean.setMax_retry_count(backgroundRequestTaskBean.getMax_retry_count() - 1);
+                backgroundRequestTaskBean.setMax_retry_count(backgroundRequestTaskBean
+                        .getMax_retry_count() - 1);
                 putMethod(backgroundRequestTaskBean);
                 break;
             case POST_V2:
                 if (tipBackgroundTaskCanNotDeal(backgroundRequestTaskBean)) {
                     return;
                 }
-                backgroundRequestTaskBean.setMax_retry_count(backgroundRequestTaskBean.getMax_retry_count() - 1);
+                backgroundRequestTaskBean.setMax_retry_count(backgroundRequestTaskBean
+                        .getMax_retry_count() - 1);
                 postMethodV2(backgroundRequestTaskBean);
                 break;
             /*
@@ -303,14 +318,16 @@ public class BackgroundTaskHandler {
                 if (tipBackgroundTaskCanNotDeal(backgroundRequestTaskBean)) {
                     return;
                 }
-                backgroundRequestTaskBean.setMax_retry_count(backgroundRequestTaskBean.getMax_retry_count() - 1);
+                backgroundRequestTaskBean.setMax_retry_count(backgroundRequestTaskBean
+                        .getMax_retry_count() - 1);
                 break;
 
             case PATCH:
                 if (tipBackgroundTaskCanNotDeal(backgroundRequestTaskBean)) {
                     return;
                 }
-                backgroundRequestTaskBean.setMax_retry_count(backgroundRequestTaskBean.getMax_retry_count() - 1);
+                backgroundRequestTaskBean.setMax_retry_count(backgroundRequestTaskBean
+                        .getMax_retry_count() - 1);
                 PatchMethod(backgroundRequestTaskBean);
                 break;
             /*
@@ -320,14 +337,16 @@ public class BackgroundTaskHandler {
                 if (tipBackgroundTaskCanNotDeal(backgroundRequestTaskBean)) {
                     return;
                 }
-                backgroundRequestTaskBean.setMax_retry_count(backgroundRequestTaskBean.getMax_retry_count() - 1);
+                backgroundRequestTaskBean.setMax_retry_count(backgroundRequestTaskBean
+                        .getMax_retry_count() - 1);
                 deleteMethod(backgroundRequestTaskBean);
                 break;
             case DELETE_V2:
                 if (tipBackgroundTaskCanNotDeal(backgroundRequestTaskBean)) {
                     return;
                 }
-                backgroundRequestTaskBean.setMax_retry_count(backgroundRequestTaskBean.getMax_retry_count() - 1);
+                backgroundRequestTaskBean.setMax_retry_count(backgroundRequestTaskBean
+                        .getMax_retry_count() - 1);
                 deleteMethodV2(backgroundRequestTaskBean);
                 break;
             /*
@@ -338,7 +357,8 @@ public class BackgroundTaskHandler {
                 if (tipBackgroundTaskCanNotDeal(backgroundRequestTaskBean)) {
                     return;
                 }
-                backgroundRequestTaskBean.setMax_retry_count(backgroundRequestTaskBean.getMax_retry_count() - 1);
+                backgroundRequestTaskBean.setMax_retry_count(backgroundRequestTaskBean
+                        .getMax_retry_count() - 1);
 
                 getIMInfo(backgroundRequestTaskBean);
                 break;
@@ -350,7 +370,8 @@ public class BackgroundTaskHandler {
                 if (tipBackgroundTaskCanNotDeal(backgroundRequestTaskBean)) {
                     return;
                 }
-                backgroundRequestTaskBean.setMax_retry_count(backgroundRequestTaskBean.getMax_retry_count() - 1);
+                backgroundRequestTaskBean.setMax_retry_count(backgroundRequestTaskBean
+                        .getMax_retry_count() - 1);
                 getUserInfo(backgroundRequestTaskBean);
                 break;
 
@@ -410,9 +431,11 @@ public class BackgroundTaskHandler {
 
     }
 
-    private boolean tipBackgroundTaskCanNotDeal(BackgroundRequestTaskBean backgroundRequestTaskBean) {
+    private boolean tipBackgroundTaskCanNotDeal(BackgroundRequestTaskBean
+                                                        backgroundRequestTaskBean) {
         if (backgroundRequestTaskBean.getMax_retry_count() - 1 <= 0) {
-            EventBus.getDefault().post(backgroundRequestTaskBean, EventBusTagConfig.EVENT_BACKGROUND_TASK_CANT_NOT_DEAL);
+            EventBus.getDefault().post(backgroundRequestTaskBean, EventBusTagConfig
+                    .EVENT_BACKGROUND_TASK_CANT_NOT_DEAL);
             return true;
         }
         return false;
@@ -428,7 +451,8 @@ public class BackgroundTaskHandler {
         }
         final OnNetResponseCallBack callBack = (OnNetResponseCallBack) params.get(NET_CALLBACK);
         params.remove(NET_CALLBACK);
-        mServiceManager.getCommonClient().handleBackGroundTaskPostV2(backgroundRequestTaskBean.getPath(), UpLoadFile.upLoadFileAndParams(null,
+        mServiceManager.getCommonClient().handleBackGroundTaskPostV2(backgroundRequestTaskBean
+                .getPath(), UpLoadFile.upLoadFileAndParams(null,
                 params))
                 .subscribe(new BaseSubscribeForV2() {
                     @Override
@@ -436,7 +460,8 @@ public class BackgroundTaskHandler {
                         if (callBack != null) {
                             callBack.onSuccess(data);
                         }
-                        mBackgroundRequestTaskBeanGreenDao.deleteSingleCache(backgroundRequestTaskBean);
+                        mBackgroundRequestTaskBeanGreenDao.deleteSingleCache
+                                (backgroundRequestTaskBean);
                     }
 
                     @Override
@@ -444,7 +469,8 @@ public class BackgroundTaskHandler {
                         if (checkIsNeedReRequest(code)) {
                             addBackgroundRequestTask(backgroundRequestTaskBean);
                         } else {
-                            mBackgroundRequestTaskBeanGreenDao.deleteSingleCache(backgroundRequestTaskBean);
+                            mBackgroundRequestTaskBeanGreenDao.deleteSingleCache
+                                    (backgroundRequestTaskBean);
                         }
                         if (callBack != null) {
                             callBack.onFailure(message, code);
@@ -468,9 +494,11 @@ public class BackgroundTaskHandler {
         if (backgroundRequestTaskBean.getParams() == null) {
             backgroundRequestTaskBean.setParams(new HashMap());
         }
-        final OnNetResponseCallBack callBack = (OnNetResponseCallBack) backgroundRequestTaskBean.getParams().get(NET_CALLBACK);
+        final OnNetResponseCallBack callBack = (OnNetResponseCallBack) backgroundRequestTaskBean
+                .getParams().get(NET_CALLBACK);
         backgroundRequestTaskBean.getParams().remove(NET_CALLBACK);
-        mServiceManager.getCommonClient().handleBackGroundTaskPost(backgroundRequestTaskBean.getPath(), UpLoadFile.upLoadFileAndParams(null,
+        mServiceManager.getCommonClient().handleBackGroundTaskPost(backgroundRequestTaskBean
+                .getPath(), UpLoadFile.upLoadFileAndParams(null,
                 backgroundRequestTaskBean.getParams()))
                 .subscribe(new BaseSubscribe<Object>() {
                     @Override
@@ -478,7 +506,8 @@ public class BackgroundTaskHandler {
                         if (callBack != null) {
                             callBack.onSuccess(data);
                         }
-                        mBackgroundRequestTaskBeanGreenDao.deleteSingleCache(backgroundRequestTaskBean);
+                        mBackgroundRequestTaskBeanGreenDao.deleteSingleCache
+                                (backgroundRequestTaskBean);
                     }
 
                     @Override
@@ -486,7 +515,8 @@ public class BackgroundTaskHandler {
                         if (checkIsNeedReRequest(code)) {
                             addBackgroundRequestTask(backgroundRequestTaskBean);
                         } else {
-                            mBackgroundRequestTaskBeanGreenDao.deleteSingleCache(backgroundRequestTaskBean);
+                            mBackgroundRequestTaskBeanGreenDao.deleteSingleCache
+                                    (backgroundRequestTaskBean);
                         }
                         if (callBack != null) {
                             callBack.onFailure(message, code);
@@ -513,14 +543,16 @@ public class BackgroundTaskHandler {
         }
         final OnNetResponseCallBack callBack = (OnNetResponseCallBack) params.get(NET_CALLBACK);
         params.remove(NET_CALLBACK);
-        mServiceManager.getCommonClient().handleBackGroundTaskPut(backgroundRequestTaskBean.getPath())
+        mServiceManager.getCommonClient().handleBackGroundTaskPut(backgroundRequestTaskBean
+                .getPath())
                 .subscribe(new BaseSubscribeForV2<Object>() {
                     @Override
                     protected void onSuccess(Object data) {
                         if (callBack != null) {
                             callBack.onSuccess(data);
                         }
-                        mBackgroundRequestTaskBeanGreenDao.deleteSingleCache(backgroundRequestTaskBean);
+                        mBackgroundRequestTaskBeanGreenDao.deleteSingleCache
+                                (backgroundRequestTaskBean);
                     }
 
                     @Override
@@ -528,7 +560,8 @@ public class BackgroundTaskHandler {
                         if (checkIsNeedReRequest(code)) {
                             addBackgroundRequestTask(backgroundRequestTaskBean);
                         } else {
-                            mBackgroundRequestTaskBeanGreenDao.deleteSingleCache(backgroundRequestTaskBean);
+                            mBackgroundRequestTaskBeanGreenDao.deleteSingleCache
+                                    (backgroundRequestTaskBean);
                         }
                         if (callBack != null) {
                             callBack.onFailure(message, code);
@@ -550,13 +583,15 @@ public class BackgroundTaskHandler {
      */
     private void PatchMethod(final BackgroundRequestTaskBean backgroundRequestTaskBean) {
 
-        mServiceManager.getCommonClient().handleBackGroundTaskPatch(backgroundRequestTaskBean.getPath(), UpLoadFile.upLoadFileAndParams(null,
+        mServiceManager.getCommonClient().handleBackGroundTaskPatch(backgroundRequestTaskBean
+                .getPath(), UpLoadFile.upLoadFileAndParams(null,
                 backgroundRequestTaskBean.getParams()))
                 .subscribe(new BaseSubscribeForV2<BaseJsonV2<Object>>() {
 
                     @Override
                     protected void onSuccess(BaseJsonV2<Object> data) {
-                        mBackgroundRequestTaskBeanGreenDao.deleteSingleCache(backgroundRequestTaskBean);
+                        mBackgroundRequestTaskBeanGreenDao.deleteSingleCache
+                                (backgroundRequestTaskBean);
                     }
 
                     @Override
@@ -564,7 +599,8 @@ public class BackgroundTaskHandler {
                         if (checkIsNeedReRequest(code)) {
                             addBackgroundRequestTask(backgroundRequestTaskBean);
                         } else {
-                            mBackgroundRequestTaskBeanGreenDao.deleteSingleCache(backgroundRequestTaskBean);
+                            mBackgroundRequestTaskBeanGreenDao.deleteSingleCache
+                                    (backgroundRequestTaskBean);
                         }
                     }
 
@@ -585,13 +621,16 @@ public class BackgroundTaskHandler {
         }
         final OnNetResponseCallBack callBack = (OnNetResponseCallBack) datas.get(NET_CALLBACK);
         datas.remove(NET_CALLBACK);
-        RequestBody body = RequestBody.create(okhttp3.MediaType.parse("application/json;charset=UTF-8"), new Gson().toJson(datas));
-        mServiceManager.getCommonClient().handleBackGroudTaskDelete(backgroundRequestTaskBean.getPath()
+        RequestBody body = RequestBody.create(okhttp3.MediaType.parse("application/json;" +
+                "charset=UTF-8"), new Gson().toJson(datas));
+        mServiceManager.getCommonClient().handleBackGroudTaskDelete(backgroundRequestTaskBean
+                        .getPath()
                 , body)
                 .subscribe(new BaseSubscribeForV2<Object>() {
                     @Override
                     protected void onSuccess(Object data) {
-                        mBackgroundRequestTaskBeanGreenDao.deleteSingleCache(backgroundRequestTaskBean);
+                        mBackgroundRequestTaskBeanGreenDao.deleteSingleCache
+                                (backgroundRequestTaskBean);
                     }
 
                     @Override
@@ -599,7 +638,8 @@ public class BackgroundTaskHandler {
                         if (checkIsNeedReRequest(code)) {
                             addBackgroundRequestTask(backgroundRequestTaskBean);
                         } else {
-                            mBackgroundRequestTaskBeanGreenDao.deleteSingleCache(backgroundRequestTaskBean);
+                            mBackgroundRequestTaskBeanGreenDao.deleteSingleCache
+                                    (backgroundRequestTaskBean);
                         }
                     }
 
@@ -620,13 +660,16 @@ public class BackgroundTaskHandler {
         }
         final OnNetResponseCallBack callBack = (OnNetResponseCallBack) datas.get(NET_CALLBACK);
         datas.remove(NET_CALLBACK);
-        RequestBody body = RequestBody.create(okhttp3.MediaType.parse("application/json;charset=UTF-8"), new Gson().toJson(datas));
-        mServiceManager.getCommonClient().handleBackGroudTaskDelete(backgroundRequestTaskBean.getPath()
+        RequestBody body = RequestBody.create(okhttp3.MediaType.parse("application/json;" +
+                "charset=UTF-8"), new Gson().toJson(datas));
+        mServiceManager.getCommonClient().handleBackGroudTaskDelete(backgroundRequestTaskBean
+                        .getPath()
                 , body)
                 .subscribe(new BaseSubscribeForV2<Object>() {
                     @Override
                     protected void onSuccess(Object data) {
-                        mBackgroundRequestTaskBeanGreenDao.deleteSingleCache(backgroundRequestTaskBean);
+                        mBackgroundRequestTaskBeanGreenDao.deleteSingleCache
+                                (backgroundRequestTaskBean);
                     }
 
                     @Override
@@ -634,7 +677,8 @@ public class BackgroundTaskHandler {
                         if (checkIsNeedReRequest(code)) {
                             addBackgroundRequestTask(backgroundRequestTaskBean);
                         } else {
-                            mBackgroundRequestTaskBeanGreenDao.deleteSingleCache(backgroundRequestTaskBean);
+                            mBackgroundRequestTaskBeanGreenDao.deleteSingleCache
+                                    (backgroundRequestTaskBean);
                         }
                     }
 
@@ -653,7 +697,8 @@ public class BackgroundTaskHandler {
                 .subscribe(new BaseSubscribeForV2<IMBean>() {
                     @Override
                     protected void onSuccess(IMBean data) {
-                        mBackgroundRequestTaskBeanGreenDao.deleteSingleCache(backgroundRequestTaskBean);
+                        mBackgroundRequestTaskBeanGreenDao.deleteSingleCache
+                                (backgroundRequestTaskBean);
                         LogUtils.d("-----login-----imConfig--------" + data.toString());
                         IMConfig imConfig = new IMConfig();
                         imConfig.setImUid(data.getUser_id());
@@ -661,12 +706,15 @@ public class BackgroundTaskHandler {
                         if (TextUtils.isEmpty(data.getIm_pwd_hash())) {
                             return;
                         }
-                        if (mSystemRepository.getBootstrappersInfoFromLocal().getIm_serve().contains("ws:") || mSystemRepository
+                        if (mSystemRepository.getBootstrappersInfoFromLocal().getIm_serve()
+                                .contains("ws:") || mSystemRepository
                                 .getBootstrappersInfoFromLocal().getIm_serve().contains("wss:")) {
-                            imConfig.setWeb_socket_authority(mSystemRepository.getBootstrappersInfoFromLocal().getIm_serve());
+                            imConfig.setWeb_socket_authority(mSystemRepository
+                                    .getBootstrappersInfoFromLocal().getIm_serve());
 
                         } else {
-                            imConfig.setWeb_socket_authority("ws://" + mSystemRepository.getBootstrappersInfoFromLocal().getIm_serve());
+                            imConfig.setWeb_socket_authority("ws://" + mSystemRepository
+                                    .getBootstrappersInfoFromLocal().getIm_serve());
 
                         }
 
@@ -679,7 +727,8 @@ public class BackgroundTaskHandler {
                         if (checkIsNeedReRequest(code)) {
                             addBackgroundRequestTask(backgroundRequestTaskBean);
                         } else {
-                            mBackgroundRequestTaskBeanGreenDao.deleteSingleCache(backgroundRequestTaskBean);
+                            mBackgroundRequestTaskBeanGreenDao.deleteSingleCache
+                                    (backgroundRequestTaskBean);
                         }
                     }
 
@@ -695,12 +744,14 @@ public class BackgroundTaskHandler {
      */
 
     private void getUserInfo(final BackgroundRequestTaskBean backgroundRequestTaskBean) {
-        if (backgroundRequestTaskBean.getParams() == null || backgroundRequestTaskBean.getParams().get("user_id") == null) {
+        if (backgroundRequestTaskBean.getParams() == null || backgroundRequestTaskBean.getParams
+                ().get("user_id") == null) {
             return;
         }
         List<Object> integers = new ArrayList<>();
         if (backgroundRequestTaskBean.getParams().get("user_id") instanceof List) {
-            integers.addAll((Collection<? extends Long>) backgroundRequestTaskBean.getParams().get("user_id"));
+            integers.addAll((Collection<? extends Long>) backgroundRequestTaskBean.getParams()
+                    .get("user_id"));
         } else {
             integers.add(Long.valueOf(backgroundRequestTaskBean.getParams().get("user_id") + ""));
         }
@@ -708,7 +759,8 @@ public class BackgroundTaskHandler {
                 .subscribe(new BaseSubscribeForV2<List<UserInfoBean>>() {
                     @Override
                     protected void onSuccess(List<UserInfoBean> data) {
-                        mBackgroundRequestTaskBeanGreenDao.deleteSingleCache(backgroundRequestTaskBean);
+                        mBackgroundRequestTaskBeanGreenDao.deleteSingleCache
+                                (backgroundRequestTaskBean);
                         // 用户信息获取成功后就可以通知界面刷新了
                         EventBus.getDefault().post(data, EventBusTagConfig.EVENT_USERINFO_UPDATE);
                     }
@@ -718,7 +770,8 @@ public class BackgroundTaskHandler {
                         if (checkIsNeedReRequest(code)) {
                             addBackgroundRequestTask(backgroundRequestTaskBean);
                         } else {
-                            mBackgroundRequestTaskBeanGreenDao.deleteSingleCache(backgroundRequestTaskBean);
+                            mBackgroundRequestTaskBeanGreenDao.deleteSingleCache
+                                    (backgroundRequestTaskBean);
                         }
                     }
 
@@ -735,7 +788,8 @@ public class BackgroundTaskHandler {
         final Long feed_Id = (Long) params.get("feed_id");
         final int amount = (int) params.get("amount");
 
-        final DynamicDetailBeanV2 dynamicDetailBeanV2 = mDynamicDetailBeanV2GreenDao.getDynamicByFeedId(feed_Id);
+        final DynamicDetailBeanV2 dynamicDetailBeanV2 = mDynamicDetailBeanV2GreenDao
+                .getDynamicByFeedId(feed_Id);
         if (dynamicDetailBeanV2 == null) {
             mBackgroundRequestTaskBeanGreenDao.deleteSingleCache(backgroundRequestTaskBean);
             return;
@@ -764,7 +818,8 @@ public class BackgroundTaskHandler {
     private void sendDynamicV2(final BackgroundRequestTaskBean backgroundRequestTaskBean) {
         final HashMap<String, Object> params = backgroundRequestTaskBean.getParams();
         final Long feedMark = (Long) params.get("params");
-        final SendDynamicDataBeanV2 sendDynamicDataBean = (SendDynamicDataBeanV2) params.get("sendDynamicDataBean");
+        final SendDynamicDataBeanV2 sendDynamicDataBean = (SendDynamicDataBeanV2) params.get
+                ("sendDynamicDataBean");
         final DynamicDetailBeanV2 detailBeanV2;
         detailBeanV2 = mDynamicDetailBeanV2GreenDao.getDynamicByFeedMark(feedMark);
         final int[] position = new int[1];
@@ -780,12 +835,12 @@ public class BackgroundTaskHandler {
         // ....
         List<ImageBean> photos = sendDynamicDataBean.getPhotos();
         VideoInfo videoInfo = sendDynamicDataBean.getVideoInfo();
-        Observable<BaseJson<Object>> observable;
+
+
         // 有图片需要上传时：先处理图片上传任务，成功后，获取任务id，发布动态
         if (photos != null && !photos.isEmpty()) {
             // 先处理图片上传，图片上传成功后，在进行动态发布
             List<Observable<BaseJson<Integer>>> upLoadPics = new ArrayList<>();
-
 
             for (int i = 0; i < photos.size(); i++) {
                 ImageBean imageBean = photos.get(i);
@@ -793,64 +848,66 @@ public class BackgroundTaskHandler {
                 int photoWidth = (int) imageBean.getWidth();
                 int photoHeight = (int) imageBean.getHeight();
                 String photoMimeType = imageBean.getImgMimeType();
-                upLoadPics.add(mUpLoadRepository.upLoadSingleFileV2(filePath, photoMimeType, true, photoWidth, photoHeight, position));
-            }
-            if (videoInfo != null) {
-                upLoadPics.add(mUpLoadRepository.upLoadSingleFileV2(videoInfo.getPath(), "", false, videoInfo.getWidth(), videoInfo.getHeight(),
-                        position));
+                upLoadPics.add(mUpLoadRepository.upLoadSingleFileV2(filePath, photoMimeType,
+                        true, photoWidth, photoHeight, position));
             }
             SendDynamicDataBeanV2.Video video = new SendDynamicDataBeanV2.Video();
-            observable = Observable.concat(upLoadPics)
-                    .map(integerBaseJson -> {
-                        if (integerBaseJson.isStatus()) {
-                            if (videoInfo != null) {
-                                // 先上传的是封面，要有顺序
-                                if (position[0] == 0) {
-                                    video.setCover_id(integerBaseJson.getData());
-                                } else {
-                                    video.setVideo_id(integerBaseJson.getData());
-                                }
-                                sendDynamicDataBean.setVideo(video);
-                            } else {
-                                sendDynamicDataBean.getStorage_task().get(position[0]).setId(integerBaseJson.getData());
-                            }
-                            // 完成后+1,记录成功的图片数
-                            position[0]++;
-                        } else {
-                            if (position[0] > 0) {
-                                position[0]--;
-                            }
-                            // 某一次失败就抛出异常，重传，因为有秒传功能所以不会浪费多少流量
-                            throw new NullPointerException();
+
+            if (videoInfo != null) {
+                if (videoInfo.needCompressVideo()){
+                    Observable.empty()
+                            .observeOn(Schedulers.io())
+                            .subscribe(new EmptySubscribe<Object>() {
+                        @Override
+                        public void onCompleted() {
+                            TrimVideoUtil.trim(mContext, Uri.parse(videoInfo.getPath()),
+                                    FileUtils.getPath(ParamsManager.VideoPath, ParamsManager
+                                            .CompressVideo), 0, videoInfo.getDuration() * 1000,
+                                    new TrimVideoListener() {
+                                        @Override
+                                        public void onStartTrim() {
+
+                                        }
+
+                                        @Override
+                                        public void onFinishTrim(String url) {
+                                            upLoadPics.add(mUpLoadRepository.upLoadSingleFileV2(url, "",
+                                                    false, videoInfo.getWidth(), videoInfo.getHeight(),
+                                                    position));
+
+                                            SendDynamicV2(backgroundRequestTaskBean, detailBeanV2, position, getSendDynamicObservable(sendDynamicDataBean, position, photos, videoInfo,
+                                                    upLoadPics, video));
+
+                                        }
+
+                                        @Override
+                                        public void onCancel() {
+
+                                        }
+                                    });
                         }
-                        sendDynamicDataBean.setPhotos(null);
-                        return sendDynamicDataBean;
-                    })
-                    .filter(sendDynamicDataBeanV2 -> {
-                        if (videoInfo == null) {
-                            return position[0] == photos.size();
-                        }
-                        return position[0] == photos.size() + 1;
-                    })
-                    .map(integers -> {
-                        if (videoInfo != null) {
-                            sendDynamicDataBean.setImages(null);
-                        }
-                        sendDynamicDataBean.setPhotos(null);
-                        sendDynamicDataBean.setVideoInfo(null);
-                        return sendDynamicDataBean;
-                    })
-                    .flatMap(sendDynamicDataBeanV2 -> mSendDynamicRepository.sendDynamicV2(sendDynamicDataBeanV2)
-                            .flatMap(objectBaseJsonV2 -> {
-                                BaseJson<Object> baseJson = new BaseJson<>();
-                                baseJson.setData((double) objectBaseJsonV2.getId());
-                                String msg = objectBaseJsonV2.getMessage().get(0);
-                                baseJson.setStatus(mContext.getString(R.string.send_success).equals(msg));
-                                baseJson.setMessage(msg);
-                                return Observable.just(baseJson);
-                            }));
+                    });
+
+                }else{
+                    upLoadPics.add(mUpLoadRepository.upLoadSingleFileV2(videoInfo.getPath(), "",
+                            false, videoInfo.getWidth(), videoInfo.getHeight(),
+                            position));
+
+                    SendDynamicV2(backgroundRequestTaskBean, detailBeanV2, position,
+                            getSendDynamicObservable(sendDynamicDataBean, position, photos, videoInfo,
+                            upLoadPics, video));
+                }
+            }else{
+
+                SendDynamicV2(backgroundRequestTaskBean, detailBeanV2, position, getSendDynamicObservable(sendDynamicDataBean, position, photos, videoInfo,
+                        upLoadPics, video));
+            }
+
+
+
         } else {
-            observable = mSendDynamicRepository.sendDynamicV2(sendDynamicDataBean)
+
+            SendDynamicV2(backgroundRequestTaskBean, detailBeanV2, position, mSendDynamicRepository.sendDynamicV2(sendDynamicDataBean)
                     .flatMap(objectBaseJsonV2 -> {
                         BaseJson<Object> baseJson = new BaseJson<>();
                         baseJson.setData((double) objectBaseJsonV2.getId());
@@ -858,8 +915,70 @@ public class BackgroundTaskHandler {
                         baseJson.setStatus(mContext.getString(R.string.send_success).equals(msg));
                         baseJson.setMessage(msg);
                         return Observable.just(baseJson);
-                    });
+                    }));
         }
+
+
+    }
+
+    private Observable<BaseJson<Object>> getSendDynamicObservable(SendDynamicDataBeanV2 sendDynamicDataBean, int[] position, List<ImageBean> photos, VideoInfo videoInfo, List<Observable<BaseJson<Integer>>> upLoadPics, SendDynamicDataBeanV2.Video video) {
+        Observable<BaseJson<Object>> observable;
+        observable = Observable.concat(upLoadPics)
+                .map(integerBaseJson -> {
+                    if (integerBaseJson.isStatus()) {
+                        if (videoInfo != null) {
+                            // 先上传的是封面，要有顺序
+                            if (position[0] == 0) {
+                                video.setCover_id(integerBaseJson.getData());
+                            } else {
+                                video.setVideo_id(integerBaseJson.getData());
+                            }
+                            sendDynamicDataBean.setVideo(video);
+                        } else {
+                            sendDynamicDataBean.getStorage_task().get(position[0]).setId
+                                    (integerBaseJson.getData());
+                        }
+                        // 完成后+1,记录成功的图片数
+                        position[0]++;
+                    } else {
+                        if (position[0] > 0) {
+                            position[0]--;
+                        }
+                        // 某一次失败就抛出异常，重传，因为有秒传功能所以不会浪费多少流量
+                        throw new NullPointerException();
+                    }
+                    sendDynamicDataBean.setPhotos(null);
+                    return sendDynamicDataBean;
+                })
+                .filter(sendDynamicDataBeanV2 -> {
+                    if (videoInfo == null) {
+                        return position[0] == photos.size();
+                    }
+                    return position[0] == photos.size() + 1;
+                })
+                .map(integers -> {
+                    if (videoInfo != null) {
+                        sendDynamicDataBean.setImages(null);
+                    }
+                    sendDynamicDataBean.setPhotos(null);
+                    sendDynamicDataBean.setVideoInfo(null);
+                    return sendDynamicDataBean;
+                })
+                .flatMap(sendDynamicDataBeanV2 -> mSendDynamicRepository.sendDynamicV2
+                        (sendDynamicDataBeanV2)
+                        .flatMap(objectBaseJsonV2 -> {
+                            BaseJson<Object> baseJson = new BaseJson<>();
+                            baseJson.setData((double) objectBaseJsonV2.getId());
+                            String msg = objectBaseJsonV2.getMessage().get(0);
+                            baseJson.setStatus(mContext.getString(R.string.send_success)
+                                    .equals(msg));
+                            baseJson.setMessage(msg);
+                            return Observable.just(baseJson);
+                        }));
+        return observable;
+    }
+
+    private void SendDynamicV2(BackgroundRequestTaskBean backgroundRequestTaskBean, DynamicDetailBeanV2 detailBeanV2, int[] position, Observable<BaseJson<Object>> observable) {
         observable.subscribeOn(Schedulers.io())
                 .retryWhen(new RetryWithInterceptDelay(RETRY_MAX_COUNT, RETRY_INTERVAL_TIME))
                 .observeOn(AndroidSchedulers.mainThread())
@@ -868,7 +987,8 @@ public class BackgroundTaskHandler {
                     protected void onSuccess(BaseJson<Object> data) {
                         // 发送动态到动态列表：状态为发送成功
                         detailBeanV2.setSendFailMessage("");
-                        sendDynamicByEventBus(SendDynamicDataBean.NORMAL_DYNAMIC, detailBeanV2, true, backgroundRequestTaskBean, data);
+                        sendDynamicByEventBus(SendDynamicDataBean.NORMAL_DYNAMIC, detailBeanV2,
+                                true, backgroundRequestTaskBean, data);
                     }
 
                     @Override
@@ -878,7 +998,8 @@ public class BackgroundTaskHandler {
                             position[0]--;
                         }
                         detailBeanV2.setSendFailMessage(message);
-                        sendDynamicByEventBus(SendDynamicDataBean.NORMAL_DYNAMIC, detailBeanV2, false, backgroundRequestTaskBean, null);
+                        sendDynamicByEventBus(SendDynamicDataBean.NORMAL_DYNAMIC, detailBeanV2,
+                                false, backgroundRequestTaskBean, null);
                     }
 
                     @Override
@@ -887,15 +1008,18 @@ public class BackgroundTaskHandler {
                         if (position[0] > 0) {
                             position[0]--;
                         }
-                        detailBeanV2.setSendFailMessage(mContext.getString(R.string.err_net_not_work));
+                        detailBeanV2.setSendFailMessage(mContext.getString(R.string
+                                .err_net_not_work));
                         // 发送动态到动态列表：状态为发送失败
-                        sendDynamicByEventBus(SendDynamicDataBean.NORMAL_DYNAMIC, detailBeanV2, false, backgroundRequestTaskBean, null);
+                        sendDynamicByEventBus(SendDynamicDataBean.NORMAL_DYNAMIC, detailBeanV2,
+                                false, backgroundRequestTaskBean, null);
                     }
                 });
-
     }
 
-    private SendDynamicDataBeanV2 recursionUplaodImage(final SendDynamicDataBeanV2 sendDynamicDataBean, List<ImageBean> photos, final int[]
+    private SendDynamicDataBeanV2 recursionUplaodImage(final SendDynamicDataBeanV2
+                                                               sendDynamicDataBean,
+                                                       List<ImageBean> photos, final int[]
             position) {
         if (position[0] == photos.size()) {
             return sendDynamicDataBean;
@@ -908,7 +1032,8 @@ public class BackgroundTaskHandler {
         mUpLoadRepository.upLoadSingleFileV2(filePath, photoMimeType, true, photoWidth, photoHeight)
                 .subscribe(integerBaseJson -> {
                     if (integerBaseJson.isStatus()) {
-                        sendDynamicDataBean.getStorage_task().get(position[0]).setId(integerBaseJson.getData());
+                        sendDynamicDataBean.getStorage_task().get(position[0]).setId
+                                (integerBaseJson.getData());
                         position[0]++;// 完成后+1
                         recursionUplaodImage(sendDynamicDataBean, photos, position);
                     } else {
@@ -922,7 +1047,8 @@ public class BackgroundTaskHandler {
 
     private void sendGroupDynamic(final BackgroundRequestTaskBean backgroundRequestTaskBean) {
         final HashMap<String, Object> params = backgroundRequestTaskBean.getParams();
-        final GroupSendDynamicDataBean sendDynamicDataBean = (GroupSendDynamicDataBean) params.get("sendDynamicDataBean");
+        final GroupSendDynamicDataBean sendDynamicDataBean = (GroupSendDynamicDataBean) params
+                .get("sendDynamicDataBean");
 
         if (sendDynamicDataBean == null) {
             mBackgroundRequestTaskBeanGreenDao.deleteSingleCache(backgroundRequestTaskBean);
@@ -943,7 +1069,8 @@ public class BackgroundTaskHandler {
                 int photoWidth = (int) imageBean.getWidth();
                 int photoHeight = (int) imageBean.getHeight();
                 String photoMimeType = imageBean.getImgMimeType();
-                upLoadPics.add(mUpLoadRepository.upLoadSingleFileV2(filePath, photoMimeType, true, photoWidth, photoHeight));
+                upLoadPics.add(mUpLoadRepository.upLoadSingleFileV2(filePath, photoMimeType,
+                        true, photoWidth, photoHeight));
             }
             observable = Observable.zip(upLoadPics, (FuncN<Object>) args -> {
                 List<Integer> integers = new ArrayList<>();
@@ -951,7 +1078,8 @@ public class BackgroundTaskHandler {
                 for (int i = 0; i < args.length; i++) {
                     BaseJson<Integer> baseJson = (BaseJson<Integer>) args[i];
                     if (baseJson.isStatus()) {
-                        GroupSendDynamicDataBean.ImagesBean imagesBean = new GroupSendDynamicDataBean.ImagesBean();
+                        GroupSendDynamicDataBean.ImagesBean imagesBean = new
+                                GroupSendDynamicDataBean.ImagesBean();
                         imagesBean.setId(baseJson.getData());
                         images.add(imagesBean);
                         integers.add(baseJson.getData());// 将返回的图片上传任务id封装好
@@ -965,7 +1093,8 @@ public class BackgroundTaskHandler {
             }).map(integers -> {
                 sendDynamicDataBean.setPhotos(null);
                 return sendDynamicDataBean;
-            }).flatMap(sendDynamicDataBean1 -> mBaseChannelRepository.sendGroupDynamic(sendDynamicDataBean1)
+            }).flatMap(sendDynamicDataBean1 -> mBaseChannelRepository.sendGroupDynamic
+                    (sendDynamicDataBean1)
                     .flatMap(objectBaseJsonV2 -> {
                         BaseJson<Object> baseJson = new BaseJson<>();
                         baseJson.setData((double) objectBaseJsonV2.getId());
@@ -1006,15 +1135,17 @@ public class BackgroundTaskHandler {
                 });
     }
 
-    private void sendDynamicByEventBus(int dynamicBelong, DynamicDetailBeanV2 dynamicBean, boolean sendSuccess
+    private void sendDynamicByEventBus(int dynamicBelong, DynamicDetailBeanV2 dynamicBean,
+                                       boolean sendSuccess
             , BackgroundRequestTaskBean backgroundRequestTaskBean, BaseJson<Object> data) {
         switch (dynamicBelong) {
             case SendDynamicDataBean.NORMAL_DYNAMIC:
                 if (sendSuccess) {
                     // 动态发送成功
                     dynamicBean.setState(DynamicBean.SEND_SUCCESS);
-                    dynamicBean.setId(((Double)data.getData()).longValue());
-                    mSendDynamicDataBeanV2Dao.delteSendDynamicDataBeanV2ByFeedMark(String.valueOf(dynamicBean.getFeed_mark()));
+                    dynamicBean.setId(((Double) data.getData()).longValue());
+                    mSendDynamicDataBeanV2Dao.delteSendDynamicDataBeanV2ByFeedMark(String.valueOf
+                            (dynamicBean.getFeed_mark()));
                     mDynamicDetailBeanV2GreenDao.insertOrReplace(dynamicBean);
                 } else {
                     dynamicBean.setState(DynamicBean.SEND_ERROR);
@@ -1040,7 +1171,8 @@ public class BackgroundTaskHandler {
 
         final HashMap<String, Object> params = backgroundRequestTaskBean.getParams();
         final Long commentMark = (Long) params.get("comment_mark");
-        final DynamicCommentBean circlePostCommentBean = mDynamicCommentBeanGreenDao.getCommentByCommentMark(commentMark);
+        final DynamicCommentBean circlePostCommentBean = mDynamicCommentBeanGreenDao
+                .getCommentByCommentMark(commentMark);
         if (circlePostCommentBean == null) {
             mBackgroundRequestTaskBeanGreenDao.deleteSingleCache(backgroundRequestTaskBean);
             return;
@@ -1048,7 +1180,8 @@ public class BackgroundTaskHandler {
         circlePostCommentBean.setState(DynamicCommentBean.SEND_ING);
         // 发送动态到动态列表：状态为发送中
         mServiceManager.getCommonClient()
-                .handleBackGroundTaskPostV2(backgroundRequestTaskBean.getPath(), UpLoadFile.upLoadFileAndParams(null, backgroundRequestTaskBean
+                .handleBackGroundTaskPostV2(backgroundRequestTaskBean.getPath(), UpLoadFile
+                        .upLoadFileAndParams(null, backgroundRequestTaskBean
                         .getParams()))
                 .retryWhen(new RetryWithInterceptDelay(RETRY_MAX_COUNT, RETRY_INTERVAL_TIME))
                 .subscribe(new BaseSubscribeForV2<Object>() {
@@ -1056,11 +1189,14 @@ public class BackgroundTaskHandler {
                     protected void onSuccess(Object data) {
                         try {
                             JSONObject jsonObject = new JSONObject(new Gson().toJson(data));
-                            circlePostCommentBean.setComment_id(jsonObject.getJSONObject("comment").getLong("id"));
+                            circlePostCommentBean.setComment_id(jsonObject.getJSONObject
+                                    ("comment").getLong("id"));
                             circlePostCommentBean.setState(DynamicBean.SEND_SUCCESS);
                             mDynamicCommentBeanGreenDao.insertOrReplace(circlePostCommentBean);
-                            EventBus.getDefault().post(circlePostCommentBean, EVENT_SEND_COMMENT_TO_DYNAMIC_LIST);
-                            mBackgroundRequestTaskBeanGreenDao.deleteSingleCache(backgroundRequestTaskBean);
+                            EventBus.getDefault().post(circlePostCommentBean,
+                                    EVENT_SEND_COMMENT_TO_DYNAMIC_LIST);
+                            mBackgroundRequestTaskBeanGreenDao.deleteSingleCache
+                                    (backgroundRequestTaskBean);
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -1071,10 +1207,12 @@ public class BackgroundTaskHandler {
                     @Override
                     protected void onFailure(String message, int code) {
                         super.onFailure(message, code);
-                        mBackgroundRequestTaskBeanGreenDao.deleteSingleCache(backgroundRequestTaskBean);
+                        mBackgroundRequestTaskBeanGreenDao.deleteSingleCache
+                                (backgroundRequestTaskBean);
                         circlePostCommentBean.setState(DynamicBean.SEND_ERROR);
                         mDynamicCommentBeanGreenDao.insertOrReplace(circlePostCommentBean);
-                        EventBus.getDefault().post(circlePostCommentBean, EVENT_SEND_COMMENT_TO_DYNAMIC_LIST);
+                        EventBus.getDefault().post(circlePostCommentBean,
+                                EVENT_SEND_COMMENT_TO_DYNAMIC_LIST);
                     }
 
                     @Override
@@ -1082,7 +1220,8 @@ public class BackgroundTaskHandler {
                         super.onException(throwable);
                         circlePostCommentBean.setState(DynamicBean.SEND_ERROR);
                         mDynamicCommentBeanGreenDao.insertOrReplace(circlePostCommentBean);
-                        EventBus.getDefault().post(circlePostCommentBean, EVENT_SEND_COMMENT_TO_DYNAMIC_LIST);
+                        EventBus.getDefault().post(circlePostCommentBean,
+                                EVENT_SEND_COMMENT_TO_DYNAMIC_LIST);
                     }
 
                 });
@@ -1096,14 +1235,16 @@ public class BackgroundTaskHandler {
 
         final HashMap<String, Object> params = backgroundRequestTaskBean.getParams();
         final Long commentMark = (Long) params.get("comment_mark");
-        final AnswerCommentListBean answerCommentBean = mAnswerCommentListBeanGreenDao.getCommentByCommentMark(commentMark);
+        final AnswerCommentListBean answerCommentBean = mAnswerCommentListBeanGreenDao
+                .getCommentByCommentMark(commentMark);
         if (answerCommentBean == null) {
             mBackgroundRequestTaskBeanGreenDao.deleteSingleCache(backgroundRequestTaskBean);
             return;
         }
         // 发送动态到动态列表：状态为发送中
         mServiceManager.getCommonClient()
-                .handleBackGroundTaskPostV2(backgroundRequestTaskBean.getPath(), UpLoadFile.upLoadFileAndParams(null, backgroundRequestTaskBean
+                .handleBackGroundTaskPostV2(backgroundRequestTaskBean.getPath(), UpLoadFile
+                        .upLoadFileAndParams(null, backgroundRequestTaskBean
                         .getParams()))
                 .retryWhen(new RetryWithInterceptDelay(RETRY_MAX_COUNT, RETRY_INTERVAL_TIME))
                 .subscribe(new BaseSubscribeForV2<Object>() {
@@ -1111,11 +1252,14 @@ public class BackgroundTaskHandler {
                     protected void onSuccess(Object data) {
                         try {
                             JSONObject jsonObject = new JSONObject(new Gson().toJson(data));
-                            answerCommentBean.setId(jsonObject.getJSONObject("comment").getLong("id"));
+                            answerCommentBean.setId(jsonObject.getJSONObject("comment").getLong
+                                    ("id"));
                             answerCommentBean.setState(DynamicBean.SEND_SUCCESS);
                             mAnswerCommentListBeanGreenDao.insertOrReplace(answerCommentBean);
-                            EventBus.getDefault().post(answerCommentBean, EVENT_SEND_COMMENT_TO_ANSWER_LIST);
-                            mBackgroundRequestTaskBeanGreenDao.deleteSingleCache(backgroundRequestTaskBean);
+                            EventBus.getDefault().post(answerCommentBean,
+                                    EVENT_SEND_COMMENT_TO_ANSWER_LIST);
+                            mBackgroundRequestTaskBeanGreenDao.deleteSingleCache
+                                    (backgroundRequestTaskBean);
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -1125,10 +1269,12 @@ public class BackgroundTaskHandler {
                     @Override
                     protected void onFailure(String message, int code) {
                         super.onFailure(message, code);
-                        mBackgroundRequestTaskBeanGreenDao.deleteSingleCache(backgroundRequestTaskBean);
+                        mBackgroundRequestTaskBeanGreenDao.deleteSingleCache
+                                (backgroundRequestTaskBean);
                         answerCommentBean.setState(DynamicBean.SEND_ERROR);
                         mAnswerCommentListBeanGreenDao.insertOrReplace(answerCommentBean);
-                        EventBus.getDefault().post(answerCommentBean, EVENT_SEND_COMMENT_TO_ANSWER_LIST);
+                        EventBus.getDefault().post(answerCommentBean,
+                                EVENT_SEND_COMMENT_TO_ANSWER_LIST);
                     }
 
                     @Override
@@ -1136,7 +1282,8 @@ public class BackgroundTaskHandler {
                         super.onException(throwable);
                         answerCommentBean.setState(DynamicBean.SEND_ERROR);
                         mAnswerCommentListBeanGreenDao.insertOrReplace(answerCommentBean);
-                        EventBus.getDefault().post(answerCommentBean, EVENT_SEND_COMMENT_TO_ANSWER_LIST);
+                        EventBus.getDefault().post(answerCommentBean,
+                                EVENT_SEND_COMMENT_TO_ANSWER_LIST);
                     }
 
                 });
@@ -1150,7 +1297,8 @@ public class BackgroundTaskHandler {
 
         final HashMap<String, Object> params = backgroundRequestTaskBean.getParams();
         final Long comment_mark = (Long) params.get("group_post_comment_mark");
-        final GroupDynamicCommentListBean circlePostCommentBean = mGroupDynamicCommentListBeanGreenDao.getGroupCommentsByCommentMark(comment_mark);
+        final GroupDynamicCommentListBean circlePostCommentBean =
+                mGroupDynamicCommentListBeanGreenDao.getGroupCommentsByCommentMark(comment_mark);
         if (circlePostCommentBean == null) {
             mBackgroundRequestTaskBeanGreenDao.deleteSingleCache(backgroundRequestTaskBean);
             return;
@@ -1158,7 +1306,8 @@ public class BackgroundTaskHandler {
         circlePostCommentBean.setState(GroupDynamicCommentListBean.SEND_ING);
         // 发送动态到动态列表：状态为发送中
         mServiceManager.getCommonClient()
-                .handleBackGroundTaskPostV2(backgroundRequestTaskBean.getPath(), UpLoadFile.upLoadFileAndParams(null, backgroundRequestTaskBean
+                .handleBackGroundTaskPostV2(backgroundRequestTaskBean.getPath(), UpLoadFile
+                        .upLoadFileAndParams(null, backgroundRequestTaskBean
                         .getParams()))
                 .retryWhen(new RetryWithInterceptDelay(RETRY_MAX_COUNT, RETRY_INTERVAL_TIME))
                 .subscribe(new BaseSubscribeForV2<Object>() {
@@ -1167,19 +1316,27 @@ public class BackgroundTaskHandler {
                         try {
                             /*
                               for detail
-                              @see{https://github.com/slimkit/plus-component-group/blob/master/Documents/createGroupPostComment.md}
+                              @see{https://github
+                              .com/slimkit/plus-component-group/blob/master/Documents
+                              /createGroupPostComment.md}
                              */
                             JSONObject jsonObject = new JSONObject(new Gson().toJson(data));
                             try {
-                                circlePostCommentBean.setId(jsonObject.getJSONObject("data").getLong("id"));
+                                circlePostCommentBean.setId(jsonObject.getJSONObject("data")
+                                        .getLong("id"));
                             } catch (JSONException e) {// 。。。
-                                circlePostCommentBean.setId(jsonObject.getJSONObject("comment").getLong("id"));
-                                circlePostCommentBean.setComment_mark(jsonObject.getLong("group_post_comment_mark"));
+                                circlePostCommentBean.setId(jsonObject.getJSONObject("comment")
+                                        .getLong("id"));
+                                circlePostCommentBean.setComment_mark(jsonObject.getLong
+                                        ("group_post_comment_mark"));
                             }
                             circlePostCommentBean.setState(DynamicBean.SEND_SUCCESS);
-                            mGroupDynamicCommentListBeanGreenDao.insertOrReplace(circlePostCommentBean);
-                            EventBus.getDefault().post(circlePostCommentBean, EVENT_SEND_COMMENT_TO_GROUOP_DYNAMIC);
-                            mBackgroundRequestTaskBeanGreenDao.deleteSingleCache(backgroundRequestTaskBean);
+                            mGroupDynamicCommentListBeanGreenDao.insertOrReplace
+                                    (circlePostCommentBean);
+                            EventBus.getDefault().post(circlePostCommentBean,
+                                    EVENT_SEND_COMMENT_TO_GROUOP_DYNAMIC);
+                            mBackgroundRequestTaskBeanGreenDao.deleteSingleCache
+                                    (backgroundRequestTaskBean);
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -1189,10 +1346,12 @@ public class BackgroundTaskHandler {
                     @Override
                     protected void onFailure(String message, int code) {
                         super.onFailure(message, code);
-                        mBackgroundRequestTaskBeanGreenDao.deleteSingleCache(backgroundRequestTaskBean);
+                        mBackgroundRequestTaskBeanGreenDao.deleteSingleCache
+                                (backgroundRequestTaskBean);
                         circlePostCommentBean.setState(DynamicBean.SEND_ERROR);
                         mGroupDynamicCommentListBeanGreenDao.insertOrReplace(circlePostCommentBean);
-                        EventBus.getDefault().post(circlePostCommentBean, EVENT_SEND_COMMENT_TO_GROUOP_DYNAMIC);
+                        EventBus.getDefault().post(circlePostCommentBean,
+                                EVENT_SEND_COMMENT_TO_GROUOP_DYNAMIC);
                     }
 
                     @Override
@@ -1200,7 +1359,8 @@ public class BackgroundTaskHandler {
                         super.onException(throwable);
                         circlePostCommentBean.setState(DynamicBean.SEND_ERROR);
                         mGroupDynamicCommentListBeanGreenDao.insertOrReplace(circlePostCommentBean);
-                        EventBus.getDefault().post(circlePostCommentBean, EVENT_SEND_COMMENT_TO_GROUOP_DYNAMIC);
+                        EventBus.getDefault().post(circlePostCommentBean,
+                                EVENT_SEND_COMMENT_TO_GROUOP_DYNAMIC);
                     }
                 });
 
@@ -1211,7 +1371,8 @@ public class BackgroundTaskHandler {
 
         final HashMap<String, Object> params = backgroundRequestTaskBean.getParams();
         final Long comment_mark = (Long) params.get("group_post_comment_mark");
-        final CirclePostCommentBean circlePostCommentBean = mCirclePostCommentBeanGreenDao.getCircleCommentsByCommentMark(comment_mark);
+        final CirclePostCommentBean circlePostCommentBean = mCirclePostCommentBeanGreenDao
+                .getCircleCommentsByCommentMark(comment_mark);
         if (circlePostCommentBean == null) {
             mBackgroundRequestTaskBeanGreenDao.deleteSingleCache(backgroundRequestTaskBean);
             return;
@@ -1219,7 +1380,8 @@ public class BackgroundTaskHandler {
         circlePostCommentBean.setState(GroupDynamicCommentListBean.SEND_ING);
         // 发送动态到动态列表：状态为发送中
         mServiceManager.getCommonClient()
-                .handleBackGroundTaskPostV2(backgroundRequestTaskBean.getPath(), UpLoadFile.upLoadFileAndParams(null, backgroundRequestTaskBean
+                .handleBackGroundTaskPostV2(backgroundRequestTaskBean.getPath(), UpLoadFile
+                        .upLoadFileAndParams(null, backgroundRequestTaskBean
                         .getParams()))
                 .retryWhen(new RetryWithInterceptDelay(RETRY_MAX_COUNT, RETRY_INTERVAL_TIME))
                 .subscribe(new BaseSubscribeForV2<Object>() {
@@ -1228,15 +1390,19 @@ public class BackgroundTaskHandler {
                         try {
                             JSONObject jsonObject = new JSONObject(new Gson().toJson(data));
                             try {
-                                circlePostCommentBean.setId(jsonObject.getJSONObject("data").getLong("id"));
+                                circlePostCommentBean.setId(jsonObject.getJSONObject("data")
+                                        .getLong("id"));
                             } catch (JSONException e) {
-                                circlePostCommentBean.setId(jsonObject.getJSONObject("comment").getLong("id"));
+                                circlePostCommentBean.setId(jsonObject.getJSONObject("comment")
+                                        .getLong("id"));
                             }
                             circlePostCommentBean.setComment_mark(comment_mark);
                             circlePostCommentBean.setState(DynamicBean.SEND_SUCCESS);
                             mCirclePostCommentBeanGreenDao.insertOrReplace(circlePostCommentBean);
-                            EventBus.getDefault().post(circlePostCommentBean, EVENT_SEND_COMMENT_TO_CIRCLE_POST);
-                            mBackgroundRequestTaskBeanGreenDao.deleteSingleCache(backgroundRequestTaskBean);
+                            EventBus.getDefault().post(circlePostCommentBean,
+                                    EVENT_SEND_COMMENT_TO_CIRCLE_POST);
+                            mBackgroundRequestTaskBeanGreenDao.deleteSingleCache
+                                    (backgroundRequestTaskBean);
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -1246,10 +1412,12 @@ public class BackgroundTaskHandler {
                     @Override
                     protected void onFailure(String message, int code) {
                         super.onFailure(message, code);
-                        mBackgroundRequestTaskBeanGreenDao.deleteSingleCache(backgroundRequestTaskBean);
+                        mBackgroundRequestTaskBeanGreenDao.deleteSingleCache
+                                (backgroundRequestTaskBean);
                         circlePostCommentBean.setState(DynamicBean.SEND_ERROR);
                         mCirclePostCommentBeanGreenDao.insertOrReplace(circlePostCommentBean);
-                        EventBus.getDefault().post(circlePostCommentBean, EVENT_SEND_COMMENT_TO_CIRCLE_POST);
+                        EventBus.getDefault().post(circlePostCommentBean,
+                                EVENT_SEND_COMMENT_TO_CIRCLE_POST);
                     }
 
                     @Override
@@ -1257,7 +1425,8 @@ public class BackgroundTaskHandler {
                         super.onException(throwable);
                         circlePostCommentBean.setState(DynamicBean.SEND_ERROR);
                         mCirclePostCommentBeanGreenDao.insertOrReplace(circlePostCommentBean);
-                        EventBus.getDefault().post(circlePostCommentBean, EVENT_SEND_COMMENT_TO_CIRCLE_POST);
+                        EventBus.getDefault().post(circlePostCommentBean,
+                                EVENT_SEND_COMMENT_TO_CIRCLE_POST);
                     }
                 });
 
@@ -1270,39 +1439,46 @@ public class BackgroundTaskHandler {
 
         final HashMap<String, Object> params = backgroundRequestTaskBean.getParams();
         final Long commentMark = (Long) params.get("comment_mark");
-        final InfoCommentListBean infoCommentListBean = mInfoCommentListBeanDao.getCommentByCommentMark
+        final InfoCommentListBean infoCommentListBean = mInfoCommentListBeanDao
+                .getCommentByCommentMark
                 (commentMark);
         if (infoCommentListBean == null) {
             mBackgroundRequestTaskBeanGreenDao.deleteSingleCache(backgroundRequestTaskBean);
             return;
         }
         mServiceManager.getCommonClient()
-                .handleBackGroundTaskPost(backgroundRequestTaskBean.getPath(), UpLoadFile.upLoadFileAndParams(null, backgroundRequestTaskBean
+                .handleBackGroundTaskPost(backgroundRequestTaskBean.getPath(), UpLoadFile
+                        .upLoadFileAndParams(null, backgroundRequestTaskBean
                         .getParams()))
                 .retryWhen(new RetryWithInterceptDelay(RETRY_MAX_COUNT, RETRY_INTERVAL_TIME))
                 .subscribe(new BaseSubscribe<Object>() {
                     @Override
                     protected void onSuccess(Object data) {
-                        mBackgroundRequestTaskBeanGreenDao.deleteSingleCache(backgroundRequestTaskBean);
+                        mBackgroundRequestTaskBeanGreenDao.deleteSingleCache
+                                (backgroundRequestTaskBean);
 //                        infoCommentListBean.setId(((Double) data).intValue());
                         infoCommentListBean.setState(DynamicBean.SEND_SUCCESS);
                         mInfoCommentListBeanDao.insertOrReplace(infoCommentListBean);
-                        EventBus.getDefault().post(infoCommentListBean, EVENT_SEND_COMMENT_TO_INFO_LIST);
+                        EventBus.getDefault().post(infoCommentListBean,
+                                EVENT_SEND_COMMENT_TO_INFO_LIST);
                     }
 
                     @Override
                     protected void onFailure(String message, int code) {
-                        mBackgroundRequestTaskBeanGreenDao.deleteSingleCache(backgroundRequestTaskBean);
+                        mBackgroundRequestTaskBeanGreenDao.deleteSingleCache
+                                (backgroundRequestTaskBean);
                         infoCommentListBean.setState(DynamicBean.SEND_ERROR);
                         mInfoCommentListBeanDao.insertOrReplace(infoCommentListBean);
-                        EventBus.getDefault().post(infoCommentListBean, EVENT_SEND_COMMENT_TO_INFO_LIST);
+                        EventBus.getDefault().post(infoCommentListBean,
+                                EVENT_SEND_COMMENT_TO_INFO_LIST);
                     }
 
                     @Override
                     protected void onException(Throwable throwable) {
                         infoCommentListBean.setState(DynamicBean.SEND_ERROR);
                         mInfoCommentListBeanDao.insertOrReplace(infoCommentListBean);
-                        EventBus.getDefault().post(infoCommentListBean, EVENT_SEND_COMMENT_TO_INFO_LIST);
+                        EventBus.getDefault().post(infoCommentListBean,
+                                EVENT_SEND_COMMENT_TO_INFO_LIST);
                     }
                 });
 
@@ -1315,26 +1491,31 @@ public class BackgroundTaskHandler {
 
         final HashMap<String, Object> params = backgroundRequestTaskBean.getParams();
         final Long commentMark = (Long) params.get("comment_mark");
-        final InfoCommentListBean infoCommentListBean = mInfoCommentListBeanDao.getCommentByCommentMark
+        final InfoCommentListBean infoCommentListBean = mInfoCommentListBeanDao
+                .getCommentByCommentMark
                 (commentMark);
         if (infoCommentListBean == null) {
             mBackgroundRequestTaskBeanGreenDao.deleteSingleCache(backgroundRequestTaskBean);
             return;
         }
         mServiceManager.getCommonClient()
-                .handleBackGroundTaskPostV2(backgroundRequestTaskBean.getPath(), UpLoadFile.upLoadFileAndParams(null, backgroundRequestTaskBean
+                .handleBackGroundTaskPostV2(backgroundRequestTaskBean.getPath(), UpLoadFile
+                        .upLoadFileAndParams(null, backgroundRequestTaskBean
                         .getParams()))
                 .retryWhen(new RetryWithInterceptDelay(RETRY_MAX_COUNT, RETRY_INTERVAL_TIME))
                 .subscribe(new BaseSubscribeForV2<Object>() {
                     @Override
                     protected void onSuccess(Object data) {
-                        mBackgroundRequestTaskBeanGreenDao.deleteSingleCache(backgroundRequestTaskBean);
+                        mBackgroundRequestTaskBeanGreenDao.deleteSingleCache
+                                (backgroundRequestTaskBean);
                         try {
                             JSONObject jsonObject = new JSONObject(new Gson().toJson(data));
-                            infoCommentListBean.setId(jsonObject.getJSONObject("comment").getLong("id"));
+                            infoCommentListBean.setId(jsonObject.getJSONObject("comment").getLong
+                                    ("id"));
                             infoCommentListBean.setState(InfoCommentListBean.SEND_SUCCESS);
                             mInfoCommentListBeanDao.insertOrReplace(infoCommentListBean);
-                            EventBus.getDefault().post(infoCommentListBean, EVENT_SEND_COMMENT_TO_INFO_LIST);
+                            EventBus.getDefault().post(infoCommentListBean,
+                                    EVENT_SEND_COMMENT_TO_INFO_LIST);
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -1343,10 +1524,12 @@ public class BackgroundTaskHandler {
                     @Override
                     protected void onFailure(String message, int code) {
                         super.onFailure(message, code);
-                        mBackgroundRequestTaskBeanGreenDao.deleteSingleCache(backgroundRequestTaskBean);
+                        mBackgroundRequestTaskBeanGreenDao.deleteSingleCache
+                                (backgroundRequestTaskBean);
                         infoCommentListBean.setState(InfoCommentListBean.SEND_ERROR);
                         mInfoCommentListBeanDao.insertOrReplace(infoCommentListBean);
-                        EventBus.getDefault().post(infoCommentListBean, EVENT_SEND_COMMENT_TO_INFO_LIST);
+                        EventBus.getDefault().post(infoCommentListBean,
+                                EVENT_SEND_COMMENT_TO_INFO_LIST);
                     }
 
                     @Override
@@ -1354,7 +1537,8 @@ public class BackgroundTaskHandler {
                         super.onException(throwable);
                         infoCommentListBean.setState(InfoCommentListBean.SEND_ERROR);
                         mInfoCommentListBeanDao.insertOrReplace(infoCommentListBean);
-                        EventBus.getDefault().post(infoCommentListBean, EVENT_SEND_COMMENT_TO_INFO_LIST);
+                        EventBus.getDefault().post(infoCommentListBean,
+                                EVENT_SEND_COMMENT_TO_INFO_LIST);
                     }
                 });
 
@@ -1383,7 +1567,8 @@ public class BackgroundTaskHandler {
                 int photoWidth = (int) imageBean.getWidth();
                 int photoHeight = (int) imageBean.getHeight();
                 String photoMimeType = imageBean.getImgMimeType();
-                upLoadPics.add(mUpLoadRepository.upLoadSingleFileV2(filePath, photoMimeType, true, photoWidth, photoHeight));
+                upLoadPics.add(mUpLoadRepository.upLoadSingleFileV2(filePath, photoMimeType,
+                        true, photoWidth, photoHeight));
             }
             observable = Observable.combineLatest(upLoadPics, args -> {
                 // 得到图片上传的结果
@@ -1424,14 +1609,16 @@ public class BackgroundTaskHandler {
     private void sendQuestionComment(BackgroundRequestTaskBean backgroundRequestTaskBean) {
         final HashMap<String, Object> params = backgroundRequestTaskBean.getParams();
         final Long commentMark = (Long) params.get("comment_mark");
-        final QuestionCommentBean questionCommentBean = mQuestionCommentBeanGreenDao.getCommentByCommentMark(commentMark);
+        final QuestionCommentBean questionCommentBean = mQuestionCommentBeanGreenDao
+                .getCommentByCommentMark(commentMark);
         if (questionCommentBean == null) {
             mBackgroundRequestTaskBeanGreenDao.deleteSingleCache(backgroundRequestTaskBean);
             return;
         }
         // 发送动态到动态列表：状态为发送中
         mServiceManager.getCommonClient()
-                .handleBackGroundTaskPostV2(backgroundRequestTaskBean.getPath(), UpLoadFile.upLoadFileAndParams(null, backgroundRequestTaskBean
+                .handleBackGroundTaskPostV2(backgroundRequestTaskBean.getPath(), UpLoadFile
+                        .upLoadFileAndParams(null, backgroundRequestTaskBean
                         .getParams()))
                 .retryWhen(new RetryWithInterceptDelay(RETRY_MAX_COUNT, RETRY_INTERVAL_TIME))
                 .subscribe(new BaseSubscribeForV2<Object>() {
@@ -1439,11 +1626,14 @@ public class BackgroundTaskHandler {
                     protected void onSuccess(Object data) {
                         try {
                             JSONObject jsonObject = new JSONObject(new Gson().toJson(data));
-                            questionCommentBean.setId(jsonObject.getJSONObject("comment").getLong("id"));
+                            questionCommentBean.setId(jsonObject.getJSONObject("comment").getLong
+                                    ("id"));
                             questionCommentBean.setState(QuestionCommentBean.SEND_SUCCESS);
                             mQuestionCommentBeanGreenDao.insertOrReplace(questionCommentBean);
-                            EventBus.getDefault().post(questionCommentBean, EVENT_SEND_COMMENT_TO_QUESTION_LIST);
-                            mBackgroundRequestTaskBeanGreenDao.deleteSingleCache(backgroundRequestTaskBean);
+                            EventBus.getDefault().post(questionCommentBean,
+                                    EVENT_SEND_COMMENT_TO_QUESTION_LIST);
+                            mBackgroundRequestTaskBeanGreenDao.deleteSingleCache
+                                    (backgroundRequestTaskBean);
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -1453,10 +1643,12 @@ public class BackgroundTaskHandler {
                     @Override
                     protected void onFailure(String message, int code) {
                         super.onFailure(message, code);
-                        mBackgroundRequestTaskBeanGreenDao.deleteSingleCache(backgroundRequestTaskBean);
+                        mBackgroundRequestTaskBeanGreenDao.deleteSingleCache
+                                (backgroundRequestTaskBean);
                         questionCommentBean.setState(QuestionCommentBean.SEND_ERROR);
                         mQuestionCommentBeanGreenDao.insertOrReplace(questionCommentBean);
-                        EventBus.getDefault().post(questionCommentBean, EVENT_SEND_COMMENT_TO_QUESTION_LIST);
+                        EventBus.getDefault().post(questionCommentBean,
+                                EVENT_SEND_COMMENT_TO_QUESTION_LIST);
                     }
 
                     @Override
@@ -1464,7 +1656,8 @@ public class BackgroundTaskHandler {
                         super.onException(throwable);
                         questionCommentBean.setState(QuestionCommentBean.SEND_ERROR);
                         mQuestionCommentBeanGreenDao.insertOrReplace(questionCommentBean);
-                        EventBus.getDefault().post(questionCommentBean, EVENT_SEND_COMMENT_TO_QUESTION_LIST);
+                        EventBus.getDefault().post(questionCommentBean,
+                                EVENT_SEND_COMMENT_TO_QUESTION_LIST);
                     }
 
                 });
@@ -1481,10 +1674,13 @@ public class BackgroundTaskHandler {
                 .subscribe(new BaseSubscribeForV2<List<ChatGroupBean>>() {
                     @Override
                     protected void onSuccess(List<ChatGroupBean> data) {
-                        mBackgroundRequestTaskBeanGreenDao.deleteSingleCache(backgroundRequestTaskBean);
+                        mBackgroundRequestTaskBeanGreenDao.deleteSingleCache
+                                (backgroundRequestTaskBean);
                         Bundle bundle = new Bundle();
-                        bundle.putParcelableArrayList(EventBusTagConfig.EVENT_IM_GET_GROUP_INFO, (ArrayList<? extends Parcelable>) data);
-                        EventBus.getDefault().post(bundle, EventBusTagConfig.EVENT_IM_GET_GROUP_INFO);
+                        bundle.putParcelableArrayList(EventBusTagConfig.EVENT_IM_GET_GROUP_INFO,
+                                (ArrayList<? extends Parcelable>) data);
+                        EventBus.getDefault().post(bundle, EventBusTagConfig
+                                .EVENT_IM_GET_GROUP_INFO);
                     }
 
                     @Override
@@ -1492,7 +1688,8 @@ public class BackgroundTaskHandler {
                         if (checkIsNeedReRequest(code)) {
                             addBackgroundRequestTask(backgroundRequestTaskBean);
                         } else {
-                            mBackgroundRequestTaskBeanGreenDao.deleteSingleCache(backgroundRequestTaskBean);
+                            mBackgroundRequestTaskBeanGreenDao.deleteSingleCache
+                                    (backgroundRequestTaskBean);
                         }
                     }
 
