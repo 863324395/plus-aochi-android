@@ -19,6 +19,7 @@ import com.zhiyicx.thinksnsplus.data.source.local.DynamicBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.DynamicContract;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.DynamicFragment;
+import com.zhiyicx.thinksnsplus.modules.shortvideo.helper.ZhiyiVideoView;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -65,16 +66,7 @@ public class MainFragment extends TSViewPagerFragment implements DynamicFragment
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
-        if (JZVideoPlayerManager.getCurrentJzvd() != null) {
-            JZVideoPlayerManager.getCurrentJzvd().startButton.callOnClick();
-        }
-        if (mFragmentList != null) {
-            for (Object fragment : mFragmentList) {
-
-            }
-        }
-
-
+        ZhiyiVideoView.goOnPlayOnPause();
     }
 
     @Override
@@ -134,6 +126,8 @@ public class MainFragment extends TSViewPagerFragment implements DynamicFragment
                     showLoginPop();
                     // 转回热门
                     mVpFragment.setCurrentItem(1);
+                }else{
+                    ZhiyiVideoView.goOnPlayOnPause();
                 }
             }
 
