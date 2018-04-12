@@ -4,8 +4,10 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 
+import com.umeng.socialize.bean.SHARE_MEDIA;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
@@ -448,6 +450,48 @@ public class DynamicDetailPresenter extends AppBasePresenter<
                 == null ? "" : dynamicBean.getId()));
         mSharePolicy.setShareContent(shareContent);
         mSharePolicy.showShare(((TSFragment) mRootView).getActivity());
+    }
+
+    @Override
+    public void shareDynamic(DynamicDetailBeanV2 dynamicBean, Bitmap bitmap, SHARE_MEDIA type) {
+        if (mSharePolicy == null) {
+            if (mRootView instanceof Fragment) {
+                mSharePolicy = new UmengSharePolicyImpl(((Fragment) mRootView).getActivity());
+            } else {
+                return;
+            }
+        }
+        ShareContent shareContent = new ShareContent();
+        shareContent.setTitle(mContext.getString(R.string.share));
+        shareContent.setContent(TextUtils.isEmpty(dynamicBean.getFeed_content()) ? mContext.getString(R.string
+                .share_dynamic) : dynamicBean.getFeed_content());
+        if (bitmap != null) {
+            shareContent.setBitmap(bitmap);
+        } else {
+            shareContent.setBitmap(ConvertUtils.drawBg4Bitmap(Color.WHITE, BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.icon)));
+        }
+        shareContent.setUrl(String.format(ApiConfig.APP_DOMAIN + ApiConfig.APP_PATH_SHARE_DYNAMIC, dynamicBean.getId()
+                == null ? "" : dynamicBean.getId()));
+        mSharePolicy.setShareContent(shareContent);
+        switch (type) {
+            case QQ:
+                mSharePolicy.shareQQ(((TSFragment) mRootView).getActivity(), this);
+                break;
+            case QZONE:
+                mSharePolicy.shareZone(((TSFragment) mRootView).getActivity(), this);
+                break;
+            case WEIXIN:
+                mSharePolicy.shareWechat(((TSFragment) mRootView).getActivity(), this);
+                break;
+            case WEIXIN_CIRCLE:
+                mSharePolicy.shareMoment(((TSFragment) mRootView).getActivity(), this);
+                break;
+            case SINA:
+                mSharePolicy.shareWeibo(((TSFragment) mRootView).getActivity(), this);
+                break;
+            default:
+        }
+
     }
 
     @Override

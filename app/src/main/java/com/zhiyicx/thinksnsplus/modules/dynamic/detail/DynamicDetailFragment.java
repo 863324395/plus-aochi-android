@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.dynamic.detail;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.content.ContextCompat;
@@ -9,9 +10,11 @@ import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding.view.RxView;
+import com.umeng.socialize.bean.SHARE_MEDIA;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.config.PayConfig;
 import com.zhiyicx.baseproject.widget.DynamicDetailMenuView;
@@ -21,6 +24,7 @@ import com.zhiyicx.baseproject.widget.UserAvatarView;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.baseproject.widget.popwindow.PayPopWindow;
 import com.zhiyicx.common.BuildConfig;
+import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.TextViewUtils;
 import com.zhiyicx.common.utils.UIUtils;
@@ -39,6 +43,7 @@ import com.zhiyicx.thinksnsplus.modules.home.message.messagecomment.MessageComme
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
 import com.zhiyicx.thinksnsplus.modules.report.ReportActivity;
 import com.zhiyicx.thinksnsplus.modules.report.ReportType;
+import com.zhiyicx.thinksnsplus.modules.shortvideo.helper.ZhiyiVideoView;
 import com.zhiyicx.thinksnsplus.modules.wallet.reward.RewardType;
 import com.zhiyicx.thinksnsplus.modules.wallet.sticktop.StickTopFragment;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
@@ -75,7 +80,7 @@ import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.DYNAMIC_LIST_DEL
 public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.Presenter, DynamicCommentBean>
         implements DynamicDetailContract.View, OnUserInfoClickListener, OnCommentTextClickListener,
         OnSendClickListener, MultiItemTypeAdapter.OnItemClickListener, DynamicDetailHeader.OnImageClickLisenter,
-        TextViewUtils.OnSpanTextClickListener, DynamicDetailCommentItem.OnCommentResendListener {
+        TextViewUtils.OnSpanTextClickListener, DynamicDetailCommentItem.OnCommentResendListener, ZhiyiVideoView.ShareInterface {
     public static final String DYNAMIC_DETAIL_DATA = "dynamic_detail_data";
     public static final String DYNAMIC_LIST_NEED_REFRESH = "dynamic_list_need_refresh";
     public static final String DYNAMIC_UPDATE_TOLL = "dynamic_update_toll";
@@ -343,6 +348,17 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
     }
 
     @Override
+    public void share(int position) {
+        mPresenter.shareDynamic(getCurrentDynamic(), mDynamicDetailHeader.getSharBitmap());
+    }
+
+    @Override
+    public void shareWihtType(int position, SHARE_MEDIA type) {
+        mPresenter.shareDynamic(getCurrentDynamic(), mDynamicDetailHeader.getSharBitmap(),
+                type);
+    }
+
+    @Override
     public void setRewardListBeans(List<RewardsListBean> rewardsListBeens) {
         if (rewardsListBeens == null) {
             return;
@@ -409,7 +425,8 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
         setToolBarUser(mDynamicBean);// 设置标题用户
         initBottomToolData(mDynamicBean);// 初始化底部工具栏数据
 //        设置动态详情列表数据
-        mDynamicDetailHeader.setDynamicDetial(mDynamicBean, getArgumentsBundle().getInt(DYNAMIC_VIDEO_STATE, -1));
+        mDynamicDetailHeader.setDynamicDetial(mDynamicBean, getArgumentsBundle().getInt
+                (DYNAMIC_VIDEO_STATE, -1),this);
         updateReward();
         updateCommentCountAndDig();
         onNetResponseSuccess(mDynamicBean.getComments(), false);

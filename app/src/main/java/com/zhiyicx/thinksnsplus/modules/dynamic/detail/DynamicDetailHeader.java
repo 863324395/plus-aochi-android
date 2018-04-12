@@ -152,7 +152,8 @@ public class DynamicDetailHeader {
      *
      * @param dynamicBean
      */
-    public void setDynamicDetial(DynamicDetailBeanV2 dynamicBean, int state) {
+    public void setDynamicDetial(DynamicDetailBeanV2 dynamicBean, int state, ZhiyiVideoView
+            .ShareInterface shareInterface) {
         String titleText = "";
         if (TextUtils.isEmpty(titleText)) {
             mTitle.setVisibility(View.GONE);
@@ -177,10 +178,12 @@ public class DynamicDetailHeader {
             sharBitmap = ConvertUtils.drawBg4Bitmap(0xffffff, BitmapFactory.decodeResource(context
                     .getResources(), R.mipmap.icon).copy(Bitmap.Config.RGB_565, true));
         } else {
+
             mPhotoContainer.setVisibility(View.VISIBLE);
             DynamicDetailBeanV2.Video video = dynamicBean.getVideo();
             if (video != null) {
                 ZhiyiVideoView videoView = new ZhiyiVideoView(mContext);
+                videoView.setShareInterface(shareInterface);
                 mPhotoContainer.addView(videoView);
 
                 int width = picWidth;
@@ -224,8 +227,9 @@ public class DynamicDetailHeader {
                                     model, Target<GlideDrawable> target, boolean
                                                                    isFromMemoryCache, boolean
                                                                    isFirstResource) {
-                                Bitmap bitmap = FastBlur.blurBitmap(ConvertUtils.drawable2Bitmap
-                                        (resource), resource.getIntrinsicWidth(), resource
+                                sharBitmap = ConvertUtils.drawable2Bitmap(resource);
+                                Bitmap bitmap = FastBlur.blurBitmap(sharBitmap, resource
+                                        .getIntrinsicWidth(), resource
                                         .getIntrinsicHeight());
                                 videoView.setBackground(new BitmapDrawable(mContext.getResources
                                         (), bitmap));
@@ -289,6 +293,10 @@ public class DynamicDetailHeader {
     }
 
     Bitmap getSharBitmap() {
+        if (sharBitmap == null) {
+            sharBitmap = ConvertUtils.drawBg4Bitmap(0xffffff, BitmapFactory.decodeResource(mContent
+                    .getResources(), R.mipmap.icon).copy(Bitmap.Config.RGB_565, true));
+        }
         return sharBitmap;
     }
 
