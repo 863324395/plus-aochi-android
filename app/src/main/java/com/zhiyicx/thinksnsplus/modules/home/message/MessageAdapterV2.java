@@ -115,7 +115,8 @@ public class MessageAdapterV2 extends CommonAdapter<MessageItemBeanV2> implement
                         .transform(new GlideCircleTransform(mContext))
                         .into(userAvatarView.getIvAvatar());
                 // 群名称
-                String groupName = chatGroupBean == null ? group.getGroupName() : chatGroupBean.getName();
+                String groupName = mContext.getString(R.string.chat_group_name_default, chatGroupBean == null ? group.getGroupName
+                        () : chatGroupBean.getName(), chatGroupBean == null ? group.getMemberCount() : chatGroupBean.getAffiliations_count());
                 // + "(" + chatGroupBean.getAffiliations_count() + ")";
                 holder.setText(R.id.tv_name, groupName);
                 swipeLayout.setSwipeEnabled(true);
@@ -127,7 +128,7 @@ public class MessageAdapterV2 extends CommonAdapter<MessageItemBeanV2> implement
                 break;
         }
         if (messageItemBean.getConversation().getLastMessage() == null) {
-            holder.setText(R.id.tv_content,  mContext.getString(R.string
+            holder.setText(R.id.tv_content, mContext.getString(R.string
                     .ts_chat_no_message_default_tip));
         } else {
             // 最新的消息的发言人，只有群组才管这个
