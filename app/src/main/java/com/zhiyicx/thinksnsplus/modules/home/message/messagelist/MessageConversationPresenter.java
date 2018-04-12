@@ -11,6 +11,7 @@ import com.hyphenate.chat.EMMessage;
 import com.hyphenate.chat.EMTextMessageBody;
 import com.hyphenate.easeui.bean.ChatUserInfoBean;
 import com.hyphenate.easeui.bean.ChatVerifiedBean;
+import com.zhiyicx.baseproject.base.SystemConfigBean;
 import com.zhiyicx.baseproject.em.manager.eventbus.TSEMMultipleMessagesEvent;
 import com.zhiyicx.baseproject.em.manager.eventbus.TSEMRefreshEvent;
 import com.zhiyicx.baseproject.em.manager.util.TSEMConstants;
@@ -67,6 +68,10 @@ public class MessageConversationPresenter extends AppBasePresenter<MessageConver
      * 复制的所有原数据
      */
     private List<MessageItemBeanV2> mCopyConversationList;
+
+    // 再在第一条插入ts助手，前提是当前消息列表中没有小助手的消息
+    private List<SystemConfigBean.ImHelperBean> mTsHlepers;
+
 
     @Inject
     public MessageConversationPresenter(MessageConversationContract.View rootView) {
@@ -335,7 +340,8 @@ public class MessageConversationPresenter extends AppBasePresenter<MessageConver
                         if (data == null || data.isEmpty()) {
                             return;
                         }
-                        EMTextMessageBody textBody = new EMTextMessageBody(mContext.getResources().getString(R.string.userup_exit_group,data.get(0).getName()));
+                        EMTextMessageBody textBody = new EMTextMessageBody(mContext.getResources().getString(R.string.userup_exit_group, data.get
+                                (0).getName()));
                         event.getMessage().addBody(textBody);
                         EMClient.getInstance().chatManager().saveMessage(event.getMessage());
                         mRootView.refreshData();
@@ -460,6 +466,32 @@ public class MessageConversationPresenter extends AppBasePresenter<MessageConver
             mRootView.getListDatas().remove(deleteItem);
             mRootView.refreshData();
         }
+    }
+
+    @Override
+    public boolean checkUserIsImHelper(long userId) {
+        if (mTsHlepers == null) {
+            try {
+                mTsHlepers = mSystemRepository.getBootstrappersInfoFromLocal().getIm_helper();
+            } catch (NullPointerException e) {
+                e.printStackTrace();
+                // 服务器配置信息不完善
+                LogUtils.e("服务器配置信息不完善!!!");
+            }
+        }
+        if (mTsHlepers == null) {
+            return false;
+        }
+        for (SystemConfigBean.ImHelperBean tsHleper : mTsHlepers) {
+            try {
+                if (userId == Long.valueOf(tsHleper.getUid())) {
+                    return true;
+                }
+            } catch (NumberFormatException e) {
+                e.printStackTrace();
+            }
+        }
+        return false;
     }
 
     /**

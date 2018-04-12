@@ -164,7 +164,7 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
     protected RecyclerView.Adapter getAdapter() {
         messageItemBeanList = new ArrayList<>();
 //        MessageSwipeAdapter commonAdapter =new MessageSwipeAdapter(getContext(),mListDatas);
-        MessageAdapterV2 commonAdapter = new MessageAdapterV2(getActivity(), messageItemBeanList);
+        MessageAdapterV2 commonAdapter = new MessageAdapterV2(getActivity(), messageItemBeanList,null);
         commonAdapter.setOnSwipItemClickListener(this);
         commonAdapter.setOnUserInfoClickListener(this);
         return commonAdapter;

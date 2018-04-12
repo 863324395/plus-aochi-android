@@ -67,5 +67,11 @@ public interface MessageConversationContract {
         void searchList(String key);
 
         void deleteGroup(String id);
+
+        /**
+         * @param userId 用户 id
+         * @return true 是 IM 小助手
+         */
+        boolean checkUserIsImHelper(long userId);
     }
 }
