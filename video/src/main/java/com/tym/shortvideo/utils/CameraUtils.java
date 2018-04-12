@@ -48,7 +48,7 @@ public class CameraUtils {
     public static final float Ratio_16_9 = 0.5625f;
     public static final float Ratio_1_1 = 1f;
 
-    private static int mCameraID = Camera.CameraInfo.CAMERA_FACING_FRONT;
+    private static int mCameraID = Camera.CameraInfo.CAMERA_FACING_BACK;
     private static Camera mCamera;
     // 相机帧率
     private static int mCameraPreviewFps;
