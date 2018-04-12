@@ -142,7 +142,13 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.View>
                                 .DYNAMIC_TYPE_FOLLOWS))) {
                             data = getDynamicBeenFromDBV2();
                             data.addAll(listBaseJson);
+                        } else {
+                            data = new ArrayList<>();
+                            data.addAll(listBaseJson);
                         }
+                    } else {
+                        data = new ArrayList<>();
+                        data.addAll(listBaseJson);
                     }
                     // 把自己发的评论加到评论列表的前面
                     for (int i = 0; i < listBaseJson.size(); i++) {
