@@ -6,7 +6,6 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.media.MediaMetadataRetriever;
 import android.net.Uri;
-import android.os.Build;
 import android.provider.MediaStore;
 import android.text.TextUtils;
 
@@ -15,6 +14,7 @@ import com.tym.shortvideo.interfaces.SingleCallback;
 import com.tym.shortvideo.interfaces.TrimVideoListener;
 import com.tym.shortvideo.media.VideoInfo;
 import com.tym.shortvideo.mediacodec.VideoClipper;
+import com.zhiyicx.common.utils.*;
 import com.zhiyicx.common.utils.log.LogUtils;
 
 import java.io.IOException;
@@ -64,8 +64,7 @@ public class TrimVideoUtil {
                                                        new MediaMetadataRetriever();
                                                mediaMetadataRetriever.setDataSource(context,
                                                        videoUri);
-                                               // METADATA_KEY_VIDEO_WIDTH
-                                               // Retrieve media data use microsecond
+                                               // 微秒
                                                long videoLengthInMs = Long.parseLong
                                                        (mediaMetadataRetriever.extractMetadata
                                                                (MediaMetadataRetriever
@@ -77,7 +76,6 @@ public class TrimVideoUtil {
                                                float w, h;
                                                w = thumb_Width;
                                                h = thumb_Height;
-                                               //每次截取到3帧之后上报
                                                for (long i = 0; i < numThumbs; ++i) {
                                                    Bitmap bitmap = mediaMetadataRetriever
                                                            .getFrameAtTime(i * interval,
@@ -132,14 +130,12 @@ public class TrimVideoUtil {
                                                        new MediaMetadataRetriever();
                                                mediaMetadataRetriever.setDataSource(context,
                                                        videoUri);
-                                               // METADATA_KEY_VIDEO_WIDTH
-                                               // Retrieve media data use microsecond
+                                               // 微秒
                                                long videoLengthInMs = Long.parseLong
                                                        (mediaMetadataRetriever.extractMetadata
                                                                (MediaMetadataRetriever
                                                                        .METADATA_KEY_DURATION)) *
                                                        1000;
-                                               //每次截取到3帧之后上报
                                                Bitmap bitmap = mediaMetadataRetriever
                                                        .getFrameAtTime(frame_time,
                                                                MediaMetadataRetriever
@@ -247,7 +243,18 @@ public class TrimVideoUtil {
                                                        video.setHeight(cursor.getInt(cursor
                                                                .getColumnIndex(MediaStore.Video
                                                                        .Media.HEIGHT)));
-                                                       video.setDuration(cursor.getInt(cursor
+
+                                                       LogUtils.d("duration::" + cursor.getLong(cursor
+                                                               .getColumnIndex(MediaStore.Video
+                                                                       .Media.DURATION)));
+                                                       LogUtils.d("width::" + cursor.getInt(cursor
+                                                               .getColumnIndex(MediaStore.Video
+                                                                       .Media.WIDTH)));
+                                                       LogUtils.d("height::" + cursor.getInt(cursor
+                                                               .getColumnIndex(MediaStore.Video
+                                                                       .Media.HEIGHT)));
+
+                                                       video.setDuration((int) cursor.getLong(cursor
                                                                .getColumnIndex(MediaStore.Video
                                                                        .Media.DURATION)));
                                                        video.setStoreId(cursor.getInt(cursor
@@ -255,24 +262,30 @@ public class TrimVideoUtil {
                                                                        .Media._ID)));
                                                        String mime = cursor.getString(cursor
                                                                .getColumnIndex(MediaStore.Video
-                                                                       .Media.CONTENT_TYPE));
+                                                                       .Media.MIME_TYPE));
 
                                                        if (!"video/mp4".equals(mime)) {
                                                            continue;
                                                        }
+                                                       if (!com.zhiyicx.common.utils.FileUtils
+                                                               .isFileExists(video.getPath())) {
+                                                           continue;
+                                                       }
 
-                                                       if (video.getDuration() < 3000) {
+                                                       if (video.getDuration() < 500) {
                                                            continue;
                                                        }
                                                        videos.add(video);
 //                                                       if (videos.size() >= 3) {
-//                                                           callback.onSingleCallback(new ArrayList<>(videos), 3);
+//                                                           callback.onSingleCallback(new
+// ArrayList<>(videos), 3);
 //                                                           videos.clear();
 //                                                       }
 
                                                    }
                                                    cursor.close();
-                                                   callback.onSingleCallback(new ArrayList<>(videos), -1);
+                                                   callback.onSingleCallback(new ArrayList<>
+                                                           (videos), -1);
                                                }
                                            } catch (Exception e) {
                                                callback.onSingleCallback(videos, 0);
