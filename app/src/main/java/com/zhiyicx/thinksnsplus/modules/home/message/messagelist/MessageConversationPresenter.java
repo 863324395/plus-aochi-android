@@ -69,9 +69,6 @@ public class MessageConversationPresenter extends AppBasePresenter<MessageConver
      */
     private List<MessageItemBeanV2> mCopyConversationList;
 
-    // 再在第一条插入ts助手，前提是当前消息列表中没有小助手的消息
-    private List<SystemConfigBean.ImHelperBean> mTsHlepers;
-
 
     @Inject
     public MessageConversationPresenter(MessageConversationContract.View rootView) {
@@ -468,30 +465,13 @@ public class MessageConversationPresenter extends AppBasePresenter<MessageConver
         }
     }
 
+    /**
+     * @param userId 用户 id
+     * @return
+     */
     @Override
     public boolean checkUserIsImHelper(long userId) {
-        if (mTsHlepers == null) {
-            try {
-                mTsHlepers = mSystemRepository.getBootstrappersInfoFromLocal().getIm_helper();
-            } catch (NullPointerException e) {
-                e.printStackTrace();
-                // 服务器配置信息不完善
-                LogUtils.e("服务器配置信息不完善!!!");
-            }
-        }
-        if (mTsHlepers == null) {
-            return false;
-        }
-        for (SystemConfigBean.ImHelperBean tsHleper : mTsHlepers) {
-            try {
-                if (userId == Long.valueOf(tsHleper.getUid())) {
-                    return true;
-                }
-            } catch (NumberFormatException e) {
-                e.printStackTrace();
-            }
-        }
-        return false;
+        return mSystemRepository.checkUserIsImHelper(userId);
     }
 
     /**

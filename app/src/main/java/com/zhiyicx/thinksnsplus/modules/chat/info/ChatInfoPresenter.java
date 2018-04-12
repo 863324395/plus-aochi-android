@@ -144,7 +144,8 @@ public class ChatInfoPresenter extends AppBasePresenter<ChatInfoContract.View>
     @Override
     public void updateGroup(ChatGroupBean chatGroupBean, boolean isEditGroupFace) {
         // 这里不是修改群主，所以newOwner直接传空
-        Subscription subscription = mRepository.updateGroup(chatGroupBean.getId(), chatGroupBean.getName(), chatGroupBean.getDescription(), 0, 200, chatGroupBean.isMembersonly(),
+        Subscription subscription = mRepository.updateGroup(chatGroupBean.getId(), chatGroupBean.getName(), chatGroupBean.getDescription(), 0, 200,
+                chatGroupBean.isMembersonly(),
                 0, chatGroupBean.getGroup_face(), isEditGroupFace, "")
                 .doOnSubscribe(() -> mRootView.showSnackLoadingMessage("修改中..."))
                 .observeOn(AndroidSchedulers.mainThread())
@@ -329,5 +330,15 @@ public class ChatInfoPresenter extends AppBasePresenter<ChatInfoContract.View>
         } catch (NumberFormatException e) {
             return DefaultUserInfoConfig.getDefaultDeletUserInfo(mContext, 0);
         }
+    }
+
+    @Override
+    public boolean checkImhelper(String chatId) {
+        try {
+            return mSystemRepository.checkUserIsImHelper(Long.parseLong(chatId));
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 }

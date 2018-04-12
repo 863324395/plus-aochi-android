@@ -71,4 +71,12 @@ public interface ISystemRepository {
      * @return
      */
     Observable<List<AppVersionBean>> getAppNewVersion();
+
+    /**
+     * 检查当前当前用户是否是 imHelper
+     *
+     * @param userId
+     * @return
+     */
+    boolean checkUserIsImHelper(long userId);
 }

@@ -1072,4 +1072,5 @@
     <string name="please_open_camera_and_mic_permisssion">如需使用此功能，请开启麦克风与相机权限！！！</string>
     <string name="min_short_video_time">不得小于%d秒</string>
     <string name="ts_chat_no_message_default_tip">暂无消息</string>
+    <string name="ts_message_history_deleted_tip">您正在删除聊天记录，删除后不可恢复</string>
 </resources>
