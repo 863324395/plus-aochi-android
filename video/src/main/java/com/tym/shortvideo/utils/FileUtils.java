@@ -1,7 +1,6 @@
 package com.tym.shortvideo.utils;
 
 import android.content.ContentResolver;
-import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.media.MediaScannerConnection;
@@ -39,7 +38,7 @@ public class FileUtils {
     }
 
     public static String getBaseFolder() {
-        String baseFolder = Environment.getExternalStorageDirectory() + "/Codec/";
+        String baseFolder = Environment.getExternalStorageDirectory() + "/TSPlus/";
         File f = new File(baseFolder);
         if (!f.exists()) {
             boolean b = f.mkdirs();
@@ -50,15 +49,14 @@ public class FileUtils {
         return baseFolder;
     }
 
-    //获取VideoPath
     public static String getPath(String path, String fileName) {
         String p = getBaseFolder() + path;
         File f = new File(p);
         if (!f.exists() && !f.mkdirs()) {
             return getBaseFolder() + fileName;
         }
-        String file=p + fileName;
-        File newFile=new File(file);
+        String file = p + fileName;
+        File newFile = new File(file);
         newFile.deleteOnExit();
         return file;
     }

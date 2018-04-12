@@ -18,23 +18,26 @@ public class ParamsManager {
     // 上下文，方便滤镜使用
     public static Context context;
 
-    // 存储根目录
-    private static final String StoragePath = Environment.getExternalStorageDirectory().getPath();
-
     // 默认相册位置
-    public static final String AlbumPath = StoragePath + "/DCIM/Camera/";
+    public static final String AlbumPath = "/DCIM/Camera/";
 
     // 图片存放地址
-    public static final String ImagePath = StoragePath + "/Zhiyi/Image/";
+    public static final String ImagePath = "/Zhiyi/Image/";
 
     // 视频存放地址
-    public static final String VideoPath = StoragePath + "/Zhiyi/Video/";
+    public static final String VideoPath = "/Zhiyi/Video/";
+
+    // 录制时分段视频
+    public static final String RecordPath = "/Zhiyi/Record/";
 
     // 合并后的视频
     public static final String CombineVideo = "zhiyi_combine.mp4";
 
     // 处理完准备发送的视频
     public static final String ClipVideo = "zhiyi_done.mp4";
+
+    // 压缩剪辑的视频存放
+    public static final String CompressVideo = "zhiyi_compress.mp4";
 
     // 处理完准备发送的视频存放目录
     public static final String SaveVideo = "Zhiyi/shortvideo/";

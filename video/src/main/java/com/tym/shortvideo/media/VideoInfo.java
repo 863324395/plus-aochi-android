@@ -36,6 +36,17 @@ public class VideoInfo implements Parcelable,Serializable{
     // 动态文本内容
     public String dynamicContent;
 
+    // 视频需要压缩
+    public boolean needCompressVideo;
+
+    public boolean needCompressVideo() {
+        return needCompressVideo;
+    }
+
+    public void setNeedCompressVideo(boolean needCompressVideo) {
+        this.needCompressVideo = needCompressVideo;
+    }
+
     public String getDynamicContent() {
         return dynamicContent;
     }
@@ -180,7 +191,6 @@ public class VideoInfo implements Parcelable,Serializable{
         this.cutDuration = cutDuration;
     }
 
-
     @Override
     public int describeContents() {
         return 0;
@@ -205,6 +215,7 @@ public class VideoInfo implements Parcelable,Serializable{
         dest.writeInt(this.cutDuration);
         dest.writeInt(this.storeId);
         dest.writeString(this.dynamicContent);
+        dest.writeByte(this.needCompressVideo ? (byte) 1 : (byte) 0);
     }
 
     protected VideoInfo(Parcel in) {
@@ -225,6 +236,7 @@ public class VideoInfo implements Parcelable,Serializable{
         this.cutDuration = in.readInt();
         this.storeId = in.readInt();
         this.dynamicContent = in.readString();
+        this.needCompressVideo = in.readByte() != 0;
     }
 
     public static final Creator<VideoInfo> CREATOR = new Creator<VideoInfo>() {

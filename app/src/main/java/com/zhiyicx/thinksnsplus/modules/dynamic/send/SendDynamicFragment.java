@@ -573,6 +573,8 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                 }
             }
         }
+        sendDynamicDataBeanV2.getVideoInfo().setNeedCompressVideo(needCompressVideo());
+        sendDynamicDataBeanV2.getVideoInfo().setDuration(mSendDynamicDataBean.getVideoInfo().getDuration());
         sendDynamicDataBeanV2.setPhotos(photos);
         sendDynamicDataBeanV2.setStorage_task(storageTask);
     }
@@ -646,6 +648,14 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
             // 有内容或者有图片时都可以发送
             mToolbarRight.setEnabled(true);
         }
+    }
+
+    @Override
+    public boolean needCompressVideo() {
+        if (dynamicType != SendDynamicDataBean.VIDEO_TEXT_DYNAMIC) {
+            return false;
+        }
+        return mSendDynamicDataBean.getVideoInfo().needCompressVideo();
     }
 
     /**

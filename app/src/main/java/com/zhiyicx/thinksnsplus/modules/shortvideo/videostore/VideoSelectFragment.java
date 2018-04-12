@@ -13,7 +13,6 @@ import android.widget.PopupWindow;
 import com.tym.shortvideo.media.VideoInfo;
 import com.tym.shortvideo.recodrender.ParamsManager;
 import com.tym.shortvideo.recordcore.CountDownManager;
-import com.tym.shortvideo.recordcore.VideoListManager;
 import com.tym.shortvideo.utils.TrimVideoUtil;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
@@ -79,22 +78,16 @@ public class VideoSelectFragment extends TSListFragment {
         mRvList.setPadding(20, 20, 0, 0);
         mRvList.setBackgroundColor(0xffffffff);
 
-        TrimVideoUtil.getAllVideoFiles(mActivity, (videoInfos, integer) -> {
-
-            mActivity.runOnUiThread(() -> {
-                copyData.addAll(videoInfos);
-
-                mListDatas.clear();
-                VideoInfo videoInfo = new VideoInfo();
-                videoInfo.setPath(null);
-                mListDatas.add(videoInfo);
-                mListDatas.addAll(copyData);
-                refreshData();
-                if (mCenterLoadingView != null) {
-                    mCenterLoadingView.setVisibility(View.GONE);
-                }
-            });
-        });
+        TrimVideoUtil.getAllVideoFiles(mActivity, (videoInfos, integer) -> mActivity.runOnUiThread(() -> {
+            copyData.addAll(videoInfos);
+            mListDatas.clear();
+            VideoInfo videoInfo = new VideoInfo();
+            videoInfo.setPath(null);
+            mListDatas.add(videoInfo);
+            mListDatas.addAll(copyData);
+            refreshData();
+            closeLoadingView();
+        }));
     }
 
     @Override
@@ -156,7 +149,7 @@ public class VideoSelectFragment extends TSListFragment {
                         videoInfo.setCover(FileUtils.saveBitmapToFile(mActivity, bitmap, ParamsManager.VideoCover));
                         SendDynamicDataBean sendDynamicDataBean = new SendDynamicDataBean();
                         sendDynamicDataBean.setDynamicBelong(SendDynamicDataBean.NORMAL_DYNAMIC);
-
+                        videoInfo.setNeedCompressVideo(true);
                         List<ImageBean> pic = new ArrayList<>();
                         ImageBean imageBean = new ImageBean();
                         imageBean.setImgUrl(videoInfo.getCover());

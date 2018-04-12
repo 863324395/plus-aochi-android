@@ -37,6 +37,7 @@ public interface SendDynamicContract {
         double getTollMoney();
 
         boolean wordsNumLimit();
+        boolean needCompressVideo();
 
         void initInstructionsPop(String title,String des);
     }

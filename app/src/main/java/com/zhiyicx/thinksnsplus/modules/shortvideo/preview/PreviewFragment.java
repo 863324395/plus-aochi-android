@@ -306,13 +306,7 @@ public class PreviewFragment extends TSFragment implements MediaPlayerWrapper.IM
      * 合并视频
      */
     private void combineVideo() {
-        final String fileName = ParamsManager.CombineVideo;
-        final String path = ParamsManager.AlbumPath
-                + fileName;
-        final File file = new File(path);
-        if (!file.getParentFile().exists()) {
-            file.getParentFile().mkdirs();
-        }
+        final String path = FileUtils.getPath(ParamsManager.AlbumPath,ParamsManager.CombineVideo);
         VideoCombineManager.getInstance()
                 .startVideoCombiner(VideoListManager.getInstance().getSubVideoPathList(),
                         path, new VideoCombiner.VideoCombineListener() {
@@ -347,8 +341,7 @@ public class PreviewFragment extends TSFragment implements MediaPlayerWrapper.IM
         VideoClipper clipper = new VideoClipper();
         clipper.showBeauty();
         clipper.setInputVideoPath(mActivity, path);
-        final String fileName = ParamsManager.ClipVideo;
-        mOutputPath = FileUtils.getPath(ParamsManager.SaveVideo, fileName);
+        mOutputPath = FileUtils.getPath(ParamsManager.SaveVideo, ParamsManager.ClipVideo);
         clipper.setFilterType(mFilterType);
         clipper.setOutputVideoPath(mOutputPath);
         clipper.setOnVideoCutFinishListener(() -> mSubscription = Observable.empty()

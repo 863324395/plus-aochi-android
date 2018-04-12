@@ -7,8 +7,8 @@ import android.net.Uri;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.IntDef;
+import android.text.TextUtils;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -18,20 +18,18 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
-import android.widget.Toast;
 import android.widget.VideoView;
 
-import com.tym.shortvideo.recodrender.ParamsManager;
-import com.tym.video.R;
 import com.tym.shortvideo.interfaces.ProgressVideoListener;
 import com.tym.shortvideo.interfaces.RangeSeekBarListener;
 import com.tym.shortvideo.interfaces.SingleCallback;
 import com.tym.shortvideo.interfaces.TrimVideoListener;
+import com.tym.shortvideo.recodrender.ParamsManager;
 import com.tym.shortvideo.utils.BackgroundExecutor;
 import com.tym.shortvideo.utils.DeviceUtils;
 import com.tym.shortvideo.utils.TrimVideoUtil;
 import com.tym.shortvideo.utils.UiThreadExecutor;
-import com.zhiyicx.common.utils.ConvertUtils;
+import com.tym.video.R;
 import com.zhiyicx.common.utils.FileUtils;
 import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
@@ -427,18 +425,9 @@ public class VideoTrimmerView extends FrameLayout {
             ToastUtils.showToast("视频长不足3秒,无法上传");
         } else {
             mVideoView.pause();
-            TrimVideoUtil.trim(mContext, mSrc, getTrimmedVideoPath(), mStartPosition * 1000, mEndPosition * 1000, mOnTrimVideoListener);
+            TrimVideoUtil.trim(mContext, mSrc, com.tym.shortvideo.utils.FileUtils.getPath(ParamsManager.VideoPath,ParamsManager.CompressVideo),
+                    mStartPosition * 1000, mEndPosition * 1000, mOnTrimVideoListener);
         }
-    }
-
-    private String getTrimmedVideoPath() {
-        if (mFinalPath == null) {
-            File file = mContext.getExternalCacheDir();
-            if (file != null) {
-                mFinalPath = file.getAbsolutePath();
-            }
-        }
-        return mFinalPath;
     }
 
     private void onClickVideoPlayPause() {
@@ -614,5 +603,6 @@ public class VideoTrimmerView extends FrameLayout {
 
     @IntDef({View.VISIBLE, View.INVISIBLE, View.GONE})
     @Retention(RetentionPolicy.SOURCE)
-    public @interface Visibility {}
+    public @interface Visibility {
+    }
 }

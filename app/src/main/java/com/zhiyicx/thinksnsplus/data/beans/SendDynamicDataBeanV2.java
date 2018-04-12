@@ -20,6 +20,7 @@ import org.greenrobot.greendao.converter.PropertyConverter;
 
 import java.io.Serializable;
 import java.util.List;
+
 import org.greenrobot.greendao.annotation.Generated;
 
 /**
@@ -54,16 +55,16 @@ public class SendDynamicDataBeanV2 implements Serializable, Parcelable {
     private String feed_longtitude;
     private String feed_geohash;
     private Long amount;
-    @Convert(columnType =String.class ,converter = StorygeConvert.class)
+    @Convert(columnType = String.class, converter = StorygeConvert.class)
     private List<StorageTaskBean> images;
-    @Convert(converter = ImageBeanConvert.class,columnType = String.class)
+    @Convert(converter = ImageBeanConvert.class, columnType = String.class)
     private List<ImageBean> photos;
 
-    @Convert(converter = VideoConvert.class,columnType = String.class)
+    @Convert(converter = VideoConvert.class, columnType = String.class)
     @SerializedName(value = "video", alternate = {"mVideo"})
     private Video video;// 需要发给服务器的视频信息，包含封面等
 
-    @Convert(converter = VideoInfoConvert.class,columnType = String.class)
+    @Convert(converter = VideoInfoConvert.class, columnType = String.class)
     @Expose(serialize = false)
     private VideoInfo mVideoInfo;// 视频信息，包含地址等
 
@@ -165,7 +166,7 @@ public class SendDynamicDataBeanV2 implements Serializable, Parcelable {
         this.images = storage_task;
     }
 
-    public static class Video implements Parcelable ,Serializable{
+    public static class Video implements Parcelable, Serializable {
         private static final long serialVersionUID = -4434422478157175851L;
         private long video_id;
         private long cover_id;
@@ -300,14 +301,14 @@ public class SendDynamicDataBeanV2 implements Serializable, Parcelable {
         sendDynamicDataBeanV2.setFeed_content(dynamicBean.getFeed_content());
         sendDynamicDataBeanV2.setFeed_from(dynamicBean.getFeed_from() + "");
         sendDynamicDataBeanV2.setFeed_mark(dynamicBean.getFeed_mark() + "");
-        if (dynamicBean.getVideo()!=null){
-            VideoInfo videoInfo=new VideoInfo();
+        if (dynamicBean.getVideo() != null) {
+            VideoInfo videoInfo = new VideoInfo();
             videoInfo.setWidth(dynamicBean.getVideo().getWidth());
             videoInfo.setHeight(dynamicBean.getVideo().getHeight());
             videoInfo.setPath(dynamicBean.getVideo().getUrl());
             sendDynamicDataBeanV2.setVideoInfo(videoInfo);
         }
-        sendDynamicDataBeanV2.setAmount(dynamicBean.getAmount() > 0 ? dynamicBean.getAmount(): null);
+        sendDynamicDataBeanV2.setAmount(dynamicBean.getAmount() > 0 ? dynamicBean.getAmount() : null);
         return sendDynamicDataBeanV2;
     }
 
@@ -328,8 +329,7 @@ public class SendDynamicDataBeanV2 implements Serializable, Parcelable {
     }
 
 
-
-    public static class StorygeConvert implements PropertyConverter<List<StorageTaskBean>,String>{
+    public static class StorygeConvert implements PropertyConverter<List<StorageTaskBean>, String> {
         @Override
         public List<StorageTaskBean> convertToEntityProperty(String databaseValue) {
             if (databaseValue == null) {
@@ -347,7 +347,7 @@ public class SendDynamicDataBeanV2 implements Serializable, Parcelable {
         }
     }
 
-    public static class ImageBeanConvert implements PropertyConverter<List<ImageBean>,String>{
+    public static class ImageBeanConvert implements PropertyConverter<List<ImageBean>, String> {
         @Override
         public List<ImageBean> convertToEntityProperty(String databaseValue) {
             if (databaseValue == null) {
@@ -365,8 +365,11 @@ public class SendDynamicDataBeanV2 implements Serializable, Parcelable {
         }
     }
 
-    public static class VideoConvert extends BaseConvert<Video>{}
-    public static class VideoInfoConvert extends BaseConvert<VideoInfo>{}
+    public static class VideoConvert extends BaseConvert<Video> {
+    }
+
+    public static class VideoInfoConvert extends BaseConvert<VideoInfo> {
+    }
 
 
     @Override
@@ -420,8 +423,8 @@ public class SendDynamicDataBeanV2 implements Serializable, Parcelable {
 
     @Generated(hash = 144723578)
     public SendDynamicDataBeanV2(Long id, String feed_title, String feed_content, String feed_from,
-            String feed_mark, String feed_latitude, String feed_longtitude, String feed_geohash, Long amount,
-            List<StorageTaskBean> images, List<ImageBean> photos, Video video, VideoInfo mVideoInfo) {
+                                 String feed_mark, String feed_latitude, String feed_longtitude, String feed_geohash, Long amount,
+                                 List<StorageTaskBean> images, List<ImageBean> photos, Video video, VideoInfo mVideoInfo) {
         this.id = id;
         this.feed_title = feed_title;
         this.feed_content = feed_content;
