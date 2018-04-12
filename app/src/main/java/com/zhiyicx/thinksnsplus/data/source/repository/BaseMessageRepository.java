@@ -122,8 +122,13 @@ public class BaseMessageRepository implements IBaseMessageRepository {
                             .map(list1 -> {
                                 List<MessageItemBeanV2> tmps = new ArrayList<>();
                                 for (MessageItemBeanV2 messageItemBeanV2 : list1) {
-                                    if (mSystemRepository.checkUserIsImHelper(messageItemBeanV2.getUserInfo().getUser_id())||messageItemBeanV2.getConversation() != null && messageItemBeanV2.getConversation().getLastMessage()
-                                            != null) {
+                                    boolean ischatAndImHelper = EMConversation.EMConversationType.Chat == messageItemBeanV2.getConversation()
+                                            .getType() && messageItemBeanV2.getUserInfo() != null && mSystemRepository.checkUserIsImHelper
+                                            (messageItemBeanV2.getUserInfo().getUser_id());
+                                    boolean isHasMessage = messageItemBeanV2.getConversation() != null && messageItemBeanV2.getConversation()
+                                            .getLastMessage()
+                                            != null;
+                                    if (ischatAndImHelper || isHasMessage) {
                                         tmps.add(messageItemBeanV2);
                                     }
                                 }
