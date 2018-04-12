@@ -10,14 +10,11 @@ import android.media.MediaMetadataRetriever;
 import android.media.MediaMuxer;
 import android.net.Uri;
 import android.os.Build;
-import android.support.annotation.NonNull;
-import android.util.Log;
 
-
+import com.tym.shortvideo.filter.base.GPUImageFilter;
 import com.tym.shortvideo.filter.helper.MagicFilterFactory;
 import com.tym.shortvideo.filter.helper.MagicFilterType;
 import com.tym.shortvideo.media.VideoInfo;
-import com.tym.shortvideo.filter.base.GPUImageFilter;
 import com.zhiyicx.common.utils.log.LogUtils;
 
 import java.io.IOException;
@@ -84,7 +81,7 @@ public class VideoClipper {
         }
     }
 
-    public void setInputVideoPath(Context context,String inputPath) {
+    public void setInputVideoPath(Context context, String inputPath) {
         mInputVideoPath = inputPath;
         mInputVideo = Uri.parse(inputPath);
         mContext = context;
@@ -365,11 +362,12 @@ public class VideoClipper {
     }
 
     private void initVideoCodec() {
-        //不对视频进行压缩
+        //不对视频进行大小压缩
         int encodeW = videoWidth;
         int encodeH = videoHeight;
         //设置视频的编码参数
         MediaFormat mediaFormat = MediaFormat.createVideoFormat("video/avc", encodeW, encodeH);
+        // 1.5M
         mediaFormat.setInteger(MediaFormat.KEY_BIT_RATE, 1572864);
         mediaFormat.setInteger(MediaFormat.KEY_FRAME_RATE, 24);
         mediaFormat.setInteger(MediaFormat.KEY_COLOR_FORMAT, MediaCodecInfo.CodecCapabilities.COLOR_FormatSurface);
@@ -384,7 +382,7 @@ public class VideoClipper {
         info.width = videoWidth;
         info.height = videoHeight;
         info.rotation = videoRotation;
-        outputSurface = new OutputSurface(info,mContext);
+        outputSurface = new OutputSurface(info, mContext);
         outputSurface.isBeauty(isOpenBeauty);
 
         if (mFilter != null) {
@@ -516,6 +514,13 @@ public class VideoClipper {
     private void startMux(MediaFormat mediaFormat, int flag) {
         if (flag == 0) {
             muxVideoTrack = mMediaMuxer.addTrack(mediaFormat);
+            // MediaFormat.KEY_ROTATION
+            if (videoFormat.containsKey("rotation-degrees")) {
+                // Decoded video is rotated automatically in Android 5.0 lollipop.
+                // Turn off here because we don't want to encode rotated one.
+                // refer: https://android.googlesource.com/platform/frameworks/av/+blame/lollipop-release/media/libstagefright/Utils.cpp
+                videoFormat.setInteger("rotation-degrees", 0);
+            }
         } else if (flag == 1) {
             muxAudioTrack = mMediaMuxer.addTrack(mediaFormat);
         }

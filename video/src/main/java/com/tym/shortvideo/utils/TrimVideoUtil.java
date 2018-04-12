@@ -36,7 +36,6 @@ public class TrimVideoUtil {
         VideoClipper clipper = new VideoClipper();
         clipper.setFilterType(MagicFilterType.NONE);
         clipper.setInputVideoPath(context, inputFile);
-        outputFile = FileUtils.getPath("tym/out/", System.currentTimeMillis() + ".mp4");
         clipper.setOutputVideoPath(outputFile);
         final String tempOutFile = outputFile;
 
@@ -248,52 +247,20 @@ public class TrimVideoUtil {
                                                        video.setHeight(cursor.getInt(cursor
                                                                .getColumnIndex(MediaStore.Video
                                                                        .Media.HEIGHT)));
+                                                       video.setDuration(cursor.getInt(cursor
+                                                               .getColumnIndex(MediaStore.Video
+                                                                       .Media.DURATION)));
                                                        video.setStoreId(cursor.getInt(cursor
                                                                .getColumnIndex(MediaStore.Video
                                                                        .Media._ID)));
+                                                       String mime = cursor.getString(cursor
+                                                               .getColumnIndex(MediaStore.Video
+                                                                       .Media.CONTENT_TYPE));
 
-                                                       try {
-                                                           MediaMetadataRetriever retriever = new
-                                                                   MediaMetadataRetriever();
-                                                           retriever.setDataSource(mContext, Uri
-                                                                   .parse(video.getPath()));
-
-                                                           String mime = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_MIMETYPE);
-                                                           if (!"video/mp4".equals(mime)) {
-                                                               continue;
-                                                           }
-                                                           int duration = Integer.parseInt(retriever
-                                                                   .extractMetadata
-                                                                           (MediaMetadataRetriever
-                                                                                   .METADATA_KEY_DURATION));
-                                                           int width = Integer.parseInt(retriever
-                                                                   .extractMetadata
-                                                                           (MediaMetadataRetriever
-                                                                                   .METADATA_KEY_VIDEO_WIDTH));
-                                                           int height = Integer.parseInt(retriever
-                                                                   .extractMetadata
-                                                                           (MediaMetadataRetriever
-                                                                                   .METADATA_KEY_VIDEO_HEIGHT));
-
-                                                           int rotation = Integer.parseInt(retriever
-                                                                   .extractMetadata
-                                                                           (MediaMetadataRetriever
-                                                                                   .METADATA_KEY_VIDEO_ROTATION));
-
-                                                           if (rotation == 90 || rotation == 270) {
-                                                               // 图像颠倒了，不知道为啥
-                                                               video.setWidth(height);
-                                                               video.setHeight(width);
-                                                           } else {
-                                                               video.setWidth(width);
-                                                               video.setHeight(height);
-                                                           }
-                                                           video.setDuration(duration);
-
-                                                           retriever.release();
-                                                       } catch (Exception e) {
-
+                                                       if (!"video/mp4".equals(mime)) {
+                                                           continue;
                                                        }
+
                                                        if (video.getDuration() < 3000) {
                                                            continue;
                                                        }

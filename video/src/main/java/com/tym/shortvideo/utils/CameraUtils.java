@@ -34,8 +34,11 @@ public class CameraUtils {
     public static final int DEFAULT_4_3_WIDTH = 1024;
     public static final int DEFAULT_4_3_HEIGHT = 768;
 
+    public static final int DEFAULT_1_1_WIDTH = DeviceUtils.getScreenWidth();
+    public static final int DEFAULT_1_1_HEIGHT = DeviceUtils.getScreenWidth();
+
     // 期望fps
-    public static final int DESIRED_PREVIEW_FPS = 15;
+    public static final int DESIRED_PREVIEW_FPS = 30;
 
     // 对焦区域的weight
     private static final int Weight = 1000;
@@ -43,6 +46,7 @@ public class CameraUtils {
     // 这里反过来是因为相机的分辨率跟屏幕的分辨率宽高刚好反过来
     public static final float Ratio_4_3 = 0.75f;
     public static final float Ratio_16_9 = 0.5625f;
+    public static final float Ratio_1_1 = 1f;
 
     private static int mCameraID = Camera.CameraInfo.CAMERA_FACING_FRONT;
     private static Camera mCamera;
@@ -91,6 +95,10 @@ public class CameraUtils {
         if (mCurrentRatio == Ratio_4_3) {
             width = DEFAULT_4_3_WIDTH;
             height = DEFAULT_4_3_HEIGHT;
+        }
+        if (mCurrentRatio == Ratio_1_1){
+            width = DEFAULT_1_1_WIDTH;
+            height = DEFAULT_1_1_HEIGHT;
         }
         setPreviewSize(mCamera, width, height);
         setPictureSize(mCamera, width, height);

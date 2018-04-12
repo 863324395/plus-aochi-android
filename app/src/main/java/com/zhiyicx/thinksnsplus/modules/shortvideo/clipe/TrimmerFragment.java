@@ -108,10 +108,7 @@ public class TrimmerFragment extends TSFragment implements TrimVideoListener {
         RxView.clicks(mToolbarRight)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .compose(this.bindToLifecycle())
-                .subscribe(aVoid -> {
-                    mVideoTrimmerView.destroy();
-                    mVideoTrimmerView.onSaveClicked();
-                });
+                .subscribe(aVoid -> mVideoTrimmerView.onSaveClicked());
 
         RxView.clicks(mToolbarLeft)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)

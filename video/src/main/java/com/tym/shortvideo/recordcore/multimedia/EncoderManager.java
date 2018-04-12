@@ -3,7 +3,6 @@ package com.tym.shortvideo.recordcore.multimedia;
 import android.opengl.EGLContext;
 import android.opengl.GLES30;
 import android.opengl.Matrix;
-import android.util.Log;
 
 import com.tym.shortvideo.recodrender.ParamsManager;
 import com.tym.shortvideo.filter.helper.gles.EglCore;
@@ -11,6 +10,7 @@ import com.tym.shortvideo.filter.helper.gles.WindowSurface;
 import com.tym.shortvideo.filter.base.GLDisplayFilter;
 import com.tym.shortvideo.filter.helper.type.GlUtil;
 import com.tym.shortvideo.filter.helper.type.ScaleType;
+import com.tym.shortvideo.utils.FileUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 
 import java.io.File;
@@ -31,12 +31,13 @@ public class EncoderManager {
     // 录制比特率
     private int mRecordBitrate;
     // 录制帧率
-    private int mFrameRate = 15;
+    private int mFrameRate = 25;
     // 像素资料量
     private int mBPP = 4;
 
     // 是否允许高清视频
     private boolean mEnableHD = false;
+
     // 码率乘高清值
     private int HDValue = 16;
 
@@ -115,8 +116,7 @@ public class EncoderManager {
         mVideoHeight = height;
         // 如果路径为空，则生成默认的路径
         if (mRecorderOutputPath == null || mRecorderOutputPath.isEmpty()) {
-            mRecorderOutputPath = ParamsManager.VideoPath
-                    + "CainCamera_" + System.currentTimeMillis() + ".mp4";
+            mRecorderOutputPath = FileUtils.getPath(ParamsManager.VideoPath, System.currentTimeMillis() + ".mp4");
             LogUtils.d(TAG, "the outpath is empty, auto-created path is : " + mRecorderOutputPath);
         }
         File file = new File(mRecorderOutputPath);
@@ -128,7 +128,7 @@ public class EncoderManager {
         if (mEnableHD) {
             mRecordBitrate *= HDValue;
         } else {
-            // 1.5M
+            // 1.5M，之前约定的，现在看来 1.5兆 的码率不够清晰
             mRecordBitrate = 1572864;
         }
         try {

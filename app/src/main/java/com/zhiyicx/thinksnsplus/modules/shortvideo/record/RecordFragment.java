@@ -7,7 +7,6 @@ import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Handler;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -42,11 +41,9 @@ import com.tym.shortvideo.view.ProgressView;
 import com.tym.shortvideo.view.ShutterButton;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
-import com.zhiyicx.common.utils.SharePreferenceUtils;
 import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
-import com.zhiyicx.thinksnsplus.BuildConfig;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.modules.shortvideo.adapter.EffectFilterAdapter;
 import com.zhiyicx.thinksnsplus.modules.shortvideo.preview.PreviewActivity;
@@ -64,7 +61,6 @@ import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 
-import static com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.POPUPWINDOW_ALPHA;
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 
 /**
@@ -254,7 +250,7 @@ public class RecordFragment extends TSFragment implements SurfaceHolder.Callback
             mEffectList.setVisibility(View.GONE);
             return;
         }
-        mActivity.finish();
+        mToolbarLeft.performLongClick();
     }
 
     @Override
@@ -381,7 +377,7 @@ public class RecordFragment extends TSFragment implements SurfaceHolder.Callback
         // 初始化录制线程
         RecordManager.getInstance().initThread();
         // 设置输出路径
-        String path = FileUtils.getPath(ParamsManager.VideoPath,System.currentTimeMillis() + ".mp4");
+        String path = FileUtils.getPath(ParamsManager.VideoPath, System.currentTimeMillis() + ".mp4");
         RecordManager.getInstance().setOutputPath(path);
         // 是否允许录音，只有录制视频才有音频
         RecordManager.getInstance().setEnableAudioRecording(ParamsManager.canRecordingAudio
@@ -823,6 +819,10 @@ public class RecordFragment extends TSFragment implements SurfaceHolder.Callback
      * 初始化登录选择弹框
      */
     private void initWarnPopupWindow() {
+        if (VideoListManager.getInstance().getSubVideoList() == null
+                || VideoListManager.getInstance().getSubVideoList().isEmpty()) {
+            mActivity.finish();
+        }
         if (mWarnPopupWindow == null) {
             mWarnPopupWindow = ActionPopupWindow.builder()
                     .item1Str(getString(R.string.info_publish_hint))
@@ -843,9 +843,7 @@ public class RecordFragment extends TSFragment implements SurfaceHolder.Callback
                     })
                     .build();
         }
-
         mWarnPopupWindow.show();
-
     }
 
     private void restoreRecord() {
