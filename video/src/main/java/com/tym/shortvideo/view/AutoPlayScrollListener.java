@@ -24,7 +24,7 @@ public abstract class AutoPlayScrollListener extends RecyclerView.OnScrollListen
     /**
      * 被处理的视频状态标签
      */
-    private enum VideoTagEnum {
+    public enum VideoTagEnum {
 
         /**
          * 自动播放视频
@@ -46,8 +46,8 @@ public abstract class AutoPlayScrollListener extends RecyclerView.OnScrollListen
                 if (canAutoPlay()) {
                     autoPlayVideo(recyclerView, VideoTagEnum.TAG_AUTO_PLAY_VIDEO);
                 }
-            default:
-                // 滑动时暂停视频 autoPlayVideo(recyclerView, VideoTagEnum.TAG_PAUSE_VIDEO);
+            default: // TODO 滑出屏幕暂停
+//                autoPlayVideo(recyclerView, VideoTagEnum.TAG_PAUSE_VIDEO);
                 break;
         }
 
@@ -76,34 +76,45 @@ public abstract class AutoPlayScrollListener extends RecyclerView.OnScrollListen
      * getLocalVisibleRect相关链接：http://www.cnblogs.com/ai-developers/p/4413585.html
      *
      * @param recyclerView
-     * @param handleVideoTag 视频需要进行状态
+     * @param videoTagEnum 视频需要进行状态
      */
-    private void autoPlayVideo(RecyclerView recyclerView, VideoTagEnum handleVideoTag) {
+    public void autoPlayVideo(RecyclerView recyclerView, VideoTagEnum videoTagEnum) {
+
+        if (videoTagEnum == VideoTagEnum.TAG_PAUSE_VIDEO) {
+
+            return;
+        }
+
         // 当前正在播放的 view
         JZVideoPlayerStandard currentPlayView = null;
         // 准备播放的 view
         JZVideoPlayerStandard nextplayView = null;
         for (int i = 0; i < visibleCount; i++) {
-            if (recyclerView != null && recyclerView.getChildAt(i) != null && recyclerView.getChildAt(i).findViewById(getPlayerViewId()) != null) {
-                JZVideoPlayerStandard playView = (JZVideoPlayerStandard) recyclerView.getChildAt(i).findViewById(getPlayerViewId());
+            if (recyclerView != null && recyclerView.getChildAt(i) != null && recyclerView
+                    .getChildAt(i).findViewById(getPlayerViewId()) != null) {
+                JZVideoPlayerStandard playView = (JZVideoPlayerStandard) recyclerView.getChildAt
+                        (i).findViewById(getPlayerViewId());
                 Rect playViewRect = new Rect();
                 playView.getLocalVisibleRect(playViewRect);
                 if (playView.currentState == JZVideoPlayerStandard.CURRENT_STATE_PLAYING) {
                     currentPlayView = playView;
                     int current = recyclerView.getChildAdapterPosition(recyclerView.getChildAt(i));
                     // 当前正在播放的 view 少于 1/3 的可见高度
-                    if (playViewRect.bottom - playViewRect.top < (float) currentPlayView.getHeight() / 3f) {
+                    if (playViewRect.bottom - playViewRect.top < (float) currentPlayView
+                            .getHeight() / 3f) {
                         currentPlayView.startButton.callOnClick();
                         JZVideoPlayerStandard view = null;
                         if (current + 1 == firstCompoleteVisibleItem) {
                             View itemView = recyclerView.getChildAt(i + 1);
                             if (itemView != null) {
-                                view = (JZVideoPlayerStandard) itemView.findViewById(getPlayerViewId());
+                                view = (JZVideoPlayerStandard) itemView.findViewById
+                                        (getPlayerViewId());
                             }
                         } else if (current - 1 == lastCompoleteVisibleItem) {
                             View itemView = recyclerView.getChildAt(i - 1);
                             if (itemView != null) {
-                                view = (JZVideoPlayerStandard) itemView.findViewById(getPlayerViewId());
+                                view = (JZVideoPlayerStandard) itemView.findViewById
+                                        (getPlayerViewId());
                             }
                         }
                         // 滑动方向上的第一个完全可见的 view
@@ -114,7 +125,8 @@ public abstract class AutoPlayScrollListener extends RecyclerView.OnScrollListen
                     }
                 }
                 int videoheight = playView.getHeight();
-                if (playViewRect.top == 0 && playViewRect.bottom == videoheight && nextplayView == null) {
+                if (playViewRect.top == 0 && playViewRect.bottom == videoheight && nextplayView
+                        == null) {
                     nextplayView = playView;
                 }
 
@@ -136,10 +148,12 @@ public abstract class AutoPlayScrollListener extends RecyclerView.OnScrollListen
      * @param handleVideoTag     视频需要进行状态
      * @param homeGSYVideoPlayer JZVideoPlayer播放器
      */
-    private void handleVideo(VideoTagEnum handleVideoTag, JZVideoPlayerStandard homeGSYVideoPlayer) {
+    private void handleVideo(VideoTagEnum handleVideoTag, JZVideoPlayerStandard
+            homeGSYVideoPlayer) {
         switch (handleVideoTag) {
             case TAG_AUTO_PLAY_VIDEO:
-                if (homeGSYVideoPlayer.currentState != JZVideoPlayerStandard.CURRENT_STATE_PLAYING) {
+                if (homeGSYVideoPlayer.currentState != JZVideoPlayerStandard
+                        .CURRENT_STATE_PLAYING) {
                     // 进行播放
                     homeGSYVideoPlayer.startVideo();
                 }

@@ -79,6 +79,7 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import cn.jzvd.JZMediaManager;
+import cn.jzvd.JZUtils;
 import cn.jzvd.JZVideoPlayer;
 import cn.jzvd.JZVideoPlayerManager;
 import cn.jzvd.JZVideoPlayerStandard;
@@ -274,17 +275,20 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
                 .OnChildAttachStateChangeListener() {
             @Override
             public void onChildViewAttachedToWindow(View view) {
-                JZVideoPlayer.onChildViewAttachedToWindow(view, R.id.videoplayer);
             }
 
             @Override
             public void onChildViewDetachedFromWindow(View view) {
-                JZVideoPlayer.onChildViewDetachedFromWindow(view);
+                ZhiyiVideoView videoView =(ZhiyiVideoView) view.findViewById(R.id.videoplayer);
+                if (videoView != null && JZUtils.dataSourceObjectsContainsUri(videoView.dataSourceObjects, JZMediaManager.getCurrentDataSource())) {
+                    JZVideoPlayer currentJzvd = JZVideoPlayerManager.getCurrentJzvd();
+                    if (currentJzvd != null && currentJzvd.currentScreen != JZVideoPlayer.SCREEN_WINDOW_FULLSCREEN) {
+                        JZVideoPlayer.releaseAllVideos();
+                    }
+                }
             }
         });
-
-        // 自动播放
-        mRvList.addOnScrollListener(new AutoPlayScrollListener() {
+        AutoPlayScrollListener autoPlayScrollListener=new AutoPlayScrollListener() {
             @Override
             public int getPlayerViewId() {
                 return R.id.videoplayer;
@@ -294,7 +298,12 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
             public boolean canAutoPlay() {
                 return NetUtils.isWifiConnected(getContext().getApplicationContext());
             }
-        });
+        };
+        // 自动播放
+        mRvList.addOnScrollListener(autoPlayScrollListener);
+        // 第一个模拟滚动停止
+        autoPlayScrollListener.onScrolled(mRvList,0,0);
+        autoPlayScrollListener.autoPlayVideo(mRvList, AutoPlayScrollListener.VideoTagEnum.TAG_AUTO_PLAY_VIDEO);
 
     }
 
