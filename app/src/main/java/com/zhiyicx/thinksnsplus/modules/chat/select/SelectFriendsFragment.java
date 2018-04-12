@@ -8,6 +8,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMConversation;
@@ -55,6 +56,8 @@ public class SelectFriendsFragment extends TSListFragment<SelectFriendsContract.
     FrameLayout mFlSearchResult;
     @BindView(R.id.rv_search_result)
     RecyclerView mRvSearchResult;
+    @BindView(R.id.ll_search)
+    LinearLayout mLinearLayout;
 
     private List<UserInfoBean> mSelectedList;
     private List<UserInfoBean> mSearchResultList;
@@ -65,18 +68,11 @@ public class SelectFriendsFragment extends TSListFragment<SelectFriendsContract.
      * 群信息
      */
     private ChatGroupBean mChatGroupBean;
-    /**
-     * 是否是修改群资料
-     */
-    private boolean mIsFromEdit;
+
     /**
      * 是否是删除用户  如果是删除 那么则不用去请求好友列表
      */
     private boolean mIsDeleteMember;
-    /**
-     * 群组的用户
-     */
-    private List<UserInfoBean> mGroupUserList;
 
     public static SelectFriendsFragment instance(Bundle bundle) {
         SelectFriendsFragment friendsFragment = new SelectFriendsFragment();
@@ -96,8 +92,7 @@ public class SelectFriendsFragment extends TSListFragment<SelectFriendsContract.
 
     @Override
     protected RecyclerView.Adapter getAdapter() {
-        SelectFriendsAllAdapter allAdapter = new SelectFriendsAllAdapter(getContext(), mListDatas, this);
-        return allAdapter;
+        return new SelectFriendsAllAdapter(getContext(), mListDatas, this);
     }
 
     @Override
@@ -116,10 +111,8 @@ public class SelectFriendsFragment extends TSListFragment<SelectFriendsContract.
                 .subscribe(aBoolean -> mFlSearchResult.setVisibility(aBoolean ? View.VISIBLE : View.GONE));
         RxTextView.textChanges(mEditSearchFriends)
                 .subscribe(charSequence -> {
-                    if (!TextUtils.isEmpty(charSequence)) {
-                        // 搜索
-                        mPresenter.getFriendsListByKey((long) mSearchResultList.size(), charSequence.toString());
-                    }
+                    // 搜索
+                    mPresenter.getFriendsListByKey((long) mSearchResultList.size(), charSequence.toString());
                 });
         RxView.clicks(mFlSearchResult)
                 .subscribe(aVoid -> {
@@ -218,7 +211,8 @@ public class SelectFriendsFragment extends TSListFragment<SelectFriendsContract.
             if (mChatGroupBean == null) {
                 setRightText(String.format(getString(R.string.select_friends_right_title), mSelectedList.size()));
             } else {
-                setRightText(String.format(getString(mIsDeleteMember ? R.string.chat_edit_group_remove_d : R.string.chat_edit_group_add_d), mSelectedList.size()));
+                setRightText(String.format(getString(mIsDeleteMember ? R.string.chat_edit_group_remove_d : R.string.chat_edit_group_add_d),
+                        mSelectedList.size()));
             }
 
             mToolbarRight.setTextColor(getColor(R.color.themeColor));
@@ -226,7 +220,8 @@ public class SelectFriendsFragment extends TSListFragment<SelectFriendsContract.
             if (mChatGroupBean == null) {
                 setRightText(getString(R.string.select_friends_right_title_default));
             } else {
-                setRightText(String.format(getString(mIsDeleteMember ? R.string.chat_edit_group_remove : R.string.chat_edit_group_add), mSelectedList.size()));
+                setRightText(String.format(getString(mIsDeleteMember ? R.string.chat_edit_group_remove : R.string.chat_edit_group_add),
+                        mSelectedList.size()));
             }
             mToolbarRight.setTextColor(getColor(R.color.normal_for_disable_button_text));
         }
@@ -283,7 +278,7 @@ public class SelectFriendsFragment extends TSListFragment<SelectFriendsContract.
         } else {
             EMGroup group = EMClient.getInstance().groupManager().getGroup(id);
             if (group == null) {
-                showSnackErrorMessage("创建失败");
+                showSnackErrorMessage(getString(R.string.create_fail));
                 return;
             }
         }
@@ -294,6 +289,11 @@ public class SelectFriendsFragment extends TSListFragment<SelectFriendsContract.
     @Override
     public boolean getIsDeleteMember() {
         return mIsDeleteMember;
+    }
+
+    @Override
+    protected int setEmptView() {
+        return R.mipmap.img_default_nobody;
     }
 
     @Override
@@ -310,6 +310,8 @@ public class SelectFriendsFragment extends TSListFragment<SelectFriendsContract.
     public void onNetResponseSuccess(@NotNull List<UserInfoBean> data, boolean isLoadMore) {
         checkUserIsSelected(data);
         super.onNetResponseSuccess(data, isLoadMore);
+        // 当好友没有时隐藏搜索
+        mLinearLayout.setVisibility((mListDatas.isEmpty() ? View.GONE : View.VISIBLE));
     }
 
     @Override
