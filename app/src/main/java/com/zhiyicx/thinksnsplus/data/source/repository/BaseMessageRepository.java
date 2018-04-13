@@ -82,7 +82,7 @@ public class BaseMessageRepository implements IBaseMessageRepository {
                     List<SystemConfigBean.ImHelperBean> tsHlepers = mSystemRepository.getBootstrappersInfoFromLocal().getIm_helper();
                     // 需要手动插入的小助手，本地查找不到会话才插入聊天信息
                     List<SystemConfigBean.ImHelperBean> needAddedHelpers = new ArrayList<>();
-                    if (!tsHlepers.isEmpty()) {
+                    if (tsHlepers!=null&&!tsHlepers.isEmpty()) {
                         for (SystemConfigBean.ImHelperBean imHelperBean : tsHlepers) {
                             if (EMClient.getInstance().chatManager().getConversation(imHelperBean.getUid()) == null) {
                                 needAddedHelpers.add(imHelperBean);
