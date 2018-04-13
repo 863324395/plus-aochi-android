@@ -188,7 +188,11 @@ public class ChatFragment extends TSEaseChatFragment<ChatContract.Presenter>
             if (group != null && group.isMsgBlocked()) {
                 mToolbarCenter.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.mipmap.ico_newslist_shield, 0);
             }
-            setCenterText(mPresenter.getGroupName(toChatUsername));
+            if (group != null && group.getMemberCount() > 0) {
+                setCenterText(getString(R.string.chat_group_name_default, mPresenter.getGroupName(toChatUsername), group.getMemberCount()));
+            } else {
+                setCenterText(mPresenter.getGroupName(toChatUsername));
+            }
         }
         if (chatType != EaseConstant.CHATTYPE_CHATROOM) {
             onConversationInit();
@@ -213,12 +217,16 @@ public class ChatFragment extends TSEaseChatFragment<ChatContract.Presenter>
         if (chatType == EaseConstant.CHATTYPE_SINGLE) {
             setCenterText(mPresenter.getUserName(toChatUsername));
         } else if (chatType == EaseConstant.CHATTYPE_GROUP) {
-            setCenterText(mPresenter.getGroupName(toChatUsername));
             EMGroup group = EMClient.getInstance().groupManager().getGroup(toChatUsername);
             if (group != null && group.isMsgBlocked()) {
                 mToolbarCenter.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.mipmap.ico_newslist_shield, 0);
             } else if (group != null && !group.isMsgBlocked()) {
                 mToolbarCenter.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+            }
+            if (group != null && group.getMemberCount() > 0) {
+                setCenterText(getString(R.string.chat_group_name_default, mPresenter.getGroupName(toChatUsername), group.getMemberCount()));
+            } else {
+                setCenterText(mPresenter.getGroupName(toChatUsername));
             }
         }
     }
@@ -382,7 +390,10 @@ public class ChatFragment extends TSEaseChatFragment<ChatContract.Presenter>
             mPresenter.getUserInfoForRefreshList(event);
             mPresenter.getGroupChatInfo(event.getMessage().getTo());
             mPresenter.updateChatGroupMemberCount(event.getMessage().getTo(), 1, false);
-            setCenterText(mPresenter.getGroupName(event.getMessage().getTo()));
+            setCenterText(getString(R.string.chat_group_name_default, mPresenter.getGroupName(toChatUsername), mPresenter.getChatGroupInfo
+                    (toChatUsername)
+                    .getAffiliations_count()));
+
         }
     }
 
@@ -451,7 +462,9 @@ public class ChatFragment extends TSEaseChatFragment<ChatContract.Presenter>
             if (isUserExit || isUserJoin) {
                 // 只有群聊中才会有 成员 加入or退出的消息
                 mPresenter.updateChatGroupMemberCount(message.conversationId(), 1, isUserJoin);
-                setCenterText(mPresenter.getGroupName(message.conversationId()));
+                setCenterText(getString(R.string.chat_group_name_default, mPresenter.getGroupName(message.conversationId()), mPresenter.getChatGroupInfo
+                        (message.conversationId())
+                        .getAffiliations_count()));
             }
 
             // if the message is for current conversation
@@ -640,7 +653,7 @@ public class ChatFragment extends TSEaseChatFragment<ChatContract.Presenter>
     @Subscriber(tag = EventBusTagConfig.EVENT_IM_GROUP_UPDATE_GROUP_INFO)
     public void updateCurrent(ChatGroupBean chatGroupBean) {
         if (chatGroupBean.getId().equals(toChatUsername)) {
-            setCenterText(chatGroupBean.getName());
+            setCenterText(getString(R.string.chat_group_name_default, chatGroupBean.getName(), chatGroupBean.getAffiliations_count()));
         }
     }
 

@@ -493,27 +493,6 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable, Ser
         }
     }
 
-
-    /**
-     * 计算文本的长度是否超过最大行
-     *
-     * @param string
-     * @return
-     */
-    private int getDynamicContentSingleLineNums(String string) {
-        // 获得字体的宽度，sp转px的方法，网上很多，14为textview中所设定的textSize属性值
-        int txtWidth = ConvertUtils.sp2px(AppApplication.getContext(), 14);
-        // 获得屏幕的宽度
-        int winWidth = DeviceUtils
-                .getScreenWidth(AppApplication.getContext());
-        // 获得textView控件的宽度，15为xml中所设定marginleft 和 marginright的值，这里都是15，所以直接乘以2了。
-        int viewWidth = winWidth
-                - ConvertUtils.dp2px(AppApplication.getContext(), 68);
-        // 获得单行最多显示字数
-        return viewWidth / txtWidth * 2;
-
-    }
-
     private void dealVideoBean(Video video) {
         if (video == null) {
             return;
