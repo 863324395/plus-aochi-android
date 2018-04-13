@@ -185,7 +185,7 @@ public class SelectDynamicTypeFragment extends TSFragment<SelectDynamicTypeContr
             int vertical_distance = view.getTop() - mImCloseDynamic.getBottom();
             ViewCompat.setPivotX(view, view.getWidth() / 2.0f);
             ViewCompat.setPivotY(view, view.getHeight() / 2.0f);
-            mAnimatorSet.setDuration(400);
+            mAnimatorSet.setDuration(300);
             mAnimatorSet.setInterpolator(new OvershootInterpolator(1f));
             ObjectAnimator translationY = ObjectAnimator.ofFloat(view, "translationY", vertical_distance, 0);
             mAnimatorSet.play(translationY);
@@ -249,7 +249,8 @@ public class SelectDynamicTypeFragment extends TSFragment<SelectDynamicTypeContr
                 mRxPermissions.request(Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO)
                         .subscribe(aBoolean -> {
                             if (aBoolean) {
-                                SendDynamicDataBean sendDynamicDataBean = SharePreferenceUtils.getObject(mActivity, SharePreferenceUtils.VIDEO_DYNAMIC);
+                                SendDynamicDataBean sendDynamicDataBean = SharePreferenceUtils.getObject(mActivity, SharePreferenceUtils
+                                        .VIDEO_DYNAMIC);
                                 if (checkVideoDraft(sendDynamicDataBean)) {
                                     SendDynamicActivity.startToSendDynamicActivity(getContext(),
                                             sendDynamicDataBean);
@@ -390,7 +391,7 @@ public class SelectDynamicTypeFragment extends TSFragment<SelectDynamicTypeContr
 
     public void closeActivity() {
         getActivity().finish();
-        getActivity().overridePendingTransition(0, R.anim.fade_out);
+        getActivity().overridePendingTransition(R.anim.animate_noting, R.anim.send_type_colse_fade_out);
     }
 
     private boolean checkVideoDraft(SendDynamicDataBean sendDynamicDataBean) {
@@ -405,8 +406,8 @@ public class SelectDynamicTypeFragment extends TSFragment<SelectDynamicTypeContr
 
     @Override
     public void onDestroy() {
-        super.onDestroy();
         dismissPop(mCertificationAlertPopWindow);
         dismissPop(mPayAlertPopWindow);
+        super.onDestroy();
     }
 }
