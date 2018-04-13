@@ -19,6 +19,7 @@ import com.zhiyicx.thinksnsplus.data.source.local.DynamicBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.DynamicContract;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.DynamicFragment;
+import com.zhiyicx.thinksnsplus.modules.home.HomeActivity;
 import com.zhiyicx.thinksnsplus.modules.shortvideo.helper.ZhiyiVideoView;
 
 import java.util.ArrayList;
@@ -28,6 +29,8 @@ import java.util.List;
 import javax.inject.Inject;
 
 import butterknife.BindView;
+import cn.jzvd.JZUtils;
+import cn.jzvd.JZVideoPlayer;
 import cn.jzvd.JZVideoPlayerManager;
 
 /**
@@ -66,7 +69,12 @@ public class MainFragment extends TSViewPagerFragment implements DynamicFragment
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
-        ZhiyiVideoView.goOnPlayOnPause();
+        JZVideoPlayer jzVideoPlayer=JZVideoPlayerManager.getCurrentJzvd();
+        if (jzVideoPlayer != null) {
+            if (JZUtils.scanForActivity(jzVideoPlayer.getContext()) instanceof HomeActivity) {
+                ZhiyiVideoView.goOnPlayOnPause();
+            }
+        }
     }
 
     @Override
