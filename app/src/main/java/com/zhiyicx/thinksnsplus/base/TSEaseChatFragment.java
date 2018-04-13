@@ -14,6 +14,7 @@ import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.content.FileProvider;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
@@ -162,7 +163,10 @@ public class TSEaseChatFragment<P extends IBasePresenter> extends TSEaseBaseFrag
 
             @Override
             public void onSendMessage(String content) {
-                sendTextMessage(content);
+                if (TextUtils.isEmpty(content.trim())) {
+                    return;
+                }
+                sendTextMessage(content.trim());
             }
 
             @Override
@@ -942,7 +946,7 @@ public class TSEaseChatFragment<P extends IBasePresenter> extends TSEaseBaseFrag
 
         @Override
         public void onUserRemoved(final String groupId, String groupName) {
-            TSEMessageUtils.sendEixtGroupMessage(groupId, groupName,TSEMConstants.TS_ATTR_GROUP_LAYOFF);
+            TSEMessageUtils.sendEixtGroupMessage(groupId, groupName, TSEMConstants.TS_ATTR_GROUP_LAYOFF);
         }
 
         @Override
