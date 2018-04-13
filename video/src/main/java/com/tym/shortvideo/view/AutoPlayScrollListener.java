@@ -5,7 +5,13 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
+import java.util.concurrent.TimeUnit;
+
 import cn.jzvd.JZVideoPlayerStandard;
+import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.functions.Func1;
 
 /**
  * @author Jliuer
@@ -20,6 +26,8 @@ public abstract class AutoPlayScrollListener extends RecyclerView.OnScrollListen
     private int lastCompoleteVisibleItem = 0;
     private int lastVisibleItem = 0;
     private int visibleCount = 0;
+
+    private boolean palyDelay=true;
 
     /**
      * 被处理的视频状态标签
@@ -38,13 +46,24 @@ public abstract class AutoPlayScrollListener extends RecyclerView.OnScrollListen
     }
 
     @Override
-    public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+    public void onScrollStateChanged(final RecyclerView recyclerView, int newState) {
         super.onScrollStateChanged(recyclerView, newState);
 
         switch (newState) {
             case RecyclerView.SCROLL_STATE_IDLE:
                 if (canAutoPlay()) {
-                    autoPlayVideo(recyclerView, VideoTagEnum.TAG_AUTO_PLAY_VIDEO);
+                    if (palyDelay){
+                        Observable.timer(500, TimeUnit.MILLISECONDS)
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribe(new Action1<Long>() {
+                                    @Override
+                                    public void call(Long aLong) {
+                                        autoPlayVideo(recyclerView, VideoTagEnum.TAG_AUTO_PLAY_VIDEO);
+                                    }
+                                });
+                    }else{
+                        autoPlayVideo(recyclerView, VideoTagEnum.TAG_AUTO_PLAY_VIDEO);
+                    }
                 }
             default: // TODO 滑出屏幕暂停
 //                autoPlayVideo(recyclerView, VideoTagEnum.TAG_PAUSE_VIDEO);
@@ -78,7 +97,7 @@ public abstract class AutoPlayScrollListener extends RecyclerView.OnScrollListen
      * @param recyclerView
      * @param videoTagEnum 视频需要进行状态
      */
-    public void autoPlayVideo(RecyclerView recyclerView, VideoTagEnum videoTagEnum) {
+    private void autoPlayVideo(RecyclerView recyclerView, VideoTagEnum videoTagEnum) {
 
         if (videoTagEnum == VideoTagEnum.TAG_PAUSE_VIDEO) {
 

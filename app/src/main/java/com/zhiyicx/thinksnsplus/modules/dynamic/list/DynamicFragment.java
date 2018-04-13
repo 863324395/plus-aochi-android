@@ -18,6 +18,7 @@ import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.config.TouristConfig;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.baseproject.impl.photoselector.Toll;
+import com.zhiyicx.baseproject.utils.ExcutorUtil;
 import com.zhiyicx.baseproject.widget.InputLimitView;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.baseproject.widget.popwindow.PayPopWindow;
@@ -279,7 +280,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
 
             @Override
             public void onChildViewDetachedFromWindow(View view) {
-                ZhiyiVideoView videoView =(ZhiyiVideoView) view.findViewById(R.id.videoplayer);
+                ZhiyiVideoView videoView = (ZhiyiVideoView) view.findViewById(R.id.videoplayer);
                 if (videoView != null && JZUtils.dataSourceObjectsContainsUri(videoView.dataSourceObjects, JZMediaManager.getCurrentDataSource())) {
                     JZVideoPlayer currentJzvd = JZVideoPlayerManager.getCurrentJzvd();
                     if (currentJzvd != null && currentJzvd.currentScreen != JZVideoPlayer.SCREEN_WINDOW_FULLSCREEN) {
@@ -288,7 +289,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
                 }
             }
         });
-        AutoPlayScrollListener autoPlayScrollListener=new AutoPlayScrollListener() {
+        AutoPlayScrollListener autoPlayScrollListener = new AutoPlayScrollListener() {
             @Override
             public int getPlayerViewId() {
                 return R.id.videoplayer;
@@ -301,10 +302,6 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
         };
         // 自动播放
         mRvList.addOnScrollListener(autoPlayScrollListener);
-        // 第一个模拟滚动停止
-        autoPlayScrollListener.onScrolled(mRvList,0,0);
-        autoPlayScrollListener.autoPlayVideo(mRvList, AutoPlayScrollListener.VideoTagEnum.TAG_AUTO_PLAY_VIDEO);
-
     }
 
 
@@ -779,7 +776,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
                 .getMyUserIdWithdefault()) {
             ReportActivity.startReportActivity(mActivity, new ReportResourceBean(dynamicBean
                     .getComments().get
-                    (position).getCommentUser(), dynamicBean.getComments().get
+                            (position).getCommentUser(), dynamicBean.getComments().get
                     (position).getComment_id().toString(),
                     null, null, dynamicBean.getComments().get(position).getComment_content(),
                     ReportType.COMMENT));
@@ -934,7 +931,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
                             "", img, dynamicBean.getFeed_content(), ReportType.DYNAMIC);
                     reportResourceBean.setDesCanlook(dynamicBean.getPaid_node() == null ||
                             dynamicBean
-                            .getPaid_node().isPaid());
+                                    .getPaid_node().isPaid());
                     ReportActivity.startReportActivity(mActivity, reportResourceBean);
                     mOtherDynamicPopWindow.hide();
                     showBottomView(true);

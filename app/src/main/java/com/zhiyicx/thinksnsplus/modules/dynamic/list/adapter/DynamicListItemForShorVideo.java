@@ -163,7 +163,9 @@ public class DynamicListItemForShorVideo extends DynamicListBaseItem {
             view.addTextureView();
             JZVideoPlayerManager.setFirstFloor(view);
             view.startProgressTimer();
-
+        }
+        if (JZVideoPlayerManager.getCurrentJzvd() == null && positon == 0) {
+            view.startVideo();
         }
         view.positionInList = positon;
     }
