@@ -8,7 +8,6 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import com.tym.shortvideo.view.AutoPlayScrollListener;
@@ -18,7 +17,6 @@ import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.config.TouristConfig;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.baseproject.impl.photoselector.Toll;
-import com.zhiyicx.baseproject.utils.ExcutorUtil;
 import com.zhiyicx.baseproject.widget.InputLimitView;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.baseproject.widget.popwindow.PayPopWindow;
@@ -80,8 +78,6 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import cn.jzvd.JZMediaManager;
-import cn.jzvd.JZUtils;
-import cn.jzvd.JZVideoPlayer;
 import cn.jzvd.JZVideoPlayerManager;
 import cn.jzvd.JZVideoPlayerStandard;
 import rx.Observable;
@@ -89,21 +85,13 @@ import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-import static com.umeng.socialize.bean.SHARE_MEDIA.QQ;
-import static com.umeng.socialize.bean.SHARE_MEDIA.QZONE;
 import static com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.POPUPWINDOW_ALPHA;
-import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment
-        .DYNAMIC_DETAIL_DATA;
-import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment
-        .DYNAMIC_DETAIL_DATA_POSITION;
-import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment
-        .DYNAMIC_DETAIL_DATA_TYPE;
-import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment
-        .DYNAMIC_VIDEO_STATE;
-import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment
-        .LOOK_COMMENT_MORE;
-import static com.zhiyicx.thinksnsplus.modules.dynamic.tollcomment.DynamicCommentTollFragment
-        .TOLL_DYNAMIC_COMMENT;
+import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment.DYNAMIC_DETAIL_DATA;
+import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment.DYNAMIC_DETAIL_DATA_POSITION;
+import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment.DYNAMIC_DETAIL_DATA_TYPE;
+import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment.DYNAMIC_VIDEO_STATE;
+import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment.LOOK_COMMENT_MORE;
+import static com.zhiyicx.thinksnsplus.modules.dynamic.tollcomment.DynamicCommentTollFragment.TOLL_DYNAMIC_COMMENT;
 
 /**
  * @Describe 动态列表
@@ -272,24 +260,8 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
                     }
                 });
 
-        mRvList.addOnChildAttachStateChangeListener(new RecyclerView
-                .OnChildAttachStateChangeListener() {
-            @Override
-            public void onChildViewAttachedToWindow(View view) {
-            }
-
-            @Override
-            public void onChildViewDetachedFromWindow(View view) {
-                ZhiyiVideoView videoView = (ZhiyiVideoView) view.findViewById(R.id.videoplayer);
-                if (videoView != null && JZUtils.dataSourceObjectsContainsUri(videoView.dataSourceObjects, JZMediaManager.getCurrentDataSource())) {
-                    JZVideoPlayer currentJzvd = JZVideoPlayerManager.getCurrentJzvd();
-                    if (currentJzvd != null && currentJzvd.currentScreen != JZVideoPlayer.SCREEN_WINDOW_FULLSCREEN) {
-                        JZVideoPlayer.releaseAllVideos();
-                    }
-                }
-            }
-        });
-        AutoPlayScrollListener autoPlayScrollListener = new AutoPlayScrollListener() {
+        // 自动播放
+        mRvList.addOnScrollListener(new AutoPlayScrollListener() {
             @Override
             public int getPlayerViewId() {
                 return R.id.videoplayer;
@@ -299,9 +271,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
             public boolean canAutoPlay() {
                 return NetUtils.isWifiConnected(getContext().getApplicationContext());
             }
-        };
-        // 自动播放
-        mRvList.addOnScrollListener(autoPlayScrollListener);
+        });
     }
 
 
