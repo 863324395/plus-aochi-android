@@ -66,11 +66,9 @@ public class ChangeGasStationImageView extends android.support.v7.widget.AppComp
 
     @Override
     protected void onDraw(Canvas canvas) {
-        int w = this.getWidth();
-        int h = this.getHeight();
-        mRectF.right = w;
-        mRectF.bottom = h;
-        mPath.addRoundRect(mRectF, rids, Path.Direction.CW);
+        mRectF.right = getWidth();
+        mRectF.bottom = getHeight();
+        mPath.addRoundRect(mRectF, rids, Path.Direction.CCW);
         canvas.clipPath(mPath);
         super.onDraw(canvas);
     }
