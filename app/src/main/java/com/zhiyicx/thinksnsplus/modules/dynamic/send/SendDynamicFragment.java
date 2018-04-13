@@ -573,8 +573,10 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                 }
             }
         }
-        sendDynamicDataBeanV2.getVideoInfo().setNeedCompressVideo(needCompressVideo());
-        sendDynamicDataBeanV2.getVideoInfo().setDuration(mSendDynamicDataBean.getVideoInfo().getDuration());
+        if (sendDynamicDataBeanV2.getVideoInfo() != null) {
+            sendDynamicDataBeanV2.getVideoInfo().setNeedCompressVideo(needCompressVideo());
+            sendDynamicDataBeanV2.getVideoInfo().setDuration(mSendDynamicDataBean.getVideoInfo().getDuration());
+        }
         sendDynamicDataBeanV2.setPhotos(photos);
         sendDynamicDataBeanV2.setStorage_task(storageTask);
     }
@@ -612,7 +614,7 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
     private void initSendDynamicBtnState() {
 
         mEtDynamicContent.setContentChangedListener(s -> {
-            hasContent = !TextUtils.isEmpty(s);
+            hasContent = !TextUtils.isEmpty(s.toString().trim());
             setSendDynamicState();
         });
 
@@ -652,7 +654,7 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
 
     @Override
     public boolean needCompressVideo() {
-        if (dynamicType != SendDynamicDataBean.VIDEO_TEXT_DYNAMIC) {
+        if (mSendDynamicDataBean == null || mSendDynamicDataBean.getVideoInfo() == null || dynamicType != SendDynamicDataBean.VIDEO_TEXT_DYNAMIC) {
             return false;
         }
         return mSendDynamicDataBean.getVideoInfo().needCompressVideo();
