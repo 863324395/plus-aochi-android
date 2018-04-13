@@ -482,15 +482,15 @@ public class ChatFragment extends TSEaseChatFragment<ChatContract.Presenter>
 //        inputMenu.registerExtendMenuItem(R.string.attach_video, R.mipmap.ico_chat_video, ITEM_VIDEO_TS, extendMenuItemClickListener);
         // 位置
         inputMenu.registerExtendMenuItem(R.string.attach_location, R.mipmap.ico_chat_location, ITEM_LOCATION_TS, extendMenuItemClickListener);
-        // 目前仅有单聊才有音视频通话
-        if (chatType == EaseConstant.CHATTYPE_SINGLE) {
-            // 语音电话
-            inputMenu.registerExtendMenuItem(R.string.attach_voice_call, R.mipmap.ico_chat_voicecall, ITEM_VOICE_CALL_TS,
-                    extendMenuItemClickListener);
-            // 视频通话
-            inputMenu.registerExtendMenuItem(R.string.attach_video_call, R.mipmap.ico_chat_videocall, ITEM_VIDEO_CALL_TS,
-                    extendMenuItemClickListener);
-        }
+        // 目前仅有单聊才有音视频通话：2018.04.13备注：本版本去掉音视频通话；
+//        if (chatType == EaseConstant.CHATTYPE_SINGLE) {
+//            // 语音电话
+//            inputMenu.registerExtendMenuItem(R.string.attach_voice_call, R.mipmap.ico_chat_voicecall, ITEM_VOICE_CALL_TS,
+//                    extendMenuItemClickListener);
+//            // 视频通话
+//            inputMenu.registerExtendMenuItem(R.string.attach_video_call, R.mipmap.ico_chat_videocall, ITEM_VIDEO_CALL_TS,
+//                    extendMenuItemClickListener);
+//        }
     }
 
     private final class CustomChatRowProvider implements EaseCustomChatRowProvider {
