@@ -12,6 +12,7 @@ import com.github.tamir7.contacts.Contacts;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.pingplusplus.android.Pingpp;
+import com.tym.shortvideo.media.IJKMediaplayer;
 import com.tym.shortvideo.recodrender.ParamsManager;
 import com.zhiyicx.baseproject.base.TSActivity;
 import com.zhiyicx.baseproject.base.TSApplication;
@@ -42,6 +43,7 @@ import com.zhiyicx.thinksnsplus.modules.login.LoginActivity;
 import com.zhiyicx.thinksnsplus.modules.music_fm.bak_paly.PlaybackManager;
 import com.zhiyicx.thinksnsplus.modules.music_fm.bak_paly.QueueManager;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_play.MusicPlayActivity;
+import com.zhiyicx.thinksnsplus.modules.shortvideo.helper.ZhiyiVideoView;
 import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
 
 import org.simple.eventbus.EventBus;
@@ -61,6 +63,7 @@ import javax.inject.Inject;
 import javax.net.ssl.SSLSocketFactory;
 
 import cn.jpush.android.api.JPushInterface;
+import cn.jzvd.JZMediaManager;
 import okhttp3.Authenticator;
 import okhttp3.Interceptor;
 import okhttp3.Request;
@@ -119,6 +122,7 @@ public class AppApplication extends TSApplication {
         JPushInterface.setDebugMode(BuildConfig.USE_LOG);
         JPushInterface.init(this);
         ParamsManager.context = this;
+        ZhiyiVideoView.setMediaInterface(new IJKMediaplayer());
     }
 
     /**
