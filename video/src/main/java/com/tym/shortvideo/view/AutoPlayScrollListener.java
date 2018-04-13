@@ -5,8 +5,11 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
+import com.zhiyicx.common.utils.log.LogUtils;
+
 import java.util.concurrent.TimeUnit;
 
+import cn.jzvd.JZVideoPlayerManager;
 import cn.jzvd.JZVideoPlayerStandard;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -17,7 +20,7 @@ import rx.functions.Func1;
  * @author Jliuer
  * @Date 18/04/03 13:49
  * @Email Jliuer@aliyun.com
- * @Description 监听recycleView滑动状态，自动播放可见区域内的第一个视频
+ * @Description 监听recycleView滑动状态，自动播放可见区域内的第一个视频,暂停不可见的播放器
  */
 public abstract class AutoPlayScrollListener extends RecyclerView.OnScrollListener {
 
@@ -27,7 +30,11 @@ public abstract class AutoPlayScrollListener extends RecyclerView.OnScrollListen
     private int lastVisibleItem = 0;
     private int visibleCount = 0;
 
-    private boolean palyDelay=true;
+    private final int ALL_INVISIBLE = 0;
+    private final int ALL_VISIBLE = 1;
+    private final int PART_VISIBLE = 2;
+
+    private boolean palyDelay = true;
 
     /**
      * 被处理的视频状态标签
@@ -52,7 +59,7 @@ public abstract class AutoPlayScrollListener extends RecyclerView.OnScrollListen
         switch (newState) {
             case RecyclerView.SCROLL_STATE_IDLE:
                 if (canAutoPlay()) {
-                    if (palyDelay){
+                    if (palyDelay) {
                         Observable.timer(500, TimeUnit.MILLISECONDS)
                                 .observeOn(AndroidSchedulers.mainThread())
                                 .subscribe(new Action1<Long>() {
@@ -61,12 +68,18 @@ public abstract class AutoPlayScrollListener extends RecyclerView.OnScrollListen
                                         autoPlayVideo(recyclerView, VideoTagEnum.TAG_AUTO_PLAY_VIDEO);
                                     }
                                 });
-                    }else{
+                    } else {
                         autoPlayVideo(recyclerView, VideoTagEnum.TAG_AUTO_PLAY_VIDEO);
                     }
                 }
             default: // TODO 滑出屏幕暂停
 //                autoPlayVideo(recyclerView, VideoTagEnum.TAG_PAUSE_VIDEO);
+                if (JZVideoPlayerManager.getCurrentJzvd() != null
+                        && JZVideoPlayerManager.getCurrentJzvd().currentState == JZVideoPlayerStandard.CURRENT_STATE_PLAYING) {
+                    if (PART_VISIBLE == checkVisibility(JZVideoPlayerManager.getCurrentJzvd())) {
+                        JZVideoPlayerManager.getCurrentJzvd().startButton.callOnClick();
+                    }
+                }
                 break;
         }
 
@@ -186,6 +199,18 @@ public abstract class AutoPlayScrollListener extends RecyclerView.OnScrollListen
             default:
                 break;
         }
+    }
+
+    private int checkVisibility(View view) {
+        Rect rect = new Rect();
+        boolean b = view.getLocalVisibleRect(rect);
+        if (b) {
+            if (rect.width() == view.getMeasuredWidth() && rect.height() <= view.getMeasuredHeight() / 4) {
+                return ALL_VISIBLE;
+            }
+            return PART_VISIBLE;
+        }
+        return ALL_INVISIBLE;
     }
 
     public abstract int getPlayerViewId();
