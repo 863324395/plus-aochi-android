@@ -502,7 +502,7 @@ public class ImageUtils {
     }
 
     public static String imagePathConvertV2(int storage, int w, int h, int part) {
-            return String.format(Locale.getDefault(), ApiConfig.APP_DOMAIN + ApiConfig.IMAGE_PATH_V2, storage, w, h, part);
+        return String.format(Locale.getDefault(), ApiConfig.APP_DOMAIN + ApiConfig.IMAGE_PATH_V2, storage, w, h, part);
 
     }
 
@@ -527,6 +527,23 @@ public class ImageUtils {
                 .load(url)
                 .placeholder(R.drawable.shape_default_image)
                 .placeholder(R.drawable.shape_default_error_image)
+                .into(imageView);
+
+    }
+
+    /**
+     * 默认加载图片
+     *
+     * @param imageView target view to display image
+     * @param url       image resuorce path
+     */
+    public static void loadImageDefaultNoHolder(ImageView imageView, String url) {
+        if (checkImageContext(imageView)) {
+            return;
+        }
+        Glide.with(imageView.getContext())
+                .load(url)
+                .error(R.drawable.shape_default_error_image)
                 .into(imageView);
 
     }

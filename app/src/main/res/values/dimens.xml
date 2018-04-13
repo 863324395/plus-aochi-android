@@ -130,5 +130,6 @@
     <dimen name="info_container_tab_spacing">7dp</dimen>
     <dimen name="info_container_tab_padiing">30dp</dimen>
     <dimen name="integration_withdrawals_et_padding">14dp</dimen>
+    <dimen name="ts_chat_item_iamge_raduis">12dp</dimen>
 
 </resources>

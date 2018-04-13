@@ -50,8 +50,6 @@ public class ChatRowPicture extends ChatBaseRow {
     public ChatRowPicture(Context context, EMMessage message, int position, BaseAdapter adapter, ChatUserInfoBean chatUserInfoBean) {
         super(context, message, position, adapter, chatUserInfoBean);
         mMaxLocalImageWith = DeviceUtils.getScreenWidth(context)  / 3;
-//        mMaxNetImageWith = DeviceUtils.getScreenWidth(context) - 3 * getResources().getDimensionPixelOffset(R.dimen.spacing_large) - getResources()
-//                .getDimensionPixelOffset(R.dimen.headpic_for_list);
         mMaxNetImageWith = DeviceUtils.getScreenWidth(context) / 3;
 
     }
@@ -98,13 +96,12 @@ public class ChatRowPicture extends ChatBaseRow {
                 height = (int) (((float) mMaxNetImageWith / width) * height);
                 width = mMaxNetImageWith;
             }
-
         }
         RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) mIvChatContent.getLayoutParams();
         layoutParams.width = width;
         layoutParams.height = height;
         mIvChatContent.setLayoutParams(layoutParams);
-        ImageUtils.loadImageDefault(mIvChatContent, url);
+        ImageUtils.loadImageDefaultNoHolder(mIvChatContent, url);
 
         int finalWidth = width;
         int finalHeight = height;
