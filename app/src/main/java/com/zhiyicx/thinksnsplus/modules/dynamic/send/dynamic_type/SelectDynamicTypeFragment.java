@@ -25,6 +25,7 @@ import com.zhiyicx.common.utils.FileUtils;
 import com.zhiyicx.common.utils.SharePreferenceUtils;
 import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.config.SharePreferenceTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.SendDynamicDataBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserCertificationInfo;
@@ -38,6 +39,7 @@ import com.zhiyicx.thinksnsplus.modules.shortvideo.videostore.VideoSelectActivit
 import com.zhiyicx.thinksnsplus.widget.IconTextView;
 
 import org.simple.eventbus.EventBus;
+import org.simple.eventbus.Subscriber;
 
 import java.io.File;
 import java.util.List;
@@ -45,12 +47,14 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.OnClick;
 
+import static android.app.Activity.RESULT_OK;
 import static com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl.MAX_DEFAULT_COUNT;
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_CHECK_IN_CLICK;
 import static com.zhiyicx.thinksnsplus.modules.certification.detail.CertificationDetailActivity.BUNDLE_DETAIL_DATA;
 import static com.zhiyicx.thinksnsplus.modules.certification.detail.CertificationDetailActivity.BUNDLE_DETAIL_TYPE;
 import static com.zhiyicx.thinksnsplus.modules.certification.input.CertificationInputActivity.BUNDLE_CERTIFICATION_TYPE;
 import static com.zhiyicx.thinksnsplus.modules.certification.input.CertificationInputActivity.BUNDLE_TYPE;
+import static me.iwf.photopicker.PhotoPicker.DEFAULT_REQUST_ALBUM;
 
 /**
  * @Author Jliuer
@@ -301,6 +305,19 @@ public class SelectDynamicTypeFragment extends TSFragment<SelectDynamicTypeContr
         // 获取图片选择器返回结果
         if (mPhotoSelector != null) {
             mPhotoSelector.onActivityResult(requestCode, resultCode, data);
+        }
+    }
+
+    @Override
+    protected boolean useEventBus() {
+        return true;
+    }
+
+    @Subscriber(tag = EventBusTagConfig.EVENT_SEND_DYNAMIC_PHOT_FIRST_OPEN_SEND_DYNAMIC_PAGE)
+    public void sendDynamicPhotFirstOpenSendDynamicPage(Intent data) {
+        // 获取图片选择器返回结果
+        if (mPhotoSelector != null) {
+            mPhotoSelector.onActivityResult(DEFAULT_REQUST_ALBUM, RESULT_OK, data);
         }
     }
 

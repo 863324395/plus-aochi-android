@@ -41,6 +41,7 @@ import me.iwf.photopicker.PhotoPicker;
 import rx.functions.Action1;
 
 import static android.app.Activity.RESULT_OK;
+import static me.iwf.photopicker.PhotoPicker.DEFAULT_REQUST_ALBUM;
 
 /**
  * @author LiuChao
@@ -331,7 +332,7 @@ public class PhotoSelectorImpl implements IPhotoSelector<ImageBean> {
                 }
             }
             // 从本地相册获取图片
-            if (requestCode == 1000) {
+            if (requestCode == DEFAULT_REQUST_ALBUM) {
                 // 清空之前的图片，重新装载
                 photosList.clear();
                 ArrayList<ImageBean> tolls;

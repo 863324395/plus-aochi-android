@@ -25,12 +25,6 @@ public class PreviewActivity extends TSActivity<AppBasePresenter, PreviewFragmen
     }
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState, @Nullable PersistableBundle
-            persistentState) {
-        super.onCreate(savedInstanceState, persistentState);
-    }
-
-    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         mContanierFragment.onActivityResult(requestCode, resultCode, data);

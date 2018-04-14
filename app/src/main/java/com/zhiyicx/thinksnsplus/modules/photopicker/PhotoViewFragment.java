@@ -25,13 +25,17 @@ import android.widget.TextView;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.baseproject.impl.photoselector.Toll;
-import com.zhiyicx.common.utils.SharePreferenceUtils;
+import com.zhiyicx.common.utils.ActivityHandler;
 import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.thinksnsplus.R;
-import com.zhiyicx.thinksnsplus.config.SharePreferenceTagConfig;
+import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.AnimationRectBean;
 import com.zhiyicx.thinksnsplus.data.beans.PhotoViewDataCacheBean;
+import com.zhiyicx.thinksnsplus.data.beans.SendDynamicDataBean;
+import com.zhiyicx.thinksnsplus.modules.dynamic.send.SendDynamicActivity;
 import com.zhiyicx.thinksnsplus.modules.dynamic.send.picture_toll.PictureTollActivity;
+
+import org.simple.eventbus.EventBus;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -71,10 +75,6 @@ public class PhotoViewFragment extends TSFragment {
     RelativeLayout mRlBottomContainer;
 
     private SectionsPagerAdapter mPagerAdapter;
-
-    public final static String ARG_MAX_COUNT = "MAX_COUNT";
-    public final static String RIGHTTITLE = "righttitle";
-
 
     public final static String OLDTOLL = "oldtoll";
 
@@ -315,15 +315,27 @@ public class PhotoViewFragment extends TSFragment {
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.bt_complete:
-                setResult(false);
+                if (ActivityHandler.getInstance().getActivity(SendDynamicActivity.class) != null) {
+                    backPress(false);
+                } else {
+                    seletedPaths.removeAll(unCheckImagePath);
+                    mSeletedPic.removeAll(unCheckImage);
+                    Intent it = new Intent();
+                    it.putStringArrayListExtra(PHOTOS, seletedPaths);
+                    Bundle bundle = new Bundle();
+                    bundle.putParcelableArrayList(TOLL, mSeletedPic);
+                    it.putExtra(TOLL, bundle);
+                    it.putExtra(EXTRA_BACK_HERE, false);
+                    EventBus.getDefault().post(it, EventBusTagConfig.EVENT_SEND_DYNAMIC_PHOT_FIRST_OPEN_SEND_DYNAMIC_PAGE);
+                    getActivity().finish();
+                }
                 break;
             default:
         }
     }
 
     public static PhotoViewFragment newInstance() {
-        PhotoViewFragment f = new PhotoViewFragment();
-        return f;
+        return new PhotoViewFragment();
     }
 
 
@@ -385,7 +397,7 @@ public class PhotoViewFragment extends TSFragment {
         return bgAnim;
     }
 
-    public void backPress() {
+    public void backPress(boolean backToPhotoAlbum) {
         if (mPhotoViewPictureContainerFragment != null && mPhotoViewPictureContainerFragment
                 .canAnimateCloseActivity()) {
             backgroundColor = new ColorDrawable(Color.WHITE);
@@ -400,14 +412,14 @@ public class PhotoViewFragment extends TSFragment {
                 public void onAnimationEnd(Animator animation) {
                     super.onAnimationEnd(animation);
                     if (mActivity != null) {
-                        setResult(true);
+                        setResult(backToPhotoAlbum);
                         mActivity.overridePendingTransition(-1, -1);
                     }
                 }
             });
             mPhotoViewPictureContainerFragment.animationExit(bgAnim);
         } else {
-            setResult(true);
+            setResult(backToPhotoAlbum);
             ((PhotoViewActivity) getActivity()).superBackpress();
         }
     }
@@ -429,8 +441,15 @@ public class PhotoViewFragment extends TSFragment {
         bundle.putParcelableArrayList(TOLL, mSeletedPic);
         it.putExtra(TOLL, bundle);
         it.putExtra(EXTRA_BACK_HERE, backToPhotoAlbum);
-        getActivity().setResult(Activity.RESULT_OK, it);
-        getActivity().finish();
+
+        if (backToPhotoAlbum || ActivityHandler.getInstance().getActivity(SendDynamicActivity.class) != null) {
+            getActivity().setResult(Activity.RESULT_OK, it);
+            getActivity().finish();
+        } else {
+            ActivityHandler.getInstance().removeActivity(PhotoAlbumDetailsActivity.class);
+            EventBus.getDefault().post(it, EventBusTagConfig.EVENT_SEND_DYNAMIC_PHOT_FIRST_OPEN_SEND_DYNAMIC_PAGE);
+            getActivity().finish();
+        }
     }
 
     public void removePlaceHolder(List<ImageBean> list) {
