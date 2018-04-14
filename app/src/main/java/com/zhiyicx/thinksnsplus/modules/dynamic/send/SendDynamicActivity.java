@@ -27,12 +27,12 @@ public class SendDynamicActivity extends TSActivity<SendDynamicPresenter, SendDy
                 .sendDynamicPresenterModule(new SendDynamicPresenterModule(mContanierFragment))
                 .build().inject(this);
     }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        mContanierFragment.onActivityResult(requestCode,resultCode,data);
-    }
+// 重复了，fragmentActivity已经回调了一次
+//    @Override
+//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        super.onActivityResult(requestCode, resultCode, data);
+//        mContanierFragment.onActivityResult(requestCode,resultCode,data);
+//    }
 
     @Override
     public void onBackPressed() {

@@ -11,6 +11,7 @@ import com.umeng.socialize.bean.SHARE_MEDIA;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.config.SystemConfig;
+import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.ThridInfoBean;
 import com.zhiyicx.thinksnsplus.modules.third_platform.bind.BindOldAccountActivity;
@@ -77,7 +78,7 @@ public class ChooseBindFragment extends TSFragment<ChooseBindContract.Presenter>
                     .itemlStr(mActivity.getString(R.string.third_platform_complete_register))
                     .item2Str(mActivity.getString(R.string.third_platform_bind_old_account))
                     .with(getActivity())
-                    .alpha(0.8f)
+                    .alpha(CustomPopupWindow.POPUPWINDOW_ALPHA)
                     .itemListener(this)
                     .build();
 
