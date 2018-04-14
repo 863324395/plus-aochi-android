@@ -101,11 +101,11 @@ public class SelectFriendsPresenter extends AppBasePresenter<SelectFriendsContra
     @Override
     public void requestCacheData(Long maxId, boolean isLoadMore) {
         if (!mRootView.getIsDeleteMember()) {
-            List<UserInfoBean> followFansBeanList = mUserInfoBeanGreenDao.getUserFriendsList(maxId);
-            for (UserInfoBean userInfoBean : followFansBeanList) {
-                userInfoBean.setIsSelected(0);
-            }
-            mRootView.onCacheResponseSuccess(followFansBeanList, isLoadMore);
+//            List<UserInfoBean> followFansBeanList = mUserInfoBeanGreenDao.getUserFriendsList(maxId);
+//            for (UserInfoBean userInfoBean : followFansBeanList) {
+//                userInfoBean.setIsSelected(0);
+//            }
+            mRootView.onCacheResponseSuccess(new ArrayList<>(), isLoadMore);
         } else {
             getLocalUser("");
         }
