@@ -835,22 +835,22 @@
     <string name="invite_friend">邀请您的好友使用TS+吧！http://www.thinksns.com/</string>
     <string name="reward_type_error">打赏类型错误</string>
     <!--评论的、赞的-->
-    <string name="digg_format_feed">%s赞了你的动态</string>
-    <string name="digg_format_group_feed">%s赞了你的帖子</string>
-    <string name="digg_format_music">%s赞了你的音乐</string>
-    <string name="digg_format_news">%s赞了你的文章</string>
-    <string name="digg_format_questions">%s赞了你的问题</string>
-    <string name="digg_format_questions_answer">%s赞了你的回答</string>
+    <string name="digg_format_feed">%s 赞了你的动态</string>
+    <string name="digg_format_group_feed">%s 赞了你的帖子</string>
+    <string name="digg_format_music">%s 赞了你的音乐</string>
+    <string name="digg_format_news">%s 赞了你的文章</string>
+    <string name="digg_format_questions">%s 赞了你的问题</string>
+    <string name="digg_format_questions_answer">%s 赞了你的回答</string>
 
     <string name="comment_format_reply">%1$s 回复 %2$s</string>
-    <string name="comment_format_reply_you">%s回复了你</string>
-    <string name="comment_format_feed">%s评论了你的动态</string>
-    <string name="comment_format_group_feed">%s评论了你的帖子</string>
-    <string name="comment_format_music">%s评论了你的音乐</string>
-    <string name="comment_format_music_specials">%s评论了你的专辑</string>
-    <string name="comment_format_news">%s评论了你的文章</string>
-    <string name="comment_format_questions">%s评论了你的问题</string>
-    <string name="comment_format_questions_answer">%s评论了你的回答</string>
+    <string name="comment_format_reply_you">%s 回复了你</string>
+    <string name="comment_format_feed">%s 评论了你的动态</string>
+    <string name="comment_format_group_feed">%s 评论了你的帖子</string>
+    <string name="comment_format_music">%s 评论了你的音乐</string>
+    <string name="comment_format_music_specials">%s 评论了你的专辑</string>
+    <string name="comment_format_news">%s 评论了你的文章</string>
+    <string name="comment_format_questions">%s 评论了你的问题</string>
+    <string name="comment_format_questions_answer">%s 评论了你的回答</string>
     <string name="new_apply_data">您有未审核的信息请及时处理</string>
     <string name="no_apply_data">暂无未审核的申请</string>
     <string-array name="personal_dynamic_typpe">

@@ -27,6 +27,6 @@
     <!--
        使用场景：消息-> 通知，评论的点赞的等
     -->
-    <dimen name="headpic_for_notification">28dp</dimen>
+    <dimen name="headpic_for_notification">32dp</dimen>
     <dimen name="headpic_for_notification_27dp">27dp</dimen>
 </resources>
