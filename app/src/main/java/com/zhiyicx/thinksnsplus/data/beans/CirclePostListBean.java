@@ -19,6 +19,9 @@ import java.util.List;
 
 import org.greenrobot.greendao.annotation.Generated;
 
+import static com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListBaseItem.DEFALT_IMAGE_HEIGHT;
+import static com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListBaseItem.DEFALT_IMAGE_WITH;
+
 /**
  * @author Jliuer
  * @Date 2017/11/29/15:44
@@ -47,7 +50,11 @@ public class CirclePostListBean extends BaseListBean implements Serializable, Cl
      * created_at : 2017-11-28 07:12:20
      * updated_at : 2017-11-28 07:12:20
      * images : [{"id":113,"size":"397x246"},{"id":115,"size":"397x246"}]
-     * user : {"id":1,"name":"admin","bio":null,"sex":2,"location":"四川省 巴中市 南江县","created_at":"2017-10-23 01:17:34","updated_at":"2017-11-15 07:36:17","avatar":"http://thinksns-plus.dev/api/v2/users/1/avatar","bg":null,"verified":{"type":"user","icon":"http://thinksns-plus.dev/storage/certifications/000/000/0us/er.png","description":"1111"},"extra":{"user_id":1,"likes_count":5,"comments_count":3,"followers_count":0,"followings_count":6,"updated_at":"2017-11-27 07:25:04","feeds_count":8,"questions_count":2,"answers_count":0,"checkin_count":7,"last_checkin_count":1}}
+     * user : {"id":1,"name":"admin","bio":null,"sex":2,"location":"四川省 巴中市 南江县","created_at":"2017-10-23 01:17:34","updated_at":"2017-11-15
+     * 07:36:17","avatar":"http://thinksns-plus.dev/api/v2/users/1/avatar","bg":null,"verified":{"type":"user","icon":"http://thinksns-plus
+     * .dev/storage/certifications/000/000/0us/er.png","description":"1111"},"extra":{"user_id":1,"likes_count":5,"comments_count":3,
+     * "followers_count":0,"followings_count":6,"updated_at":"2017-11-27 07:25:04","feeds_count":8,"questions_count":2,"answers_count":0,
+     * "checkin_count":7,"last_checkin_count":1}}
      */
     @Id
     private Long id;
@@ -288,7 +295,7 @@ public class CirclePostListBean extends BaseListBean implements Serializable, Cl
         @SerializedName("id")
         private int file_id;
         private String imgUrl;
-        @SerializedName(value = "type",alternate = "mime")
+        @SerializedName(value = "type", alternate = "mime")
         private String type;
 
         public int getPropPart() {
@@ -337,27 +344,46 @@ public class CirclePostListBean extends BaseListBean implements Serializable, Cl
 
         public void setSize(String size) {
             this.size = size;
-            if (size != null && size.length() > 0) {
-                String[] sizes = size.split("x");
-                this.width = Integer.parseInt(sizes[0]);
-                this.height = Integer.parseInt(sizes[1]);
+            try {
+                if (size != null && size.length() > 0) {
+                    String[] sizes = size.split("x");
+                    this.width = Integer.parseInt(sizes[0]);
+                    this.height = Integer.parseInt(sizes[1]);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                this.width = DEFALT_IMAGE_WITH;
+                this.height = DEFALT_IMAGE_HEIGHT;
             }
+
         }
 
         public int getWidth() {
-            if (size != null && size.length() > 0) {
-                String[] sizes = size.split("x");
-                return Integer.parseInt(sizes[0]);
+            try {
+                if (size != null && size.length() > 0) {
+                    String[] sizes = size.split("x");
+                    return Integer.parseInt(sizes[0]);
+                }
+                return DEFALT_IMAGE_WITH;
+            } catch (Exception e) {
+                e.printStackTrace();
+                return DEFALT_IMAGE_WITH;
             }
-            return 100;
+
         }
 
         public int getHeight() {
-            if (size != null && size.length() > 0) {
-                String[] sizes = size.split("x");
-                return Integer.parseInt(sizes[1]);
+            try {
+                if (size != null && size.length() > 0) {
+                    String[] sizes = size.split("x");
+                    return Integer.parseInt(sizes[1]);
+                }
+                return DEFALT_IMAGE_HEIGHT;
+            } catch (Exception e) {
+                e.printStackTrace();
+                return DEFALT_IMAGE_HEIGHT;
             }
-            return 100;
+
         }
 
         public int getFile_id() {
@@ -488,7 +514,10 @@ public class CirclePostListBean extends BaseListBean implements Serializable, Cl
     }
 
     @Generated(hash = 1415342187)
-    public CirclePostListBean(Long id, Long post_mark, long group_id, Long user_id, String title, String summary, int likes_count, int comments_count, int views_count, boolean liked, boolean collected, String created_at, String updated_at, UserInfoBean user, List<ImagesBean> images, List<CirclePostCommentBean> comments, int state, int reward_amount, int reward_number, String body, CircleInfo group, boolean pinned, List<PostDigListBean> digs) {
+    public CirclePostListBean(Long id, Long post_mark, long group_id, Long user_id, String title, String summary, int likes_count, int
+            comments_count, int views_count, boolean liked, boolean collected, String created_at, String updated_at, UserInfoBean user,
+                              List<ImagesBean> images, List<CirclePostCommentBean> comments, int state, int reward_amount, int reward_number,
+                              String body, CircleInfo group, boolean pinned, List<PostDigListBean> digs) {
         this.id = id;
         this.post_mark = post_mark;
         this.group_id = group_id;
