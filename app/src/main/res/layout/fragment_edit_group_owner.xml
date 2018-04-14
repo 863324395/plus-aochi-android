@@ -69,9 +69,6 @@
             android:gravity="center_vertical"
             android:paddingLeft="@dimen/spacing_mid"/>
 
-
-
-
     <include layout="@layout/fragment_tslist"/>
 
 </LinearLayout>

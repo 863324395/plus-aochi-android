@@ -33,6 +33,7 @@ import rx.functions.Func1;
 
 public class EditGroupOwnerPresenter extends AppBasePresenter<EditGroupOwnerContract.View>
         implements EditGroupOwnerContract.Presenter {
+    public static final int DEFAULT_MAX_GRUOP_NUMBER=200;
 
     @Inject
     EditGroupOwnerRepository mRepository;
@@ -70,7 +71,7 @@ public class EditGroupOwnerPresenter extends AppBasePresenter<EditGroupOwnerCont
 
     @Override
     public void updateGroup(ChatGroupBean chatGroupBean) {
-        Subscription subscription = mRepository.updateGroup(chatGroupBean.getId(), chatGroupBean.getName(), chatGroupBean.getDescription(), 0, 200, chatGroupBean.isMembersonly(),
+        Subscription subscription = mRepository.updateGroup(chatGroupBean.getId(), chatGroupBean.getName(), chatGroupBean.getDescription(), 0, DEFAULT_MAX_GRUOP_NUMBER, chatGroupBean.isMembersonly(),
                 0, chatGroupBean.getGroup_face(), false, chatGroupBean.getOwner() + "")
                 .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R.string.modifing)))
                 .observeOn(AndroidSchedulers.mainThread())

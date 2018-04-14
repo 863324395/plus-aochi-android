@@ -348,7 +348,7 @@ public class AuthRepository implements IAuthRepository {
 
                 @Override
                 public void onError(int code, String message) {
-                    LogUtils.d("main", "登录聊天服务器失败！error message: " + message);
+                    LogUtils.e("main", "登录聊天服务器失败！error message: " + message);
                 }
             });
         } else if (!EMClient.getInstance().isConnected()) {

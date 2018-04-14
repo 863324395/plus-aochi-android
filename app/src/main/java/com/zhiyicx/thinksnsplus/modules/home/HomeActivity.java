@@ -92,6 +92,9 @@ public class HomeActivity extends TSActivity {
     protected void onDestroy() {
         super.onDestroy();
         UmengSharePolicyImpl.onDestroy(this);
+        if(mNetChangeReceiver!=null){
+            unregisterReceiver(mNetChangeReceiver);
+        }
     }
 
 }
