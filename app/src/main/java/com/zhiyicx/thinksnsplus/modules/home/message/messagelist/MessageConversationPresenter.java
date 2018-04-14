@@ -70,6 +70,11 @@ public class MessageConversationPresenter extends AppBasePresenter<MessageConver
      */
     private List<MessageItemBeanV2> mCopyConversationList;
 
+    /**
+     * 是否是第一次连接 im
+     */
+    private boolean mIsFristConnectedIm = true;
+
 
     @Inject
     public MessageConversationPresenter(MessageConversationContract.View rootView) {
@@ -119,16 +124,6 @@ public class MessageConversationPresenter extends AppBasePresenter<MessageConver
                     EMClient.getInstance().chatManager().deleteConversation(itemBeanV2.getEmKey(), true);
                 });
         addSubscrebe(subscription);
-    }
-
-    @Override
-    public void handleFlushMessage() {
-
-    }
-
-    @Override
-    public void checkUnreadNotification() {
-
     }
 
     @Override
@@ -238,8 +233,12 @@ public class MessageConversationPresenter extends AppBasePresenter<MessageConver
                     });
             addSubscrebe(subscribe);
         } else {
-            mRootView.showStickyMessage(mContext.getString(R.string.chat_unconnected));
-            mRootView.hideLoading();
+            if (!mIsFristConnectedIm) {
+                mRootView.showStickyMessage(mContext.getString(R.string.chat_unconnected));
+                mRootView.hideLoading();
+            } else {
+                mIsFristConnectedIm = false;
+            }
             // 尝试重新登录，在homepresenter接收
             mAuthRepository.loginIM();
         }
@@ -274,6 +273,12 @@ public class MessageConversationPresenter extends AppBasePresenter<MessageConver
         addSubscrebe(subscribe);
 
 
+    }
+
+    @Subscriber(tag = EventBusTagConfig.EVENT_IM_ONCONNECTED)
+    private void onConnected(String content) {
+        mRootView.hideStickyMessage();
+        getAllConversationV2(false);
     }
 
     /**

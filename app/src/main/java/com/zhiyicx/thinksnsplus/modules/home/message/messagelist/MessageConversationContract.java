@@ -49,14 +49,6 @@ public interface MessageConversationContract {
         void deleteConversation(int position);
 
         /**
-         * 检查当前消息记录
-         */
-        void handleFlushMessage();
-
-
-        void checkUnreadNotification();
-
-        /**
          * 获取聊天用户列表
          *
          * @param position 点击位置
