@@ -324,7 +324,7 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                         @Override
                         public GlideUrl requestGlideUrl() {
                             return ImageUtils.imagePathConvertV2(canLook, mImageBean.getStorage_id(), 0, 0,
-                                    ImageZipConfig.IMAGE_70_ZIP, AppApplication.getTOKEN());
+                                    ImageZipConfig.IMAGE_ZIP_BIG, AppApplication.getTOKEN());
                         }
                     }
                             .requestGlideUrl())
@@ -333,7 +333,7 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
             // // 不从网络读取原图(CACHE_ONLY_STREAM_LOADER) 尝试从缓存获取原图
             DrawableRequestBuilder requestBuilder = Glide.with(context)
                     .using(CACHE_ONLY_STREAM_LOADER)
-                    .load(ImageUtils.imagePathConvertV2(mImageBean.getStorage_id(), w, h,
+                    .load(ImageUtils.imagePathConvertV2(mImageBean.getStorage_id(), 0, 0,
                             ImageZipConfig.IMAGE_100_ZIP))
                     // 加载缩略图，上一个页面已经缓存好了，直接读取
                     .thumbnail(thumbnailBuilder)
@@ -361,10 +361,8 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                             // 原图没有缓存，从cacheOnlyStreamLoader抛出异常，在这儿加载高清图
                             DrawableRequestBuilder builder = Glide.with(context)
                                     .load(
-//                                            ImageUtils.imagePathConvertV2(canLook, mImageBean.getStorage_id(), canLook ? w : 0, canLook ? h : 0,
-//                                                    ImageZipConfig.IMAGE_70_ZIP, AppApplication.getTOKEN())
                                             ImageUtils.imagePathConvertV2(canLook, mImageBean.getStorage_id(), 0, 0,
-                                                    ImageZipConfig.IMAGE_70_ZIP, AppApplication.getTOKEN())
+                                                    ImageZipConfig.IMAGE_ZIP_BIG, AppApplication.getTOKEN())
                                     )
                                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                                     .listener(new RequestListener<GlideUrl, GlideDrawable>() {
@@ -398,7 +396,7 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                                                 mPbProgress.setVisibility(View.GONE);
                                             }
                                             // mPhotoViewAttacherNormal.update() 必须在图片设置上后才有效果
-                                            Observable.timer(20, TimeUnit.MILLISECONDS)
+                                            Observable.timer(40, TimeUnit.MILLISECONDS)
                                                     .observeOn(AndroidSchedulers.mainThread())
                                                     .subscribeOn(Schedulers.io())
                                                     .subscribe(aLong -> mPhotoViewAttacherNormal.update());
@@ -432,7 +430,10 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
             if (imageBean.getWidth() * imageBean.getHeight() != 0) {
                 requestBuilder.override(w, h);
             }
-            requestBuilder.into(new GallarySimpleTarget(rect));
+
+            requestBuilder.into(
+                    ImageUtils.imageIsGif(imageBean.getImgMimeType()) ? new GallaryGlideDrawableImageViewTarget(rect) : new GallarySimpleTarget(rect)
+            );
 
         }
     }
@@ -628,6 +629,9 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
         }
     }
 
+    /**
+     * 支持 gif 的 加载
+     */
     private class GallaryGlideDrawableImageViewTarget extends GlideDrawableImageViewTarget {
         private AnimationRectBean rect;
 
@@ -652,13 +656,15 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
         }
     }
 
+    /**
+     * 不支持 gif
+     */
     private class GallarySimpleTarget extends SimpleTarget<GlideDrawable> {
         private AnimationRectBean rect;
 
         GallarySimpleTarget(AnimationRectBean rect) {
             super();
             this.rect = rect;
-
         }
 
         @Override
