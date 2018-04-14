@@ -109,7 +109,8 @@ public class MessageAdapterV2 extends CommonAdapter<MessageItemBeanV2> implement
                 }
                 userAvatarView.getIvVerify().setVisibility(View.GONE);
                 Glide.with(mContext)
-                        .load(chatGroupBean == null ? "" : chatGroupBean.getGroup_face())
+                        .load(chatGroupBean == null || TextUtils.isEmpty(chatGroupBean.getGroup_face()) ? R.mipmap.ico_ts_assistant : chatGroupBean
+                                .getGroup_face())
                         .error(R.mipmap.ico_ts_assistant)
                         .placeholder(R.mipmap.ico_ts_assistant)
                         .transform(new GlideCircleTransform(mContext))

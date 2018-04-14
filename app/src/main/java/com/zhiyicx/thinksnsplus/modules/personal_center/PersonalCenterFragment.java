@@ -178,7 +178,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
         }
 
         String tsHelperUrl = checkHelperUrl(context, userInfoBean.getUser_id());
-        if (!TextUtils.isEmpty(tsHelperUrl)) {
+        if (AppApplication.getMyUserIdWithdefault() != userInfoBean.getUser_id() && !TextUtils.isEmpty(tsHelperUrl)) {
             CustomWEBActivity.startToWEBActivity(context, tsHelperUrl);
         } else {
             Intent intent = new Intent(context, PersonalCenterActivity.class);

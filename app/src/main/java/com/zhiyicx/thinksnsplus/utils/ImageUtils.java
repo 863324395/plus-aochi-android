@@ -206,7 +206,7 @@ public class ImageUtils {
                 userInfoBean.getVerified().setIcon("");
             }
             Glide.with(imageView.getContext())
-                    .load(userInfoBean.getVerified().getIcon())
+                    .load(TextUtils.isEmpty(userInfoBean.getVerified().getIcon())?R.drawable.shape_default_image:userInfoBean.getVerified().getIcon())
                     .signature(new StringSignature(String.valueOf(mHeadPicSigture)))
                     .placeholder(userInfoBean.getVerified().getType().equals(SendCertificationBean.ORG) ? R.mipmap.pic_identi_company : R.mipmap
                             .pic_identi_individual)
@@ -241,7 +241,7 @@ public class ImageUtils {
                 userInfoBean.getVerified().setIcon("");
             }
             Glide.with(imageView.getContext())
-                    .load(userInfoBean.getVerified().getIcon())
+                    .load(TextUtils.isEmpty(userInfoBean.getVerified().getIcon())?R.drawable.shape_default_image:userInfoBean.getVerified().getIcon())
                     .signature(new StringSignature(String.valueOf(mHeadPicSigture)))
                     .placeholder(userInfoBean.getVerified().getType().equals(SendCertificationBean.ORG) ? R.mipmap.pic_identi_company : R.mipmap
                             .pic_identi_individual)
@@ -337,7 +337,7 @@ public class ImageUtils {
         }
         int defaultAvatar = getDefaultAvatar(userInfoBean);
         Glide.with(imageView.getContext())
-                .load(avatar)
+                .load(TextUtils.isEmpty(avatar) ? R.drawable.shape_default_image : avatar)
                 .signature(new StringSignature(String.valueOf(mHeadPicSigture)))
                 .placeholder(withBorder ? defaultAvatar : defaultAvatar)
                 .error(withBorder ? defaultAvatar : defaultAvatar)
@@ -374,7 +374,7 @@ public class ImageUtils {
         }
         int defaultAvatar = getDefaultAvatar(userInfoBean);
         Glide.with(imageView.getContext())
-                .load(avatar)
+                .load(TextUtils.isEmpty(avatar) ? R.drawable.shape_default_image : avatar)
                 .signature(new StringSignature(String.valueOf(mHeadPicSigture)))
                 .placeholder(withBorder ? defaultAvatar : defaultAvatar)
                 .error(withBorder ? defaultAvatar : defaultAvatar)
@@ -383,6 +383,7 @@ public class ImageUtils {
                                 .getDimensionPixelSize(R.dimen.spacing_tiny), ContextCompat.getColor(imageView.getContext(), R.color.white))
                         : new GlideCircleTransform(imageView.getContext().getApplicationContext()))
                 .into(imageView);
+
     }
 
     /**

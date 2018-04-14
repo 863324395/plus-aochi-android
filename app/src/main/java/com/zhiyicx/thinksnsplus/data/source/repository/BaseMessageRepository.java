@@ -27,6 +27,7 @@ import com.zhiyicx.thinksnsplus.utils.TSImHelperUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -84,7 +85,8 @@ public class BaseMessageRepository implements IBaseMessageRepository {
                     List<SystemConfigBean.ImHelperBean> needAddedHelpers = new ArrayList<>();
                     if (tsHlepers != null && !tsHlepers.isEmpty()) {
                         for (SystemConfigBean.ImHelperBean imHelperBean : tsHlepers) {
-                            if (EMClient.getInstance().chatManager().getConversation(imHelperBean.getUid()) == null) {
+                            if (AppApplication.getMyUserIdWithdefault() != Long.valueOf(imHelperBean.getUid()) && EMClient.getInstance().chatManager()
+                                    .getConversation(imHelperBean.getUid()) == null) {
                                 needAddedHelpers.add(imHelperBean);
                             }
                         }
@@ -103,6 +105,7 @@ public class BaseMessageRepository implements IBaseMessageRepository {
                                     .getMyUserIdWithdefault()))) {
                                 // 给这个会话插入一条自定义的消息 文本类型的
                                 EMMessage welcomeMsg = EMMessage.createReceiveMessage(EMMessage.Type.TXT);
+                                welcomeMsg.setMsgId(tsHelper.getEmKey());
                                 // 消息体
                                 EMTextMessageBody textBody = new EMTextMessageBody(mContext.getString(R.string.ts_helper_default_tip));
                                 welcomeMsg.addBody(textBody);
@@ -121,15 +124,19 @@ public class BaseMessageRepository implements IBaseMessageRepository {
                     return completeEmConversation(list)
                             .map(list1 -> {
                                 List<MessageItemBeanV2> tmps = new ArrayList<>();
+                                HashSet<String> emKeys = new HashSet<>();
 
                                 for (MessageItemBeanV2 messageItemBeanV2 : list1) {
+                                    if (emKeys.contains(messageItemBeanV2.getEmKey())) {
+                                        continue;
+                                    }
+                                    emKeys.add(messageItemBeanV2.getEmKey());
                                     boolean ischatAndImHelper = EMConversation.EMConversationType.Chat == messageItemBeanV2.getConversation()
                                             .getType() && messageItemBeanV2.getUserInfo() != null && mSystemRepository.checkUserIsImHelper
                                             (messageItemBeanV2.getUserInfo().getUser_id());
                                     boolean isHasMessage = messageItemBeanV2.getConversation() != null && messageItemBeanV2.getConversation()
                                             .getLastMessage()
                                             != null;
-
                                     if (ischatAndImHelper || isHasMessage) {
                                         tmps.add(messageItemBeanV2);
                                     }

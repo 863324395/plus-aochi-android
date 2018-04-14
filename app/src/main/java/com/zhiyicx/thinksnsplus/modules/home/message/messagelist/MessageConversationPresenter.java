@@ -275,12 +275,6 @@ public class MessageConversationPresenter extends AppBasePresenter<MessageConver
 
     }
 
-    @Subscriber(tag = EventBusTagConfig.EVENT_IM_ONCONNECTED)
-    private void onConnected(String content) {
-        mRootView.hideStickyMessage();
-        getAllConversationV2(false);
-    }
-
     /**
      * 请求 群聊天会话信息列表  成功的回调
      *
