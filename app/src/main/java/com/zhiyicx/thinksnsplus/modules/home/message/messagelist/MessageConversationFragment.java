@@ -135,10 +135,6 @@ public class MessageConversationFragment extends TSListFragment<MessageConversat
 
     @Override
     public void onNetResponseSuccess(@NotNull List<MessageItemBeanV2> data, boolean isLoadMore) {
-        if (data.size() > 1) {
-            // 数据大于一个才排序
-            Collections.sort(data, new EmTimeSortClass());
-        }
         super.onNetResponseSuccess(data, isLoadMore);
         hideStickyMessage();
     }

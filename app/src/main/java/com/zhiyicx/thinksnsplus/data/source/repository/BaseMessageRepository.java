@@ -82,7 +82,7 @@ public class BaseMessageRepository implements IBaseMessageRepository {
                     List<SystemConfigBean.ImHelperBean> tsHlepers = mSystemRepository.getBootstrappersInfoFromLocal().getIm_helper();
                     // 需要手动插入的小助手，本地查找不到会话才插入聊天信息
                     List<SystemConfigBean.ImHelperBean> needAddedHelpers = new ArrayList<>();
-                    if (tsHlepers!=null&&!tsHlepers.isEmpty()) {
+                    if (tsHlepers != null && !tsHlepers.isEmpty()) {
                         for (SystemConfigBean.ImHelperBean imHelperBean : tsHlepers) {
                             if (EMClient.getInstance().chatManager().getConversation(imHelperBean.getUid()) == null) {
                                 needAddedHelpers.add(imHelperBean);
@@ -121,6 +121,7 @@ public class BaseMessageRepository implements IBaseMessageRepository {
                     return completeEmConversation(list)
                             .map(list1 -> {
                                 List<MessageItemBeanV2> tmps = new ArrayList<>();
+
                                 for (MessageItemBeanV2 messageItemBeanV2 : list1) {
                                     boolean ischatAndImHelper = EMConversation.EMConversationType.Chat == messageItemBeanV2.getConversation()
                                             .getType() && messageItemBeanV2.getUserInfo() != null && mSystemRepository.checkUserIsImHelper
@@ -128,9 +129,15 @@ public class BaseMessageRepository implements IBaseMessageRepository {
                                     boolean isHasMessage = messageItemBeanV2.getConversation() != null && messageItemBeanV2.getConversation()
                                             .getLastMessage()
                                             != null;
+
                                     if (ischatAndImHelper || isHasMessage) {
                                         tmps.add(messageItemBeanV2);
                                     }
+
+                                }
+                                if (tmps.size() > 1) {
+                                    // 数据大于一个才排序
+                                    Collections.sort(tmps, new EmTimeSortClass());
                                 }
                                 return tmps;
                             });

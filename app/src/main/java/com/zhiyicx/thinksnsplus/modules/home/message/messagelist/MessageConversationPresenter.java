@@ -35,6 +35,7 @@ import org.simple.eventbus.Subscriber;
 import org.simple.eventbus.ThreadMode;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -169,6 +170,10 @@ public class MessageConversationPresenter extends AppBasePresenter<MessageConver
                         if (name.contains(s)) {
                             newList.add(itemBeanV2);
                         }
+                    }
+                    if (newList.size() > 1) {
+                        // 数据大于一个才排序
+                        Collections.sort(newList, new EmTimeSortClass());
                     }
                     return newList;
                 })
