@@ -3,6 +3,7 @@ package com.zhiyicx.thinksnsplus.data.source.repository;
 import android.app.Application;
 import android.text.TextUtils;
 
+import com.bumptech.glide.Glide;
 import com.hyphenate.EMCallBack;
 import com.hyphenate.chat.EMClient;
 import com.umeng.socialize.UMAuthListener;
@@ -49,6 +50,9 @@ import com.zhiyicx.thinksnsplus.data.source.remote.UserInfoClient;
 import com.zhiyicx.thinksnsplus.data.source.repository.i.IAuthRepository;
 import com.zhiyicx.thinksnsplus.jpush.JpushAlias;
 import com.zhiyicx.thinksnsplus.modules.chat.call.TSEMHyphenate;
+import com.zhiyicx.thinksnsplus.modules.home.mine.DaggerMinePresenterComponent;
+import com.zhiyicx.thinksnsplus.modules.home.mine.MineFragment;
+import com.zhiyicx.thinksnsplus.modules.home.mine.MinePresenterModule;
 import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
 
 import org.simple.eventbus.EventBus;
@@ -202,6 +206,13 @@ public class AuthRepository implements IAuthRepository {
      */
     @Override
     public boolean clearAuthBean() {
+        // 异步清理glide 缓存
+        Observable.create(subscriber -> {
+            Glide.get(mContext).clearDiskCache();
+            subscriber.onCompleted();
+        }).subscribeOn(Schedulers.io())
+                .subscribe(o -> {
+                }, Throwable::printStackTrace);
         WindowUtils.hidePopupWindow();
         if (AppApplication.getPlaybackManager() != null) { // 释放音乐播放器
             AppApplication.getPlaybackManager().handleStopRequest(null);
@@ -232,7 +243,6 @@ public class AuthRepository implements IAuthRepository {
         mUserTagBeanGreenDaoimpl.clearTable();
         mMusicAlbumListDao.clearTable();
         AppApplication.setmCurrentLoginAuth(null);
-
         //处理 Ts 助手
         SystemRepository.resetTSHelper(mContext);
         return SharePreferenceUtils.remove(mContext, SharePreferenceTagConfig.SHAREPREFERENCE_TAG_AUTHBEAN)
