@@ -489,6 +489,9 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.View> imp
      * 获取用户文字显示  张三、李四评论了我
      */
     private String getItemTipStr(List<UnreadCountBean> commentsNoti, int maxNum) {
+        if(commentsNoti==null){
+            return null;
+        }
         StringBuilder stringBuilder = new StringBuilder();
         String dot = mContext.getString(R.string.str_pingyin_dot);
         for (int i = 0; i < commentsNoti.size(); i++) {
