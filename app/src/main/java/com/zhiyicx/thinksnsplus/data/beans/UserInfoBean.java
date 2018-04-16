@@ -751,10 +751,10 @@ public class UserInfoBean extends BaseListBean implements Parcelable, Serializab
         this.has_deleted = in.readByte() != 0;
     }
 
-    @Generated(hash = 239481087)
+    @Generated(hash = 2035715005)
     public UserInfoBean(Long user_id, String name, String phone, String email, String intro, int sex,
             String location, boolean following, boolean follower, String created_at, String updated_at,
-            String avatar, String cover, IntegrationBean currency, UserInfoExtraBean extra,
+            String deleted_at, String avatar, String cover, IntegrationBean currency, UserInfoExtraBean extra,
             VerifiedBean verified, List<UserTagBean> tags, String im_pwd_hash, int friends_count,
             boolean initial_password, boolean has_deleted) {
         this.user_id = user_id;
@@ -768,6 +768,7 @@ public class UserInfoBean extends BaseListBean implements Parcelable, Serializab
         this.follower = follower;
         this.created_at = created_at;
         this.updated_at = updated_at;
+        this.deleted_at = deleted_at;
         this.avatar = avatar;
         this.cover = cover;
         this.currency = currency;
