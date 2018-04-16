@@ -383,6 +383,7 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.View> imp
                      */
                     mItemBeanComment.setUnReadMessageNums(data.getCounts().getUnread_comments_count());
                     mItemBeanDigg.setUnReadMessageNums(data.getCounts().getUnread_likes_count());
+                    mItemBeanSystemMessage.setUnReadMessageNums(data.getCounts().getSystem());
                     int pinnedNums = 0;
                     if (data.getPinneds() != null) {
                         pinnedNums = (data.getPinneds().getFeeds() == null ? 0 : data.getPinneds().getFeeds().getCount())
@@ -454,6 +455,12 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.View> imp
                     }
                     mItemBeanReview.getConversation().getLast_message().setTxt(
                             reviewTip);
+                    if(data.getSystem()!=null&&data.getSystem().getData()!=null&&!TextUtils.isEmpty(data.getSystem().getData().getContent())){
+                        mItemBeanSystemMessage.getConversation().getLast_message().setTxt(data.getSystem().getData().getContent());
+                        mItemBeanSystemMessage.getConversation().getLast_message().setCreate_time(TimeUtils.utc2LocalLong(data.getSystem().getCreated_at()));
+                        mItemBeanSystemMessage.getConversation().setLast_message_time(TimeUtils.utc2LocalLong(data.getSystem().getCreated_at()));
+
+                    }
                     // 更新我的消息提示
                     EventBus.getDefault().post(true, EventBusTagConfig.EVENT_IM_SET_MINE_FANS_TIP_VISABLE);
                     checkBottomMessageTip();

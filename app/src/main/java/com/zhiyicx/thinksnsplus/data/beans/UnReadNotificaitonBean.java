@@ -13,6 +13,7 @@ public class UnReadNotificaitonBean {
     private List<UnreadCountBean> comments;
     private List<UnreadCountBean> likes;
     private UnhandlePinnedBean pinneds;
+    private TSPNotificationBean system;
 
 
     public CountBean getCounts() {
@@ -47,6 +48,13 @@ public class UnReadNotificaitonBean {
         this.pinneds = pinneds;
     }
 
+    public TSPNotificationBean getSystem() {
+        return system;
+    }
+
+    public void setSystem(TSPNotificationBean system) {
+        this.system = system;
+    }
 
     public static class CountBean {
         private Long user_id;
@@ -55,6 +63,10 @@ public class UnReadNotificaitonBean {
         private int unread_group_join_count;
         private String created_at;
         private String updated_at;
+        /**
+         * 系统消息未读数
+         */
+        private int system;
 
         public Long getUser_id() {
             return user_id;
@@ -104,25 +116,12 @@ public class UnReadNotificaitonBean {
             this.updated_at = updated_at;
         }
 
-        @Override
-        public String toString() {
-            return "CountBean{" +
-                    "user_id=" + user_id +
-                    ", unread_comments_count=" + unread_comments_count +
-                    ", unread_likes_count=" + unread_likes_count +
-                    ", created_at='" + created_at + '\'' +
-                    ", updated_at='" + updated_at + '\'' +
-                    '}';
+        public int getSystem() {
+            return system;
         }
-    }
 
-    @Override
-    public String toString() {
-        return "UnReadNotificaitonBean{" +
-                "counts=" + counts +
-                ", comments=" + comments +
-                ", likes=" + likes +
-                ", pinneds=" + pinneds +
-                '}';
+        public void setSystem(int system) {
+            this.system = system;
+        }
     }
 }

@@ -112,7 +112,10 @@ public class VideoInfo implements Parcelable,Serializable{
     }
 
     public int getWidth() {
-        return width;
+        if(width>0){
+            return width;
+        }
+        return 500;
     }
 
     public void setWidth(int width) {
@@ -120,7 +123,11 @@ public class VideoInfo implements Parcelable,Serializable{
     }
 
     public int getHeight() {
-        return height;
+        if(height>0) {
+            return height;
+        }else {
+            return 500;
+        }
     }
 
     public void setHeight(int height) {

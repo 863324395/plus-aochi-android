@@ -144,6 +144,7 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
         if (mPresenter != null) {
             mPresenter.refreshConversationReadMessage();
             updateCommnetItemData(mPresenter.updateCommnetItemData());
+            mPresenter.handleFlushMessage();
         }
     }
 
@@ -217,8 +218,14 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
         RxView.clicks(headerview.findViewById(R.id.rl_system_notify))
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .subscribe(aVoid -> {
+                    if (((MessageAdapterV2) mAdapter).hasItemOpend()) {
+                        ((MessageAdapterV2) mAdapter).closeAllItems();
+                        return;
+                    }
                     // 跳转系统通知页面
-                    startActivity(new Intent(getContext(), NotificationActivity.class));
+                    toSystemPage();
+                    mPresenter.updateSystemMsgItemData().setUnReadMessageNums(0);
+                    updateCommnetItemData(mPresenter.updateSystemMsgItemData());
                 });
 
         rlCritical = headerview.findViewById(R.id.rl_critical);
@@ -340,25 +347,29 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
 
 
     /**
+     * 前往系统消息了列表
+     */
+    private void toSystemPage() {
+        startActivity(new Intent(getContext(), NotificationActivity.class));
+    }
+
+    /**
      * 前往评论列表
      */
     private void toCommentList() {
-        Intent to = new Intent(getActivity(), MessageCommentActivity.class);
-        Bundle bundle = new Bundle();
-        to.putExtras(bundle);
-        startActivity(to);
+        startActivity(new Intent(getActivity(), MessageCommentActivity.class));
     }
 
     /**
      * 前往点赞列表
      */
     private void toLikeList() {
-        Intent to = new Intent(getActivity(), MessageLikeActivity.class);
-        Bundle bundle = new Bundle();
-        to.putExtras(bundle);
-        startActivity(to);
+        startActivity(new Intent(getActivity(), MessageLikeActivity.class));
     }
 
+    /**
+     * 前往审核列表
+     */
     private void toReviewList() {
         Bundle bundle = new Bundle();
         Intent to = new Intent(getActivity(), MessageReviewActivity.class);

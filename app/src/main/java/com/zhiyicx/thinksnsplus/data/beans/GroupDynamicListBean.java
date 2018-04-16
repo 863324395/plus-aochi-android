@@ -18,6 +18,9 @@ import org.greenrobot.greendao.annotation.ToOne;
 import java.io.Serializable;
 import java.util.List;
 
+import static com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListBaseItem.DEFALT_IMAGE_HEIGHT;
+import static com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListBaseItem.DEFALT_IMAGE_WITH;
+
 /**
  * @Author Jliuer
  * @Date 2017/07/18/14:50
@@ -49,8 +52,14 @@ public class GroupDynamicListBean extends BaseListBean {
      * created_at : 2017-07-18 04:17:19
      * updated_at : 2017-07-18 06:49:18
      * images : [{"raw":"2","size":"1200x800","file_id":3},{"raw":"2","size":"600x1065","file_id":4}]
-     * group : {"id":1,"title":"heheh","intro":"hahahahha","is_audit":1,"posts_count":2,"memebers_count":1,"created_at":"2017-07-18 03:51:40","avatar":{"raw":"1","size":"1920x1080","file_id":1},"cover":{"raw":"1","size":"600x600","file_id":2},"members":[{"id":1,"user_id":2,"created_at":"2017-07-18 03:51:40"}],"managers":[{"group_id":1,"user_id":2,"founder":1}]}
-     * new_comments : [{"id":4,"user_id":2,"content":"sdfasdqerwerxxxxxxxasdfasdfasdf234234234234234a","reply_to_user_id":0,"created_at":"2017-07-18 06:48:29","to_user_id":2},{"id":3,"user_id":2,"content":"xxxxxxxasdfasdfasdf234234234234234","reply_to_user_id":0,"created_at":"2017-07-18 06:48:24","to_user_id":2},{"id":2,"user_id":2,"content":"xxxxxxxasdfasdfasdf","reply_to_user_id":0,"created_at":"2017-07-18 06:48:21","to_user_id":2},{"id":1,"user_id":2,"content":"xxxxxxx","reply_to_user_id":0,"created_at":"2017-07-18 06:48:12","to_user_id":2}]
+     * group : {"id":1,"title":"heheh","intro":"hahahahha","is_audit":1,"posts_count":2,"memebers_count":1,"created_at":"2017-07-18 03:51:40",
+     * "avatar":{"raw":"1","size":"1920x1080","file_id":1},"cover":{"raw":"1","size":"600x600","file_id":2},"members":[{"id":1,"user_id":2,
+     * "created_at":"2017-07-18 03:51:40"}],"managers":[{"group_id":1,"user_id":2,"founder":1}]}
+     * new_comments : [{"id":4,"user_id":2,"content":"sdfasdqerwerxxxxxxxasdfasdfasdf234234234234234a","reply_to_user_id":0,
+     * "created_at":"2017-07-18 06:48:29","to_user_id":2},{"id":3,"user_id":2,"content":"xxxxxxxasdfasdfasdf234234234234234","reply_to_user_id":0,
+     * "created_at":"2017-07-18 06:48:24","to_user_id":2},{"id":2,"user_id":2,"content":"xxxxxxxasdfasdfasdf","reply_to_user_id":0,
+     * "created_at":"2017-07-18 06:48:21","to_user_id":2},{"id":1,"user_id":2,"content":"xxxxxxx","reply_to_user_id":0,"created_at":"2017-07-18
+     * 06:48:12","to_user_id":2}]
      */
     @Id
     private Long id;
@@ -65,7 +74,7 @@ public class GroupDynamicListBean extends BaseListBean {
     private boolean has_collection;
     private int comments_count;
     private Long user_id;
-    @SerializedName(value = "feed_mark",alternate = {"group_post_mark"})
+    @SerializedName(value = "feed_mark", alternate = {"group_post_mark"})
     private Long feed_mark;
     @ToOne(joinProperty = "user_id")
     private UserInfoBean userInfoBean;
@@ -75,12 +84,11 @@ public class GroupDynamicListBean extends BaseListBean {
     @Convert(converter = GroupDynamicImageConvert.class, columnType = String.class)
     private List<ImagesBean> images;
     @Convert(converter = GroupDynamicCommentConvert.class, columnType = String.class)
-    @SerializedName(value = "commentslist",alternate = {"comments"})
+    @SerializedName(value = "commentslist", alternate = {"comments"})
     private List<GroupDynamicCommentListBean> commentslist;
     @Convert(converter = GroupDynamicLikesConvert.class, columnType = String.class)
     private List<DynamicDigListBean> mGroupDynamicLikeListBeanList;
     private int state = SEND_ING;
-
 
 
     public int getState() {
@@ -280,29 +288,50 @@ public class GroupDynamicListBean extends BaseListBean {
             this.raw = raw;
         }
 
+        private boolean praseSize() {
+            try {
+                if (size != null && size.length() > 0) {
+                    String[] sizes = size.split("x");
+                    this.width = Integer.parseInt(sizes[0]);
+                    this.height = Integer.parseInt(sizes[1]);
+                    if (width <= 0) {
+                        width = DEFALT_IMAGE_WITH;
+                    }
+                    if (height <= 0) {
+                        height = DEFALT_IMAGE_HEIGHT;
+                    }
+
+                    return true;
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return false;
+        }
+
         public void setSize(String size) {
             this.size = size;
-            if (size != null && size.length() > 0) {
-                String[] sizes = size.split("x");
-                this.width = Integer.parseInt(sizes[0]);
-                this.height = Integer.parseInt(sizes[1]);
-            }
+            praseSize();
         }
 
         public int getWidth() {
-            if (size != null && size.length() > 0) {
-                String[] sizes = size.split("x");
-                return Integer.parseInt(sizes[0]);
+            if (width > 0) {
+                return width;
             }
-            return 100;
+            if (praseSize()) {
+                return width;
+            }
+            return DEFALT_IMAGE_WITH;
         }
 
         public int getHeight() {
-            if (size != null && size.length() > 0) {
-                String[] sizes = size.split("x");
-                return Integer.parseInt(sizes[1]);
+            if (height > 0) {
+                return height;
             }
-            return 100;
+            if (praseSize()) {
+                return height;
+            }
+            return DEFALT_IMAGE_HEIGHT;
         }
 
         public int getFile_id() {
@@ -498,7 +527,10 @@ public class GroupDynamicListBean extends BaseListBean {
     }
 
     @Generated(hash = 1275723709)
-    public GroupDynamicListBean(Long id, String title, String content, int group_id, int views, int diggs, boolean has_like, int collections, boolean has_collection, int comments_count, Long user_id, Long feed_mark, int is_audit, String created_at, String updated_at, List<ImagesBean> images, List<GroupDynamicCommentListBean> commentslist, List<DynamicDigListBean> mGroupDynamicLikeListBeanList, int state) {
+    public GroupDynamicListBean(Long id, String title, String content, int group_id, int views, int diggs, boolean has_like, int collections,
+                                boolean has_collection, int comments_count, Long user_id, Long feed_mark, int is_audit, String created_at, String
+                                        updated_at, List<ImagesBean> images, List<GroupDynamicCommentListBean> commentslist,
+                                List<DynamicDigListBean> mGroupDynamicLikeListBeanList, int state) {
         this.id = id;
         this.title = title;
         this.content = content;
@@ -531,10 +563,14 @@ public class GroupDynamicListBean extends BaseListBean {
             return new GroupDynamicListBean[size];
         }
     };
-    /** Used to resolve relations */
+    /**
+     * Used to resolve relations
+     */
     @Generated(hash = 2040040024)
     private transient DaoSession daoSession;
-    /** Used for active entity operations. */
+    /**
+     * Used for active entity operations.
+     */
     @Generated(hash = 699919709)
     private transient GroupDynamicListBeanDao myDao;
     @Generated(hash = 1005780391)

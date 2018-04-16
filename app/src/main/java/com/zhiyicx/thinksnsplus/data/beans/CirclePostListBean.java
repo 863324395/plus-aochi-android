@@ -342,47 +342,52 @@ public class CirclePostListBean extends BaseListBean implements Serializable, Cl
             this.raw = raw;
         }
 
-        public void setSize(String size) {
-            this.size = size;
+        private boolean praseSize() {
             try {
                 if (size != null && size.length() > 0) {
                     String[] sizes = size.split("x");
                     this.width = Integer.parseInt(sizes[0]);
                     this.height = Integer.parseInt(sizes[1]);
+                    if (width <= 0) {
+                        width = DEFALT_IMAGE_WITH;
+                    }
+                    if (height <= 0) {
+                        height = DEFALT_IMAGE_HEIGHT;
+                    }
+
+                    return true;
                 }
             } catch (Exception e) {
                 e.printStackTrace();
-                this.width = DEFALT_IMAGE_WITH;
-                this.height = DEFALT_IMAGE_HEIGHT;
             }
+            return false;
+        }
+
+        public void setSize(String size) {
+            this.size = size;
+            praseSize();
 
         }
 
         public int getWidth() {
-            try {
-                if (size != null && size.length() > 0) {
-                    String[] sizes = size.split("x");
-                    return Integer.parseInt(sizes[0]);
-                }
-                return DEFALT_IMAGE_WITH;
-            } catch (Exception e) {
-                e.printStackTrace();
-                return DEFALT_IMAGE_WITH;
+            if (width > 0) {
+                return width;
             }
+            if (praseSize()) {
+                return width;
+            }
+            return DEFALT_IMAGE_WITH;
 
         }
 
         public int getHeight() {
-            try {
-                if (size != null && size.length() > 0) {
-                    String[] sizes = size.split("x");
-                    return Integer.parseInt(sizes[1]);
-                }
-                return DEFALT_IMAGE_HEIGHT;
-            } catch (Exception e) {
-                e.printStackTrace();
-                return DEFALT_IMAGE_HEIGHT;
+            if (height > 0) {
+                return height;
             }
+            if (praseSize()) {
+                return height;
+            }
+            return DEFALT_IMAGE_HEIGHT;
 
         }
 

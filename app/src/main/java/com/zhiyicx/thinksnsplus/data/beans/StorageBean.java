@@ -5,6 +5,9 @@ import android.os.Parcelable;
 
 import java.io.Serializable;
 
+import static com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListBaseItem.DEFALT_IMAGE_HEIGHT;
+import static com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListBaseItem.DEFALT_IMAGE_WITH;
+
 public class StorageBean implements Parcelable, Serializable {
     private static final long serialVersionUID = 1L;
     /**
@@ -20,27 +23,42 @@ public class StorageBean implements Parcelable, Serializable {
 
     public void setSize(String size) {
         this.size = size;
-        if (size != null && size.length() > 0) {
-            String[] sizes = size.split("x");
-            this.image_width = Integer.parseInt(sizes[0]);
-            this.image_height = Integer.parseInt(sizes[1]);
-        }
+        praseSize();
     }
 
     public int getWidth() {
-        if (size != null && size.length() > 0) {
-            String[] sizes = size.split("x");
-            return Integer.parseInt(sizes[0]);
+        if (praseSize()) {
+            return image_width;
         }
-        return 100;
+        return DEFALT_IMAGE_WITH;
+    }
+
+    private boolean praseSize() {
+        try {
+            if (size != null && size.length() > 0) {
+                String[] sizes = size.split("x");
+                this.image_width = Integer.parseInt(sizes[0]);
+                this.image_height = Integer.parseInt(sizes[1]);
+                if (image_width <= 0) {
+                    image_width = DEFALT_IMAGE_WITH;
+                }
+                if (image_height <= 0) {
+                    image_height = DEFALT_IMAGE_HEIGHT;
+                }
+
+                return true;
+            }
+        }catch (Exception e){
+             e.printStackTrace();
+        }
+        return false;
     }
 
     public int getHeight() {
-        if (size != null && size.length() > 0) {
-            String[] sizes = size.split("x");
-            return Integer.parseInt(sizes[1]);
+        if (praseSize()) {
+            return image_height;
         }
-        return 100;
+        return DEFALT_IMAGE_HEIGHT;
     }
 
     public int getId() {

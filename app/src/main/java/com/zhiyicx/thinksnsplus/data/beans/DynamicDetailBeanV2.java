@@ -496,6 +496,7 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable, Ser
 
     /**
      * 预处理 视频的数据
+     *
      * @param video
      */
     private void dealVideoBean(Video video) {
@@ -945,39 +946,44 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable, Ser
         }
 
         public int getWidth() {
-            try {
-                if (size != null && size.length() > 0 && width * height == 0) {
-                    String[] sizes = size.split("x");
-                    this.width = Integer.parseInt(sizes[0]);
-                    this.height = Integer.parseInt(sizes[1]);
-                    return width;
-                }
-                return width > 0 ? width : DEFALT_IMAGE_WITH;
-            } catch (Exception e) {
-                e.printStackTrace();
-                return DEFALT_IMAGE_WITH;
+            if (width > 0) {
+                return width;
             }
+            if (praseSize()) {
+                return width;
+            }
+            return DEFALT_IMAGE_WITH;
         }
 
         public int getHeight() {
+            if (height > 0) {
+                return height;
+            }
+            if (praseSize()) {
+                return height;
+            }
+            return DEFALT_IMAGE_HEIGHT;
+        }
+
+        private boolean praseSize() {
             try {
-                if (size != null && size.length() > 0 && width * height == 0) {
+                if (size != null && size.length() > 0) {
                     String[] sizes = size.split("x");
                     this.width = Integer.parseInt(sizes[0]);
                     this.height = Integer.parseInt(sizes[1]);
-                    return height;
+                    if (width <= 0) {
+                        width = DEFALT_IMAGE_WITH;
+                    }
+                    if (height <= 0) {
+                        height = DEFALT_IMAGE_HEIGHT;
+                    }
+
+                    return true;
                 }
-                if (size != null && size.length() > 0 && width * height == 0) {
-                    String[] sizes = size.split("x");
-                    this.width = Integer.parseInt(sizes[0]);
-                    this.height = Integer.parseInt(sizes[1]);
-                    return height;
-                }
-                return height > 0 ? height : DEFALT_IMAGE_HEIGHT;
             } catch (Exception e) {
                 e.printStackTrace();
-                return DEFALT_IMAGE_HEIGHT;
             }
+            return false;
         }
 
         public long getAmount() {
