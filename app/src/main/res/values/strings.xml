@@ -861,8 +861,8 @@
     <string name="all_dynamic">全部动态</string>
     <string name="pay_dynamic">付费动态</string>
     <string name="top_dynamic">置顶动态</string>
-    <string name="default_delete_user_name">未知用户</string>
-    <string name="user_had_deleted">用户被删除</string>
+    <string name="default_delete_user_name">该用户已被删除</string>
+    <string name="user_had_deleted">@string/default_delete_user_name</string>
 
     <!--申请支付等公用-->
     <string name="apply_for_success">申请成功，请等待审核</string>
