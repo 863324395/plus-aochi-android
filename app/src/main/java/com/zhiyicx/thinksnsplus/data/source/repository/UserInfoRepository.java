@@ -28,6 +28,7 @@ import com.zhiyicx.thinksnsplus.data.beans.NearbyBean;
 import com.zhiyicx.thinksnsplus.data.beans.SendCertificationBean;
 import com.zhiyicx.thinksnsplus.data.beans.ThridInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserCertificationInfo;
+import com.zhiyicx.thinksnsplus.data.beans.UserFollowerCountBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserTagBean;
 import com.zhiyicx.thinksnsplus.data.beans.request.BindAccountRequstBean;
@@ -980,7 +981,17 @@ public class UserInfoRepository implements IUserInfoRepository {
 
     @Override
     public Observable<Object> cancleFollowUser(long userId) {
+
         return mFollowFansClient.cancelFollowUser(userId);
     }
-
+    /**
+     *
+     * @return 最新关注数
+     */
+    @Override
+    public Observable<UserFollowerCountBean> getUserAppendFollowerCount() {
+        return mUserInfoClient.getUserAppendFollowerCount()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
 }

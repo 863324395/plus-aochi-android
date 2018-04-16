@@ -16,6 +16,7 @@ import com.zhiyicx.baseproject.widget.BadgeView;
 import com.zhiyicx.baseproject.widget.UserAvatarView;
 import com.zhiyicx.baseproject.widget.button.CombinationButton;
 import com.zhiyicx.common.utils.ConvertUtils;
+import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.config.NotificationConfig;
@@ -404,7 +405,7 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
         if (mCertificationWindow == null) {
             mCertificationWindow = CertificationTypePopupWindow.Builder()
                     .with(mActivity)
-                    .alpha(0.8f)
+                    .alpha(CustomPopupWindow.POPUPWINDOW_ALPHA)
                     .setListener(this)
                     .build();
         }

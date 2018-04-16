@@ -904,6 +904,8 @@ public class ApiConfig {
     public static final String APP_PATH_UPDATE_USER_LOCATION = "api/" + API_VERSION_2 + "/around-amap";
     // 根据经纬度查询周围最多50KM内的 TS+ 用户
     public static final String APP_PATH_GET_USER_AROUND = "api/" + API_VERSION_2 + "/around-amap";
+    // User Append Follower Count
+    public static final String APP_PATH_USER_APPEND_FOLLOWER_COUNT = "api/" + API_VERSION_2 + "/user/counts";
 
     /**
      * 签到
