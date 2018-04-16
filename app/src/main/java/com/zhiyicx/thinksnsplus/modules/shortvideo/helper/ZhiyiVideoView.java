@@ -55,6 +55,8 @@ public class ZhiyiVideoView extends JZVideoPlayerStandard {
 
     public ActionPopupWindow mWarnPopupWindow;
 
+    public String mVideoFrom;
+
     public ZhiyiVideoView(Context context) {
         super(context);
     }

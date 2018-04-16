@@ -370,7 +370,12 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
         setAdapter(adapter, new DynamicListItemForEightImage(getContext()));
         setAdapter(adapter, new DynamicListItemForNineImage(getContext()));
         setAdapter(adapter, new DynamicListItemForAdvert(getContext()));
-        setAdapter(adapter, new DynamicListItemForShorVideo(getContext(), this));
+        setAdapter(adapter, new DynamicListItemForShorVideo(getContext(), this){
+            @Override
+            protected String videoFrom() {
+                return mDynamicType;
+            }
+        });
         adapter.setOnItemClickListener(this);
         return adapter;
     }
@@ -1145,7 +1150,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
         bundle.putBoolean(LOOK_COMMENT_MORE, isLookMoreComment);
 
 
-        JZVideoPlayerStandard playView = null;
+        ZhiyiVideoView playView = null;
         try {
             playView = holder.getView(R.id.videoplayer);
         } catch (Exception ignore) {
@@ -1153,6 +1158,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
         }
 
         if (playView != null && JZVideoPlayerManager.getFirstFloor() != null) {
+            playView.mVideoFrom = mDynamicType;
             if (playView.currentState == ZhiyiVideoView.CURRENT_STATE_PLAYING) {
                 playView.startButton.callOnClick();
             }
