@@ -484,6 +484,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
             imageBean.setWidth(task.getWidth());
             imageBean.setHeight(task.getHeight());
             imageBean.setStorage_id(task.getFile());
+            imageBean.setImgMimeType(task.getImgMimeType());
             imageBeanList.add(imageBean);
             AnimationRectBean rect = AnimationRectBean.buildFromImageView(imageView);
             animationRectBeanArrayList.add(rect);

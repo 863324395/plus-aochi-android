@@ -631,6 +631,7 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
             imageBean.setStorage_id(task.get(i).getFile_id());
             imageBean.setWidth(task.get(i).getWidth());
             imageBean.setHeight(task.get(i).getHeight());
+            imageBean.setImgMimeType(task.get(i).getImgMimeType());
             imageBeanList.add(imageBean);
             AnimationRectBean rect = AnimationRectBean.buildFromImageView(imageView);
             animationRectBeanArrayList.add(rect);
