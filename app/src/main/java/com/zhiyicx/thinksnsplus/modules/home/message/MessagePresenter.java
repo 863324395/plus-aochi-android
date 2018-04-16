@@ -548,8 +548,7 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.View> imp
         Message reviewmessage = new Message();
         reviewConveration.setLast_message(reviewmessage);
         mItemBeanReview.setConversation(reviewConveration);
-        mItemBeanReview.getConversation().getLast_message().setTxt(mContext.getString(R.string.has_no_body)
-                + mContext.getString(R.string.recieved_review));
+        mItemBeanReview.getConversation().getLast_message().setTxt(mContext.getString(R.string.no_apply_data));
     }
 
 
