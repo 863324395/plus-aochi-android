@@ -158,6 +158,12 @@ public class DynamicListItemForShorVideo extends DynamicListBaseItem {
                 && !JZVideoPlayerManager.getCurrentJzvd().equals(view)) {
 
             JZVideoPlayer first = JZVideoPlayerManager.getFirstFloor();
+            if (first instanceof ZhiyiVideoView) {
+                ZhiyiVideoView videoView = (ZhiyiVideoView) first;
+                if (!videoFrom().equals(videoView.mVideoFrom)) {
+                    return;
+                }
+            }
             first.textureViewContainer.removeView(JZMediaManager.textureView);
             view.setState(first.currentState);
             view.addTextureView();
@@ -167,6 +173,10 @@ public class DynamicListItemForShorVideo extends DynamicListBaseItem {
 
         view.positionInList = positon;
 
+    }
+
+    protected String videoFrom() {
+        return "";
     }
 
     @Override

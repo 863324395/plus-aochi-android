@@ -3,13 +3,16 @@ package com.zhiyicx.thinksnsplus.modules.shortvideo.videostore;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.PopupWindow;
 
+import com.tym.shortvideo.interfaces.SingleCallback;
 import com.tym.shortvideo.media.VideoInfo;
 import com.tym.shortvideo.recodrender.ParamsManager;
 import com.tym.shortvideo.recordcore.CountDownManager;
@@ -17,6 +20,8 @@ import com.tym.shortvideo.utils.TrimVideoUtil;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
+import com.zhiyicx.common.utils.ConvertUtils;
+import com.zhiyicx.common.utils.DrawableProvider;
 import com.zhiyicx.common.utils.FileUtils;
 import com.zhiyicx.common.utils.recycleviewdecoration.TGridDecoration;
 import com.zhiyicx.thinksnsplus.R;
@@ -104,7 +109,13 @@ public class VideoSelectFragment extends TSListFragment {
                     mActivity.finish();
                 } else {
                     // 选择列表
-                    initReSendDynamicPopupWindow(videoInfo);
+                    ImageView coverView = (ImageView) view.findViewById(R.id.iv_cover);
+                    if (coverView != null) {
+                        Bitmap cover = ConvertUtils.drawable2BitmapWithWhiteBg(getContext()
+                                , coverView.getDrawable(), R.mipmap.icon);
+                        initReSendDynamicPopupWindow(videoInfo, cover);
+                    }
+
                 }
             }
 
@@ -129,7 +140,7 @@ public class VideoSelectFragment extends TSListFragment {
     /**
      * 初始化重发动态选择弹框
      */
-    private void initReSendDynamicPopupWindow(VideoInfo videoInfo) {
+    private void initReSendDynamicPopupWindow(VideoInfo videoInfo, Bitmap cover) {
         if (mPopWindow == null) {
             mPopWindow = ActionPopupWindow.builder()
                     .item1Str(videoInfo.getDuration() >= 300000 ? "" : getString(R.string.direct_upload))
@@ -144,9 +155,7 @@ public class VideoSelectFragment extends TSListFragment {
 
                         BitmapFactory.Options options = new BitmapFactory.Options();
                         options.inPreferredConfig = Bitmap.Config.RGB_565;
-                        Bitmap bitmap = MediaStore.Video.Thumbnails.getThumbnail(mActivity.getContentResolver(), videoInfo.getStoreId(), MediaStore.Images.Thumbnails.MINI_KIND,
-                                options);
-                        videoInfo.setCover(FileUtils.saveBitmapToFile(mActivity, bitmap, ParamsManager.VideoCover));
+                        videoInfo.setCover(FileUtils.saveBitmapToFile(mActivity, cover, ParamsManager.VideoCover));
                         SendDynamicDataBean sendDynamicDataBean = new SendDynamicDataBean();
                         sendDynamicDataBean.setDynamicBelong(SendDynamicDataBean.NORMAL_DYNAMIC);
                         videoInfo.setNeedCompressVideo(true);

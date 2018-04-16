@@ -203,6 +203,10 @@ public class DynamicDetailHeader {
                     videoView.setState(state);
                     videoView.positionInList = JZVideoPlayerManager.getFirstFloor().positionInList;
                     videoView.addTextureView();
+                    if (JZVideoPlayerManager.getFirstFloor() instanceof ZhiyiVideoView) {
+                        ZhiyiVideoView firstFloor = (ZhiyiVideoView) JZVideoPlayerManager.getFirstFloor();
+                        videoView.mVideoFrom = firstFloor.mVideoFrom;
+                    }
                     JZVideoPlayerManager.setFirstFloor(videoView);
                     videoView.startProgressTimer();
                     if (state == ZhiyiVideoView.CURRENT_STATE_PAUSE) {

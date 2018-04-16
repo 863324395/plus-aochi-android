@@ -69,7 +69,7 @@ public class MainFragment extends TSViewPagerFragment implements DynamicFragment
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
-        JZVideoPlayer jzVideoPlayer=JZVideoPlayerManager.getCurrentJzvd();
+        JZVideoPlayer jzVideoPlayer = JZVideoPlayerManager.getCurrentJzvd();
         if (jzVideoPlayer != null) {
             if (JZUtils.scanForActivity(jzVideoPlayer.getContext()) instanceof HomeActivity) {
                 ZhiyiVideoView.goOnPlayOnPause();
@@ -134,7 +134,7 @@ public class MainFragment extends TSViewPagerFragment implements DynamicFragment
                     showLoginPop();
                     // 转回热门
                     mVpFragment.setCurrentItem(1);
-                }else{
+                } else {
                     ZhiyiVideoView.goOnPlayOnPause();
                 }
             }
