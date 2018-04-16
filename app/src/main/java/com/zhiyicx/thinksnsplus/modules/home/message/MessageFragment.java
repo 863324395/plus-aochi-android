@@ -144,19 +144,21 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
         if (mPresenter != null) {
             mPresenter.refreshConversationReadMessage();
             updateCommnetItemData(mPresenter.updateCommnetItemData());
-            // 除了通知的未读数用户信息获取
-            mPresenter.handleFlushMessage();
         }
     }
 
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
-        if (isVisibleToUser && mPresenter != null && messageItemBeanList.isEmpty()) {
-            mPresenter.requestNetData(DEFAULT_PAGE_MAX_ID, false);
-        }
-        if (mAdapter != null && ((MessageAdapterV2) mAdapter).hasItemOpend()) {
-            ((MessageAdapterV2) mAdapter).closeAllItems();
+//        if (isVisibleToUser && mPresenter != null && messageItemBeanList.isEmpty()) {
+//            mPresenter.requestNetData(DEFAULT_PAGE_MAX_ID, false);
+//        }
+//        if (mAdapter != null && ((MessageAdapterV2) mAdapter).hasItemOpend()) {
+//            ((MessageAdapterV2) mAdapter).closeAllItems();
+//        }
+        if (mPresenter != null && isVisibleToUser) {
+            // 除了通知的未读数用户信息获取
+            mPresenter.handleFlushMessage();
         }
     }
 
@@ -164,7 +166,7 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
     protected RecyclerView.Adapter getAdapter() {
         messageItemBeanList = new ArrayList<>();
 //        MessageSwipeAdapter commonAdapter =new MessageSwipeAdapter(getContext(),mListDatas);
-        MessageAdapterV2 commonAdapter = new MessageAdapterV2(getActivity(), messageItemBeanList,null);
+        MessageAdapterV2 commonAdapter = new MessageAdapterV2(getActivity(), messageItemBeanList, null);
         commonAdapter.setOnSwipItemClickListener(this);
         commonAdapter.setOnUserInfoClickListener(this);
         return commonAdapter;

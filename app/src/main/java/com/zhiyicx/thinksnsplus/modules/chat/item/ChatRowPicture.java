@@ -101,7 +101,7 @@ public class ChatRowPicture extends ChatBaseRow {
         layoutParams.width = width;
         layoutParams.height = height;
         mIvChatContent.setLayoutParams(layoutParams);
-        ImageUtils.loadImageDefaultNoHolder(mIvChatContent, url);
+        ImageUtils.loadImageDefault(mIvChatContent, url);
 
         int finalWidth = width;
         int finalHeight = height;
