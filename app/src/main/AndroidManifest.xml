@@ -211,8 +211,8 @@
         <activity
             android:name=".modules.dynamic.send.SendDynamicActivity"
             android:hardwareAccelerated="true"
-            android:screenOrientation="portrait"
             android:launchMode="singleTop"
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustResize">
         </activity>
         <activity
@@ -733,6 +733,9 @@
             android:screenOrientation="portrait"/>
         <activity
             android:name=".modules.shortvideo.cover.CoverActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".modules.develop.maintenance.TSSystemMantenanceActivity"
             android:screenOrientation="portrait"/>
         <!-- 开机自启动服务 -->
         <receiver android:name=".modules.chat.call.receiver.StartServiceReceiver">

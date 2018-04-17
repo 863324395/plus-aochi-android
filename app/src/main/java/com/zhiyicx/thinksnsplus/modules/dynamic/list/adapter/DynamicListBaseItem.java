@@ -63,7 +63,7 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
     protected final int mHightPixels; // 屏幕高度
     protected final int mDiverwith; // 分割先的宽高
     protected int mImageContainerWith; // 图片容器最大宽度
-    protected final int mImageMaxHeight; // 单张图片最大高度
+    protected int mImageMaxHeight; // 单张图片最大高度
     protected Context mContext;
 
     protected boolean showToolMenu = true;// 是否显示工具栏:默认显示
@@ -136,6 +136,11 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
         mImageContainerWith = DeviceUtils.getScreenWidth(context) - margin;
         // 最大高度是最大宽度的4/3 保持 宽高比 3：4
         mImageMaxHeight = mImageContainerWith * 4 / 3;
+
+        mImageContainerWith = context.getResources().getDimensionPixelSize(R.dimen
+                .dynamic_one_image_max_with);
+        mImageMaxHeight = context.getResources().getDimensionPixelSize(R.dimen
+                .dynamic_one_image_max_height);
     }
 
     @Override
