@@ -3,6 +3,10 @@ package com.zhiyicx.thinksnsplus.data.beans;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.autonavi.amap.mapcore.Convert;
+import com.zhiyicx.common.utils.ConvertUtils;
+import com.zhiyicx.thinksnsplus.base.AppApplication;
+
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Collections;
@@ -15,6 +19,9 @@ import java.util.Collections;
  */
 public class DynamicListAdvert implements Serializable, Parcelable {
     private static final long serialVersionUID = 124L;
+    public static final int DEFAULT_ADVERT_FROM_TAG = -1000;
+    private static final int DEFAULT_ADVERT_IMAGE_WITH_DP = 260;
+    private static final int DEFAULT_ADVERT_IMAGE_HEIGHT_DP= 130;
 
     /**
      * avatar : 头像图|string
@@ -148,7 +155,7 @@ public class DynamicListAdvert implements Serializable, Parcelable {
 
     public static DynamicDetailBeanV2 advert2Dynamic(DynamicListAdvert advert, long max_id) {
         DynamicDetailBeanV2 dynamicDetailBeanV2 = new DynamicDetailBeanV2();
-        dynamicDetailBeanV2.setFeed_from(-1);// 广告位标识
+        dynamicDetailBeanV2.setFeed_from(DEFAULT_ADVERT_FROM_TAG);// 广告位标识
         UserInfoBean userInfoBean = new UserInfoBean();
         userInfoBean.setUser_id(-1L);
         dynamicDetailBeanV2.setUser_id(-1L);
@@ -158,13 +165,20 @@ public class DynamicListAdvert implements Serializable, Parcelable {
         dynamicDetailBeanV2.setFeed_mark(System.currentTimeMillis());
         dynamicDetailBeanV2.setDeleted_at(advert.getLink());// 广告外链
         dynamicDetailBeanV2.setUserInfoBean(userInfoBean);
-        dynamicDetailBeanV2.handleData();
         dynamicDetailBeanV2.setFeed_content(advert.getContent());// 广告内容
         dynamicDetailBeanV2.setCreated_at(advert.getTime());// 广告时间
         dynamicDetailBeanV2.setUpdated_at(advert.getTime());// 广告时间
         DynamicDetailBeanV2.ImagesBean imageBean = new DynamicDetailBeanV2.ImagesBean();
         imageBean.setImgUrl(advert.getImage());// 广告图片
+        int withPx= ConvertUtils.dp2px(AppApplication.getContext(),DEFAULT_ADVERT_IMAGE_WITH_DP);
+        int heightPx= ConvertUtils.dp2px(AppApplication.getContext(),DEFAULT_ADVERT_IMAGE_HEIGHT_DP);
+        imageBean.setWidth(withPx);
+        imageBean.setHeight(heightPx);
+        imageBean.setImageViewWidth(withPx);
+        imageBean.setImageViewHeight(heightPx);
         dynamicDetailBeanV2.setImages(Collections.singletonList(imageBean));
+        dynamicDetailBeanV2.handleData();
+
         return dynamicDetailBeanV2;
     }
 

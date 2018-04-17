@@ -63,6 +63,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 import static com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2.DYNAMIC_LIST_CONTENT_MAX_SHOW_SIZE;
+import static com.zhiyicx.thinksnsplus.data.beans.DynamicListAdvert.DEFAULT_ADVERT_FROM_TAG;
 import static com.zhiyicx.thinksnsplus.data.beans.TopDynamicBean.TYPE_HOT;
 import static com.zhiyicx.thinksnsplus.data.beans.TopDynamicBean.TYPE_NEW;
 import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment.DYNAMIC_DETAIL_DATA;
@@ -469,8 +470,13 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.View>
         } else {
             shareContent.setBitmap(ConvertUtils.drawBg4Bitmap(Color.WHITE, BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.icon)));
         }
-        shareContent.setUrl(String.format(ApiConfig.APP_DOMAIN + ApiConfig.APP_PATH_SHARE_DYNAMIC, dynamicBean.getId()
-                == null ? "" : dynamicBean.getId()));
+        if (dynamicBean.getFeed_from() == DEFAULT_ADVERT_FROM_TAG) {
+            //广告的连接放在了 deleted_at 中
+            shareContent.setUrl(dynamicBean.getDeleted_at());
+        } else {
+            shareContent.setUrl(String.format(ApiConfig.APP_DOMAIN + ApiConfig.APP_PATH_SHARE_DYNAMIC, dynamicBean.getId()
+                    == null ? "" : dynamicBean.getId()));
+        }
         mSharePolicy.setShareContent(shareContent);
         mSharePolicy.showShare(((TSFragment) mRootView).getActivity());
     }

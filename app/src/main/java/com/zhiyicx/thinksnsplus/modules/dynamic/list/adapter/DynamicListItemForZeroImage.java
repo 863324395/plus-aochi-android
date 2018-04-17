@@ -4,6 +4,8 @@ import android.content.Context;
 
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 
+import static com.zhiyicx.thinksnsplus.data.beans.DynamicListAdvert.DEFAULT_ADVERT_FROM_TAG;
+
 /**
  * @author LiuChao
  * @describe
@@ -19,7 +21,7 @@ public class DynamicListItemForZeroImage extends DynamicListBaseItem {
 
     @Override
     public boolean isForViewType(DynamicDetailBeanV2 item, int position) {
-        return item.getFeed_mark() != null && (item.getImages() == null || item.getImages().isEmpty()) && item.getVideo() == null;
+        return item.getFeed_mark() != null&& item.getFeed_from() != DEFAULT_ADVERT_FROM_TAG && (item.getImages() == null || item.getImages().isEmpty()) && item.getVideo() == null;
     }
 
 }

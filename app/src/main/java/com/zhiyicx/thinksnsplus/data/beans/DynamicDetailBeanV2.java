@@ -464,9 +464,11 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable, Ser
      * 用户处理数据，防止在列表中处理
      */
     public void handleData() {
-        int imageCount = images.size();
-        for (int i = 0; i < imageCount; i++) {
-            dealImageBean(images.get(i), i, imageCount);
+        if (images != null) {
+            int imageCount = images.size();
+            for (int i = 0; i < imageCount; i++) {
+                dealImageBean(images.get(i), i, imageCount);
+            }
         }
         dealVideoBean(video);
 
@@ -812,9 +814,11 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable, Ser
          */
         @SerializedName(value = "imgMimeType", alternate = {"mime"})
         private String imgMimeType;
-
-        private int imageViewWidth;
         private int currentWith;
+        /**
+         * imageViewWidth、imageViewHeight 单张图宽高使用
+         */
+        private int imageViewWidth;
         private int imageViewHeight;
         private boolean canLook;
         private boolean isLongImage;

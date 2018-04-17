@@ -41,6 +41,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
+import static com.zhiyicx.thinksnsplus.data.beans.DynamicListAdvert.DEFAULT_ADVERT_FROM_TAG;
 
 /**
  * @Describe 动态列表适配器基类
@@ -57,8 +58,8 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2> {
     protected final String TAG = this.getClass().getSimpleName();
     private static final int CURREN_CLOUMS = 0;
-    public static final int DEFALT_IMAGE_HEIGHT = 180;
-    public static final int DEFALT_IMAGE_WITH = 300;
+    public static final int DEFALT_IMAGE_HEIGHT = 280;
+    public static final int DEFALT_IMAGE_WITH = 360;
     protected final int mHightPixels; // 屏幕高度
     protected final int mDiverwith; // 分割先的宽高
     protected int mImageContainerWith; // 图片容器最大宽度
@@ -145,7 +146,7 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
     @Override
     public boolean isForViewType(DynamicDetailBeanV2 item, int position) {
         // 当本地和服务器都没有图片的时候，使用
-        return item.getFeed_mark() != null && (item.getImages() != null && item.getImages().size
+        return item.getFeed_mark() != null && item.getFeed_from() != DEFAULT_ADVERT_FROM_TAG && (item.getImages() != null && item.getImages().size
                 () == getImageCounts()) && item.getVideo() == null;
     }
 
@@ -281,7 +282,8 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
                 // 设置动态发送状态
                 if (dynamicBean.getState() == DynamicBean.SEND_ERROR) {
                     holder.setVisible(R.id.fl_tip, View.VISIBLE);
-                    holder.setText(R.id.tv_hint_text, BuildConfig.USE_LOG?dynamicBean.getSendFailMessage():holder.getConvertView().getResources().getString(R.string.send_fail));
+                    holder.setText(R.id.tv_hint_text, BuildConfig.USE_LOG ? dynamicBean.getSendFailMessage() : holder.getConvertView().getResources
+                            ().getString(R.string.send_fail));
                 } else {
                     holder.setVisible(R.id.fl_tip, View.GONE);
                 }
