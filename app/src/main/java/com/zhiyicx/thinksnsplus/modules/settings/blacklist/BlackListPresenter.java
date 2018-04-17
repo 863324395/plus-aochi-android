@@ -53,7 +53,7 @@ public class BlackListPresenter extends AppBasePresenter<
 
     @Override
     public void requestNetData(Long maxId, boolean isLoadMore) {
-//        Subscription subscription = observable
+///        Subscription subscription = observable
 //                .subscribe(new BaseSubscribeForV2<List<UserInfoBean>>() {
 //                    @Override
 //                    protected void onSuccess(List<UserInfoBean> data) {
@@ -75,14 +75,32 @@ public class BlackListPresenter extends AppBasePresenter<
 //        addSubscrebe(subscription);
     }
 
+    /**
+     *
+     * @param maxId      当前获取到数据的最小时间
+     * @param isLoadMore 加载状态，是否是加载更多
+     */
     @Override
     public void requestCacheData(Long maxId, boolean isLoadMore) {
         mRootView.onCacheResponseSuccess(null, isLoadMore);
     }
 
+    /**
+     * 插入数据库
+     * @param data       要保存的数据
+     * @param isLoadMore 加载状态，是否是加载更多
+     * @return true, 插入成功
+     */
     @Override
     public boolean insertOrUpdateData(@NotNull List<UserInfoBean> data, boolean isLoadMore) {
         return true;
     }
 
+    /**
+     * 移除黑名单
+     */
+    @Override
+    public void removeBlackList() {
+
+    }
 }

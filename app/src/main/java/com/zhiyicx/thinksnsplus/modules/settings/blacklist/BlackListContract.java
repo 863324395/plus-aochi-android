@@ -20,6 +20,10 @@ public interface BlackListContract {
 
     interface Presenter extends ITSListPresenter<UserInfoBean> {
 
+        /**
+         * 移除黑名单
+         */
+        void removeBlackList();
     }
 
 }

@@ -7,6 +7,7 @@
     android:background="@color/white"
     android:paddingBottom="@dimen/spacing_mid"
     android:paddingLeft="@dimen/spacing_normal"
+    android:paddingRight="@dimen/spacing_normal"
     android:paddingTop="@dimen/spacing_mid">
 
     <com.zhiyicx.baseproject.widget.UserAvatarView
@@ -14,9 +15,9 @@
         android:layout_width="@dimen/headpic_for_list"
         android:layout_height="@dimen/headpic_for_list"
         android:layout_marginRight="@dimen/spacing_mid"
-        app:ts_avatare_size="@dimen/headpic_for_list"
         android:src="@mipmap/pic_default_secret"
-        app:pressShape="circle"/>
+        app:pressShape="circle"
+        app:ts_avatare_size="@dimen/headpic_for_list"/>
 
     <TextView
         android:id="@+id/tv_name"
@@ -27,9 +28,9 @@
         android:ellipsize="end"
         android:includeFontPadding="false"
         android:maxLines="1"
-        tools:text="张三"
         android:textColor="@color/important_for_content"
-        android:textSize="@dimen/size_sub_title"/>
+        android:textSize="@dimen/size_sub_title"
+        tools:text="张三"/>
 
     <TextView
         android:id="@+id/tv_user_signature"
@@ -43,9 +44,9 @@
         android:gravity="top"
         android:includeFontPadding="false"
         android:maxLines="1"
-        tools:text="走在风中今天阳光突然好温柔，天的温柔地的温柔想你抱着我"
         android:textColor="@color/normal_for_assist_text"
-        android:textSize="@dimen/size_content_assist"/>
+        android:textSize="@dimen/size_content_assist"
+        tools:text="走在风中今天阳光突然好温柔，天的温柔地的温柔想你抱着我"/>
 
     <TextView
         android:id="@+id/tv_remove_black_list"
@@ -53,10 +54,15 @@
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
-        android:text="@string/remove"
         android:layout_marginLeft="@dimen/spacing_mid"
-        android:paddingLeft="@dimen/spacing_mid"
-        android:paddingRight="@dimen/spacing_mid"
-        android:src="@mipmap/ico_me_follow"/>
+        android:paddingLeft="@dimen/black_list_remove_bt_paddingleft"
+        android:paddingRight="@dimen/black_list_remove_bt_paddingleft"
+        android:paddingTop="@dimen/spacing_small_4dp"
+        android:gravity="center"
+        android:paddingBottom="@dimen/spacing_small_4dp"
+android:background="@drawable/shape_bg_circle_box_themcolor"
+        android:text="@string/remove"
+        android:textColor="@color/themeColor"
+        android:textSize="@dimen/size_content_assist"/>
 
 </RelativeLayout>

@@ -34,7 +34,7 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 public class BlackListAdapter extends CommonAdapter<UserInfoBean> {
     private BlackListContract.Presenter mPresenter;
 
-    public BlackListAdapter(Context context, int layoutId, List<UserInfoBean> datas, BlackListContract.Presenter presenter) {
+    BlackListAdapter(Context context, int layoutId, List<UserInfoBean> datas, BlackListContract.Presenter presenter) {
         super(context, layoutId, datas);
         this.mPresenter = presenter;
     }
@@ -46,39 +46,20 @@ public class BlackListAdapter extends CommonAdapter<UserInfoBean> {
 
     private void setItemData(final ViewHolder holder, final UserInfoBean userInfoBean1, final int position) {
 
-        RxView.clicks(holder.getView(R.id.iv_user_follow))
+        RxView.clicks(holder.getView(R.id.tv_remove_black_list))
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .subscribe(aVoid -> {
-                    // 黑名单操作
-
+                    // 黑名单操作,移除黑名单
+                    mPresenter.removeBlackList();
                 });
 
-
-        /**
-         * 如果关注粉丝列表中出现了自己，需要隐藏关注按钮
-         */
-        holder.getView(R.id.iv_user_follow).setVisibility(
-                userInfoBean1.getUser_id() == AppApplication.getmCurrentLoginAuth().getUser_id() ? View.GONE : View.VISIBLE);
         // 设置用户名，用户简介
         holder.setText(R.id.tv_name, userInfoBean1.getName());
 
         holder.setText(R.id.tv_user_signature, TextUtils.isEmpty(userInfoBean1.getIntro()) ? getContext().getString(R.string.intro_default) :
                 userInfoBean1.getIntro());
-        // 修改点赞数量颜色
-        String digCountString = userInfoBean1.getExtra().getLikes_count() + "";
-        // 当前没有获取到点赞数量，设置为0，否则ColorPhrase会抛出异常
-        if (TextUtils.isEmpty(digCountString)) {
-            digCountString = 0 + "";
-        }
-        String digContent = "点赞 " + "<" + digCountString + ">";
-        CharSequence charSequence = ColorPhrase.from(digContent).withSeparator("<>")
-                .innerColor(ContextCompat.getColor(getContext(), R.color.themeColor))
-                .outerColor(ContextCompat.getColor(getContext(), R.color.normal_for_assist_text))
-                .format();
-        TextView digCount = holder.getView(R.id.tv_dig_count);
-        digCount.setText(charSequence);
         // 头像加载
         ImageUtils.loadCircleUserHeadPic(userInfoBean1, holder.getView(R.id.iv_headpic));
         // 添加点击事件

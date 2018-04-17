@@ -39,15 +39,6 @@ public class BlackListFragment extends TSListFragment<BlackListContract.Presente
         return followFansListFragment;
     }
 
-    @Override
-    protected CommonAdapter<UserInfoBean> getAdapter() {
-        return new BlackListAdapter(getContext(), R.layout.item_black_list, mListDatas, mPresenter);
-    }
-
-    @Override
-    protected boolean isNeedRefreshDataWhenComeIn() {
-        return true;
-    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -61,18 +52,24 @@ public class BlackListFragment extends TSListFragment<BlackListContract.Presente
     }
 
     @Override
-    protected boolean showToolbar() {
+    protected String setCenterTitle() {
+        return getString(R.string.ts_blacklist);
+    }
+
+    @Override
+    protected CommonAdapter<UserInfoBean> getAdapter() {
+        return new BlackListAdapter(getContext(), R.layout.item_black_list, mListDatas, mPresenter);
+    }
+
+    @Override
+    protected boolean isNeedRefreshDataWhenComeIn() {
         return false;
     }
 
     @Override
-    protected boolean setUseStatusView() {
-        return false;
-    }
-
-    @Override
-    protected boolean showToolBarDivider() {
-        return false;
+    public void onResume() {
+        super.onResume();
+        requestNetData(mMaxId, false);
     }
 
     @Override
