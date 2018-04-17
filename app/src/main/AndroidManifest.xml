@@ -738,6 +738,9 @@
             android:name=".modules.develop.maintenance.TSSystemMantenanceActivity"
             android:launchMode="singleTop"
             android:screenOrientation="portrait"/>
+        <activity
+            android:name=".modules.settings.blacklist.BlackListActivity"
+            android:screenOrientation="portrait"/>
         <!-- 开机自启动服务 -->
         <receiver android:name=".modules.chat.call.receiver.StartServiceReceiver">
             <intent-filter android:priority="1000">
