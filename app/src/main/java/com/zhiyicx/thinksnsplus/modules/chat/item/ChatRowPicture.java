@@ -97,11 +97,11 @@ public class ChatRowPicture extends ChatBaseRow {
                 width = mMaxNetImageWith;
             }
         }
-//
-//        RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) mIvChatContent.getLayoutParams();
-//        layoutParams.width = width;
-//        layoutParams.height = height;
-//        mIvChatContent.setLayoutParams(layoutParams);
+
+        RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) mIvChatContent.getLayoutParams();
+        layoutParams.width = width;
+        layoutParams.height = height;
+        mIvChatContent.setLayoutParams(layoutParams);
 
         ImageUtils.loadImageDefault(mIvChatContent, url);
 
@@ -144,7 +144,4 @@ public class ChatRowPicture extends ChatBaseRow {
         }
     }
 
-    public AppCompatImageView getIvChatContent() {
-        return mIvChatContent;
-    }
 }
