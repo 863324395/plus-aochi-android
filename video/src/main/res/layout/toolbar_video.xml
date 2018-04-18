@@ -5,9 +5,10 @@
     android:layout_width="match_parent"
     android:layout_height="64dp"
     android:minHeight="44dp"
-    android:background="@mipmap/pic_mask"
     android:paddingLeft="@dimen/dp10"
     android:paddingRight="@dimen/dp10">
+    <!--android:background="@mipmap/pic_mask"-->
+
 
     <TextView
         android:id="@+id/tv_toolbar_center"
