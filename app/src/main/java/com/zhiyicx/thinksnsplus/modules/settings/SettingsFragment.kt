@@ -192,7 +192,7 @@ class SettingsFragment : TSFragment<SettingsContract.Presenter>(), SettingsContr
                 .compose(this.bindToLifecycle())
                 .subscribe { showSnackSuccessMessage("vertify") }
         // 黑名单
-        RxView.clicks(mBtFeedBack!!)
+        RxView.clicks(mBtBlackList!!)
                 .throttleFirst(JITTER_SPACING_TIME.toLong(), TimeUnit.SECONDS)
                 .compose(this.bindToLifecycle())
                 .subscribe {
