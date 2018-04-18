@@ -5,14 +5,11 @@ import android.content.Context;
 import android.graphics.Rect;
 import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
-
-import com.tym.shortvideo.utils.Size;
-
 import android.view.Surface;
 import android.view.SurfaceHolder;
 
 import com.tym.shortvideo.filter.helper.type.CalculateType;
-import com.zhiyicx.common.utils.UIUtils;
+import com.tym.shortvideo.filter.helper.type.TextureRotationUtils;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -28,14 +25,11 @@ public class CameraUtils {
 
     // 默认宽高不存在则重新计算比这个值稍微大一点的宽高
     // 16:9的默认宽高（理想值），相机的宽度和高度跟屏幕坐标不一样，手机屏幕的宽度和高度是反过来的。
-    public static final int DEFAULT_16_9_WIDTH = DeviceUtils.getScreenHeight();
-    public static final int DEFAULT_16_9_HEIGHT = DeviceUtils.getScreenWidth();
+    public static final int DEFAULT_16_9_WIDTH = 1280;
+    public static final int DEFAULT_16_9_HEIGHT = 720;
     // 4:3的默认宽高(理想值)
     public static final int DEFAULT_4_3_WIDTH = 1024;
     public static final int DEFAULT_4_3_HEIGHT = 768;
-
-    public static final int DEFAULT_1_1_WIDTH = DeviceUtils.getScreenWidth();
-    public static final int DEFAULT_1_1_HEIGHT = DeviceUtils.getScreenWidth();
 
     // 期望fps
     public static final int DESIRED_PREVIEW_FPS = 30;
@@ -44,19 +38,29 @@ public class CameraUtils {
     private static final int Weight = 1000;
 
     // 这里反过来是因为相机的分辨率跟屏幕的分辨率宽高刚好反过来
-    public static final float Ratio_4_3 = 0.75f;
-    public static final float Ratio_16_9 = 0.5625f;
-    public static final float Ratio_1_1 = 1f;
+    public static Ratio mRatio = Ratio.RATIO_1_1;
 
-    private static int mCameraID = Camera.CameraInfo.CAMERA_FACING_BACK;
+    public enum Ratio {
+        RATIO_16_9(0.5625f),
+        RATIO_4_3(0.75f),
+        RATIO_1_1(0.75f);
+        private float ratio;
+
+        Ratio(float ratio) {
+            this.ratio = ratio;
+        }
+
+        public float getRatio() {
+            return ratio;
+        }
+    }
+
+    private static int mCameraID = Camera.CameraInfo.CAMERA_FACING_FRONT;
     private static Camera mCamera;
     // 相机帧率
     private static int mCameraPreviewFps;
     // 相机预览角度
     private static int mOrientation = 0;
-
-    // 当前的宽高比
-    private static float mCurrentRatio = Ratio_16_9;
 
     // 当前摄像头是否支持闪光灯
     private static boolean mCurrentCameraSupportFlash = false;
@@ -92,17 +96,14 @@ public class CameraUtils {
         mCamera.setParameters(parameters);
         int width = DEFAULT_16_9_WIDTH;
         int height = DEFAULT_16_9_HEIGHT;
-        if (mCurrentRatio == Ratio_4_3) {
+        if (mRatio == Ratio.RATIO_4_3 || mRatio == Ratio.RATIO_1_1) {
             width = DEFAULT_4_3_WIDTH;
             height = DEFAULT_4_3_HEIGHT;
-        }
-        if (mCurrentRatio == Ratio_1_1){
-            width = DEFAULT_1_1_WIDTH;
-            height = DEFAULT_1_1_HEIGHT;
         }
         setPreviewSize(mCamera, width, height);
         setPictureSize(mCamera, width, height);
         calculateCameraPreviewOrientation((Activity) context);
+        TextureRotationUtils.setRatio_1_1(mRatio == Ratio.RATIO_1_1, getPreviewSize());
         mCamera.setDisplayOrientation(mOrientation);
     }
 
@@ -443,7 +444,7 @@ public class CameraUtils {
     private static void setPreviewSize(Camera camera, int expectWidth, int expectHeight) {
         Camera.Parameters parameters = camera.getParameters();
         Camera.Size size = calculatePerfectSize(parameters.getSupportedPreviewSizes(),
-                expectWidth, expectHeight, CalculateType.Lower);
+                expectWidth, expectHeight, CalculateType.Max);
         parameters.setPreviewSize(size.width, size.height);
         camera.setParameters(parameters);
     }
@@ -754,8 +755,8 @@ public class CameraUtils {
      *
      * @param ratio
      */
-    public static void setCurrentRatio(float ratio) {
-        mCurrentRatio = ratio;
+    public static void setCurrentRatio(Ratio ratio) {
+        mRatio = ratio;
     }
 
     /**
@@ -763,8 +764,8 @@ public class CameraUtils {
      *
      * @return
      */
-    public static float getCurrentRatio() {
-        return mCurrentRatio;
+    public static Ratio getCurrentRatio() {
+        return mRatio;
     }
 
     /**
@@ -872,7 +873,7 @@ public class CameraUtils {
             for (Camera.Size size : sizes) {
                 // 如果宽高相等，则直接返回
                 if (size.width == expectWidth && size.height == expectHeight
-                        && ((float) size.height / (float) size.width) == mCurrentRatio) {
+                        && ((float) size.height / (float) size.width) == mRatio.getRatio()) {
                     result = size;
                     break;
                 }
@@ -881,7 +882,7 @@ public class CameraUtils {
                     widthOrHeight = true;
                     if (Math.abs(result.height - expectHeight)
                             > Math.abs(size.height - expectHeight)
-                            && ((float) size.height / (float) size.width) == mCurrentRatio) {
+                            && ((float) size.height / (float) size.width) == mRatio.getRatio()) {
                         result = size;
                         break;
                     }
@@ -891,7 +892,7 @@ public class CameraUtils {
                     widthOrHeight = true;
                     if (Math.abs(result.width - expectWidth)
                             > Math.abs(size.width - expectWidth)
-                            && ((float) size.height / (float) size.width) == mCurrentRatio) {
+                            && ((float) size.height / (float) size.width) == mRatio.getRatio()) {
                         result = size;
                         break;
                     }
@@ -902,7 +903,7 @@ public class CameraUtils {
                             > Math.abs(size.width - expectWidth)
                             && Math.abs(result.height - expectHeight)
                             > Math.abs(size.height - expectHeight)
-                            && ((float) size.height / (float) size.width) == mCurrentRatio) {
+                            && ((float) size.height / (float) size.width) == mRatio.getRatio()) {
                         result = size;
                     }
                 }

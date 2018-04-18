@@ -13,6 +13,7 @@ import com.tym.shortvideo.media.MediaPlayerWrapper;
 import com.tym.shortvideo.media.VideoInfo;
 import com.tym.shortvideo.filter.helper.SlideGpuFilterGroup;
 import com.tym.shortvideo.filter.helper.VideoDrawer;
+import com.tym.shortvideo.utils.CameraUtils;
 
 import java.io.IOException;
 import java.util.List;
@@ -29,11 +30,13 @@ public class VideoPreviewView extends GLSurfaceView implements GLSurfaceView.Ren
     private MediaPlayerWrapper mMediaPlayer;
     private VideoDrawer mDrawer;
 
-    /**视频播放状态的回调*/
+    /**
+     * 视频播放状态的回调
+     */
     private MediaPlayerWrapper.IMediaCallback callback;
 
     public VideoPreviewView(Context context) {
-        super(context,null);
+        super(context, null);
     }
 
     public VideoPreviewView(Context context, AttributeSet attrs) {
@@ -47,19 +50,23 @@ public class VideoPreviewView extends GLSurfaceView implements GLSurfaceView.Ren
         setRenderMode(RENDERMODE_WHEN_DIRTY);
         setPreserveEGLContextOnPause(false);
         setCameraDistance(100);
-        mDrawer = new VideoDrawer(context,getResources());
+        mDrawer = new VideoDrawer(context, getResources());
 
         //初始化Drawer和VideoPlayer
         mMediaPlayer = new MediaPlayerWrapper();
         mMediaPlayer.setOnCompletionListener(this);
     }
-    /**设置视频的播放地址*/
-    public void setVideoPath(List<String> paths){
+
+    /**
+     * 设置视频的播放地址
+     */
+    public void setVideoPath(List<String> paths) {
         mMediaPlayer.setDataSource(paths);
     }
+
     @Override
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
-        mDrawer.onSurfaceCreated(gl,config);
+        mDrawer.onSurfaceCreated(gl, config);
         SurfaceTexture surfaceTexture = mDrawer.getSurfaceTexture();
         surfaceTexture.setOnFrameAvailableListener(new SurfaceTexture.OnFrameAvailableListener() {
             @Override
@@ -78,21 +85,29 @@ public class VideoPreviewView extends GLSurfaceView implements GLSurfaceView.Ren
     }
 
     @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, CameraUtils.getCurrentRatio() ==
+                CameraUtils.Ratio.RATIO_1_1 ? widthMeasureSpec : heightMeasureSpec);
+    }
+
+    @Override
     public void onSurfaceChanged(GL10 gl, int width, int height) {
-        mDrawer.onSurfaceChanged(gl,width,height);
+        mDrawer.onSurfaceChanged(gl, width, height);
     }
 
     @Override
     public void onDrawFrame(GL10 gl) {
         mDrawer.onDrawFrame(gl);
     }
-    public void onDestroy(){
-        if(mMediaPlayer.isPlaying()){
+
+    public void onDestroy() {
+        if (mMediaPlayer.isPlaying()) {
             mMediaPlayer.stop();
         }
         mMediaPlayer.release();
     }
-    public void onTouch(final MotionEvent event){
+
+    public void onTouch(final MotionEvent event) {
         queueEvent(new Runnable() {
             @Override
             public void run() {
@@ -100,33 +115,35 @@ public class VideoPreviewView extends GLSurfaceView implements GLSurfaceView.Ren
             }
         });
     }
-    public void setOnFilterChangeListener(SlideGpuFilterGroup.OnFilterChangeListener listener){
+
+    public void setOnFilterChangeListener(SlideGpuFilterGroup.OnFilterChangeListener listener) {
         mDrawer.setOnFilterChangeListener(listener);
     }
+
     @Override
     public void onVideoPrepare() {
-        if (callback!= null){
+        if (callback != null) {
             callback.onVideoPrepare();
         }
     }
 
     @Override
     public void onVideoStart() {
-        if(callback!=null){
+        if (callback != null) {
             callback.onVideoStart();
         }
     }
 
     @Override
     public void onVideoPause() {
-        if (callback != null){
+        if (callback != null) {
             callback.onVideoPause();
         }
     }
 
     @Override
     public void onCompletion(MediaPlayer mp) {
-        if (callback != null){
+        if (callback != null) {
             callback.onCompletion(mp);
         }
     }
@@ -139,67 +156,73 @@ public class VideoPreviewView extends GLSurfaceView implements GLSurfaceView.Ren
                 mDrawer.onVideoChanged(info);
             }
         });
-        if(callback!=null){
+        if (callback != null) {
             callback.onVideoChanged(info);
         }
     }
+
     /**
      * isPlaying now
-     * */
-    public boolean isPlaying(){
+     */
+    public boolean isPlaying() {
         return mMediaPlayer.isPlaying();
     }
+
     /**
      * pause play
-     * */
-    public void pause(){
+     */
+    public void pause() {
         mMediaPlayer.pause();
     }
+
     /**
      * start play video
-     * */
-    public void start(){
+     */
+    public void start() {
         mMediaPlayer.start();
     }
+
     /**
      * 跳转到指定的时间点，只能跳到关键帧
-     * */
-    public void seekTo(int time){
+     */
+    public void seekTo(int time) {
         mMediaPlayer.seekTo(time);
     }
+
     /**
      * 获取当前视频的长度
-     * */
-    public int getVideoDuration(){
+     */
+    public int getVideoDuration() {
         return mMediaPlayer.getCurVideoDuration();
     }
 
-    public int getVideoWidth(){
+    public int getVideoWidth() {
         return mMediaPlayer.getVideoInfo().get(0).getWidth();
     }
 
-    public int getVideoHeight(){
+    public int getVideoHeight() {
         return mMediaPlayer.getVideoInfo().get(0).getHeight();
     }
 
     /**
      * 获取视频信息
+     *
      * @return
      */
-    public List<VideoInfo> getVideoInfo(){
+    public List<VideoInfo> getVideoInfo() {
         return mMediaPlayer.getVideoInfo();
     }
 
 
     /**
      * 切换美颜状态
-     * */
-    public void switchBeauty(){
+     */
+    public void switchBeauty() {
         mDrawer.switchBeauty();
     }
 
 
-    public void setIMediaCallback(MediaPlayerWrapper.IMediaCallback callback){
-        this.callback=callback;
+    public void setIMediaCallback(MediaPlayerWrapper.IMediaCallback callback) {
+        this.callback = callback;
     }
 }

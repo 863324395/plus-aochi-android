@@ -2,6 +2,7 @@
 <FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
+    android:background="@android:color/black"
     android:layout_height="match_parent">
 
     <!-- 预览视图 -->
@@ -9,7 +10,7 @@
         android:id="@+id/layout_aspect"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="top"
+        android:layout_gravity="center"
         android:background="@color/white"/>
 
     <!-- 顶部视图 -->

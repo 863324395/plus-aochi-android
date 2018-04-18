@@ -36,7 +36,7 @@ import com.tym.shortvideo.utils.FileUtils;
 import com.tym.shortvideo.utils.StringUtils;
 import com.tym.shortvideo.view.AspectFrameLayout;
 import com.tym.shortvideo.view.AsyncRecyclerview;
-import com.tym.shortvideo.view.CainSurfaceView;
+import com.tym.shortvideo.view.RecordSurfaceView;
 import com.tym.shortvideo.view.ProgressView;
 import com.tym.shortvideo.view.ShutterButton;
 import com.zhiyicx.baseproject.base.TSFragment;
@@ -69,7 +69,7 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
  * @Email Jliuer@aliyun.com
  * @Description 录制
  */
-public class RecordFragment extends TSFragment implements SurfaceHolder.Callback, CainSurfaceView.OnClickListener, CainSurfaceView.OnTouchScroller,
+public class RecordFragment extends TSFragment implements SurfaceHolder.Callback, RecordSurfaceView.OnClickListener, RecordSurfaceView.OnTouchScroller,
         RenderStateChangedListener,
         CaptureFrameCallback, ShutterButton.GestureListener {
 
@@ -97,7 +97,7 @@ public class RecordFragment extends TSFragment implements SurfaceHolder.Callback
     @BindView(R.id.iv_right)
     ImageView mIvRight;
 
-    private CainSurfaceView mCameraSurfaceView;
+    private RecordSurfaceView mCameraSurfaceView;
 
     // 状态标志
     private boolean mOnPreviewing = false;
@@ -111,7 +111,7 @@ public class RecordFragment extends TSFragment implements SurfaceHolder.Callback
     private boolean mEffectNeedToMove = false;
 
     // 当前长宽比值
-    private float mCurrentRatio;
+    private CameraUtils.Ratio mCurrentRatio;
 
     private int mColorIndex = 0;
 
@@ -171,7 +171,7 @@ public class RecordFragment extends TSFragment implements SurfaceHolder.Callback
         mCurrentRatio = CameraUtils.getCurrentRatio();
 
         mLayoutAspect.setAspectRatio(mCurrentRatio);
-        mCameraSurfaceView = new CainSurfaceView(mActivity);
+        mCameraSurfaceView = new RecordSurfaceView(mActivity);
         mCameraSurfaceView.getHolder().addCallback(this);
         mCameraSurfaceView.addClickListener(this);
         mLayoutAspect.addView(mCameraSurfaceView);
@@ -482,7 +482,7 @@ public class RecordFragment extends TSFragment implements SurfaceHolder.Callback
      * 调整底部视图
      */
     private void adjustBottomView() {
-        if (CameraUtils.getCurrentRatio() < CameraUtils.Ratio_4_3) {
+        if (CameraUtils.getCurrentRatio().getRatio() < CameraUtils.Ratio.RATIO_4_3.getRatio()) {
 
         } else {
 

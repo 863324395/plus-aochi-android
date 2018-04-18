@@ -23,8 +23,8 @@ public final class RecordManager {
     private static final String TAG = "RecordManager";
     private static final boolean VERBOSE = false;
 
-    public static final int RECORD_WIDTH = DeviceUtils.getScreenWidth();
-    public static final int RECORD_HEIGHT = DeviceUtils.getScreenHeight();
+    public static int RECORD_WIDTH = DeviceUtils.getScreenWidth();
+    public static int RECORD_HEIGHT = DeviceUtils.getScreenHeight();
 
     private static RecordManager mInstance;
 

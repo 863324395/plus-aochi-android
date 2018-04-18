@@ -5,8 +5,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
-import com.zhiyicx.common.utils.log.LogUtils;
-
 import java.util.concurrent.TimeUnit;
 
 import cn.jzvd.JZVideoPlayerManager;
@@ -14,7 +12,6 @@ import cn.jzvd.JZVideoPlayerStandard;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
-import rx.functions.Func1;
 
 /**
  * @author Jliuer
