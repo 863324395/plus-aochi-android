@@ -65,6 +65,7 @@ import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_RECOMMENT_US
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_SPECIFIED_USER_INFO;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_USER_AROUND;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_USER_BLACK_LIST;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_REMOVE_USER_FROM_BLACK_LIST;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_REPORT_USER;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_REWARD_USER;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_SEARCH_RECOMMENT_USER;
@@ -548,6 +549,6 @@ public interface UserInfoClient {
     /**
      * @return 把用户移除黑名单
      */
-    @DELETE(APP_PATH_ADD_USER_TO_BLACK_LIST)
+    @DELETE(APP_PATH_REMOVE_USER_FROM_BLACK_LIST)
     Observable<Object> removeUserFromBlackList(@Path("user_id") Long userId);
 }

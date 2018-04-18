@@ -19,6 +19,7 @@ import android.widget.TextView;
 
 import com.hyphenate.easeui.EaseConstant;
 import com.jakewharton.rxbinding.view.RxView;
+import com.trycatch.mysnackbar.Prompt;
 import com.zhiyicx.baseproject.base.TSActivity;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.base.TSListFragment;
@@ -183,11 +184,11 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
 //        if (AppApplication.getMyUserIdWithdefault() != userInfoBean.getUser_id() && !TextUtils.isEmpty(tsHelperUrl)) {
 //            CustomWEBActivity.startToWEBActivity(context, tsHelperUrl);
 //        } else {
-            Intent intent = new Intent(context, PersonalCenterActivity.class);
-            Bundle bundle = new Bundle();
-            bundle.putParcelable(PersonalCenterFragment.PERSONAL_CENTER_DATA, userInfoBean);
-            intent.putExtras(bundle);
-            context.startActivity(intent);
+        Intent intent = new Intent(context, PersonalCenterActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(PersonalCenterFragment.PERSONAL_CENTER_DATA, userInfoBean);
+        intent.putExtras(bundle);
+        context.startActivity(intent);
 //        }
 
     }
@@ -836,9 +837,12 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
      */
     private void showTopBarMorePopWindow() {
         if (mTopBarMorePopWindow == null) {
+            boolean feedIsMy = mUserInfoBean.getUser_id() == AppApplication.getMyUserIdWithdefault();
+            boolean isBlackMan = false;
             mTopBarMorePopWindow = ActionPopupWindow.builder()
                     .item1Str(getString(R.string.share))
-                    .item2Str(AppApplication.getMyUserIdWithdefault() != mUserInfoBean.getUser_id() ? getString(R.string.report) : "")
+                    .item2Str(feedIsMy ? "" : getString(R.string.report))
+                    .item3Str(feedIsMy ? "" : getString(isBlackMan ? R.string.remove_black_list : R.string.add_to_black_list))
                     .bottomStr(getString(R.string.cancel))
                     .isOutsideTouch(true)
                     .isFocus(true)
@@ -854,6 +858,14 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
                                         .getName(), mUserInfoBean.getAvatar(), mUserInfoBean.getIntro(), ReportType.USER));
                         mTopBarMorePopWindow.hide();
                     })
+                    .item3ClickListener(() -> {
+                        mTopBarMorePopWindow.hide();
+                        if (isBlackMan) {
+                            mPresenter.removeBlackLIst(mUserInfoBean);
+                        } else {
+                            mPresenter.addToBlackList(mUserInfoBean);
+                        }
+                    })
                     .bottomClickListener(() -> mTopBarMorePopWindow.hide())
                     .build();
         }
@@ -868,9 +880,9 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
      */
     private void initDeletDynamicPopupWindow(final DynamicDetailBeanV2 dynamicBean, final int position, final Bitmap shareBitmap) {
         boolean isCollected = dynamicBean.isHas_collect();
-        Long feed_id = dynamicBean.getId();
-        feed_id = feed_id == null ? 0 : feed_id;
-        boolean feedIdIsNull = feed_id == 0;
+        Long feedId = dynamicBean.getId();
+        feedId = feedId == null ? 0 : feedId;
+        boolean feedIdIsNull = feedId == 0;
         boolean feedIsMy = dynamicBean.getUser_id().intValue() == AppApplication.getmCurrentLoginAuth().getUser_id();
         mDeletDynamicPopWindow = ActionPopupWindow.builder()
                 .item1Str(getString(feedIdIsNull ? R.string.empty : R.string.dynamic_list_share_dynamic))

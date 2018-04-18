@@ -6,6 +6,7 @@ import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.config.NotificationConfig;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.FlushMessageBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.FollowFansBeanGreenDaoImpl;
@@ -23,7 +24,11 @@ import java.util.List;
 import javax.inject.Inject;
 
 import rx.Observable;
+import rx.Scheduler;
 import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
 /**
  * @Describe
@@ -134,5 +139,42 @@ public class BlackListPresenter extends AppBasePresenter<
                         }
                     }
                 });
+    }
+
+    /**
+     * 用户被移除黑名单后回调
+     *
+     * @param userId
+     */
+    @Subscriber(tag = EventBusTagConfig.EVENT_USER_REMOVE_FROM_BLACK_LIST)
+    public void userRemovedFromBlackList(long userId) {
+
+        Subscription subscribe = Observable.just(userId)
+                .subscribeOn(Schedulers.io())
+                .map(aLong -> {
+                    int size = mRootView.getListDatas().size();
+                    for (int i = 0; i < size; i++) {
+                        if (mRootView.getListDatas().get(i).getUser_id() == userId) {
+                            return i;
+                        }
+                    }
+                    return -1;
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new BaseSubscribeForV2<Integer>() {
+                    @Override
+                    protected void onSuccess(Integer data) {
+                        if (data == -1) {
+                            return;
+                        }
+                        try {
+                            mRootView.getListDatas().remove(data);
+                            mRootView.refreshData();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+        addSubscrebe(subscribe);
     }
 }

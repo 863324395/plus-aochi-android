@@ -24,7 +24,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/textview_spacing_offset_height"
-        android:layout_toRightOf="@id/tv_remove_black_list"
+        android:layout_toEndOf="@+id/iv_headpic"
         android:ellipsize="end"
         android:includeFontPadding="false"
         android:maxLines="1"

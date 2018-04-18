@@ -1075,4 +1075,8 @@
     <string name="ts_message_history_deleted_tip">您正在删除聊天记录，删除后不可恢复</string>
     <string name="remove">移除</string>
     <string name="ts_blacklist">黑名单</string>
+    <string name="remove_black_list">移除黑名单</string>
+    <string name="add_to_black_list">加入黑名单</string>
+    <string name="add_black_list_success">操作成功</string>
+    <string name="remove_black_list_success">操作成功</string>
 </resources>

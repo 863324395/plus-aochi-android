@@ -191,4 +191,5 @@ public abstract class AppBasePresenter<V extends IBaseView> extends BasePresente
     protected void showErrorTip(Throwable throwable) {
         mRootView.showSnackErrorMessage(BuildConfig.USE_LOG ? throwable.getMessage() : mContext.getString(R.string.err_net_not_work));
     }
+
 }

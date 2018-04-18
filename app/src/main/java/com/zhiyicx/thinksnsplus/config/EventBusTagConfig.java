@@ -183,7 +183,9 @@ public class EventBusTagConfig {
     public static final String EVENT_IM_ONCONVERSATIONCRATED = "onConversationCrated";
 
     public static final String EVENT_IM_ONMESSAGERECEIVED_V2 = "onMessageReceivedV2";
-    /**重新登录*/
+    /**
+     * 重新登录
+     */
     public static final String EVENT_IM_RELOGIN_V2 = "imReLoginV2";
     public static final String EVENT_IM_GET_GROUP_INFO = "getChatGroupInfo";
     public static final String EVENT_IM_GROUP_EDIT_NAME = "group_edit_name";
@@ -223,7 +225,7 @@ public class EventBusTagConfig {
     // 删除答案
     public static final String EVENT_UPDATE_ANSWER_LIST_DELETE = "event_update_answer_list_delete";
     // 删除问题
-    public static final String EVENT_UPDATE_QUESTION_DELETE= "event_update_question_delete";
+    public static final String EVENT_UPDATE_QUESTION_DELETE = "event_update_question_delete";
     // 评论问题
     public static final String EVENT_SEND_COMMENT_TO_QUESTION_LIST = "event_send_question_comment_to_List";
     // 评论点赞
@@ -251,5 +253,8 @@ public class EventBusTagConfig {
     public static final String EVENT_NETSTATE_CHANGE = "netstate_change";
 
     public static final String EVENT_SEND_DYNAMIC_PHOT_FIRST_OPEN_SEND_DYNAMIC_PAGE = "sendDynamicPhotFirstOpenSendDynamicPage";
+
+    // 黑名单中移除用户
+    public static final String EVENT_USER_REMOVE_FROM_BLACK_LIST = "user_remove_from_balck_list";
 
 }

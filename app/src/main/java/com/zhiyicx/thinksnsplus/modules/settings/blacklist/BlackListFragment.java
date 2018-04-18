@@ -63,13 +63,12 @@ public class BlackListFragment extends TSListFragment<BlackListContract.Presente
 
     @Override
     protected boolean isNeedRefreshDataWhenComeIn() {
-        return false;
+        return true;
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        requestNetData(mMaxId, false);
     }
 
     @Override
