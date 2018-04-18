@@ -178,17 +178,17 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
 
             return;
         }
-
-        String tsHelperUrl = checkHelperUrl(context, userInfoBean.getUser_id());
-        if (AppApplication.getMyUserIdWithdefault() != userInfoBean.getUser_id() && !TextUtils.isEmpty(tsHelperUrl)) {
-            CustomWEBActivity.startToWEBActivity(context, tsHelperUrl);
-        } else {
+// 新需求，小助手也进入他自己的主页
+//        String tsHelperUrl = checkHelperUrl(context, userInfoBean.getUser_id());
+//        if (AppApplication.getMyUserIdWithdefault() != userInfoBean.getUser_id() && !TextUtils.isEmpty(tsHelperUrl)) {
+//            CustomWEBActivity.startToWEBActivity(context, tsHelperUrl);
+//        } else {
             Intent intent = new Intent(context, PersonalCenterActivity.class);
             Bundle bundle = new Bundle();
             bundle.putParcelable(PersonalCenterFragment.PERSONAL_CENTER_DATA, userInfoBean);
             intent.putExtras(bundle);
             context.startActivity(intent);
-        }
+//        }
 
     }
 
