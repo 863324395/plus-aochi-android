@@ -222,6 +222,7 @@ public class RecordFragment extends TSFragment implements SurfaceHolder.Callback
                         showSnackErrorMessage(getString(R.string.min_short_video_time, CountDownManager.getInstance().getMinMilliSeconds() / 1000));
                         return;
                     }
+
                     previewRecordVideo();
                 });
     }
@@ -596,7 +597,7 @@ public class RecordFragment extends TSFragment implements SurfaceHolder.Callback
         if (mOnRecording) {
             mNeedToWaitStop = true;
             // 停止录制
-            DrawerManager.getInstance().stopRecording();
+            onStopRecord();
         } else {
             // 销毁录制线程
             RecordManager.getInstance().destoryThread();
@@ -604,7 +605,7 @@ public class RecordFragment extends TSFragment implements SurfaceHolder.Callback
             // 隐藏删除和预览按钮
             ArrayList<String> arrayList = new ArrayList<>(VideoListManager.getInstance()
                     .getSubVideoPathList());
-            CoverActivity.startCoverActivity(mActivity, arrayList, false,false);
+            CoverActivity.startCoverActivity(mActivity, arrayList, false, false);
 //            PreviewActivity.startPreviewActivity(mActivity, arrayList);
             mActivity.finish();
         }
@@ -862,8 +863,11 @@ public class RecordFragment extends TSFragment implements SurfaceHolder.Callback
                 duration += subVideo.getDuration();
                 mBtnTake.setProgress(duration);
                 mTymTest.setProgress(duration);
-                mBtnTake.addSplitView();
-                mTymTest.addSplitView();
+                if (localData.indexOf(subVideo) != localData.size() - 1) {
+                    mBtnTake.addSplitView();
+                    mTymTest.addSplitView();
+                }
+
             }
         }
         if (duration >= CountDownManager.getInstance().getMinMilliSeconds()) {

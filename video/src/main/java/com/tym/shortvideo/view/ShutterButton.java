@@ -169,6 +169,8 @@ public class ShutterButton extends AppCompatImageView {
 
         // 设置绘制大小
         mOval = new RectF();
+
+
     }
 
     @SuppressLint("HandlerLeak")
