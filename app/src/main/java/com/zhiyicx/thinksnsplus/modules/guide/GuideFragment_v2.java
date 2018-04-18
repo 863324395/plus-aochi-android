@@ -98,13 +98,14 @@ public class GuideFragment_v2 extends TSFragment<GuideContract.Presenter> implem
                     urls.add(realAdvertListBean.getAdvertFormat().getImage().getImage());
                 }
                 int time = mBootAdverts.get(0).getAdvertFormat().getImage().getDuration() * 1000;
-                time = time > 0 ? time : 5000;
+                time = time > 0 ? time : 3000;
                 mGuideText.setVisibility(View.VISIBLE);
                 mTimer = TCountTimer.builder()
                         .buildBtn(mGuideText)
-                        .buildTimeCount(time)
+                        .buildTimeCount(time+1000)
                         .buildCanUseListener(urls.size() <= 1)// 单张图片
                         .buildOnTimeListener(this)
+                        .isNeedDisplayOffset(false)
                         .buildCanUseOntick(false)
                         .build();
                 mGuideBanner.setBannerStyle(BannerConfig.NOT_INDICATOR);
@@ -175,14 +176,15 @@ public class GuideFragment_v2 extends TSFragment<GuideContract.Presenter> implem
         if (mPosition > 0) {
             mTimer.replease();
             int time = mBootAdverts.get(position - 1).getAdvertFormat().getImage().getDuration() * 1000;
-            time = time > 0 ? time : position * 2000;
+            time = time > 0 ? time : position * 3000;
             mGuideBanner.setDelayTime(time);
             mTimer = mTimer.newBuilder()
-                    .buildTimeCount(time)
+                    .buildTimeCount(position == mBootAdverts.size()?time:time+1000)
                     .buildCanUseOntick(true)
                     .buildDurText(getString(R.string.skip))
                     .buildCanUseListener(mPosition == mGuideBanner.getItemCount() - 1)
                     .buildOnTimeListener(this)
+                    .isNeedDisplayOffset(position == mBootAdverts.size())
                     .build();
             mTimer.start();
         }
