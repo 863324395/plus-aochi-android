@@ -164,7 +164,11 @@ public class ZhiyiVideoView extends JZVideoPlayerStandard {
     public void changeUiToNormal() {
         super.changeUiToNormal();
         mShareImageView.setVisibility(GONE);
-        mDefaultStartImageView.setVisibility(VISIBLE);
+
+        // 左下角的开始按钮
+//        mDefaultStartImageView.setVisibility(VISIBLE);
+        mDefaultStartImageView.setVisibility(GONE);
+
         mShareLineLinearLayout.setVisibility(GONE);
         mShareLinearLayout.setVisibility(GONE);
     }
@@ -260,9 +264,13 @@ public class ZhiyiVideoView extends JZVideoPlayerStandard {
             startButton.setImageResource(R.mipmap.ico_video_replay);
             replayTextView.setVisibility(VISIBLE);
         } else {
-            if (currentState != CURRENT_STATE_PAUSE) {
-                startButton.setVisibility(GONE);
-            }
+
+            // 中间的开始按钮
+//            if (currentState != CURRENT_STATE_PAUSE) {
+//                startButton.setVisibility(GONE);
+//            }
+
+
             if (currentScreen == SCREEN_WINDOW_FULLSCREEN) {
                 startButton.setImageResource(R.mipmap.ico_video_play_fullscreen);
                 mDefaultStartImageView.setImageResource(R.mipmap.ico_video_play_fullscreen);

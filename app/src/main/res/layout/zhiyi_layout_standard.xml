@@ -176,9 +176,10 @@
         android:id="@+id/loading"
         android:layout_width="@dimen/jz_start_button_w_h_normal"
         android:layout_height="@dimen/jz_start_button_w_h_normal"
+        android:background="@drawable/round"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
-        android:indeterminateDrawable="@drawable/video_loading"
+        android:indeterminateDrawable="@drawable/frame_loading_white"
         android:visibility="invisible"/>
 
     <RelativeLayout
@@ -197,7 +198,6 @@
             android:gravity="center">
 
             <ImageView
-                android:visibility="gone"
                 android:id="@+id/start"
                 android:layout_width="@dimen/jz_start_button_w_h_normal"
                 android:layout_height="@dimen/jz_start_button_w_h_normal"
@@ -351,7 +351,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="15dp"
-            android:background="@drawable/retry_bg"
+            android:background="@drawable/video_retry"
+            android:drawablePadding="@dimen/dp2"
+            android:drawableLeft="@mipmap/ico_video_retry_small"
             android:paddingBottom="4dp"
             android:paddingLeft="9dp"
             android:paddingRight="9dp"
@@ -367,6 +369,7 @@
         android:layout_marginBottom="@dimen/spacing_large"
         android:layout_marginLeft="@dimen/spacing_large"
         android:layout_width="@dimen/jz_start_button_w_h_normal"
+        android:visibility="gone"
         android:layout_height="@dimen/jz_start_button_w_h_normal"
         android:src="@mipmap/ico_video_play_list"/>
 
