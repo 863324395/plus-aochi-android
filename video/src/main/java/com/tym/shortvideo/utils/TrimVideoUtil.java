@@ -142,13 +142,8 @@ public class TrimVideoUtil {
                                                        .getFrameAtTime(frame_time,
                                                                MediaMetadataRetriever
                                                                        .OPTION_CLOSEST_SYNC);
-                                               try {
-                                                   bitmap = Bitmap.createScaledBitmap(bitmap,
-                                                           thumb_Width, thumb_Height, false);
-                                                   callback.onSingleCallback(bitmap, 1);
-                                               } catch (Exception e) {
-                                                   e.printStackTrace();
-                                               }
+
+                                               callback.onSingleCallback(bitmap, 1);
 
                                                mediaMetadataRetriever.release();
                                            } catch (final Throwable e) {

@@ -46,6 +46,7 @@ import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.modules.shortvideo.adapter.EffectFilterAdapter;
+import com.zhiyicx.thinksnsplus.modules.shortvideo.cover.CoverActivity;
 import com.zhiyicx.thinksnsplus.modules.shortvideo.preview.PreviewActivity;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 
@@ -603,7 +604,8 @@ public class RecordFragment extends TSFragment implements SurfaceHolder.Callback
             // 隐藏删除和预览按钮
             ArrayList<String> arrayList = new ArrayList<>(VideoListManager.getInstance()
                     .getSubVideoPathList());
-            PreviewActivity.startPreviewActivity(mActivity, arrayList);
+            CoverActivity.startCoverActivity(mActivity, arrayList, false,false);
+//            PreviewActivity.startPreviewActivity(mActivity, arrayList);
             mActivity.finish();
         }
     }

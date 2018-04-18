@@ -189,7 +189,7 @@ public class PreviewFragment extends TSFragment implements MediaPlayerWrapper.IM
         RxView.clicks(mCover)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .compose(this.bindToLifecycle())
-                .subscribe(aVoid -> CoverActivity.startCoverActivity(mActivity, srcList, false));
+                .subscribe(aVoid -> CoverActivity.startCoverActivity(mActivity, srcList, false,false));
 
         mVideoView.setOnFilterChangeListener(this);
     }

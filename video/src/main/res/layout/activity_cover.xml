@@ -1,33 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@android:color/black"
     android:fitsSystemWindows="false"
     android:orientation="vertical">
 
+    <include layout="@layout/toolbar_video"/>
 
     <com.tym.shortvideo.view.VideoPreviewView
         android:id="@+id/videoView"
+        android:layout_centerInParent="true"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
     <android.support.v7.widget.AppCompatSeekBar
+        android:layout_alignBottom="@+id/videoView"
         android:id="@+id/sk_cover"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
         android:background="@null"
         android:max="100"
         android:maxHeight="1dp"
         android:minHeight="1dp"
-        android:paddingBottom="8dp"
+        android:paddingBottom="40dp"
         android:paddingLeft="12dp"
         android:paddingRight="12dp"
         android:paddingTop="8dp"
         android:progressDrawable="@drawable/video_progress"
         android:thumb="@drawable/jz_bottom_seek_thumb"/>
 
-    <include layout="@layout/toolbar_video"/>
 
-</FrameLayout>
+
+</RelativeLayout>

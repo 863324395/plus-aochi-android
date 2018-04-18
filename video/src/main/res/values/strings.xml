@@ -17,6 +17,7 @@
     <string name="trimmed_done">视频裁剪完成！</string>
     <string name="trimming">正在裁剪视频&#8230;</string>
     <string name="covering">正在截取封面&#8230;</string>
+    <string name="dealing">视频处理中&#8230;</string>
     <string name="compressing">正在压缩视频&#8230;</string>
     <string name="compressed_done">视频压缩完成！</string>
     <string name="drop_reord">确定要放弃本次视频录制吗?</string>

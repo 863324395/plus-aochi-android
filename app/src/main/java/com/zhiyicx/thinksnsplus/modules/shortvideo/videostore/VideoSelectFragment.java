@@ -29,6 +29,7 @@ import com.zhiyicx.thinksnsplus.data.beans.SendDynamicDataBean;
 import com.zhiyicx.thinksnsplus.modules.dynamic.send.SendDynamicActivity;
 import com.zhiyicx.thinksnsplus.modules.shortvideo.adapter.VideoGridViewAdapter;
 import com.zhiyicx.thinksnsplus.modules.shortvideo.clipe.TrimmerActivity;
+import com.zhiyicx.thinksnsplus.modules.shortvideo.cover.CoverActivity;
 import com.zhiyicx.thinksnsplus.modules.shortvideo.preview.PreviewActivity;
 import com.zhiyicx.thinksnsplus.modules.shortvideo.record.RecordActivity;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
@@ -176,7 +177,8 @@ public class VideoSelectFragment extends TSListFragment {
                         if (videoInfo.getDuration() <= CountDownManager.getInstance().getMinMilliSeconds()) {
                             ArrayList<String> arrayList = new ArrayList<>();
                             arrayList.add(videoInfo.getPath());
-                            PreviewActivity.startPreviewActivity(mActivity, arrayList);
+                            CoverActivity.startCoverActivity(mActivity, arrayList, false,false);
+//                            PreviewActivity.startPreviewActivity(mActivity, arrayList);
                         } else {
                             TrimmerActivity.startTrimmerActivity(mActivity, videoInfo);
                         }

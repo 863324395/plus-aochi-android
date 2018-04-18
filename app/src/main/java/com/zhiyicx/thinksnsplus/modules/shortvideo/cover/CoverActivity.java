@@ -29,10 +29,18 @@ public class CoverActivity extends TSActivity {
 
     }
 
-    public static void startCoverActivity(Context context, ArrayList<String> path,boolean pre) {
+    /**
+     *
+     * @param context
+     * @param path 视频路径，支持多个
+     * @param pre 是否是动态发布页的预览
+     * @param hasFilter 是否有滤镜界面
+     */
+    public static void startCoverActivity(Context context, ArrayList<String> path,boolean pre,boolean hasFilter) {
         Bundle bundle = new Bundle();
         bundle.putStringArrayList(CoverFragment.PATH, path);
         bundle.putBoolean(CoverFragment.PREVIEW,pre);
+        bundle.putBoolean(CoverFragment.FILTER,hasFilter);
         Intent intent = new Intent(context, CoverActivity.class);
         intent.putExtras(bundle);
         if (context instanceof Activity) {

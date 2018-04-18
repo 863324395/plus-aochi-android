@@ -171,6 +171,7 @@ public class MediaPlayerWrapper implements MediaPlayer.OnCompletionListener, Med
             if (mCallback != null) {
                 mCallback.onCompletion(mp);
             }
+            return;
         }
         switchPlayer(mp);
 
