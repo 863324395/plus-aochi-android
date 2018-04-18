@@ -906,6 +906,12 @@ public class ApiConfig {
     public static final String APP_PATH_GET_USER_AROUND = "api/" + API_VERSION_2 + "/around-amap";
     // User Append Follower Count
     public static final String APP_PATH_USER_APPEND_FOLLOWER_COUNT = "api/" + API_VERSION_2 + "/user/counts";
+    // 获取用户黑名单列表
+    public static final String APP_PATH_GET_USER_BLACK_LIST = "api/" + API_VERSION_2 + "/blacks";
+    // 把用户加入黑名单
+    public static final String APP_PATH_ADD_USER_TO_BLACK_LIST = "api/" + API_VERSION_2 + "/blacks/{user_id}";
+    // 把用户加入黑名单
+    public static final String APP_PATH_REMOVE_USER_FROM_BLACK_LIST = "api/" + API_VERSION_2 + "/blacks/{user_id}";
 
     /**
      * 签到

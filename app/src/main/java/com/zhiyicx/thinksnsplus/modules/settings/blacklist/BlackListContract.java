@@ -16,14 +16,22 @@ import java.util.List;
 public interface BlackListContract {
     interface View extends ITSListView<UserInfoBean, Presenter> {
 
+        /**
+         * 移除黑名单成功回调
+         *
+         * @param position 当前列表位置
+         */
+        void removeSuccess(int position);
     }
 
     interface Presenter extends ITSListPresenter<UserInfoBean> {
 
         /**
          * 移除黑名单
+         *
+         * @param position 当前列表位置
          */
-        void removeBlackList();
+        void removeBlackList(int position);
     }
 
 }

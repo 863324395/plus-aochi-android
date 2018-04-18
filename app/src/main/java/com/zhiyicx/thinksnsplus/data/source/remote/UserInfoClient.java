@@ -42,6 +42,7 @@ import retrofit2.http.Path;
 import retrofit2.http.Query;
 import rx.Observable;
 
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_ADD_USER_TO_BLACK_LIST;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_BIND_WITH_INPUT;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_BIND_WITH_LOGIN;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_CANDEL_BIND;
@@ -63,6 +64,7 @@ import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_RECOMMENT_BY
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_RECOMMENT_USER_INFO;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_SPECIFIED_USER_INFO;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_USER_AROUND;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_USER_BLACK_LIST;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_REPORT_USER;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_REWARD_USER;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_SEARCH_RECOMMENT_USER;
@@ -530,4 +532,22 @@ public interface UserInfoClient {
      */
     @GET(APP_PATH_USER_APPEND_FOLLOWER_COUNT)
     Observable<UserFollowerCountBean> getUserAppendFollowerCount();
+
+    /**
+     * @return 当前登录用户的黑名单列表
+     */
+    @GET(APP_PATH_GET_USER_BLACK_LIST)
+    Observable<List<UserInfoBean>> getUserBlackList(@Query("offset") Long offset);
+
+    /**
+     * @return 把用户加入黑名单
+     */
+    @POST(APP_PATH_ADD_USER_TO_BLACK_LIST)
+    Observable<Object> addUserToBlackList(@Path("user_id") Long userId);
+
+    /**
+     * @return 把用户移除黑名单
+     */
+    @DELETE(APP_PATH_ADD_USER_TO_BLACK_LIST)
+    Observable<Object> removeUserFromBlackList(@Path("user_id") Long userId);
 }

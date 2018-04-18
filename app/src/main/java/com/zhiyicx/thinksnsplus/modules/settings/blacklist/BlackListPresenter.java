@@ -53,30 +53,30 @@ public class BlackListPresenter extends AppBasePresenter<
 
     @Override
     public void requestNetData(Long maxId, boolean isLoadMore) {
-///        Subscription subscription = observable
-//                .subscribe(new BaseSubscribeForV2<List<UserInfoBean>>() {
-//                    @Override
-//                    protected void onSuccess(List<UserInfoBean> data) {
-//                        mRootView.onNetResponseSuccess(data, isLoadMore);
-//                    }
-//
-//                    @Override
-//                    protected void onFailure(String message, int code) {
-//                        Throwable throwable = new Throwable(message);
-//                        mRootView.onResponseError(throwable, isLoadMore);
-//                    }
-//
-//                    @Override
-//                    protected void onException(Throwable throwable) {
-//                        LogUtils.e(throwable, throwable.getMessage());
-//                        mRootView.onResponseError(throwable, isLoadMore);
-//                    }
-//                });
-//        addSubscrebe(subscription);
+        Subscription subscription =
+                mUserInfoRepository.getUserBlackList(maxId)
+                        .subscribe(new BaseSubscribeForV2<List<UserInfoBean>>() {
+                            @Override
+                            protected void onSuccess(List<UserInfoBean> data) {
+                                mRootView.onNetResponseSuccess(data, isLoadMore);
+                            }
+
+                            @Override
+                            protected void onFailure(String message, int code) {
+                                Throwable throwable = new Throwable(message);
+                                mRootView.onResponseError(throwable, isLoadMore);
+                            }
+
+                            @Override
+                            protected void onException(Throwable throwable) {
+                                LogUtils.e(throwable, throwable.getMessage());
+                                mRootView.onResponseError(throwable, isLoadMore);
+                            }
+                        });
+        addSubscrebe(subscription);
     }
 
     /**
-     *
      * @param maxId      当前获取到数据的最小时间
      * @param isLoadMore 加载状态，是否是加载更多
      */
@@ -87,12 +87,14 @@ public class BlackListPresenter extends AppBasePresenter<
 
     /**
      * 插入数据库
+     *
      * @param data       要保存的数据
      * @param isLoadMore 加载状态，是否是加载更多
      * @return true, 插入成功
      */
     @Override
     public boolean insertOrUpdateData(@NotNull List<UserInfoBean> data, boolean isLoadMore) {
+        mUserInfoBeanGreenDao.insertOrReplace(data);
         return true;
     }
 
@@ -100,7 +102,37 @@ public class BlackListPresenter extends AppBasePresenter<
      * 移除黑名单
      */
     @Override
-    public void removeBlackList() {
+    public void removeBlackList(int position) {
+        mUserInfoRepository.removeUserFromBlackList(mRootView.getListDatas().get(position).getUser_id())
+                .subscribe(new BaseSubscribeForV2<Object>() {
+                    @Override
+                    protected void onSuccess(Object data) {
+                        try {
+                            mRootView.removeSuccess(position);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
 
+                    @Override
+                    protected void onFailure(String message, int code) {
+                        super.onFailure(message, code);
+                        try {
+                            mRootView.showSnackErrorMessage(message);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    protected void onException(Throwable throwable) {
+                        super.onException(throwable);
+                        try {
+                            showErrorTip(throwable);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
     }
 }

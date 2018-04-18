@@ -19,7 +19,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import retrofit2.http.DELETE;
+import retrofit2.http.GET;
+import retrofit2.http.POST;
+import retrofit2.http.Path;
 import rx.Observable;
+
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_ADD_USER_TO_BLACK_LIST;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_USER_BLACK_LIST;
 
 /**
  * @Describe 用户相关
@@ -359,30 +366,73 @@ public interface IUserInfoRepository {
 
     /**
      * 获取认证信息
+     *
      * @return
      */
     Observable<UserCertificationInfo> getCertificationInfo();
 
     /**
      * 提交认证信息
+     *
      * @param bean
      * @return
      */
     Observable<BaseJsonV2<Object>> sendCertification(SendCertificationBean bean);
 
-
+    /**
+     * @param userId
+     * @param maxId
+     * @return 获取关注列表
+     */
     Observable<List<UserInfoBean>> getFollowListFromNet(long userId, int maxId);
 
+    /**
+     * @param userId
+     * @param maxId
+     * @return 获取粉丝列表
+     */
     Observable<List<UserInfoBean>> getFansListFromNet(long userId, int maxId);
 
+    /**
+     * 关注用户
+     *
+     * @param followedId
+     * @return
+     */
     Observable<Object> followUser(long followedId);
 
+    /**
+     * 取消关注
+     *
+     * @param followedId
+     * @return
+     */
     Observable<Object> cancleFollowUser(long followedId);
 
     /**
      * User Append Follower Count
+     *
      * @return 新增关注数
      */
     Observable<UserFollowerCountBean> getUserAppendFollowerCount();
+
+
+    /**
+     * @param offset 偏移量，当前请求数据条数
+     * @return 当前登录用户的黑名单列表
+     */
+    Observable<List<UserInfoBean>> getUserBlackList(Long offset);
+
+    /**
+     * @param userId 用户 id
+     * @return 把用户加入黑名单
+     */
+    Observable<Object> addUserToBlackList( Long userId);
+
+    /**
+     * @param userId 用户 id
+     * @return 把用户移除黑名单
+     */
+    Observable<Object> removeUserFromBlackList( Long userId);
 
 }

@@ -981,16 +981,48 @@ public class UserInfoRepository implements IUserInfoRepository {
 
     @Override
     public Observable<Object> cancleFollowUser(long userId) {
-
         return mFollowFansClient.cancelFollowUser(userId);
     }
+
     /**
-     *
      * @return 最新关注数
      */
     @Override
     public Observable<UserFollowerCountBean> getUserAppendFollowerCount() {
         return mUserInfoClient.getUserAppendFollowerCount()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    /**
+     * @param offset 偏移量，当前请求数据条数
+     * @return
+     */
+    @Override
+    public Observable<List<UserInfoBean>> getUserBlackList(Long offset) {
+        return mUserInfoClient.getUserBlackList(offset)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    /**
+     * @param userId 用户 id
+     * @return
+     */
+    @Override
+    public Observable<Object> addUserToBlackList(Long userId) {
+        return mUserInfoClient.addUserToBlackList(userId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    /**
+     * @param userId 用户 id
+     * @return
+     */
+    @Override
+    public Observable<Object> removeUserFromBlackList(Long userId) {
+        return mUserInfoClient.removeUserFromBlackList(userId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }

@@ -73,8 +73,18 @@ public class BlackListFragment extends TSListFragment<BlackListContract.Presente
     }
 
     @Override
+    protected Long getMaxId(@NotNull List<UserInfoBean> data) {
+        return (long) data.size();
+    }
+
+    @Override
     protected int setEmptView() {
         return R.mipmap.img_default_nobody;
     }
 
+    @Override
+    public void removeSuccess(int position) {
+        mListDatas.remove(position);
+        refreshData();
+    }
 }
