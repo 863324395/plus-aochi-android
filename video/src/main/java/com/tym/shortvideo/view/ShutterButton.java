@@ -215,6 +215,7 @@ public class ShutterButton extends AppCompatImageView {
 
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
+                LogUtils.d("down");
                 time = System.currentTimeMillis();
                 firstX = event.getRawX();
                 firstY = event.getRawY();
@@ -231,9 +232,21 @@ public class ShutterButton extends AppCompatImageView {
                 }
                 break;
 
+            case MotionEvent.ACTION_MOVE:
+                LogUtils.d("move");
+                break;
+
             case MotionEvent.ACTION_UP:
-            case MotionEvent.ACTION_CANCEL:
+                LogUtils.d("up");
+                long offset=System.currentTimeMillis()-time;
+                LogUtils.d("offset::"+offset);
+                if (offset>=200){
+
+                }
                 stopRecord();
+                break;
+            case MotionEvent.ACTION_CANCEL:
+
                 break;
             default:
         }
