@@ -5,6 +5,7 @@ import android.content.Context;
 import android.graphics.Rect;
 import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
+import android.support.annotation.NonNull;
 import android.view.Surface;
 import android.view.SurfaceHolder;
 
@@ -822,7 +823,7 @@ public class CameraUtils {
                 // 如果bigEnough只有一个元素，使用Collections.max就会因越界报NoSuchElementException
                 // 因此，当只有一个元素时，直接使用该元素
                 if (bigEnough.size() > 1) {
-                    perfectSize = Collections.max(bigEnough, new CompareAreaSize());
+                    perfectSize =  getSize(bigEnough, Collections.max(bigEnough, new CompareAreaSize()));
                 } else if (bigEnough.size() == 1) {
                     perfectSize = bigEnough.get(0);
                 }
@@ -911,6 +912,22 @@ public class CameraUtils {
             perfectSize = result;
         }
         return perfectSize;
+    }
+
+    @NonNull
+    private static Camera.Size getSize(List<Camera.Size> bigEnough, Camera.Size absolutelyMaxSize) {
+        if (absolutelyMaxSize.height > DeviceUtils.getScreenWidth()) {
+            int max = bigEnough.indexOf(absolutelyMaxSize);
+            if (max > 0) {
+                max --;
+            } else {
+                return absolutelyMaxSize;
+            }
+            absolutelyMaxSize = bigEnough.get(max);
+            return getSize(bigEnough, absolutelyMaxSize);
+        } else {
+            return absolutelyMaxSize;
+        }
     }
 
     /**

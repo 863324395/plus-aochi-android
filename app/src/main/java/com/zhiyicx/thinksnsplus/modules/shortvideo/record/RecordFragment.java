@@ -250,7 +250,7 @@ public class RecordFragment extends TSFragment implements SurfaceHolder.Callback
             mEffectList.setVisibility(View.GONE);
             return;
         }
-        mToolbarLeft.performLongClick();
+        mToolbarLeft.performClick();
     }
 
     @Override
@@ -831,7 +831,7 @@ public class RecordFragment extends TSFragment implements SurfaceHolder.Callback
                     .bottomStr(getString(R.string.giveup))
                     .isOutsideTouch(true)
                     .isFocus(true)
-                    .backgroundAlpha(CustomPopupWindow.POPUPWINDOW_ALPHA)
+                    .backgroundAlpha(1.0f)
                     .with(getActivity())
                     .item2ClickListener(() -> mWarnPopupWindow.dismiss())
                     .bottomClickListener(() -> {

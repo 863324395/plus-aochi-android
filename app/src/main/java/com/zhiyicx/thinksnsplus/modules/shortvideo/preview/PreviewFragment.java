@@ -248,8 +248,7 @@ public class PreviewFragment extends TSFragment implements MediaPlayerWrapper.IM
         if (isLoading()) {
             super.onBackPressed();
         } else {
-            startActivity(new Intent(mActivity, RecordActivity.class));
-            mActivity.finish();
+            mToolbarLeft.performClick();
         }
     }
 
