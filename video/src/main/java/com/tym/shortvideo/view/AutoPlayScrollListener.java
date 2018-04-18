@@ -5,6 +5,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
+import com.zhiyicx.common.utils.log.LogUtils;
+
 import java.util.concurrent.TimeUnit;
 
 import cn.jzvd.JZVideoPlayerManager;

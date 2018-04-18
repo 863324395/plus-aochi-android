@@ -63,15 +63,12 @@ public class MessageContainerFragment extends TSViewPagerFragment implements Eas
     @BindView(R.id.v_status_bar_placeholder)
     View mStatusBarPlaceholder;
 
-    private CommonNavigatorAdapter mCommonNavigatorAdapter;
     private List<BadgePagerTitleView> mBadgePagerTitleViews;
     /**
      * 0-消息 1=通知
      */
     private boolean mIsMessageTipShow;
     private boolean mIsNotificationTipShow;
-
-    private EaseConversationListFragment mConversationListFragment;
 
     public static MessageContainerFragment instance() {
         return new MessageContainerFragment();
@@ -102,8 +99,8 @@ public class MessageContainerFragment extends TSViewPagerFragment implements Eas
     protected List<Fragment> initFragments() {
         if (mFragmentList == null) {
             mFragmentList = new ArrayList<>();
-            mConversationListFragment = new EaseConversationListFragment();
-            mConversationListFragment.setConversationListItemClickListener(this);
+            EaseConversationListFragment conversationListFragment = new EaseConversationListFragment();
+            conversationListFragment.setConversationListItemClickListener(this);
             mFragmentList.add(MessageFragment.newInstance());
             mFragmentList.add(new MessageConversationFragment());
 
@@ -127,8 +124,8 @@ public class MessageContainerFragment extends TSViewPagerFragment implements Eas
             startActivity(intent);
         });
         mBadgePagerTitleViews = new ArrayList<>();
-        mCommonNavigatorAdapter = getCommonNavigatorAdapter(initTitles());
-        mTsvToolbar.initTabView(mVpFragment, initTitles(), mCommonNavigatorAdapter);
+        CommonNavigatorAdapter commonNavigatorAdapter = getCommonNavigatorAdapter(initTitles());
+        mTsvToolbar.initTabView(mVpFragment, initTitles(), commonNavigatorAdapter);
     }
 
     @Override
@@ -243,8 +240,12 @@ public class MessageContainerFragment extends TSViewPagerFragment implements Eas
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
-        if (!isVisibleToUser&&mFragmentList!=null&&mFragmentList.size()>0&&mFragmentList.get(0)!=null){
-            ((MessageFragment) mFragmentList.get(0)).setUserVisibleHint(false);
+        if (mFragmentList != null && !mFragmentList.isEmpty()) {
+            for (Object o : mFragmentList) {
+                if (o instanceof Fragment) {
+                    ((Fragment) o).setUserVisibleHint(isVisibleToUser);
+                }
+            }
         }
     }
 

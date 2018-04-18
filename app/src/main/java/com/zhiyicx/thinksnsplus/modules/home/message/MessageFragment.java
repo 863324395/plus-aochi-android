@@ -144,7 +144,6 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
         if (mPresenter != null) {
             mPresenter.refreshConversationReadMessage();
             updateCommnetItemData(mPresenter.updateCommnetItemData());
-            // 除了通知的未读数用户信息获取
             mPresenter.handleFlushMessage();
         }
     }
@@ -152,11 +151,15 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
-        if (isVisibleToUser && mPresenter != null && messageItemBeanList.isEmpty()) {
-            mPresenter.requestNetData(DEFAULT_PAGE_MAX_ID, false);
-        }
-        if (mAdapter != null && ((MessageAdapterV2) mAdapter).hasItemOpend()) {
-            ((MessageAdapterV2) mAdapter).closeAllItems();
+//        if (isVisibleToUser && mPresenter != null && messageItemBeanList.isEmpty()) {
+//            mPresenter.requestNetData(DEFAULT_PAGE_MAX_ID, false);
+//        }
+//        if (mAdapter != null && ((MessageAdapterV2) mAdapter).hasItemOpend()) {
+//            ((MessageAdapterV2) mAdapter).closeAllItems();
+//        }
+        if (mPresenter != null && isVisibleToUser) {
+            // 除了通知的未读数用户信息获取
+            mPresenter.handleFlushMessage();
         }
     }
 
@@ -164,7 +167,7 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
     protected RecyclerView.Adapter getAdapter() {
         messageItemBeanList = new ArrayList<>();
 //        MessageSwipeAdapter commonAdapter =new MessageSwipeAdapter(getContext(),mListDatas);
-        MessageAdapterV2 commonAdapter = new MessageAdapterV2(getActivity(), messageItemBeanList);
+        MessageAdapterV2 commonAdapter = new MessageAdapterV2(getActivity(), messageItemBeanList, null);
         commonAdapter.setOnSwipItemClickListener(this);
         commonAdapter.setOnUserInfoClickListener(this);
         return commonAdapter;
@@ -215,8 +218,14 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
         RxView.clicks(headerview.findViewById(R.id.rl_system_notify))
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .subscribe(aVoid -> {
+                    if (((MessageAdapterV2) mAdapter).hasItemOpend()) {
+                        ((MessageAdapterV2) mAdapter).closeAllItems();
+                        return;
+                    }
                     // 跳转系统通知页面
-                    startActivity(new Intent(getContext(), NotificationActivity.class));
+                    toSystemPage();
+                    mPresenter.updateSystemMsgItemData().setUnReadMessageNums(0);
+                    updateCommnetItemData(mPresenter.updateSystemMsgItemData());
                 });
 
         rlCritical = headerview.findViewById(R.id.rl_critical);
@@ -338,25 +347,29 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
 
 
     /**
+     * 前往系统消息了列表
+     */
+    private void toSystemPage() {
+        startActivity(new Intent(getContext(), NotificationActivity.class));
+    }
+
+    /**
      * 前往评论列表
      */
     private void toCommentList() {
-        Intent to = new Intent(getActivity(), MessageCommentActivity.class);
-        Bundle bundle = new Bundle();
-        to.putExtras(bundle);
-        startActivity(to);
+        startActivity(new Intent(getActivity(), MessageCommentActivity.class));
     }
 
     /**
      * 前往点赞列表
      */
     private void toLikeList() {
-        Intent to = new Intent(getActivity(), MessageLikeActivity.class);
-        Bundle bundle = new Bundle();
-        to.putExtras(bundle);
-        startActivity(to);
+        startActivity(new Intent(getActivity(), MessageLikeActivity.class));
     }
 
+    /**
+     * 前往审核列表
+     */
     private void toReviewList() {
         Bundle bundle = new Bundle();
         Intent to = new Intent(getActivity(), MessageReviewActivity.class);

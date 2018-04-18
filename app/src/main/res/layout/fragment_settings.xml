@@ -26,14 +26,22 @@
                 app:leftText="@string/vertify"
                 app:leftTextLeftPadding="@dimen/spacing_mid"
                 app:rightImage="@mipmap/ic_arrow_smallgrey"/>
-            <!--账户管理-->
+            <!--黑名单-->
             <com.zhiyicx.baseproject.widget.button.CombinationButton
-                    android:id="@+id/bt_feedbak"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/full_button_height"
-                    app:leftText="@string/feed_back"
-                    app:leftTextLeftPadding="@dimen/spacing_mid"
-                    app:rightImage="@mipmap/ic_arrow_smallgrey"/>  <!--账户管理-->
+                android:id="@+id/bt_blacklis"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/full_button_height"
+                app:leftText="@string/ts_blacklist"
+                app:leftTextLeftPadding="@dimen/spacing_mid"
+                app:rightImage="@mipmap/ic_arrow_smallgrey"/>
+            <!--意见反馈-->
+            <com.zhiyicx.baseproject.widget.button.CombinationButton
+                android:id="@+id/bt_feedbak"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/full_button_height"
+                app:leftText="@string/feed_back"
+                app:leftTextLeftPadding="@dimen/spacing_mid"
+                app:rightImage="@mipmap/ic_arrow_smallgrey"/>                  <!--账户管理-->
             <com.zhiyicx.baseproject.widget.button.CombinationButton
                 android:id="@+id/bt_account_manager"
                 android:layout_width="match_parent"
@@ -67,12 +75,12 @@
                 app:rightImage="@mipmap/ic_arrow_smallgrey"/>
             <!--检查版本更新-->
             <com.zhiyicx.baseproject.widget.button.CombinationButton
-                    android:id="@+id/bt_check_version"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/full_button_height"
-                    app:leftText="@string/check_version"
-                    app:leftTextLeftPadding="@dimen/spacing_mid"
-                    app:rightImage="@mipmap/ic_arrow_smallgrey">
+                android:id="@+id/bt_check_version"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/full_button_height"
+                app:leftText="@string/check_version"
+                app:leftTextLeftPadding="@dimen/spacing_mid"
+                app:rightImage="@mipmap/ic_arrow_smallgrey">
             </com.zhiyicx.baseproject.widget.button.CombinationButton>
 
             <!--退出登录-->
@@ -85,6 +93,7 @@
                 app:leftTextLeftPadding="@dimen/spacing_mid"
                 app:rightImage="@mipmap/ic_arrow_smallgrey"
                 app:showLine="false"/>
+
             <include
                 layout="@layout/view_choose_item"/>
         </LinearLayout>

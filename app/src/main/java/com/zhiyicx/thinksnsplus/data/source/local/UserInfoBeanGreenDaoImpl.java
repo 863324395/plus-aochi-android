@@ -3,6 +3,8 @@ package com.zhiyicx.thinksnsplus.data.source.local;
 import android.app.Application;
 
 import com.zhiyicx.baseproject.base.TSListFragment;
+import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBeanDao;
 import com.zhiyicx.thinksnsplus.data.source.local.db.CommonCacheImpl;
@@ -177,7 +179,7 @@ public class UserInfoBeanGreenDaoImpl extends CommonCacheImpl<UserInfoBean> {
         try {
             userId = Long.parseLong(id);
         } catch (Exception e) {
-            return "未知用户";
+            return  AppApplication.getContext().getResources().getString(R.string.default_delete_user_name);
         }
         UserInfoBeanDao userInfoBeanDao = getRDaoSession().getUserInfoBeanDao();
         UserInfoBean userInfoBean = userInfoBeanDao.load(userId);

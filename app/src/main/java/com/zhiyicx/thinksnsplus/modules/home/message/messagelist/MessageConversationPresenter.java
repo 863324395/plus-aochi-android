@@ -11,6 +11,7 @@ import com.hyphenate.chat.EMMessage;
 import com.hyphenate.chat.EMTextMessageBody;
 import com.hyphenate.easeui.bean.ChatUserInfoBean;
 import com.hyphenate.easeui.bean.ChatVerifiedBean;
+import com.zhiyicx.baseproject.base.SystemConfigBean;
 import com.zhiyicx.baseproject.em.manager.eventbus.TSEMMultipleMessagesEvent;
 import com.zhiyicx.baseproject.em.manager.eventbus.TSEMRefreshEvent;
 import com.zhiyicx.baseproject.em.manager.util.TSEMConstants;
@@ -34,6 +35,7 @@ import org.simple.eventbus.Subscriber;
 import org.simple.eventbus.ThreadMode;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -67,6 +69,12 @@ public class MessageConversationPresenter extends AppBasePresenter<MessageConver
      * 复制的所有原数据
      */
     private List<MessageItemBeanV2> mCopyConversationList;
+
+    /**
+     * 是否是第一次连接 im
+     */
+    private boolean mIsFristConnectedIm = true;
+
 
     @Inject
     public MessageConversationPresenter(MessageConversationContract.View rootView) {
@@ -119,16 +127,6 @@ public class MessageConversationPresenter extends AppBasePresenter<MessageConver
     }
 
     @Override
-    public void handleFlushMessage() {
-
-    }
-
-    @Override
-    public void checkUnreadNotification() {
-
-    }
-
-    @Override
     public List<ChatUserInfoBean> getChatUserList(int position) {
         List<ChatUserInfoBean> chatUserInfoBeans = new ArrayList<>();
         // 当前用户
@@ -167,6 +165,10 @@ public class MessageConversationPresenter extends AppBasePresenter<MessageConver
                         if (name.contains(s)) {
                             newList.add(itemBeanV2);
                         }
+                    }
+                    if (newList.size() > 1) {
+                        // 数据大于一个才排序
+                        Collections.sort(newList, new EmTimeSortClass());
                     }
                     return newList;
                 })
@@ -231,8 +233,12 @@ public class MessageConversationPresenter extends AppBasePresenter<MessageConver
                     });
             addSubscrebe(subscribe);
         } else {
-            mRootView.showStickyMessage(mContext.getString(R.string.chat_unconnected));
-            mRootView.hideLoading();
+            if (!mIsFristConnectedIm) {
+                mRootView.showStickyMessage(mContext.getString(R.string.chat_unconnected));
+                mRootView.hideLoading();
+            } else {
+                mIsFristConnectedIm = false;
+            }
             // 尝试重新登录，在homepresenter接收
             mAuthRepository.loginIM();
         }
@@ -335,7 +341,8 @@ public class MessageConversationPresenter extends AppBasePresenter<MessageConver
                         if (data == null || data.isEmpty()) {
                             return;
                         }
-                        EMTextMessageBody textBody = new EMTextMessageBody(mContext.getResources().getString(R.string.userup_exit_group,data.get(0).getName()));
+                        EMTextMessageBody textBody = new EMTextMessageBody(mContext.getResources().getString(R.string.userup_exit_group, data.get
+                                (0).getName()));
                         event.getMessage().addBody(textBody);
                         EMClient.getInstance().chatManager().saveMessage(event.getMessage());
                         mRootView.refreshData();
@@ -460,6 +467,15 @@ public class MessageConversationPresenter extends AppBasePresenter<MessageConver
             mRootView.getListDatas().remove(deleteItem);
             mRootView.refreshData();
         }
+    }
+
+    /**
+     * @param userId 用户 id
+     * @return
+     */
+    @Override
+    public boolean checkUserIsImHelper(long userId) {
+        return mSystemRepository.checkUserIsImHelper(userId);
     }
 
     /**

@@ -383,6 +383,7 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.View> imp
                      */
                     mItemBeanComment.setUnReadMessageNums(data.getCounts().getUnread_comments_count());
                     mItemBeanDigg.setUnReadMessageNums(data.getCounts().getUnread_likes_count());
+                    mItemBeanSystemMessage.setUnReadMessageNums(data.getCounts().getSystem());
                     int pinnedNums = 0;
                     if (data.getPinneds() != null) {
                         pinnedNums = (data.getPinneds().getFeeds() == null ? 0 : data.getPinneds().getFeeds().getCount())
@@ -454,6 +455,12 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.View> imp
                     }
                     mItemBeanReview.getConversation().getLast_message().setTxt(
                             reviewTip);
+                    if(data.getSystem()!=null&&data.getSystem().getData()!=null&&!TextUtils.isEmpty(data.getSystem().getData().getContent())){
+                        mItemBeanSystemMessage.getConversation().getLast_message().setTxt(data.getSystem().getData().getContent());
+                        mItemBeanSystemMessage.getConversation().getLast_message().setCreate_time(TimeUtils.utc2LocalLong(data.getSystem().getCreated_at()));
+                        mItemBeanSystemMessage.getConversation().setLast_message_time(TimeUtils.utc2LocalLong(data.getSystem().getCreated_at()));
+
+                    }
                     // 更新我的消息提示
                     EventBus.getDefault().post(true, EventBusTagConfig.EVENT_IM_SET_MINE_FANS_TIP_VISABLE);
                     checkBottomMessageTip();
@@ -482,6 +489,9 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.View> imp
      * 获取用户文字显示  张三、李四评论了我
      */
     private String getItemTipStr(List<UnreadCountBean> commentsNoti, int maxNum) {
+        if(commentsNoti==null){
+            return null;
+        }
         StringBuilder stringBuilder = new StringBuilder();
         String dot = mContext.getString(R.string.str_pingyin_dot);
         for (int i = 0; i < commentsNoti.size(); i++) {
@@ -541,8 +551,7 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.View> imp
         Message reviewmessage = new Message();
         reviewConveration.setLast_message(reviewmessage);
         mItemBeanReview.setConversation(reviewConveration);
-        mItemBeanReview.getConversation().getLast_message().setTxt(mContext.getString(R.string.has_no_body)
-                + mContext.getString(R.string.recieved_review));
+        mItemBeanReview.getConversation().getLast_message().setTxt(mContext.getString(R.string.no_apply_data));
     }
 
 

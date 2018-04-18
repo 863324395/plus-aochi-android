@@ -13,6 +13,7 @@ import com.zhiyicx.thinksnsplus.config.NotificationConfig;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.beans.FlushMessages;
 import com.zhiyicx.thinksnsplus.data.beans.UserCertificationInfo;
+import com.zhiyicx.thinksnsplus.data.beans.UserFollowerCountBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.WalletBean;
 import com.zhiyicx.thinksnsplus.data.source.local.FlushMessageBeanGreenDaoImpl;
@@ -87,6 +88,16 @@ public class MinePresenter extends AppBasePresenter<MineContract.View> implement
             mRootView.setUserInfo(userInfoBean);
         }
         setMineTipVisable(false);
+
+        Subscription subscribe = mUserInfoRepository.getUserAppendFollowerCount()
+                .subscribe(new BaseSubscribeForV2<UserFollowerCountBean>() {
+                    @Override
+                    protected void onSuccess(UserFollowerCountBean data) {
+                        mRootView.setNewFollowTip(data.getUser().getFollowing());
+
+                    }
+                });
+        addSubscrebe(subscribe);
     }
 
     /**

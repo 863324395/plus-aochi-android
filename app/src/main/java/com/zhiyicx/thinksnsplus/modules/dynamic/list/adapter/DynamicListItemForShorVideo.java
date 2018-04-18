@@ -25,6 +25,8 @@ import cn.jzvd.JZVideoPlayer;
 import cn.jzvd.JZVideoPlayerManager;
 import cn.jzvd.JZVideoPlayerStandard;
 
+import static com.zhiyicx.thinksnsplus.data.beans.DynamicListAdvert.DEFAULT_ADVERT_FROM_TAG;
+
 /**
  * @Describe 动态列表 五张图的时候的 item
  * @Author Jungle68
@@ -181,7 +183,7 @@ public class DynamicListItemForShorVideo extends DynamicListBaseItem {
 
     @Override
     public boolean isForViewType(DynamicDetailBeanV2 item, int position) {
-        return item.getVideo() != null;
+        return item.getVideo() != null&& item.getFeed_from() != DEFAULT_ADVERT_FROM_TAG;
     }
 
     @Override

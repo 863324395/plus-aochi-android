@@ -109,7 +109,8 @@ public class ChatPresenter extends AppBasePresenter<ChatContract.View> implement
                     @Override
                     protected void onSuccess(ChatGroupBean data) {
                         mChatGroupBeanGreenDao.saveSingleData(chatGroupBean);
-                        mRootView.setGoupName(data.getName() + "(" + chatGroupBean.getAffiliations_count() + ")");
+                        mRootView.setGoupName(mContext.getString(R.string.chat_group_name_default, data.getName(), chatGroupBean
+                                .getAffiliations_count()));
                         mRootView.dismissSnackBar();
                     }
 

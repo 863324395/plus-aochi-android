@@ -14,6 +14,7 @@ import com.zhiyicx.thinksnsplus.data.beans.TSPNotificationBean;
 import com.zhiyicx.thinksnsplus.data.beans.ThridInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.UnReadNotificaitonBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserCertificationInfo;
+import com.zhiyicx.thinksnsplus.data.beans.UserFollowerCountBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserTagBean;
 import com.zhiyicx.thinksnsplus.data.beans.request.BindAccountRequstBean;
@@ -66,6 +67,7 @@ import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_REPORT_USER;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_REWARD_USER;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_SEARCH_RECOMMENT_USER;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_UPDATE_USER_LOCATION;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_USER_APPEND_FOLLOWER_COUNT;
 
 /**
  * @author Jungle68
@@ -520,4 +522,12 @@ public interface UserInfoClient {
     @POST(APP_PATH_REPORT_USER)
     Observable<ReportResultBean> reportUser(@Path("user_id") String userId, @Field("reason") String reason);
 
+
+    /**
+     * User Append Follower Count
+     *
+     * @return
+     */
+    @GET(APP_PATH_USER_APPEND_FOLLOWER_COUNT)
+    Observable<UserFollowerCountBean> getUserAppendFollowerCount();
 }

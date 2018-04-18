@@ -95,17 +95,20 @@ public class DynamicListItemForOneImage extends DynamicListBaseItem {
             // 本地
             BitmapFactory.Options option = DrawableProvider.getPicsWHByFile(imageBean.getImgUrl());
             with = imageBean.getCurrentWith();
-            if (option.outWidth == 0) {
-                height = with;
-            } else {
-                height = with * option.outHeight / option.outWidth;
-                height = height > mImageMaxHeight ? mImageMaxHeight : height;
-                // 是否是 gif
-                view.setIshowGifTag(ImageUtils.imageIsGif(option.outMimeType));
-                // 是否是长图
-                view.showLongImageTag(isLongImage(option.outHeight, option.outWidth));
+            height = imageBean.getHeight();
+            if (height == 0) {
+                if (option.outWidth == 0) {
+                    height = with;
+                } else {
+                    height = with * option.outHeight / option.outWidth;
+                    height = height > mImageMaxHeight ? mImageMaxHeight : height;
+                    // 是否是 gif
+                    view.setIshowGifTag(ImageUtils.imageIsGif(option.outMimeType));
+                    // 是否是长图
+                    view.showLongImageTag(isLongImage(option.outHeight, option.outWidth));
+                }
             }
-            if (height < DEFALT_IMAGE_HEIGHT) {
+            if (height <= 0) {
                 height = DEFALT_IMAGE_HEIGHT;
             }
             view.setLayoutParams(new LinearLayout.LayoutParams(with, height));

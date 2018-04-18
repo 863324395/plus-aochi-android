@@ -175,6 +175,16 @@ public class RegisterPresenter extends AppBasePresenter<RegisterContract.View>
         }
         mRootView.setRegisterBtEnabled(false);
         Subscription registerSub = mUserInfoRepository.registerByPhone(phone, name, vertifyCode, password)
+                .flatMap(authBean -> {
+                    // 保存登录认证信息
+                    mAuthRepository.saveAuthBean(authBean);
+                    return mUserInfoRepository.getCurrentLoginUserInfo()
+                            .map(userInfoBean -> {
+                                authBean.setUser(userInfoBean);
+                                authBean.setUser_id(userInfoBean.getUser_id());
+                                return authBean;
+                            });
+                })
                 .subscribe(new BaseSubscribeForV2<AuthBean>() {
                     @Override
                     public void onSuccess(AuthBean data) {
@@ -222,6 +232,16 @@ public class RegisterPresenter extends AppBasePresenter<RegisterContract.View>
         }
         mRootView.setRegisterBtEnabled(false);
         Subscription registerSub = mUserInfoRepository.registerByEmail(email, name, verifyCode, password)
+                .flatMap(authBean -> {
+                    // 保存登录认证信息
+                    mAuthRepository.saveAuthBean(authBean);
+                    return mUserInfoRepository.getCurrentLoginUserInfo()
+                            .map(userInfoBean -> {
+                                authBean.setUser(userInfoBean);
+                                authBean.setUser_id(userInfoBean.getUser_id());
+                                return authBean;
+                            });
+                })
                 .subscribe(new BaseSubscribeForV2<AuthBean>() {
                     @Override
                     public void onSuccess(AuthBean data) {

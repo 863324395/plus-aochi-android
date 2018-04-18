@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.data.source.repository.i;
 
 import com.zhiyicx.thinksnsplus.data.beans.ReportResultBean;
+import com.zhiyicx.thinksnsplus.data.beans.UserFollowerCountBean;
 
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
@@ -105,5 +106,6 @@ public interface IReportRepository {
      * @return
      */
     Observable<ReportResultBean> reportUser(String userId, String reason);
+
 
 }

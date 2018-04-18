@@ -37,6 +37,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListBaseItem.DEFALT_IMAGE_HEIGHT;
+import static com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListBaseItem.DEFALT_IMAGE_WITH;
 
 /**
  * @Author Jliuer
@@ -463,9 +464,11 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable, Ser
      * 用户处理数据，防止在列表中处理
      */
     public void handleData() {
-        int imageCount = images.size();
-        for (int i = 0; i < imageCount; i++) {
-            dealImageBean(images.get(i), i, imageCount);
+        if (images != null) {
+            int imageCount = images.size();
+            for (int i = 0; i < imageCount; i++) {
+                dealImageBean(images.get(i), i, imageCount);
+            }
         }
         dealVideoBean(video);
 
@@ -493,48 +496,30 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable, Ser
         }
     }
 
-
     /**
-     * 计算文本的长度是否超过最大行
+     * 预处理 视频的数据
      *
-     * @param string
-     * @return
+     * @param video
      */
-    private int getDynamicContentSingleLineNums(String string) {
-        // 获得字体的宽度，sp转px的方法，网上很多，14为textview中所设定的textSize属性值
-        int txtWidth = ConvertUtils.sp2px(AppApplication.getContext(), 14);
-        // 获得屏幕的宽度
-        int winWidth = DeviceUtils
-                .getScreenWidth(AppApplication.getContext());
-        // 获得textView控件的宽度，15为xml中所设定marginleft 和 marginright的值，这里都是15，所以直接乘以2了。
-        int viewWidth = winWidth
-                - ConvertUtils.dp2px(AppApplication.getContext(), 68);
-        // 获得单行最多显示字数
-        return viewWidth / txtWidth * 2;
-
-    }
-
     private void dealVideoBean(Video video) {
         if (video == null) {
             return;
         }
+        if (video.getWidth() == 0) {
+            video.setWidth(DEFALT_IMAGE_WITH);
+        }
+        if (video.getHeight() == 0) {
+            video.setHeight(DEFALT_IMAGE_HEIGHT);
+        }
         int netWidth = video.getWidth();
         int netHeight = video.getHeight();
-
-        if (netWidth * netHeight == 0) {
-            netWidth = netHeight = DEFALT_IMAGE_HEIGHT;
-        }
 
         int with = ImageUtils.getmImageContainerWith();
         int height = (with * netHeight / netWidth);
         int mImageMaxHeight = ImageUtils.getmImageMaxHeight();
         height = height > mImageMaxHeight ? mImageMaxHeight : height;
         // 单张图最小高度
-        height = height < 300 ? 300 : height;
-        // 就怕是 0
-        if (with * height == 0) {
-            with = height = DEFALT_IMAGE_HEIGHT;
-        }
+        height = height < DEFALT_IMAGE_HEIGHT ? DEFALT_IMAGE_HEIGHT : height;
         video.setWidth(with);
         video.setHeight(height);
         video.setGlideUrl(ImageUtils.imagePathConvertV2(true, video.cover_id, with, height,
@@ -550,10 +535,17 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable, Ser
      * @return
      */
     private void dealImageBean(ImagesBean imageBean, int i, int imageCount) {
+        if (imageBean.getWidth() == 0) {
+            imageBean.setWidth(DEFALT_IMAGE_WITH);
+        }
+        if (imageBean.getHeight() == 0) {
+            imageBean.setHeight(DEFALT_IMAGE_HEIGHT);
+        }
 
         // 计算宽高，从 size 中分离
         int netWidth = imageBean.getWidth();
         int netHeight = imageBean.getHeight();
+
 
         int currenCloums;
         int part;
@@ -631,15 +623,11 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable, Ser
             int mImageMaxHeight = ImageUtils.getmImageMaxHeight();
             height = height > mImageMaxHeight ? mImageMaxHeight : height;
             // 单张图最小高度
-            height = height < 300 ? 300 : height;
+            height = height < DEFALT_IMAGE_HEIGHT ? DEFALT_IMAGE_HEIGHT : height;
             // 这个不知道好久才有用哎
             proportion = ((with / netWidth) * 100);
             imageBean.setGlideUrl(ImageUtils.imagePathConvertV2(canLook, imageBean.getFile(), canLook ? 0 : with, canLook ? 0 : height
                     , 100, AppApplication.getTOKEN()));
-            // 就怕是 0
-            if (with * height == 0) {
-                with = height = DEFALT_IMAGE_HEIGHT;
-            }
             imageBean.setImageViewWidth(with);
             imageBean.setImageViewHeight(height);
         }
@@ -824,11 +812,13 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable, Ser
         /**
          * 图片类型
          */
-        @SerializedName(value = "imgMimeType",alternate = {"mime"})
+        @SerializedName(value = "imgMimeType", alternate = {"mime"})
         private String imgMimeType;
-
-        private int imageViewWidth;
         private int currentWith;
+        /**
+         * imageViewWidth、imageViewHeight 单张图宽高使用
+         */
+        private int imageViewWidth;
         private int imageViewHeight;
         private boolean canLook;
         private boolean isLongImage;
@@ -960,23 +950,44 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable, Ser
         }
 
         public int getWidth() {
-            if (size != null && size.length() > 0 && width * height == 0) {
-                String[] sizes = size.split("x");
-                this.width = Integer.parseInt(sizes[0]);
-                this.height = Integer.parseInt(sizes[1]);
+            if (width > 0) {
                 return width;
             }
-            return width > 0 ? width : 100;
+            if (praseSize()) {
+                return width;
+            }
+            return DEFALT_IMAGE_WITH;
         }
 
         public int getHeight() {
-            if (size != null && size.length() > 0 && width * height == 0) {
-                String[] sizes = size.split("x");
-                this.width = Integer.parseInt(sizes[0]);
-                this.height = Integer.parseInt(sizes[1]);
+            if (height > 0) {
                 return height;
             }
-            return height > 0 ? height : 100;
+            if (praseSize()) {
+                return height;
+            }
+            return DEFALT_IMAGE_HEIGHT;
+        }
+
+        private boolean praseSize() {
+            try {
+                if (size != null && size.length() > 0) {
+                    String[] sizes = size.split("x");
+                    this.width = Integer.parseInt(sizes[0]);
+                    this.height = Integer.parseInt(sizes[1]);
+                    if (width <= 0) {
+                        width = DEFALT_IMAGE_WITH;
+                    }
+                    if (height <= 0) {
+                        height = DEFALT_IMAGE_HEIGHT;
+                    }
+
+                    return true;
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return false;
         }
 
         public long getAmount() {
@@ -1261,10 +1272,13 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable, Ser
 
     @Generated(hash = 935012664)
     public DynamicDetailBeanV2(Long id, String created_at, String updated_at, String deleted_at, Long user_id, String feed_content, int feed_from,
-            int feed_digg_count, int feed_view_count, int feed_comment_count, String feed_latitude, String feed_longtitude, String feed_geohash, int audit_status,
-            Long feed_mark, boolean has_digg, boolean has_collect, long amount, List<DynamicLikeBean> likes, boolean paid, List<ImagesBean> images,
-            List<Integer> diggs, PaidNote paid_node, Long hot_creat_time, boolean isFollowed, int state, String sendFailMessage, int top,
-            List<DynamicDigListBean> digUserInfoList, RewardsCountBean reward, Video video) {
+                               int feed_digg_count, int feed_view_count, int feed_comment_count, String feed_latitude, String feed_longtitude,
+                               String feed_geohash, int audit_status,
+                               Long feed_mark, boolean has_digg, boolean has_collect, long amount, List<DynamicLikeBean> likes, boolean paid,
+                               List<ImagesBean> images,
+                               List<Integer> diggs, PaidNote paid_node, Long hot_creat_time, boolean isFollowed, int state, String sendFailMessage,
+                               int top,
+                               List<DynamicDigListBean> digUserInfoList, RewardsCountBean reward, Video video) {
         this.id = id;
         this.created_at = created_at;
         this.updated_at = updated_at;

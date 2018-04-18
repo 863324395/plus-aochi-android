@@ -8,6 +8,7 @@ import android.widget.LinearLayout;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.jakewharton.rxbinding.view.RxView;
+import com.zhiyicx.baseproject.config.ImageZipConfig;
 import com.zhiyicx.baseproject.widget.DynamicListMenuView;
 import com.zhiyicx.baseproject.widget.imageview.FilterImageView;
 import com.zhiyicx.common.utils.ConvertUtils;
@@ -20,6 +21,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
+import static com.zhiyicx.thinksnsplus.data.beans.DynamicListAdvert.DEFAULT_ADVERT_FROM_TAG;
 
 /**
  * @Describe 动态列表 五张图的时候的 item
@@ -50,7 +52,7 @@ public class DynamicListItemForAdvert extends DynamicListBaseItem {
 
     @Override
     public boolean isForViewType(DynamicDetailBeanV2 item, int position) {
-        return item.getFeed_from() == -1;
+        return item.getFeed_from() == DEFAULT_ADVERT_FROM_TAG;
     }
 
     @Override
@@ -60,7 +62,7 @@ public class DynamicListItemForAdvert extends DynamicListBaseItem {
             // 显示工具栏
             DynamicListMenuView dynamicListMenuView = holder.getView(R.id.dlmv_menu);
             dynamicListMenuView.setImageNormalResourceIds(getToolImages());
-            dynamicListMenuView.setAdvertItemTextAndStatus("广告", dynamicBean.isHas_digg(), 0);
+            dynamicListMenuView.setAdvertItemTextAndStatus(mContext.getString(R.string.advert), false, 0);
             dynamicListMenuView.setAdvertItemTextAndStatus(ConvertUtils.numberConvert(dynamicBean
                     .getFeed_comment_count()), false, 1);
             dynamicListMenuView.setAdvertItemTextAndStatus(ConvertUtils.numberConvert(dynamicBean
@@ -83,7 +85,8 @@ public class DynamicListItemForAdvert extends DynamicListBaseItem {
 
     /**
      * 设置 imageview 点击事件，以及显示
-     *  @param view        the target
+     *
+     * @param view        the target
      * @param dynamicBean item data
      * @param positon     image item position
      * @param part        this part percent of imageContainer
@@ -93,17 +96,22 @@ public class DynamicListItemForAdvert extends DynamicListBaseItem {
         /**
          * 一张图时候，需要对宽高做限制
          */
-        int with;
-        int height;
-        int proportion; // 压缩比例
+        int with = DEFALT_IMAGE_WITH;
+        int height = DEFALT_IMAGE_HEIGHT;
+
+        try {
+            with = dynamicBean.getImages().get(positon).getCurrentWith();
+            height = dynamicBean.getImages().get(positon).getImageViewHeight();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        int proportion = ImageZipConfig.IMAGE_100_ZIP; // 压缩比例
+
         int currentWith = getCurrenItemWith(part);
-
-        List<DynamicDetailBeanV2.ImagesBean> imageBeanList = dynamicBean.getImages();
-        DynamicDetailBeanV2.ImagesBean imageBean = imageBeanList.get(positon);
-
-        with = currentWith;
-
-        proportion = 70;
+        with = with > currentWith ? currentWith : with;
+        height = height > mImageMaxHeight ? mImageMaxHeight : height;
+        DynamicDetailBeanV2.ImagesBean imageBean = dynamicBean.getImages().get(positon);
 
         String url;
         if (TextUtils.isEmpty(imageBean.getImgUrl())) {
@@ -111,11 +119,11 @@ public class DynamicListItemForAdvert extends DynamicListBaseItem {
         } else {
             url = imageBean.getImgUrl();
         }
-        view.setLayoutParams(new LinearLayout.LayoutParams(with, with));
+        view.setLayoutParams(new LinearLayout.LayoutParams(with, height));
         Glide.with(view.getContext())
                 .load(url)
                 .asBitmap()
-                .override(with, with)
+                .override(with, height)
                 .placeholder(R.drawable.shape_default_image)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .error(R.drawable.shape_default_image)

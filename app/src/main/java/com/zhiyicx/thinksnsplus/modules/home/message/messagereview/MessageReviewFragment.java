@@ -117,6 +117,8 @@ public class MessageReviewFragment extends TSListFragment<MessageReviewContract.
                 chooseType(getString(R.string.stick_type_dynamic_commnet), 0);
             }
 
+        }else {
+            chooseType(getString(R.string.stick_type_dynamic_commnet), 0);
         }
     }
 

@@ -100,6 +100,7 @@ public class UserInfoBean extends BaseListBean implements Parcelable, Serializab
     private boolean follower;
     private String created_at;
     private String updated_at;
+    private String deleted_at;
     private String avatar;      // 头像 地址
     @SerializedName(value = "cover", alternate = {"bg"})
     private String cover;// 封面
@@ -191,7 +192,12 @@ public class UserInfoBean extends BaseListBean implements Parcelable, Serializab
     }
 
     public String getName() {
-        return name;
+        if(TextUtils.isEmpty(deleted_at)) {
+            return name;
+        }else {
+            // 该用户已被删除
+            return AppApplication.getContext().getResources().getString(R.string.default_delete_user_name);
+        }
     }
 
     public void setName(String name) {
@@ -240,6 +246,14 @@ public class UserInfoBean extends BaseListBean implements Parcelable, Serializab
 
     public void setLocation(String location) {
         this.location = location;
+    }
+
+    public String getDeleted_at() {
+        return deleted_at;
+    }
+
+    public void setDeleted_at(String deleted_at) {
+        this.deleted_at = deleted_at;
     }
 
     public String getProvince() {
@@ -737,10 +751,10 @@ public class UserInfoBean extends BaseListBean implements Parcelable, Serializab
         this.has_deleted = in.readByte() != 0;
     }
 
-    @Generated(hash = 239481087)
+    @Generated(hash = 2035715005)
     public UserInfoBean(Long user_id, String name, String phone, String email, String intro, int sex,
             String location, boolean following, boolean follower, String created_at, String updated_at,
-            String avatar, String cover, IntegrationBean currency, UserInfoExtraBean extra,
+            String deleted_at, String avatar, String cover, IntegrationBean currency, UserInfoExtraBean extra,
             VerifiedBean verified, List<UserTagBean> tags, String im_pwd_hash, int friends_count,
             boolean initial_password, boolean has_deleted) {
         this.user_id = user_id;
@@ -754,6 +768,7 @@ public class UserInfoBean extends BaseListBean implements Parcelable, Serializab
         this.follower = follower;
         this.created_at = created_at;
         this.updated_at = updated_at;
+        this.deleted_at = deleted_at;
         this.avatar = avatar;
         this.cover = cover;
         this.currency = currency;

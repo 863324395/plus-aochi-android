@@ -49,14 +49,6 @@ public interface MessageConversationContract {
         void deleteConversation(int position);
 
         /**
-         * 检查当前消息记录
-         */
-        void handleFlushMessage();
-
-
-        void checkUnreadNotification();
-
-        /**
          * 获取聊天用户列表
          *
          * @param position 点击位置
@@ -67,5 +59,11 @@ public interface MessageConversationContract {
         void searchList(String key);
 
         void deleteGroup(String id);
+
+        /**
+         * @param userId 用户 id
+         * @return true 是 IM 小助手
+         */
+        boolean checkUserIsImHelper(long userId);
     }
 }

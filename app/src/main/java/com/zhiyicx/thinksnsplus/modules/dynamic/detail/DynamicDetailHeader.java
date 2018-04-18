@@ -492,6 +492,7 @@ public class DynamicDetailHeader {
                     imageBean.setWidth(task.getWidth());// 图片宽高
                     imageBean.setHeight(task.getHeight());
                     imageBean.setStorage_id(task.getFile());// 图片附件id
+                    imageBean.setImgMimeType(task.getImgMimeType());
                     imageBeans.add(imageBean);
                     AnimationRectBean rect = AnimationRectBean.buildFromImageView(imageView1);//
                     // 动画矩形

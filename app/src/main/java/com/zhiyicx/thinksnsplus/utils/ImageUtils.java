@@ -28,6 +28,7 @@ import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 
 import java.util.Locale;
 
+import static com.zhiyicx.baseproject.config.ImageZipConfig.IMAGE_100_ZIP;
 import static com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2.ImagesBean.FILE_MIME_TYPE_GIF;
 
 /**
@@ -206,7 +207,8 @@ public class ImageUtils {
                 userInfoBean.getVerified().setIcon("");
             }
             Glide.with(imageView.getContext())
-                    .load(userInfoBean.getVerified().getIcon())
+                    .load(TextUtils.isEmpty(userInfoBean.getVerified().getIcon()) ? R.drawable.shape_default_image : userInfoBean.getVerified()
+                            .getIcon())
                     .signature(new StringSignature(String.valueOf(mHeadPicSigture)))
                     .placeholder(userInfoBean.getVerified().getType().equals(SendCertificationBean.ORG) ? R.mipmap.pic_identi_company : R.mipmap
                             .pic_identi_individual)
@@ -241,7 +243,8 @@ public class ImageUtils {
                 userInfoBean.getVerified().setIcon("");
             }
             Glide.with(imageView.getContext())
-                    .load(userInfoBean.getVerified().getIcon())
+                    .load(TextUtils.isEmpty(userInfoBean.getVerified().getIcon()) ? R.drawable.shape_default_image : userInfoBean.getVerified()
+                            .getIcon())
                     .signature(new StringSignature(String.valueOf(mHeadPicSigture)))
                     .placeholder(userInfoBean.getVerified().getType().equals(SendCertificationBean.ORG) ? R.mipmap.pic_identi_company : R.mipmap
                             .pic_identi_individual)
@@ -337,7 +340,7 @@ public class ImageUtils {
         }
         int defaultAvatar = getDefaultAvatar(userInfoBean);
         Glide.with(imageView.getContext())
-                .load(avatar)
+                .load(TextUtils.isEmpty(avatar) ? R.drawable.shape_default_image : avatar)
                 .signature(new StringSignature(String.valueOf(mHeadPicSigture)))
                 .placeholder(withBorder ? defaultAvatar : defaultAvatar)
                 .error(withBorder ? defaultAvatar : defaultAvatar)
@@ -374,7 +377,7 @@ public class ImageUtils {
         }
         int defaultAvatar = getDefaultAvatar(userInfoBean);
         Glide.with(imageView.getContext())
-                .load(avatar)
+                .load(TextUtils.isEmpty(avatar) ? R.drawable.shape_default_image : avatar)
                 .signature(new StringSignature(String.valueOf(mHeadPicSigture)))
                 .placeholder(withBorder ? defaultAvatar : defaultAvatar)
                 .error(withBorder ? defaultAvatar : defaultAvatar)
@@ -383,6 +386,7 @@ public class ImageUtils {
                                 .getDimensionPixelSize(R.dimen.spacing_tiny), ContextCompat.getColor(imageView.getContext(), R.color.white))
                         : new GlideCircleTransform(imageView.getContext().getApplicationContext()))
                 .into(imageView);
+
     }
 
     /**
@@ -501,11 +505,31 @@ public class ImageUtils {
                 .build());
     }
 
+    /**
+     * 通过 图片 id 、with、height、quality
+     *
+     * @param storage id
+     * @param w       with
+     * @param h       height
+     * @param part    quality
+     * @return 请求图片的地址
+     */
     public static String imagePathConvertV2(int storage, int w, int h, int part) {
+        if (part == IMAGE_100_ZIP) {
+            return String.format(Locale.getDefault(), ApiConfig.APP_DOMAIN + ApiConfig.IMAGE_PATH_V2_ORIGIN, storage);
+
+        } else {
             return String.format(Locale.getDefault(), ApiConfig.APP_DOMAIN + ApiConfig.IMAGE_PATH_V2, storage, w, h, part);
+        }
 
     }
 
+    /**
+     * 通过 file path 获取 bitmap size
+     *
+     * @param url file path
+     * @return bitmap size
+     */
     public static long[] getBitmapSize(String url) {
         BitmapFactory.Options op = new BitmapFactory.Options();
         op.inJustDecodeBounds = true;
@@ -527,6 +551,23 @@ public class ImageUtils {
                 .load(url)
                 .placeholder(R.drawable.shape_default_image)
                 .placeholder(R.drawable.shape_default_error_image)
+                .into(imageView);
+
+    }
+
+    /**
+     * 默认加载图片
+     *
+     * @param imageView target view to display image
+     * @param url       image resuorce path
+     */
+    public static void loadImageDefaultNoHolder(ImageView imageView, String url) {
+        if (checkImageContext(imageView)) {
+            return;
+        }
+        Glide.with(imageView.getContext())
+                .load(url)
+                .error(R.drawable.shape_default_error_image)
                 .into(imageView);
 
     }

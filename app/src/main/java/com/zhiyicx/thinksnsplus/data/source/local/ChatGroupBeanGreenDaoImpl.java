@@ -2,6 +2,8 @@ package com.zhiyicx.thinksnsplus.data.source.local;
 
 import android.app.Application;
 
+import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.ChatGroupBean;
 import com.zhiyicx.thinksnsplus.data.beans.ChatGroupBeanDao;
 import com.zhiyicx.thinksnsplus.data.source.local.db.CommonCacheImpl;
@@ -92,7 +94,7 @@ public class ChatGroupBeanGreenDaoImpl extends CommonCacheImpl<ChatGroupBean> {
     public String getChatGroupName(String id) {
         ChatGroupBean chatGroupBean = readDao.queryBuilder().where(ChatGroupBeanDao.Properties.Id.eq(id)).build().unique();
         if (chatGroupBean == null) {
-            return "未知用户";
+            return AppApplication.getContext().getResources().getString(R.string.default_delete_user_name);
         }
         return chatGroupBean.getName() ;// + "(" + chatGroupBean.getAffiliations_count() + ")";
     }

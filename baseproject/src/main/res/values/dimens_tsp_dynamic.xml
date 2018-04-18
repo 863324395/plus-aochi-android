@@ -2,7 +2,8 @@
 <resources>
 
     <!--#########################################      动态相关       ################################-->
-
+    <dimen name="dynamic_one_image_max_with">248dp</dimen>
+    <dimen name="dynamic_one_image_max_height">290dp</dimen>
     <dimen name="dynamic_menu_text_with">50dp</dimen>
     <dimen name="dynamic_list_image_marginright">58dp</dimen>
     <dimen name="dynamic_list_comment_marginright">40dp</dimen>

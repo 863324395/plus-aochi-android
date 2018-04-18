@@ -68,6 +68,13 @@ public interface ChatInfoContract {
         void destoryOrLeaveGroup(String chatId);
 
         UserInfoBean getUserInfoFromLocal(String id);
+
+        /**
+         * 检查 userId 是否是小助手
+         * @param chatId
+         * @return
+         */
+        boolean checkImhelper(String chatId);
     }
 
     interface Repository extends IBaseFriendsRepository {
