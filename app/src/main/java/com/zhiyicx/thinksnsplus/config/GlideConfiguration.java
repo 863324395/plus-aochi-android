@@ -13,10 +13,13 @@ import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.module.GlideModule;
 import com.zhiyicx.common.utils.FileUtils;
 
+import java.io.File;
 import java.io.InputStream;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
+
+import static com.zhiyicx.baseproject.utils.GlideCachUtils.GLIDE_CACHE_PATH;
 
 /**
  * @Describe Glide配置信息
@@ -30,14 +33,10 @@ public class GlideConfiguration implements GlideModule {
 
     @Override
     public void applyOptions(final Context context, GlideBuilder builder) {
-       /* builder.setDiskCache(new DiskCache.StreamFactory() {
-            @Override
-            public DiskCache build() {
-                // Careful: the external cache directory doesn't enforce permissions
-                return DiskLruCacheWrapper.get(FileUtils.getCacheFile(context), IMAGE_DISK_CACHE_MAX_SIZE);
-            }
-        });*/
-        builder.setDiskCache(new DiskLruCacheFactory(FileUtils.getCacheFile(context, false).getAbsolutePath() + "/glide_cache", IMAGE_DISK_CACHE_MAX_SIZE));
+
+        builder.setDiskCache(new DiskLruCacheFactory(
+                FileUtils.getCacheFile(context, false).getAbsolutePath() + File.separator + GLIDE_CACHE_PATH,
+                IMAGE_DISK_CACHE_MAX_SIZE));
 
         MemorySizeCalculator calculator = new MemorySizeCalculator(context);
         int defaultMemoryCacheSize = calculator.getMemoryCacheSize();
@@ -56,7 +55,7 @@ public class GlideConfiguration implements GlideModule {
         OkHttpClient client = new OkHttpClient();
         client.newBuilder().connectTimeout(15, TimeUnit.SECONDS)
                 .addNetworkInterceptor(new TSImageRetryIntercepter(3))
-        .readTimeout(15,TimeUnit.SECONDS);
+                .readTimeout(15, TimeUnit.SECONDS);
         OkHttpUrlLoader.Factory factory = new OkHttpUrlLoader.Factory(client);
         glide.register(GlideUrl.class, InputStream.class, factory);
     }

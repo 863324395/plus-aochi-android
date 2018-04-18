@@ -143,9 +143,9 @@ public class GuideFragment_v2 extends TSFragment<GuideContract.Presenter> implem
         repleaseAdvert();
         startActivity(new Intent(getActivity(), aClass));
         getActivity().finish();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            getActivity().overridePendingTransition(R.anim.zoom_in, R.anim.zoom_out);
-        }
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+//            getActivity().overridePendingTransition(R.anim.animate_noting, R.anim.fade_out);
+//        }
     }
 
     private void repleaseAdvert() {

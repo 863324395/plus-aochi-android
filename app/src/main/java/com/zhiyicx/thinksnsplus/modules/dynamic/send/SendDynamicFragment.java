@@ -33,6 +33,7 @@ import com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl;
 import com.zhiyicx.baseproject.impl.photoselector.PhotoSeletorImplModule;
 import com.zhiyicx.baseproject.widget.button.CombinationButton;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
+import com.zhiyicx.common.utils.ActivityHandler;
 import com.zhiyicx.common.utils.AndroidBug5497Workaround;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.DrawableProvider;
@@ -52,6 +53,7 @@ import com.zhiyicx.thinksnsplus.data.beans.GroupDynamicListBean;
 import com.zhiyicx.thinksnsplus.data.beans.GroupSendDynamicDataBean;
 import com.zhiyicx.thinksnsplus.data.beans.SendDynamicDataBean;
 import com.zhiyicx.thinksnsplus.data.beans.SendDynamicDataBeanV2;
+import com.zhiyicx.thinksnsplus.modules.photopicker.PhotoAlbumDetailsActivity;
 import com.zhiyicx.thinksnsplus.modules.photopicker.PhotoViewActivity;
 import com.zhiyicx.thinksnsplus.modules.shortvideo.cover.CoverActivity;
 import com.zhiyicx.thinksnsplus.modules.shortvideo.videostore.VideoSelectActivity;
@@ -292,7 +294,7 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
         initSelectMoney(mSelectMoney);
         mCustomMoney.setText(mPresenter.getGoldName());
 
-
+        ActivityHandler.getInstance().removeActivity(PhotoAlbumDetailsActivity.class);
     }
 
     @Override
@@ -573,8 +575,10 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                 }
             }
         }
-        sendDynamicDataBeanV2.getVideoInfo().setNeedCompressVideo(needCompressVideo());
-        sendDynamicDataBeanV2.getVideoInfo().setDuration(mSendDynamicDataBean.getVideoInfo().getDuration());
+        if (sendDynamicDataBeanV2.getVideoInfo() != null) {
+            sendDynamicDataBeanV2.getVideoInfo().setNeedCompressVideo(needCompressVideo());
+            sendDynamicDataBeanV2.getVideoInfo().setDuration(mSendDynamicDataBean.getVideoInfo().getDuration());
+        }
         sendDynamicDataBeanV2.setPhotos(photos);
         sendDynamicDataBeanV2.setStorage_task(storageTask);
     }
@@ -612,7 +616,7 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
     private void initSendDynamicBtnState() {
 
         mEtDynamicContent.setContentChangedListener(s -> {
-            hasContent = !TextUtils.isEmpty(s);
+            hasContent = !TextUtils.isEmpty(s.toString().trim());
             setSendDynamicState();
         });
 
@@ -652,7 +656,7 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
 
     @Override
     public boolean needCompressVideo() {
-        if (dynamicType != SendDynamicDataBean.VIDEO_TEXT_DYNAMIC) {
+        if (mSendDynamicDataBean == null || mSendDynamicDataBean.getVideoInfo() == null || dynamicType != SendDynamicDataBean.VIDEO_TEXT_DYNAMIC) {
             return false;
         }
         return mSendDynamicDataBean.getVideoInfo().needCompressVideo();
@@ -817,75 +821,81 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                             .load(imageBean.getImgUrl())
                             .signature(new StringSignature(String.valueOf(System.currentTimeMillis())))
                             .placeholder(R.drawable.shape_default_image)
-                            .error(R.drawable.shape_default_image)
+                            .error(R.drawable.shape_default_error_image)
                             .override(convertView.getLayoutParams().width, convertView.getLayoutParams().height)
                             .into(imageView);
 
                 }
                 imageView.setOnClickListener(v -> {
-                    DeviceUtils.hideSoftKeyboard(getContext(), v);
-                    if (TextUtils.isEmpty(imageBean.getImgUrl())) {
-                        if (dynamicType == SendDynamicDataBean.VIDEO_TEXT_DYNAMIC) {
-                            startActivity(new Intent(getActivity(), VideoSelectActivity.class));
-                            mActivity.finish();
-                            return;
-                        }
-                        ArrayList<String> photos = new ArrayList<>();
-                        // 最后一张是占位图
-                        for (int i = 0; i < selectedPhotos.size(); i++) {
-                            ImageBean imageBean1 = selectedPhotos.get(i);
-                            if (!TextUtils.isEmpty(imageBean1.getImgUrl())) {
-                                photos.add(imageBean1.getImgUrl());
-                            }
-                        }
-                        mPhotoSelector.getPhotoListFromSelector(MAX_PHOTOS, photos);
-                    } else {
-                        if (dynamicType == SendDynamicDataBean.VIDEO_TEXT_DYNAMIC) {
-                            ArrayList<String> srcList = new ArrayList<>();
-                            srcList.add(mSendDynamicDataBean.getVideoInfo().getPath());
-                            CoverActivity.startCoverActivity(mActivity, srcList, true);
-                            return;
-                        }
+                    try {
 
-                        // 预览图片
-                        ArrayList<String> photos = new ArrayList<>();
-                        // 最后一张是占位图
-                        for (int i = 0; i < selectedPhotos.size(); i++) {
-                            ImageBean imageBean1 = selectedPhotos.get(i);
-                            if (!TextUtils.isEmpty(imageBean1.getImgUrl())) {
-                                photos.add(imageBean1.getImgUrl());
-                            }
-                        }
-                        ArrayList<AnimationRectBean> animationRectBeanArrayList
-                                = new ArrayList<>();
-                        for (int i = 0; i < photos.size(); i++) {
 
-                            if (i < gridLayoutManager.findFirstVisibleItemPosition()) {
-                                // 顶部，无法全部看见的图片
-                                AnimationRectBean rect = new AnimationRectBean();
-                                animationRectBeanArrayList.add(rect);
-                            } else if (i > gridLayoutManager.findLastVisibleItemPosition()) {
-                                // 底部，无法完全看见的图片
-                                AnimationRectBean rect = new AnimationRectBean();
-                                animationRectBeanArrayList.add(rect);
-                            } else {
-                                View view = gridLayoutManager
-                                        .getChildAt(i - gridLayoutManager
-                                                .findFirstVisibleItemPosition());
-                                ImageView imageView1 = (ImageView) view.findViewById(R.id
-                                        .iv_dynamic_img);
-                                // 可以完全看见的图片
-                                AnimationRectBean rect = AnimationRectBean.buildFromImageView
-                                        (imageView1);
-                                animationRectBeanArrayList.add(rect);
+                        DeviceUtils.hideSoftKeyboard(getContext(), v);
+                        if (TextUtils.isEmpty(imageBean.getImgUrl())) {
+                            if (dynamicType == SendDynamicDataBean.VIDEO_TEXT_DYNAMIC) {
+                                startActivity(new Intent(getActivity(), VideoSelectActivity.class));
+                                mActivity.finish();
+                                return;
                             }
+                            ArrayList<String> photos = new ArrayList<>();
+                            // 最后一张是占位图
+                            for (int i = 0; i < selectedPhotos.size(); i++) {
+                                ImageBean imageBean1 = selectedPhotos.get(i);
+                                if (!TextUtils.isEmpty(imageBean1.getImgUrl())) {
+                                    photos.add(imageBean1.getImgUrl());
+                                }
+                            }
+                            mPhotoSelector.getPhotoListFromSelector(MAX_PHOTOS, photos);
+                        } else {
+                            if (dynamicType == SendDynamicDataBean.VIDEO_TEXT_DYNAMIC) {
+                                ArrayList<String> srcList = new ArrayList<>();
+                                srcList.add(mSendDynamicDataBean.getVideoInfo().getPath());
+                                CoverActivity.startCoverActivity(mActivity, srcList, true);
+                                return;
+                            }
+
+                            // 预览图片
+                            ArrayList<String> photos = new ArrayList<>();
+                            // 最后一张是占位图
+                            for (int i = 0; i < selectedPhotos.size(); i++) {
+                                ImageBean imageBean1 = selectedPhotos.get(i);
+                                if (!TextUtils.isEmpty(imageBean1.getImgUrl())) {
+                                    photos.add(imageBean1.getImgUrl());
+                                }
+                            }
+                            ArrayList<AnimationRectBean> animationRectBeanArrayList
+                                    = new ArrayList<>();
+                            for (int i = 0; i < photos.size(); i++) {
+
+                                if (i < gridLayoutManager.findFirstVisibleItemPosition()) {
+                                    // 顶部，无法全部看见的图片
+                                    AnimationRectBean rect = new AnimationRectBean();
+                                    animationRectBeanArrayList.add(rect);
+                                } else if (i > gridLayoutManager.findLastVisibleItemPosition()) {
+                                    // 底部，无法完全看见的图片
+                                    AnimationRectBean rect = new AnimationRectBean();
+                                    animationRectBeanArrayList.add(rect);
+                                } else {
+                                    View view = gridLayoutManager
+                                            .getChildAt(i - gridLayoutManager
+                                                    .findFirstVisibleItemPosition());
+                                    ImageView imageView1 = (ImageView) view.findViewById(R.id
+                                            .iv_dynamic_img);
+                                    // 可以完全看见的图片
+                                    AnimationRectBean rect = AnimationRectBean.buildFromImageView
+                                            (imageView1);
+                                    animationRectBeanArrayList.add(rect);
+                                }
+                            }
+                            ArrayList<ImageBean> datas = new ArrayList<>();
+                            datas.addAll(selectedPhotos);
+                            cachePhotos = new ArrayList<>(selectedPhotos);
+                            PhotoViewActivity.startToPhotoView(SendDynamicFragment.this,
+                                    photos, photos, animationRectBeanArrayList, MAX_PHOTOS,
+                                    position, isToll, datas);
                         }
-                        ArrayList<ImageBean> datas = new ArrayList<>();
-                        datas.addAll(selectedPhotos);
-                        cachePhotos = new ArrayList<>(selectedPhotos);
-                        PhotoViewActivity.startToPhotoView(SendDynamicFragment.this,
-                                photos, photos, animationRectBeanArrayList, MAX_PHOTOS,
-                                position, isToll, datas);
+                    } catch (Exception ignored) {
+                        ignored.printStackTrace();
                     }
                 });
             }
@@ -950,16 +960,17 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
      * 图片列表返回后，判断图片列表内容以及顺序是否发生变化，如果没变，就可以不用刷新
      */
     private boolean isPhotoListChanged(List<ImageBean> oldList, List<ImageBean> newList) {
-        if (!newList.isEmpty()) {
-            return true;
-        }
-        if (oldList == null || oldList.isEmpty()) {
-            return false;
-        }
+//        if (!newList.isEmpty()) {
+//            return true;
+//        }
         // 取消了所有选择的图片
         if (newList == null || newList.isEmpty()) {
             return oldList.size() > 1;
         } else {
+            boolean oldListIsNull = oldList == null || oldList.isEmpty();
+            if (oldListIsNull) {
+                return true;
+            }
             int oldSize = 0;
             // 最后一张是占位图
             if (TextUtils.isEmpty(oldList.get(oldList.size() - 1).getImgUrl())) {
@@ -975,8 +986,9 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                 for (int i = 0; i < newList.size(); i++) {
                     ImageBean newImageBean = newList.get(i);
                     ImageBean oldImageBean = oldList.get(i);
-
-                    if (!oldImageBean.equals(newImageBean) || !newImageBean.getToll().equals(oldImageBean.getToll())) {
+                    boolean tollIsSame = newImageBean.getToll() != null && !newImageBean.getToll().equals(oldImageBean.getToll
+                            ());
+                    if (!oldImageBean.equals(newImageBean) || tollIsSame) {
                         return true;
                     }
                 }

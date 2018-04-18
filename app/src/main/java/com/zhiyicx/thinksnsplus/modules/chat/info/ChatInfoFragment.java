@@ -38,6 +38,7 @@ import com.zhiyicx.thinksnsplus.modules.chat.member.GroupMemberListActivity;
 import com.zhiyicx.thinksnsplus.modules.chat.select.SelectFriendsActivity;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
+import com.zhiyicx.thinksnsplus.utils.TSImHelperUtils;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 
 import java.util.ArrayList;
@@ -235,7 +236,7 @@ public class ChatInfoFragment extends TSFragment<ChatInfoContract.Presenter> imp
                 break;
             case R.id.tv_clear_message:
                 // 清空消息记录
-                showClearAllMsgPopupWindow("您正在删除聊天记录，删除后不可恢复");
+                showClearAllMsgPopupWindow(getString(R.string.ts_message_history_deleted_tip));
                 break;
                 /*
                  群主：删除群聊
@@ -491,6 +492,13 @@ public class ChatInfoFragment extends TSFragment<ChatInfoContract.Presenter> imp
                     .with(getActivity())
                     .item2ClickListener(() -> {
                         EMClient.getInstance().chatManager().getConversation(mChatId).clearAllMessages();
+                        if (mPresenter != null && mPresenter.checkImhelper(mChatId)) {
+                            TSImHelperUtils.saveDeletedHistoryMessageHelper(
+                                    getContext().getApplicationContext()
+                                    , mChatId
+                                    , String.valueOf(AppApplication.getMyUserIdWithdefault())
+                            );
+                        }
                         mClearAllMessagePop.hide();
                     })
                     .bottomClickListener(() -> mClearAllMessagePop.hide()).build();
@@ -526,7 +534,7 @@ public class ChatInfoFragment extends TSFragment<ChatInfoContract.Presenter> imp
             mScBlockMessage.setChecked(group.isMsgBlocked());
             // 群名称
             String groupName = mChatGroupBean.getName();
-                    // + "(" + mChatGroupBean.getAffiliations_count() + ")";
+            // + "(" + mChatGroupBean.getAffiliations_count() + ")";
             mTvGroupName.setText(groupName);
             // 群头像
             Glide.with(getContext())

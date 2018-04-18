@@ -9,6 +9,7 @@ import com.zhiyicx.baseproject.base.SystemConfigBean;
 import com.zhiyicx.baseproject.config.SystemConfig;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.SharePreferenceUtils;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.rxerrorhandler.functions.RetryWithInterceptDelay;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.config.SharePreferenceTagConfig;
@@ -48,6 +49,10 @@ public class SystemRepository implements ISystemRepository {
 
     private CommonClient mCommonClient;
     private Context mContext;
+
+
+    // 再在第一条插入ts助手，前提是当前消息列表中没有小助手的消息
+    private List<SystemConfigBean.ImHelperBean> mTsHlepers;
 
     @Inject
     public SystemRepository(ServiceManager serviceManager, Application context) {
@@ -299,11 +304,47 @@ public class SystemRepository implements ISystemRepository {
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
+    /**
+     * 获取新版本
+     *
+     * @return
+     */
     @Override
     public Observable<List<AppVersionBean>> getAppNewVersion() {
 
         return mCommonClient.getAppNewVersion(DeviceUtils.getVersionCode(mContext), "android")
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    /**
+     * 检查当前当前用户是否是 imHelper
+     * @param userId
+     * @return
+     */
+    @Override
+    public boolean checkUserIsImHelper(long userId) {
+        if (mTsHlepers == null) {
+            try {
+                mTsHlepers = getBootstrappersInfoFromLocal().getIm_helper();
+            } catch (NullPointerException e) {
+                e.printStackTrace();
+                // 服务器配置信息不完善
+                LogUtils.e("服务器配置信息不完善!!!");
+            }
+        }
+        if (mTsHlepers == null) {
+            return false;
+        }
+        for (SystemConfigBean.ImHelperBean tsHleper : mTsHlepers) {
+            try {
+                if (userId == Long.valueOf(tsHleper.getUid())) {
+                    return true;
+                }
+            } catch (NumberFormatException e) {
+                e.printStackTrace();
+            }
+        }
+        return false;
     }
 }

@@ -1,5 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.home.message.messagelist;
 
+import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -60,6 +62,16 @@ public class MessageConversationFragment extends TSListFragment<MessageConversat
     }
 
     @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        DaggerMessageConversationComponent.builder()
+                .appComponent(AppApplication.AppComponentHolder.getAppComponent())
+                .messageConversationPresenterModule(new MessageConversationPresenterModule(this))
+                .build()
+                .inject(this);
+    }
+
+    @Override
     protected void initView(View rootView) {
         super.initView(rootView);
         mSearchView.setVisibility(View.VISIBLE);
@@ -94,11 +106,6 @@ public class MessageConversationFragment extends TSListFragment<MessageConversat
 
     @Override
     protected void initData() {
-        DaggerMessageConversationComponent.builder()
-                .appComponent(AppApplication.AppComponentHolder.getAppComponent())
-                .messageConversationPresenterModule(new MessageConversationPresenterModule(this))
-                .build()
-                .inject(this);
         super.initData();
         initListener();
     }
@@ -128,10 +135,6 @@ public class MessageConversationFragment extends TSListFragment<MessageConversat
 
     @Override
     public void onNetResponseSuccess(@NotNull List<MessageItemBeanV2> data, boolean isLoadMore) {
-        if (data.size() > 1) {
-            // 数据大于一个才排序
-            Collections.sort(data, new EmTimeSortClass());
-        }
         super.onNetResponseSuccess(data, isLoadMore);
         hideStickyMessage();
     }
@@ -143,7 +146,7 @@ public class MessageConversationFragment extends TSListFragment<MessageConversat
 
     @Override
     protected RecyclerView.Adapter getAdapter() {
-        MessageAdapterV2 commonAdapter = new MessageAdapterV2(getActivity(), mListDatas);
+        MessageAdapterV2 commonAdapter = new MessageAdapterV2(getActivity(), mListDatas,mPresenter);
         commonAdapter.setOnSwipItemClickListener(this);
         commonAdapter.setOnUserInfoClickListener(this);
         return commonAdapter;

@@ -1,6 +1,5 @@
 package com.zhiyicx.thinksnsplus.modules.develop;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.Fragment;
@@ -12,13 +11,14 @@ import static com.zhiyicx.thinksnsplus.modules.develop.TSDevelopFragment.BUNDLE_
 import static com.zhiyicx.thinksnsplus.modules.develop.TSDevelopFragment.BUNDLE_TITLE;
 
 /**
- * @Describe
+ * @Describe 开发维护提示页
  * @Author Jungle68
  * @Date 2017/3/24
  * @Contact master.jungle68@gmail.com
  */
 
 public class TSDevelopActivity extends TSActivity {
+
 
     @Override
     protected Fragment getFragment() {

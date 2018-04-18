@@ -63,6 +63,16 @@ public class LoginPresenter extends AppBasePresenter<LoginContract.View> impleme
         mRootView.setLogining();
         Subscription subscription = mUserInfoRepository.loginV2(phone, password)
                 .subscribeOn(Schedulers.io())
+                .flatMap(authBean -> {
+                    // 保存登录认证信息
+                    mAuthRepository.saveAuthBean(authBean);
+                    return mUserInfoRepository.getCurrentLoginUserInfo()
+                            .map(userInfoBean -> {
+                                authBean.setUser(userInfoBean);
+                                authBean.setUser_id(userInfoBean.getUser_id());
+                                return authBean;
+                            });
+                })
                 .observeOn(Schedulers.io())
                 .map(data -> {
                     mAuthRepository.clearAuthBean();
@@ -116,14 +126,14 @@ public class LoginPresenter extends AppBasePresenter<LoginContract.View> impleme
      * 三方登录或者注册
      *
      * @param provider
-     * @param access_token
+     * @param accessToken
      */
     @Override
-    public void checkBindOrLogin(String provider, String access_token) {
+    public void checkBindOrLogin(String provider, String accessToken) {
 
-        Subscription subscribe = mUserInfoRepository.checkThridIsRegitser(provider, access_token)
+        Subscription subscribe = mUserInfoRepository.checkThridIsRegitser(provider, accessToken)
                 .observeOn(Schedulers.io())
-                .map((Func1<AuthBean, Boolean>) data -> {
+                .map(data -> {
                     mAuthRepository.clearAuthBean();
                     // 登录成功跳转
                     mAuthRepository.saveAuthBean(data);// 保存auth信息
@@ -149,7 +159,7 @@ public class LoginPresenter extends AppBasePresenter<LoginContract.View> impleme
                     protected void onFailure(String message, int code) {
                         if (code == DATA_HAS_BE_DELETED) {
                             // 三方注册
-                            mRootView.registerByThrid(provider, access_token);
+                            mRootView.registerByThrid(provider, accessToken);
                         } else {
                             // 登录失败
                             mRootView.setLoginState(false);

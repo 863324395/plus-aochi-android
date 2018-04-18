@@ -49,4 +49,6 @@ public class ImageZipConfig {
      */
     public static final int IMAGE_80_ZIP = 80;
 
+    public static final int IMAGE_ZIP_BIG= 60;
+
 }

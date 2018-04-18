@@ -23,20 +23,13 @@ import static com.zhiyicx.thinksnsplus.modules.photopicker.PhotoAlbumDetailsFrag
  */
 public class PhotoViewActivity extends TSActivity {
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
+
 
     @Override
     protected void componentInject() {
 
     }
 
-    @Override
-    protected void initView(Bundle savedInstanceState) {
-        super.initView(savedInstanceState);
-    }
 
     @Override
     protected Fragment getFragment() {
@@ -45,7 +38,7 @@ public class PhotoViewActivity extends TSActivity {
 
     @Override
     public void onBackPressed() {
-        ((PhotoViewFragment) mContanierFragment).backPress();
+        ((PhotoViewFragment) mContanierFragment).backPress(true);
     }
 
     public void superBackpress() {

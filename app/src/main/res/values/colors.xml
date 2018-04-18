@@ -34,4 +34,5 @@
 
     <!--问答匿名选项颜色-->
     <color name="qa_anonymity_color">#FBFBFB</color>
+    <color name="search_box_bg_color">#f4f5f5</color>
 </resources>

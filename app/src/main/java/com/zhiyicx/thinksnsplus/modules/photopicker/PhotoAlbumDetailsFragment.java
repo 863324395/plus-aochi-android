@@ -23,7 +23,10 @@ import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.common.utils.recycleviewdecoration.GridDecoration;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.AnimationRectBean;
+
+import org.simple.eventbus.Subscriber;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,12 +37,14 @@ import me.iwf.photopicker.adapter.PhotoGridAdapter;
 import me.iwf.photopicker.entity.PhotoDirectory;
 import me.iwf.photopicker.utils.MediaStoreHelper;
 
+import static android.app.Activity.RESULT_OK;
 import static com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl.CAMERA_PHOTO_CODE;
 import static com.zhiyicx.thinksnsplus.modules.photopicker.PhotoAlbumListFragment.ALL_PHOTOS;
 import static com.zhiyicx.thinksnsplus.modules.photopicker.PhotoAlbumListFragment.SELECTED_DIRECTORY_NAME;
 import static com.zhiyicx.thinksnsplus.modules.photopicker.PhotoAlbumListFragment.SELECTED_DIRECTORY_NUMBER;
 import static me.iwf.photopicker.PhotoPicker.DEFAULT_COLUMN_NUMBER;
 import static me.iwf.photopicker.PhotoPicker.DEFAULT_MAX_COUNT;
+import static me.iwf.photopicker.PhotoPicker.DEFAULT_REQUST_ALBUM;
 import static me.iwf.photopicker.PhotoPicker.EXTRA_PREVIEW_ENABLED;
 import static me.iwf.photopicker.PhotoPicker.EXTRA_SHOW_GIF;
 
@@ -326,6 +331,7 @@ public class PhotoAlbumDetailsFragment extends TSFragment implements PhotoSelect
             it.putStringArrayListExtra("photos", photoGridAdapter.getSelectedPhotoPaths());
             getActivity().setResult(Activity.RESULT_OK, it);
             getActivity().finish();
+            return;
         }
         if (requestCode == COMPLETE_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             boolean stayHere = data.getBooleanExtra(EXTRA_BACK_HERE, false);
@@ -337,6 +343,7 @@ public class PhotoAlbumDetailsFragment extends TSFragment implements PhotoSelect
                 // 否则，直接将结果返回到该去的地方
                 getActivity().setResult(Activity.RESULT_OK, data);
                 getActivity().finish();
+                return;
             }
         }
         // 从相册列表返回
@@ -353,6 +360,17 @@ public class PhotoAlbumDetailsFragment extends TSFragment implements PhotoSelect
             //originalPhotos = bundle.getStringArrayList(EXTRA_ORIGIN);
             photoGridAdapter.setCurrentDirectoryIndex(selected_directory);
             photoGridAdapter.notifyDataSetChanged();
+        }
+
+
+    }
+
+
+    @Subscriber(tag = EventBusTagConfig.EVENT_SEND_DYNAMIC_PHOT_FIRST_OPEN_SEND_DYNAMIC_PAGE)
+    public void sendDynamicPhotFirstOpenSendDynamicPage(Intent data) {
+        // 获取图片选择器返回结果
+        if (mPhotoSelector != null) {
+            mPhotoSelector.onActivityResult(DEFAULT_REQUST_ALBUM, RESULT_OK, data);
         }
     }
 

@@ -11,6 +11,7 @@ import com.zhiyicx.thinksnsplus.data.beans.RechargeSuccessBean;
 import com.zhiyicx.thinksnsplus.data.beans.SendCertificationBean;
 import com.zhiyicx.thinksnsplus.data.beans.TSPNotificationBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserCertificationInfo;
+import com.zhiyicx.thinksnsplus.data.beans.UserFollowerCountBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserTagBean;
 
@@ -377,5 +378,11 @@ public interface IUserInfoRepository {
     Observable<Object> followUser(long followedId);
 
     Observable<Object> cancleFollowUser(long followedId);
+
+    /**
+     * User Append Follower Count
+     * @return 新增关注数
+     */
+    Observable<UserFollowerCountBean> getUserAppendFollowerCount();
 
 }

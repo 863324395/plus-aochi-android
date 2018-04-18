@@ -56,6 +56,7 @@ public class SelectFriendsPresenter extends AppBasePresenter<SelectFriendsContra
     SelectFriendsRepository mRepository;
     @Inject
     ChatGroupBeanGreenDaoImpl mChatGroupBeanGreenDao;
+    private Subscription mSearchSub;
 
     @Inject
     public SelectFriendsPresenter(SelectFriendsContract.View rootView) {
@@ -100,11 +101,11 @@ public class SelectFriendsPresenter extends AppBasePresenter<SelectFriendsContra
     @Override
     public void requestCacheData(Long maxId, boolean isLoadMore) {
         if (!mRootView.getIsDeleteMember()) {
-            List<UserInfoBean> followFansBeanList = mUserInfoBeanGreenDao.getUserFriendsList(maxId);
-            for (UserInfoBean userInfoBean : followFansBeanList) {
-                userInfoBean.setIsSelected(0);
-            }
-            mRootView.onCacheResponseSuccess(followFansBeanList, isLoadMore);
+//            List<UserInfoBean> followFansBeanList = mUserInfoBeanGreenDao.getUserFriendsList(maxId);
+//            for (UserInfoBean userInfoBean : followFansBeanList) {
+//                userInfoBean.setIsSelected(0);
+//            }
+            mRootView.onCacheResponseSuccess(new ArrayList<>(), isLoadMore);
         } else {
             getLocalUser("");
         }
@@ -118,7 +119,11 @@ public class SelectFriendsPresenter extends AppBasePresenter<SelectFriendsContra
     @Override
     public void getFriendsListByKey(Long maxId, String key) {
         if (!mRootView.getIsDeleteMember()) {
-            Subscription subscription = mRepository.getUserFriendsList(maxId, key)
+            // 过滤重复请求
+            if (mSearchSub != null && !mSearchSub.isUnsubscribed()) {
+                mSearchSub.unsubscribe();
+            }
+            mSearchSub = mRepository.getUserFriendsList(maxId, key)
                     .subscribe(new BaseSubscribeForV2<List<UserInfoBean>>() {
                         @Override
                         protected void onSuccess(List<UserInfoBean> data) {
@@ -139,7 +144,7 @@ public class SelectFriendsPresenter extends AppBasePresenter<SelectFriendsContra
                             mRootView.showSnackErrorMessage(throwable.getMessage());
                         }
                     });
-            addSubscrebe(subscription);
+            addSubscrebe(mSearchSub);
         } else {
             getLocalUser(key);
         }
@@ -209,7 +214,8 @@ public class SelectFriendsPresenter extends AppBasePresenter<SelectFriendsContra
                             data.setAffiliations(list);
                             mChatGroupBeanGreenDao.saveSingleData(data);
                             mUserInfoBeanGreenDao.saveMultiData(data.getAffiliations());
-                            mRootView.createConversionResult(getChatUser(list), EMConversation.EMConversationType.GroupChat, EaseConstant.CHATTYPE_GROUP, id);
+                            mRootView.createConversionResult(getChatUser(list), EMConversation.EMConversationType.GroupChat, EaseConstant
+                                    .CHATTYPE_GROUP, id);
                         }
 
                         @Override

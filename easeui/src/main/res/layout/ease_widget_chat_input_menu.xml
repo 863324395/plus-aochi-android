@@ -31,9 +31,8 @@
             android:background="@color/extend_btn_backgroup"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingBottom="7dp"
-            android:paddingTop="9dp"
-            hyphenate:numColumns="4" />
+            android:padding="15dp"
+            hyphenate:numColumns="3" />
 
         <FrameLayout 
             android:layout_width="match_parent"

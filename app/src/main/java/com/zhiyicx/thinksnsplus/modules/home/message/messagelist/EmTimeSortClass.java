@@ -14,7 +14,7 @@ public class EmTimeSortClass extends BaseTimeStringSortClass<MessageItemBeanV2> 
     @Override
     protected String getData1Time(MessageItemBeanV2 data) {
         if (data.getConversation().getLastMessage()==null){
-            return System.currentTimeMillis()+"";
+            return 0+"";
         }
         return data.getConversation().getLastMessage().getMsgTime() + "";
     }
@@ -22,7 +22,7 @@ public class EmTimeSortClass extends BaseTimeStringSortClass<MessageItemBeanV2> 
     @Override
     protected String getData2Time(MessageItemBeanV2 data) {
         if (data.getConversation().getLastMessage()==null){
-            return System.currentTimeMillis()+"";
+            return 0+"";
         }
         return data.getConversation().getLastMessage().getMsgTime() + "";
     }

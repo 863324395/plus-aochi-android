@@ -36,6 +36,7 @@ import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.SystemRepository;
 import com.zhiyicx.thinksnsplus.modules.chat.call.TSEMHyphenate;
+import com.zhiyicx.thinksnsplus.modules.develop.maintenance.TSSystemMantenanceActivity;
 import com.zhiyicx.thinksnsplus.modules.dynamic.send.dynamic_type.SelectDynamicTypeActivity;
 import com.zhiyicx.thinksnsplus.modules.gallery.GalleryActivity;
 import com.zhiyicx.thinksnsplus.modules.guide.GuideActivity;
@@ -72,6 +73,9 @@ import okhttp3.Route;
 import retrofit2.Call;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
+
+import static com.zhiyicx.thinksnsplus.config.ErrorCodeConfig.AUTH_FAIL;
+import static com.zhiyicx.thinksnsplus.config.ErrorCodeConfig.SYSTEM_MAINTENANCE;
 
 /**
  * @Describe
@@ -132,9 +136,9 @@ public class AppApplication extends TSApplication {
         initComponent();
         // 安装了 IM
 //        if (!TextUtils.isEmpty(mSystemRepository.getBootstrappersInfoFromLocal().getIm_serve())) {
-            LogUtils.d(TAG, "---------------start IM---------------------");
+        LogUtils.d(TAG, "---------------start IM---------------------");
 //            ZBIMSDK.init(getContext());
-            initIm();
+        initIm();
 //        }
         // 开启后台任务
         BackgroundTaskManager.getInstance(getContext()).startBackgroundTask();
@@ -190,6 +194,9 @@ public class AppApplication extends TSApplication {
                 } catch (JsonSyntaxException e) {
                 }
 
+                if (originalResponse.code() == SYSTEM_MAINTENANCE) {
+                    goSystemMaintenance();
+                }
                 String tipStr = null;
                 if (baseJson != null) {
                     switch (baseJson.getCode()) {
@@ -509,6 +516,16 @@ public class AppApplication extends TSApplication {
             }
         });
     }
+
+
+    /**
+     * 前往系统停机维护页
+     */
+    private void goSystemMaintenance() {
+        Intent intent = new Intent(getContext(), TSSystemMantenanceActivity.class);
+        ActivityHandler.getInstance().currentActivity().startActivity(intent);
+    }
+
 
     @Override
     public void onLowMemory() {

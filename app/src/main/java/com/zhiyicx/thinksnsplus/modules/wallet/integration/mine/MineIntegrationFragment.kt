@@ -26,7 +26,6 @@ import com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_INTEGRATION_RECHA
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean
 import com.zhiyicx.thinksnsplus.data.beans.RealAdvertListBean
 import com.zhiyicx.thinksnsplus.data.beans.integration.IntegrationConfigBean
-import com.zhiyicx.thinksnsplus.modules.develop.TSDevelopActivity
 import com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailAdvertHeader
 import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBActivity
 import com.zhiyicx.thinksnsplus.modules.wallet.WalletPresenter.TAG_SHOWRULE_POP

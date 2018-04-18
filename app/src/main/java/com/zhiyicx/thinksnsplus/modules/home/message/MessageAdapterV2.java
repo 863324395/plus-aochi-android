@@ -34,6 +34,8 @@ import com.zhiyicx.thinksnsplus.data.beans.MessageItemBeanV2;
 import com.zhiyicx.thinksnsplus.i.OnUserInfoClickListener;
 import com.zhiyicx.thinksnsplus.modules.chat.ChatActivity;
 import com.zhiyicx.thinksnsplus.modules.chat.call.TSEMHyphenate;
+import com.zhiyicx.thinksnsplus.modules.home.message.messagelist.MessageConversationContract;
+import com.zhiyicx.thinksnsplus.modules.home.message.messagelist.MessageConversationPresenter;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
@@ -54,10 +56,12 @@ public class MessageAdapterV2 extends CommonAdapter<MessageItemBeanV2> implement
     private SwipeItemMangerImpl mItemManger;
     private OnSwipeItemClickListener mOnSwipeItemClickListener;
     private OnUserInfoClickListener mOnUserInfoClickListener;
+    private MessageConversationContract.Presenter mPresenter;
 
-    public MessageAdapterV2(Context context, List<MessageItemBeanV2> datas) {
+    public MessageAdapterV2(Context context, List<MessageItemBeanV2> datas, MessageConversationContract.Presenter presenter) {
         super(context, R.layout.item_message_list, datas);
         mItemManger = new SwipeItemRecyclerMangerImpl(this);
+        mPresenter = presenter;
     }
 
     @Override
@@ -86,29 +90,34 @@ public class MessageAdapterV2 extends CommonAdapter<MessageItemBeanV2> implement
                 holder.setText(R.id.tv_name, TSEMHyphenate.getInstance().getChatUser(messageItemBean.getEmKey()).getName());
                 setUserInfoClick(holder.getView(R.id.tv_name), messageItemBean);
                 setUserInfoClick(holder.getView(R.id.iv_headpic), messageItemBean);
-                swipeLayout.setSwipeEnabled(true);
+                swipeLayout.setSwipeEnabled(mPresenter == null || !mPresenter.checkUserIsImHelper(messageItemBean.getUserInfo().getUser_id()));
                 break;
             case GroupChat:
                 // 群组
                 ChatGroupBean chatGroupBean = messageItemBean.getChatGroupBean();
                 EMGroup group = EMClient.getInstance().groupManager().getGroup(messageItemBean.getEmKey());
                 if (group != null && group.isMsgBlocked()) {
-                    holder.getTextView(R.id.tv_time).setCompoundDrawablePadding(mContext.getResources().getDimensionPixelOffset(com.zhiyicx.baseproject.R.dimen.spacing_small));
+                    holder.getTextView(R.id.tv_time).setCompoundDrawablePadding(mContext.getResources().getDimensionPixelOffset(com.zhiyicx
+                            .baseproject.R.dimen.spacing_small));
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-                        holder.getTextView(R.id.tv_time).setCompoundDrawablesRelative(UIUtils.getCompoundDrawables(mContext, R.mipmap.ico_newslist_shield), null, null, null);
+                        holder.getTextView(R.id.tv_time).setCompoundDrawablesRelative(UIUtils.getCompoundDrawables(mContext, R.mipmap
+                                .ico_newslist_shield), null, null, null);
                     } else {
-                        holder.getTextView(R.id.tv_time).setCompoundDrawables(UIUtils.getCompoundDrawables(mContext, R.mipmap.ico_newslist_shield), null, null, null);
+                        holder.getTextView(R.id.tv_time).setCompoundDrawables(UIUtils.getCompoundDrawables(mContext, R.mipmap.ico_newslist_shield),
+                                null, null, null);
                     }
                 }
                 userAvatarView.getIvVerify().setVisibility(View.GONE);
                 Glide.with(mContext)
-                        .load(chatGroupBean == null ? "" : chatGroupBean.getGroup_face())
+                        .load(chatGroupBean == null || TextUtils.isEmpty(chatGroupBean.getGroup_face()) ? R.mipmap.ico_ts_assistant : chatGroupBean
+                                .getGroup_face())
                         .error(R.mipmap.ico_ts_assistant)
                         .placeholder(R.mipmap.ico_ts_assistant)
                         .transform(new GlideCircleTransform(mContext))
                         .into(userAvatarView.getIvAvatar());
                 // 群名称
-                String groupName = chatGroupBean == null ? group.getGroupName() : chatGroupBean.getName();
+                String groupName = mContext.getString(R.string.chat_group_name_default, chatGroupBean == null ? group.getGroupName
+                        () : chatGroupBean.getName(), chatGroupBean == null ? group.getMemberCount() : chatGroupBean.getAffiliations_count());
                 // + "(" + chatGroupBean.getAffiliations_count() + ")";
                 holder.setText(R.id.tv_name, groupName);
                 swipeLayout.setSwipeEnabled(true);
@@ -120,7 +129,8 @@ public class MessageAdapterV2 extends CommonAdapter<MessageItemBeanV2> implement
                 break;
         }
         if (messageItemBean.getConversation().getLastMessage() == null) {
-            holder.setText(R.id.tv_content, AppApplication.getmCurrentLoginAuth().getUser().getName() + ": 出来嗨");
+            holder.setText(R.id.tv_content, mContext.getString(R.string
+                    .ts_chat_no_message_default_tip));
         } else {
             // 最新的消息的发言人，只有群组才管这个
             String lastUserName = "";
@@ -131,11 +141,14 @@ public class MessageAdapterV2 extends CommonAdapter<MessageItemBeanV2> implement
             EMMessage message = messageItemBean.getConversation().getLastMessage();
             // 根据发送状态设置是否有失败icon
             if (messageItemBean.getConversation().getLastMessage().status() == EMMessage.Status.FAIL) {
-                holder.getTextView(R.id.tv_content).setCompoundDrawablePadding(mContext.getResources().getDimensionPixelOffset(com.zhiyicx.baseproject.R.dimen.spacing_small));
+                holder.getTextView(R.id.tv_content).setCompoundDrawablePadding(mContext.getResources().getDimensionPixelOffset(com.zhiyicx
+                        .baseproject.R.dimen.spacing_small));
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-                    holder.getTextView(R.id.tv_content).setCompoundDrawablesRelative(UIUtils.getCompoundDrawables(mContext, R.mipmap.msg_box_remind), null, null, null);
+                    holder.getTextView(R.id.tv_content).setCompoundDrawablesRelative(UIUtils.getCompoundDrawables(mContext, R.mipmap
+                            .msg_box_remind), null, null, null);
                 } else {
-                    holder.getTextView(R.id.tv_content).setCompoundDrawables(UIUtils.getCompoundDrawables(mContext, R.mipmap.msg_box_remind), null, null, null);
+                    holder.getTextView(R.id.tv_content).setCompoundDrawables(UIUtils.getCompoundDrawables(mContext, R.mipmap.msg_box_remind), null,
+                            null, null);
                 }
             } else {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
@@ -290,7 +303,8 @@ public class MessageAdapterV2 extends CommonAdapter<MessageItemBeanV2> implement
                         return;
                     }
                     ChatActivity.startChatActivity(mContext, messageItemBean.getConversation().conversationId()
-                            , messageItemBean.getConversation().getType() == EMConversation.EMConversationType.Chat ? EaseConstant.CHATTYPE_SINGLE : EaseConstant.CHATTYPE_GROUP);
+                            , messageItemBean.getConversation().getType() == EMConversation.EMConversationType.Chat ? EaseConstant.CHATTYPE_SINGLE
+                                    : EaseConstant.CHATTYPE_GROUP);
                 });
     }
 

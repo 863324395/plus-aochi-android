@@ -191,14 +191,9 @@ public class VideoSelectFragment extends TSListFragment {
 
     @Override
     public void onDestroyView() {
-        releasePop(mPopWindow);
+        dismissPop(mPopWindow);
         super.onDestroyView();
 
     }
 
-    public void releasePop(PopupWindow popupWindow) {
-        if (popupWindow != null && popupWindow.isShowing()) {
-            popupWindow.dismiss();
-        }
-    }
 }

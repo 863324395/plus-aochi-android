@@ -80,5 +80,5 @@
     <!--voice length-->
     <color name="text_voice_send_length">#4d4d4d</color>
     <color name="text_voice_receive_length">#9b9b9b</color>
-    <color name="text_location_title_background">#e6ffffff</color>
+    <color name="text_location_title_background">#ffffff</color>
 </resources>

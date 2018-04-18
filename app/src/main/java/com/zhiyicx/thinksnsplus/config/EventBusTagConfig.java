@@ -250,4 +250,6 @@ public class EventBusTagConfig {
 
     public static final String EVENT_NETSTATE_CHANGE = "netstate_change";
 
+    public static final String EVENT_SEND_DYNAMIC_PHOT_FIRST_OPEN_SEND_DYNAMIC_PAGE = "sendDynamicPhotFirstOpenSendDynamicPage";
+
 }

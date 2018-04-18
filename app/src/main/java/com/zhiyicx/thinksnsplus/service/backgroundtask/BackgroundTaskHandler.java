@@ -211,7 +211,7 @@ public class BackgroundTaskHandler {
         }
         List<BackgroundRequestTaskBean> cacheDatas = mBackgroundRequestTaskBeanGreenDao
                 .getMultiDataFromCacheByUserId(AppApplication
-                .getMyUserIdWithdefault());
+                        .getMyUserIdWithdefault());
         if (cacheDatas != null) {
             mTaskBeanConcurrentLinkedQueue.addAll(cacheDatas);
         }
@@ -706,16 +706,19 @@ public class BackgroundTaskHandler {
                         if (TextUtils.isEmpty(data.getIm_pwd_hash())) {
                             return;
                         }
-                        if (mSystemRepository.getBootstrappersInfoFromLocal().getIm_serve()
-                                .contains("ws:") || mSystemRepository
-                                .getBootstrappersInfoFromLocal().getIm_serve().contains("wss:")) {
-                            imConfig.setWeb_socket_authority(mSystemRepository
-                                    .getBootstrappersInfoFromLocal().getIm_serve());
+                        try {
+                            if (mSystemRepository.getBootstrappersInfoFromLocal().getIm_serve().contains("ws:")
+                                    || mSystemRepository
+                                    .getBootstrappersInfoFromLocal().getIm_serve().contains("wss:")) {
+                                imConfig.setWeb_socket_authority(mSystemRepository
+                                        .getBootstrappersInfoFromLocal().getIm_serve());
+                            } else {
+                                imConfig.setWeb_socket_authority("ws://" + mSystemRepository
+                                        .getBootstrappersInfoFromLocal().getIm_serve());
+                            }
 
-                        } else {
-                            imConfig.setWeb_socket_authority("ws://" + mSystemRepository
-                                    .getBootstrappersInfoFromLocal().getIm_serve());
-
+                        } catch (Exception e) {
+                            e.printStackTrace();
                         }
 
                         mAuthRepository.saveIMConfig(imConfig);
@@ -854,55 +857,56 @@ public class BackgroundTaskHandler {
             SendDynamicDataBeanV2.Video video = new SendDynamicDataBeanV2.Video();
 
             if (videoInfo != null) {
-                if (videoInfo.needCompressVideo()){
+                if (videoInfo.needCompressVideo()) {
                     Observable.empty()
                             .observeOn(Schedulers.io())
                             .subscribe(new EmptySubscribe<Object>() {
-                        @Override
-                        public void onCompleted() {
-                            TrimVideoUtil.trim(mContext, Uri.parse(videoInfo.getPath()),
-                                    FileUtils.getPath(ParamsManager.VideoPath, ParamsManager
-                                            .CompressVideo), 0, videoInfo.getDuration() * 1000,
-                                    new TrimVideoListener() {
-                                        @Override
-                                        public void onStartTrim() {
+                                @Override
+                                public void onCompleted() {
+                                    TrimVideoUtil.trim(mContext, Uri.parse(videoInfo.getPath()),
+                                            FileUtils.getPath(ParamsManager.VideoPath, ParamsManager
+                                                    .CompressVideo), 0, videoInfo.getDuration() * 1000,
+                                            new TrimVideoListener() {
+                                                @Override
+                                                public void onStartTrim() {
 
-                                        }
+                                                }
 
-                                        @Override
-                                        public void onFinishTrim(String url) {
-                                            upLoadPics.add(mUpLoadRepository.upLoadSingleFileV2(url, "",
-                                                    false, videoInfo.getWidth(), videoInfo.getHeight(),
-                                                    position));
+                                                @Override
+                                                public void onFinishTrim(String url) {
+                                                    upLoadPics.add(mUpLoadRepository.upLoadSingleFileV2(url, "",
+                                                            false, videoInfo.getWidth(), videoInfo.getHeight(),
+                                                            position));
 
-                                            SendDynamicV2(backgroundRequestTaskBean, detailBeanV2, position, getSendDynamicObservable(sendDynamicDataBean, position, photos, videoInfo,
-                                                    upLoadPics, video));
+                                                    SendDynamicV2(backgroundRequestTaskBean, detailBeanV2, position, getSendDynamicObservable
+                                                            (sendDynamicDataBean, position, photos, videoInfo,
+                                                            upLoadPics, video));
 
-                                        }
+                                                }
 
-                                        @Override
-                                        public void onCancel() {
+                                                @Override
+                                                public void onCancel() {
 
-                                        }
-                                    });
-                        }
-                    });
+                                                }
+                                            });
+                                }
+                            });
 
-                }else{
+                } else {
                     upLoadPics.add(mUpLoadRepository.upLoadSingleFileV2(videoInfo.getPath(), "",
                             false, videoInfo.getWidth(), videoInfo.getHeight(),
                             position));
 
                     SendDynamicV2(backgroundRequestTaskBean, detailBeanV2, position,
                             getSendDynamicObservable(sendDynamicDataBean, position, photos, videoInfo,
-                            upLoadPics, video));
+                                    upLoadPics, video));
                 }
-            }else{
+            } else {
 
-                SendDynamicV2(backgroundRequestTaskBean, detailBeanV2, position, getSendDynamicObservable(sendDynamicDataBean, position, photos, videoInfo,
+                SendDynamicV2(backgroundRequestTaskBean, detailBeanV2, position, getSendDynamicObservable(sendDynamicDataBean, position, photos,
+                        videoInfo,
                         upLoadPics, video));
             }
-
 
 
         } else {
@@ -921,7 +925,8 @@ public class BackgroundTaskHandler {
 
     }
 
-    private Observable<BaseJson<Object>> getSendDynamicObservable(SendDynamicDataBeanV2 sendDynamicDataBean, int[] position, List<ImageBean> photos, VideoInfo videoInfo, List<Observable<BaseJson<Integer>>> upLoadPics, SendDynamicDataBeanV2.Video video) {
+    private Observable<BaseJson<Object>> getSendDynamicObservable(SendDynamicDataBeanV2 sendDynamicDataBean, int[] position, List<ImageBean>
+            photos, VideoInfo videoInfo, List<Observable<BaseJson<Integer>>> upLoadPics, SendDynamicDataBeanV2.Video video) {
         Observable<BaseJson<Object>> observable;
         observable = Observable.concat(upLoadPics)
                 .map(integerBaseJson -> {
@@ -978,7 +983,8 @@ public class BackgroundTaskHandler {
         return observable;
     }
 
-    private void SendDynamicV2(BackgroundRequestTaskBean backgroundRequestTaskBean, DynamicDetailBeanV2 detailBeanV2, int[] position, Observable<BaseJson<Object>> observable) {
+    private void SendDynamicV2(BackgroundRequestTaskBean backgroundRequestTaskBean, DynamicDetailBeanV2 detailBeanV2, int[] position,
+                               Observable<BaseJson<Object>> observable) {
         observable.subscribeOn(Schedulers.io())
                 .retryWhen(new RetryWithInterceptDelay(RETRY_MAX_COUNT, RETRY_INTERVAL_TIME))
                 .observeOn(AndroidSchedulers.mainThread())
@@ -1020,7 +1026,7 @@ public class BackgroundTaskHandler {
     private SendDynamicDataBeanV2 recursionUplaodImage(final SendDynamicDataBeanV2
                                                                sendDynamicDataBean,
                                                        List<ImageBean> photos, final int[]
-            position) {
+                                                               position) {
         if (position[0] == photos.size()) {
             return sendDynamicDataBean;
         }
@@ -1182,7 +1188,7 @@ public class BackgroundTaskHandler {
         mServiceManager.getCommonClient()
                 .handleBackGroundTaskPostV2(backgroundRequestTaskBean.getPath(), UpLoadFile
                         .upLoadFileAndParams(null, backgroundRequestTaskBean
-                        .getParams()))
+                                .getParams()))
                 .retryWhen(new RetryWithInterceptDelay(RETRY_MAX_COUNT, RETRY_INTERVAL_TIME))
                 .subscribe(new BaseSubscribeForV2<Object>() {
                     @Override
@@ -1245,7 +1251,7 @@ public class BackgroundTaskHandler {
         mServiceManager.getCommonClient()
                 .handleBackGroundTaskPostV2(backgroundRequestTaskBean.getPath(), UpLoadFile
                         .upLoadFileAndParams(null, backgroundRequestTaskBean
-                        .getParams()))
+                                .getParams()))
                 .retryWhen(new RetryWithInterceptDelay(RETRY_MAX_COUNT, RETRY_INTERVAL_TIME))
                 .subscribe(new BaseSubscribeForV2<Object>() {
                     @Override
@@ -1308,7 +1314,7 @@ public class BackgroundTaskHandler {
         mServiceManager.getCommonClient()
                 .handleBackGroundTaskPostV2(backgroundRequestTaskBean.getPath(), UpLoadFile
                         .upLoadFileAndParams(null, backgroundRequestTaskBean
-                        .getParams()))
+                                .getParams()))
                 .retryWhen(new RetryWithInterceptDelay(RETRY_MAX_COUNT, RETRY_INTERVAL_TIME))
                 .subscribe(new BaseSubscribeForV2<Object>() {
                     @Override
@@ -1382,7 +1388,7 @@ public class BackgroundTaskHandler {
         mServiceManager.getCommonClient()
                 .handleBackGroundTaskPostV2(backgroundRequestTaskBean.getPath(), UpLoadFile
                         .upLoadFileAndParams(null, backgroundRequestTaskBean
-                        .getParams()))
+                                .getParams()))
                 .retryWhen(new RetryWithInterceptDelay(RETRY_MAX_COUNT, RETRY_INTERVAL_TIME))
                 .subscribe(new BaseSubscribeForV2<Object>() {
                     @Override
@@ -1441,7 +1447,7 @@ public class BackgroundTaskHandler {
         final Long commentMark = (Long) params.get("comment_mark");
         final InfoCommentListBean infoCommentListBean = mInfoCommentListBeanDao
                 .getCommentByCommentMark
-                (commentMark);
+                        (commentMark);
         if (infoCommentListBean == null) {
             mBackgroundRequestTaskBeanGreenDao.deleteSingleCache(backgroundRequestTaskBean);
             return;
@@ -1449,7 +1455,7 @@ public class BackgroundTaskHandler {
         mServiceManager.getCommonClient()
                 .handleBackGroundTaskPost(backgroundRequestTaskBean.getPath(), UpLoadFile
                         .upLoadFileAndParams(null, backgroundRequestTaskBean
-                        .getParams()))
+                                .getParams()))
                 .retryWhen(new RetryWithInterceptDelay(RETRY_MAX_COUNT, RETRY_INTERVAL_TIME))
                 .subscribe(new BaseSubscribe<Object>() {
                     @Override
@@ -1493,7 +1499,7 @@ public class BackgroundTaskHandler {
         final Long commentMark = (Long) params.get("comment_mark");
         final InfoCommentListBean infoCommentListBean = mInfoCommentListBeanDao
                 .getCommentByCommentMark
-                (commentMark);
+                        (commentMark);
         if (infoCommentListBean == null) {
             mBackgroundRequestTaskBeanGreenDao.deleteSingleCache(backgroundRequestTaskBean);
             return;
@@ -1501,7 +1507,7 @@ public class BackgroundTaskHandler {
         mServiceManager.getCommonClient()
                 .handleBackGroundTaskPostV2(backgroundRequestTaskBean.getPath(), UpLoadFile
                         .upLoadFileAndParams(null, backgroundRequestTaskBean
-                        .getParams()))
+                                .getParams()))
                 .retryWhen(new RetryWithInterceptDelay(RETRY_MAX_COUNT, RETRY_INTERVAL_TIME))
                 .subscribe(new BaseSubscribeForV2<Object>() {
                     @Override
@@ -1619,7 +1625,7 @@ public class BackgroundTaskHandler {
         mServiceManager.getCommonClient()
                 .handleBackGroundTaskPostV2(backgroundRequestTaskBean.getPath(), UpLoadFile
                         .upLoadFileAndParams(null, backgroundRequestTaskBean
-                        .getParams()))
+                                .getParams()))
                 .retryWhen(new RetryWithInterceptDelay(RETRY_MAX_COUNT, RETRY_INTERVAL_TIME))
                 .subscribe(new BaseSubscribeForV2<Object>() {
                     @Override

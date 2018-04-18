@@ -161,7 +161,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
         if (userInfoBean == null || userInfoBean.getUser_id() == null || context == null) {
             return;
         }
-        if (userInfoBean.getHas_deleted()) {
+        if (userInfoBean.getHas_deleted() || !TextUtils.isEmpty(userInfoBean.getDeleted_at())) {
             try {
                 if (context instanceof TSActivity) {
                     if ((((TSActivity) context).getContanierFragment() instanceof TSFragment)) {
@@ -173,12 +173,14 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
                 }
             } catch (Exception e) {
                 e.printStackTrace();
+                ToastUtils.showToast(context, R.string.user_had_deleted);
             }
+
             return;
         }
 
         String tsHelperUrl = checkHelperUrl(context, userInfoBean.getUser_id());
-        if (!TextUtils.isEmpty(tsHelperUrl)) {
+        if (AppApplication.getMyUserIdWithdefault() != userInfoBean.getUser_id() && !TextUtils.isEmpty(tsHelperUrl)) {
             CustomWEBActivity.startToWEBActivity(context, tsHelperUrl);
         } else {
             Intent intent = new Intent(context, PersonalCenterActivity.class);
@@ -407,6 +409,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
             imageBean.setWidth(task.getWidth());
             imageBean.setHeight(task.getHeight());
             imageBean.setStorage_id(task.getFile());
+            imageBean.setImgMimeType(task.getImgMimeType());
             imageBeanList.add(imageBean);
             AnimationRectBean rect = AnimationRectBean.buildFromImageView(imageView);
             animationRectBeanArrayList.add(rect);

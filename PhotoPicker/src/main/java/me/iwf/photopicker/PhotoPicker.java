@@ -16,6 +16,7 @@ import me.iwf.photopicker.utils.PermissionsUtils;
  * Builder class to ease Intent setup.
  */
 public class PhotoPicker {
+  public static final int DEFAULT_REQUST_ALBUM= 1000;
 
   public static final int REQUEST_CODE             = 233;
 
@@ -76,7 +77,7 @@ public class PhotoPicker {
     public void start(@NonNull Context context,
                       @NonNull android.support.v4.app.Fragment fragment) {
       if (PermissionsUtils.checkReadStoragePermission(fragment.getActivity())) {
-        fragment.startActivityForResult(getIntent(context), 1000);
+        fragment.startActivityForResult(getIntent(context), DEFAULT_REQUST_ALBUM);
       }
     }
 

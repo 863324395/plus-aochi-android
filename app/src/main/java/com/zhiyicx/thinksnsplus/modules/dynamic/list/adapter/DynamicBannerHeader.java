@@ -76,13 +76,15 @@ public class DynamicBannerHeader {
     }
 
     public void stopBanner() {
-        if (mBanner != null)
+        if (mBanner != null) {
             mBanner.stopAutoPlay();
+        }
     }
 
     public void startBanner() {
-        if (mBanner != null)
+        if (mBanner != null) {
             mBanner.startAutoPlay();
+        }
     }
 
     public View getDynamicBannerHeader() {

@@ -13,6 +13,7 @@ import com.zhiyicx.baseproject.base.SystemConfigBean;
 import com.zhiyicx.baseproject.em.manager.util.TSEMConstants;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.ChatGroupBean;
 import com.zhiyicx.thinksnsplus.data.beans.ChatItemBean;
 import com.zhiyicx.thinksnsplus.data.beans.MessageItemBeanV2;
@@ -22,9 +23,11 @@ import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.remote.EasemobClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.modules.home.message.messagelist.EmTimeSortClass;
+import com.zhiyicx.thinksnsplus.utils.TSImHelperUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -32,6 +35,7 @@ import javax.inject.Inject;
 
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 /**
@@ -79,38 +83,71 @@ public class BaseMessageRepository implements IBaseMessageRepository {
                     List<SystemConfigBean.ImHelperBean> tsHlepers = mSystemRepository.getBootstrappersInfoFromLocal().getIm_helper();
                     // 需要手动插入的小助手，本地查找不到会话才插入聊天信息
                     List<SystemConfigBean.ImHelperBean> needAddedHelpers = new ArrayList<>();
-                    if (!tsHlepers.isEmpty()) {
+                    if (tsHlepers != null && !tsHlepers.isEmpty()) {
                         for (SystemConfigBean.ImHelperBean imHelperBean : tsHlepers) {
-                            if (EMClient.getInstance().chatManager().getConversation(imHelperBean.getUid()) == null) {
+                            if (AppApplication.getMyUserIdWithdefault() != Long.valueOf(imHelperBean.getUid()) && EMClient.getInstance().chatManager()
+                                    .getConversation(imHelperBean.getUid()) == null) {
                                 needAddedHelpers.add(imHelperBean);
                             }
                         }
                         List<MessageItemBeanV2> messageItemBeanList = new ArrayList<>();
                         for (SystemConfigBean.ImHelperBean imHelperBean : needAddedHelpers) {
                             MessageItemBeanV2 tsHelper = new MessageItemBeanV2();
-                            tsHelper.setEmKey(String.valueOf(imHelperBean.getUid()));
+                            tsHelper.setEmKey(imHelperBean.getUid());
                             tsHelper.setUserInfo(mUserInfoBeanGreenDao.getSingleDataFromCache(Long.parseLong(imHelperBean.getUid())));
                             // 创建会话的 conversation 要传入用户名 ts+采用用户Id作为用户名，聊天类型 单聊
                             EMConversation conversation =
-                                    EMClient.getInstance().chatManager().getConversation(tsHelper.getEmKey(), EMConversation.EMConversationType
+                                    EMClient.getInstance().chatManager().getConversation(tsHelper.getEmKey(), EMConversation
+                                            .EMConversationType
                                             .Chat, true);
-                            // 给这个会话插入一条自定义的消息 文本类型的
-                            EMMessage welcomeMsg = EMMessage.createReceiveMessage(EMMessage.Type.TXT);
-                            // 消息体
-                            EMTextMessageBody textBody = new EMTextMessageBody(mContext.getString(R.string.ts_helper_default_tip));
-                            welcomeMsg.addBody(textBody);
-                            // 来自 用户名
-                            welcomeMsg.setFrom(tsHelper.getEmKey());
-                            // 当前时间
-                            welcomeMsg.setMsgTime(System.currentTimeMillis());
-                            conversation.insertMessage(welcomeMsg);
+                            // 没有被清空历史消息的才加入消息提示；
+                            if (!TSImHelperUtils.getMessageHelperIsDeletedHistory(mContext, imHelperBean.getUid(), String.valueOf(AppApplication
+                                    .getMyUserIdWithdefault()))) {
+                                // 给这个会话插入一条自定义的消息 文本类型的
+                                EMMessage welcomeMsg = EMMessage.createReceiveMessage(EMMessage.Type.TXT);
+                                welcomeMsg.setMsgId(tsHelper.getEmKey());
+                                // 消息体
+                                EMTextMessageBody textBody = new EMTextMessageBody(mContext.getString(R.string.ts_helper_default_tip));
+                                welcomeMsg.addBody(textBody);
+                                // 来自 用户名
+                                welcomeMsg.setFrom(tsHelper.getEmKey());
+                                // 当前时间
+                                welcomeMsg.setMsgTime(System.currentTimeMillis());
+                                conversation.insertMessage(welcomeMsg);
+                            }
+
                             tsHelper.setConversation(conversation);
                             messageItemBeanList.add(tsHelper);
                         }
                         list.addAll(0, messageItemBeanList);
                     }
                     return completeEmConversation(list)
-                            .map(list1 -> list1);
+                            .map(list1 -> {
+                                List<MessageItemBeanV2> tmps = new ArrayList<>();
+                                HashSet<String> emKeys = new HashSet<>();
+
+                                for (MessageItemBeanV2 messageItemBeanV2 : list1) {
+                                    if (emKeys.contains(messageItemBeanV2.getEmKey())) {
+                                        continue;
+                                    }
+                                    emKeys.add(messageItemBeanV2.getEmKey());
+                                    boolean ischatAndImHelper = EMConversation.EMConversationType.Chat == messageItemBeanV2.getConversation()
+                                            .getType() && messageItemBeanV2.getUserInfo() != null && mSystemRepository.checkUserIsImHelper
+                                            (messageItemBeanV2.getUserInfo().getUser_id());
+                                    boolean isHasMessage = messageItemBeanV2.getConversation() != null && messageItemBeanV2.getConversation()
+                                            .getLastMessage()
+                                            != null;
+                                    if (ischatAndImHelper || isHasMessage) {
+                                        tmps.add(messageItemBeanV2);
+                                    }
+
+                                }
+                                if (tmps.size() > 1) {
+                                    // 数据大于一个才排序
+                                    Collections.sort(tmps, new EmTimeSortClass());
+                                }
+                                return tmps;
+                            });
                 })
                 .observeOn(AndroidSchedulers.mainThread());
     }
@@ -161,7 +198,8 @@ public class BaseMessageRepository implements IBaseMessageRepository {
                                     if (userInfoBean == null) {
                                         users.add(id);
                                     } else {
-                                        EMTextMessageBody textBody = new EMTextMessageBody(mContext.getResources().getString(R.string.userup_exit_group, userInfoBean.getName()));
+                                        EMTextMessageBody textBody = new EMTextMessageBody(mContext.getResources().getString(R.string
+                                                .userup_exit_group, userInfoBean.getName()));
                                         message.addBody(textBody);
                                     }
                                 }
@@ -220,7 +258,8 @@ public class BaseMessageRepository implements IBaseMessageRepository {
                                                         try {
                                                             int key = Integer.parseInt(id);
                                                             UserInfoBean userInfoBean = userInfoBeanSparseArray.get(key);
-                                                            EMTextMessageBody textBody = new EMTextMessageBody(mContext.getResources().getString(R.string.userup_exit_group, userInfoBean.getName()));
+                                                            EMTextMessageBody textBody = new EMTextMessageBody(mContext.getResources().getString(R
+                                                                    .string.userup_exit_group, userInfoBean.getName()));
                                                             message.addBody(textBody);
                                                         } catch (Exception ignore) {
                                                         }
@@ -245,8 +284,9 @@ public class BaseMessageRepository implements IBaseMessageRepository {
                                                     if (exitItem.getConversation().conversationId().equals(chatGroupBean.getId())) {
                                                         exitItem.setEmKey(chatGroupBean.getId());
                                                         exitItem.setList(chatGroupBean.getAffiliations());
-                                                        exitItem.setConversation(EMClient.getInstance().chatManager().getConversation(chatGroupBean
-                                                                .getId()));
+                                                        exitItem.setConversation(EMClient.getInstance().chatManager().getConversation
+                                                                (chatGroupBean
+                                                                        .getId()));
                                                         exitItem.setChatGroupBean(chatGroupBean);
                                                         canAdded = false;
                                                         break;

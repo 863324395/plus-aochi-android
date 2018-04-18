@@ -42,13 +42,13 @@
                 style="@style/style_chat_bubble"
                 >
 
-                <android.support.v7.widget.AppCompatImageView
+                <com.zhiyicx.thinksnsplus.widget.imageview.ChangeGasStationImageView
+                    style="@style/TSChatImageItemLeft"
                     android:id="@+id/iv_chat_content"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:scaleType="centerInside"
-                    android:src="@drawable/shape_default_image"
+                    android:scaleType="fitXY"
 
+                    android:layout_height="wrap_content"
                     />
             </RelativeLayout>
 

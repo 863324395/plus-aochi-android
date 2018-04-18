@@ -85,7 +85,21 @@
         <item name="android:maxLines">1</item>
         <item name="android:textColor">@color/important_for_content</item>
     </style>
+
     <style name="NoBackGroundDialog" parent="@android:style/Theme.Holo.Light.Dialog">
         <item name="android:windowBackground">@android:color/transparent</item>
+    </style>
+
+    <style name="TSChatImageItemLeft">
+        <item name="TSLeftTopRaduis">0dp</item>
+        <item name="TSLeftBottomRaduis">@dimen/ts_chat_item_iamge_raduis</item>
+        <item name="TSRightTopRaduis">@dimen/ts_chat_item_iamge_raduis</item>
+        <item name="TSRightBottomRaduis">@dimen/ts_chat_item_iamge_raduis</item>
+    </style>
+    <style name="TSChatImageItemRight">
+        <item name="TSLeftTopRaduis">@dimen/ts_chat_item_iamge_raduis</item>
+        <item name="TSLeftBottomRaduis">@dimen/ts_chat_item_iamge_raduis</item>
+        <item name="TSRightTopRaduis">0dp</item>
+        <item name="TSRightBottomRaduis">@dimen/ts_chat_item_iamge_raduis</item>
     </style>
 </resources>
