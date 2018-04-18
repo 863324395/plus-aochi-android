@@ -68,11 +68,11 @@ public class ZhiyiVideoView extends JZVideoPlayerStandard {
     @Override
     public void onPrepared() {
         super.onPrepared();
-        if (currentScreen == SCREEN_WINDOW_FULLSCREEN) {
-            JZMediaManager.instance().jzMediaInterface.setVolume(1f, 1f);
-        } else {
-            JZMediaManager.instance().jzMediaInterface.setVolume(0f, 0f);
-        }
+//        if (currentScreen == SCREEN_WINDOW_FULLSCREEN) {
+//            JZMediaManager.instance().jzMediaInterface.setVolume(1f, 1f);
+//        } else {
+//            JZMediaManager.instance().jzMediaInterface.setVolume(0f, 0f);
+//        }
     }
 
     /**
@@ -81,7 +81,7 @@ public class ZhiyiVideoView extends JZVideoPlayerStandard {
     @Override
     public void playOnThisJzvd() {
         super.playOnThisJzvd();
-        JZMediaManager.instance().jzMediaInterface.setVolume(0f, 0f);
+//        JZMediaManager.instance().jzMediaInterface.setVolume(0f, 0f);
     }
 
     @Override
@@ -348,7 +348,7 @@ public class ZhiyiVideoView extends JZVideoPlayerStandard {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        JZMediaManager.instance().jzMediaInterface.setVolume(1f, 1f);
+//        JZMediaManager.instance().jzMediaInterface.setVolume(1f, 1f);
     }
 
     @Override

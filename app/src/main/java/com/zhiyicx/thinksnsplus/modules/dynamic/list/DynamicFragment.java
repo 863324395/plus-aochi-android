@@ -268,17 +268,17 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
                 });
 
         // 自动播放
-        mRvList.addOnScrollListener(new AutoPlayScrollListener() {
-            @Override
-            public int getPlayerViewId() {
-                return R.id.videoplayer;
-            }
-
-            @Override
-            public boolean canAutoPlay() {
-                return NetUtils.isWifiConnected(getContext().getApplicationContext());
-            }
-        });
+//        mRvList.addOnScrollListener(new AutoPlayScrollListener() {
+//            @Override
+//            public int getPlayerViewId() {
+//                return R.id.videoplayer;
+//            }
+//
+//            @Override
+//            public boolean canAutoPlay() {
+//                return NetUtils.isWifiConnected(getContext().getApplicationContext());
+//            }
+//        });
     }
 
 
