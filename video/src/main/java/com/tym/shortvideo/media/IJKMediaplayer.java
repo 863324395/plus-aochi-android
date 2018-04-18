@@ -25,7 +25,9 @@ public class IJKMediaplayer extends JZMediaInterface implements IMediaPlayer.OnP
 
     @Override
     public void start() {
-        ijkMediaPlayer.start();
+        if (ijkMediaPlayer != null) {
+            ijkMediaPlayer.start();
+        }
     }
 
     @Override
@@ -60,7 +62,9 @@ public class IJKMediaplayer extends JZMediaInterface implements IMediaPlayer.OnP
 
     @Override
     public void pause() {
-        ijkMediaPlayer.pause();
+        if (ijkMediaPlayer != null && ijkMediaPlayer.isPlaying()) {
+            ijkMediaPlayer.pause();
+        }
     }
 
     @Override
