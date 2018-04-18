@@ -48,6 +48,7 @@ public class VideoSelectFragment extends TSListFragment {
 
     private ActionPopupWindow mPopWindow;
 
+    // 分批次加载预留
     private List<VideoInfo> copyData;
 
     @Override

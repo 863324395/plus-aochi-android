@@ -3,11 +3,13 @@ package com.zhiyicx.thinksnsplus.modules.shortvideo.adapter;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.view.View;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.tym.shortvideo.media.VideoInfo;
 import com.tym.shortvideo.utils.DateUtil;
 import com.tym.shortvideo.utils.TrimVideoUtil;
@@ -33,21 +35,26 @@ public class VideoGridViewAdapter extends CommonAdapter<VideoInfo> {
         options.inPreferredConfig = Bitmap.Config.RGB_565;
     }
 
+    /**
+     *
+     * @param holder
+     * @param video
+     * @param position
+     * @link https://blog.csdn.net/u012947056/article/details/78508986
+     *        DiskCacheStrategy.RESULT && DiskCacheStrategy.SOURCE
+     */
     @Override
     protected void convert(ViewHolder holder, VideoInfo video, int position) {
         if (TextUtils.isEmpty(video.getPath())) {
             holder.setVisible(R.id.tv_duration, View.GONE);
             holder.setImageResource(R.id.iv_cover, R.mipmap.pic_shootvideo);
         } else {
-            Bitmap bitmap = MediaStore.Video.Thumbnails.getThumbnail(mContext.getContentResolver(), video.storeId, MediaStore.Images.Thumbnails.MINI_KIND,
-                    options);
-            int w = holder.getImageViwe(R.id.iv_cover).getWidth();
-            if (w != 0) {
-                bitmap = Bitmap.createScaledBitmap(bitmap, w, w, true);
-            }
             holder.setVisible(R.id.tv_duration, View.VISIBLE);
             holder.setText(R.id.tv_duration, DateUtil.convertSecondsToTime(video.getDuration() / 1000));
-            holder.getImageViwe(R.id.iv_cover).setImageBitmap(bitmap);
+            Glide.with(mContext)
+                    .load(video.getPath())
+            .diskCacheStrategy(DiskCacheStrategy.RESULT)
+            .into(holder.getImageViwe(R.id.iv_cover));
         }
 
 

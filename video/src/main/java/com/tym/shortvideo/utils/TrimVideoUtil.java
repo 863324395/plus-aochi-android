@@ -15,10 +15,12 @@ import com.tym.shortvideo.interfaces.TrimVideoListener;
 import com.tym.shortvideo.media.VideoInfo;
 import com.tym.shortvideo.mediacodec.VideoClipper;
 import com.zhiyicx.common.utils.*;
+import com.zhiyicx.common.utils.FileUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 
 public class TrimVideoUtil {
@@ -207,6 +209,78 @@ public class TrimVideoUtil {
             retStr = "" + i;
         }
         return retStr;
+    }
+
+    public static List<VideoInfo> getAllVideoFiles(final Context mContext){
+        VideoInfo video;
+        ArrayList<VideoInfo> videos = new ArrayList<>();
+        ContentResolver contentResolver = mContext
+                .getContentResolver();
+        try {
+
+            Cursor cursor = contentResolver.query(MediaStore
+                            .Video.Media.EXTERNAL_CONTENT_URI,
+                    null,
+                    null, null, MediaStore.Video.Media
+                            .DEFAULT_SORT_ORDER);
+            if (cursor != null) {
+                while (cursor.moveToNext()) {
+                    video = new VideoInfo();
+                    video.setPath(cursor.getString(cursor
+                            .getColumnIndex(MediaStore.Video
+                                    .Media.DATA)));
+                    video.setCreateTime(cursor.getString
+                            (cursor.getColumnIndex(MediaStore
+                                    .Video.Media.DATE_ADDED)));
+                    video.setName(cursor.getString(cursor
+                            .getColumnIndex(MediaStore.Video
+                                    .Media.DISPLAY_NAME)));
+                    video.setWidth(cursor.getInt(cursor
+                            .getColumnIndex(MediaStore.Video
+                                    .Media.WIDTH)));
+                    video.setHeight(cursor.getInt(cursor
+                            .getColumnIndex(MediaStore.Video
+                                    .Media.HEIGHT)));
+
+                    LogUtils.d("duration::" + cursor.getLong(cursor
+                            .getColumnIndex(MediaStore.Video
+                                    .Media.DURATION)));
+                    LogUtils.d("width::" + cursor.getInt(cursor
+                            .getColumnIndex(MediaStore.Video
+                                    .Media.WIDTH)));
+                    LogUtils.d("height::" + cursor.getInt(cursor
+                            .getColumnIndex(MediaStore.Video
+                                    .Media.HEIGHT)));
+
+                    video.setDuration((int) cursor.getLong(cursor
+                            .getColumnIndex(MediaStore.Video
+                                    .Media.DURATION)));
+                    video.setStoreId(cursor.getInt(cursor
+                            .getColumnIndex(MediaStore.Video
+                                    .Media._ID)));
+                    String mime = cursor.getString(cursor
+                            .getColumnIndex(MediaStore.Video
+                                    .Media.MIME_TYPE));
+
+                    if (!"video/mp4".equals(mime)) {
+                        continue;
+                    }
+                    if (!FileUtils
+                            .isFileExists(video.getPath())) {
+                        continue;
+                    }
+
+                    if (video.getDuration() < 500) {
+                        continue;
+                    }
+                    videos.add(video);
+                }
+                cursor.close();
+            }
+        } catch (Exception ignore) {
+
+        }
+        return videos;
     }
 
     public static void getAllVideoFiles(final Context mContext, final
