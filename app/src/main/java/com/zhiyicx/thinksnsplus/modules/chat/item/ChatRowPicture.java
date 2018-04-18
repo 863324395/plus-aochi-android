@@ -7,7 +7,6 @@ import android.text.TextUtils;
 import android.widget.BaseAdapter;
 import android.widget.RelativeLayout;
 
-import com.bumptech.glide.Glide;
 import com.hyphenate.chat.EMImageMessageBody;
 import com.hyphenate.chat.EMMessage;
 import com.hyphenate.easeui.bean.ChatUserInfoBean;
@@ -34,7 +33,7 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
  */
 
 public class ChatRowPicture extends ChatBaseRow {
-    private static final int DEFAULT_IMAGE_SIZE = 460;
+    private static final int DEFAULT_IMAGE_SIZE = 400;
     /**
      * 显示本地图片最大为屏幕 1/3
      */
@@ -45,13 +44,13 @@ public class ChatRowPicture extends ChatBaseRow {
     private int mMaxNetImageWith;
 
 
+
     private AppCompatImageView mIvChatContent;
 
     public ChatRowPicture(Context context, EMMessage message, int position, BaseAdapter adapter, ChatUserInfoBean chatUserInfoBean) {
         super(context, message, position, adapter, chatUserInfoBean);
-        mMaxLocalImageWith = DeviceUtils.getScreenWidth(context)  / 3;
+        mMaxLocalImageWith = DeviceUtils.getScreenWidth(context) / 3;
         mMaxNetImageWith = DeviceUtils.getScreenWidth(context) / 3;
-
     }
 
     @Override
@@ -73,8 +72,8 @@ public class ChatRowPicture extends ChatBaseRow {
         // 图片地址
         int width;
         int height;
-        String url = TextUtils.isEmpty(imageMessageBody.getRemoteUrl()) ? imageMessageBody.getLocalUrl() : imageMessageBody.getRemoteUrl();
-        if (TextUtils.isEmpty(imageMessageBody.getRemoteUrl())) {
+        String url = !TextUtils.isEmpty(imageMessageBody.getLocalUrl()) ? imageMessageBody.getRemoteUrl() : imageMessageBody.getRemoteUrl();
+        if (!TextUtils.isEmpty(imageMessageBody.getLocalUrl()) && TextUtils.isEmpty(imageMessageBody.getRemoteUrl())) {
             // 本地
             BitmapFactory.Options option = DrawableProvider.getPicsWHByFile(imageMessageBody.getLocalUrl());
             if (option.outWidth == 0) {
@@ -84,23 +83,26 @@ public class ChatRowPicture extends ChatBaseRow {
                 width = option.outWidth;
                 height = option.outHeight;
                 if (width > mMaxLocalImageWith) {
-                    height = (int) (((float) mMaxLocalImageWith / width) * height);
+                    int caculateHeight = (int) (((float) mMaxLocalImageWith / width) * height);
+                    height = caculateHeight > height ? height : caculateHeight;
                     width = mMaxLocalImageWith;
                 }
             }
-
         } else {
             width = imageMessageBody.getWidth();
             height = imageMessageBody.getHeight();
             if (width > mMaxNetImageWith) {
-                height = (int) (((float) mMaxNetImageWith / width) * height);
+                int caculateHeith = (int) (((float) mMaxNetImageWith / width) * height);
+                height = caculateHeith > height ? height : caculateHeith;
                 width = mMaxNetImageWith;
             }
         }
+
         RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) mIvChatContent.getLayoutParams();
         layoutParams.width = width;
         layoutParams.height = height;
         mIvChatContent.setLayoutParams(layoutParams);
+
         ImageUtils.loadImageDefault(mIvChatContent, url);
 
         int finalWidth = width;

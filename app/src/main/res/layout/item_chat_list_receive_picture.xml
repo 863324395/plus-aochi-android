@@ -46,8 +46,9 @@
                     style="@style/TSChatImageItemLeft"
                     android:id="@+id/iv_chat_content"
                     android:layout_width="wrap_content"
+                    android:scaleType="fitXY"
+
                     android:layout_height="wrap_content"
-                    android:scaleType="centerInside"
                     />
             </RelativeLayout>
 

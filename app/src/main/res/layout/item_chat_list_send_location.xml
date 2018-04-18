@@ -48,26 +48,25 @@
                 >
                 <!--android:background="@drawable/shape_message_bubble_my_no_padding">-->
 
-                <com.zhiyicx.thinksnsplus.widget.imageview.ChangeGasStationImageView
+                <ImageView
                     android:id="@+id/iv_location"
                     style="@style/TSChatImageItemRight"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:src="@drawable/ease_location_msg"
+                    android:src="@mipmap/pic_chat_map_me"
                     />
 
                 <!--位置-->
                 <TextView
                     android:id="@+id/tv_location"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/chat_location_title_height"
+                    android:layout_height="wrap_content"
                     android:layout_gravity="bottom"
-                    android:alpha="0.5"
-                    android:background="@color/text_location_title_background"
                     android:ellipsize="end"
                     android:gravity="center"
                     android:maxLines="1"
                     android:paddingLeft="@dimen/spacing_mid_small"
+                    android:layout_marginBottom="@dimen/spacing_normal"
                     android:paddingRight="@dimen/spacing_mid_small"
                     android:textColor="@color/important_for_content"
                     android:textSize="@dimen/size_icon_assist"

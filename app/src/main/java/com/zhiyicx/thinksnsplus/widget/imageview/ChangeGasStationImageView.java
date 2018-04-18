@@ -3,7 +3,9 @@ package com.zhiyicx.thinksnsplus.widget.imageview;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Path;
+import android.graphics.PorterDuff;
 import android.graphics.RectF;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
@@ -68,7 +70,7 @@ public class ChangeGasStationImageView extends android.support.v7.widget.AppComp
     protected void onDraw(Canvas canvas) {
         mRectF.right = getWidth();
         mRectF.bottom = getHeight();
-        mPath.addRoundRect(mRectF, rids, Path.Direction.CCW);
+        mPath.addRoundRect(mRectF, rids, Path.Direction.CW);
         canvas.clipPath(mPath);
         super.onDraw(canvas);
     }
