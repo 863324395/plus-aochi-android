@@ -836,40 +836,45 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
      * 顶部更多弹框
      */
     private void showTopBarMorePopWindow() {
-        if (mTopBarMorePopWindow == null) {
-            boolean feedIsMy = mUserInfoBean.getUser_id() == AppApplication.getMyUserIdWithdefault();
-            boolean isBlackMan = false;
-            mTopBarMorePopWindow = ActionPopupWindow.builder()
-                    .item1Str(getString(R.string.share))
-                    .item2Str(feedIsMy ? "" : getString(R.string.report))
-                    .item3Str(feedIsMy ? "" : getString(isBlackMan ? R.string.remove_black_list : R.string.add_to_black_list))
-                    .bottomStr(getString(R.string.cancel))
-                    .isOutsideTouch(true)
-                    .isFocus(true)
-                    .backgroundAlpha(POPUPWINDOW_ALPHA)
-                    .with(getActivity())
-                    .item1ClickListener(() -> {
-                        mPresenter.shareUserInfo(mUserInfoBean);
-                        mTopBarMorePopWindow.hide();
-                    })
-                    .item2ClickListener(() -> {
-                        ReportActivity.startReportActivity(mActivity, new ReportResourceBean(mUserInfoBean, mUserInfoBean.getUser_id().toString(),
-                                mUserInfoBean
-                                        .getName(), mUserInfoBean.getAvatar(), mUserInfoBean.getIntro(), ReportType.USER));
-                        mTopBarMorePopWindow.hide();
-                    })
-                    .item3ClickListener(() -> {
-                        mTopBarMorePopWindow.hide();
-                        if (isBlackMan) {
-                            mPresenter.removeBlackLIst(mUserInfoBean);
-                        } else {
-                            mPresenter.addToBlackList(mUserInfoBean);
-                        }
-                    })
-                    .bottomClickListener(() -> mTopBarMorePopWindow.hide())
-                    .build();
-        }
+        boolean isBlackMan = mUserInfoBean.getBlacked();
+        boolean feedIsMy = mUserInfoBean.getUser_id() == AppApplication.getMyUserIdWithdefault();
+        mTopBarMorePopWindow = ActionPopupWindow.builder()
+                .item1Str(getString(R.string.share))
+                .item2Str(feedIsMy ? "" : getString(R.string.report))
+                .item3Str(feedIsMy ? "" : getString(isBlackMan ? R.string.remove_black_list : R.string.add_to_black_list))
+                .bottomStr(getString(R.string.cancel))
+                .isOutsideTouch(true)
+                .isFocus(true)
+                .backgroundAlpha(POPUPWINDOW_ALPHA)
+                .with(getActivity())
+                .item1ClickListener(() -> {
+                    mPresenter.shareUserInfo(mUserInfoBean);
+                    mTopBarMorePopWindow.hide();
+                })
+                .item2ClickListener(() -> {
+                    ReportActivity.startReportActivity(mActivity, new ReportResourceBean(mUserInfoBean, mUserInfoBean.getUser_id().toString(),
+                            mUserInfoBean
+                                    .getName(), mUserInfoBean.getAvatar(), mUserInfoBean.getIntro(), ReportType.USER));
+                    mTopBarMorePopWindow.hide();
+                })
+                .item3ClickListener(() -> {
+                    mTopBarMorePopWindow.hide();
+                    if (isBlackMan) {
+                        mPresenter.removeBlackLIst(mUserInfoBean);
+                    } else {
+                        mPresenter.addToBlackList(mUserInfoBean);
+                    }
+                })
+                .bottomClickListener(() -> mTopBarMorePopWindow.hide())
+                .build();
         mTopBarMorePopWindow.show();
+    }
+
+    @Override
+    public void updateUserBlackStatus(boolean b) {
+        if (mUserInfoBean != null) {
+            mUserInfoBean.setBlacked(b);
+        }
     }
 
     /**

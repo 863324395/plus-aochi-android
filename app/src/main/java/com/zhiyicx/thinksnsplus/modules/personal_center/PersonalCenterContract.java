@@ -85,6 +85,13 @@ public interface PersonalCenterContract {
         void refreshStart();
 
         void refreshEnd();
+
+        /**
+         * 更新黑名单状态
+         *
+         * @param b true,被加入黑名单
+         */
+        void updateUserBlackStatus(boolean b);
     }
 
     interface Presenter extends DynamicContract.Presenter {
