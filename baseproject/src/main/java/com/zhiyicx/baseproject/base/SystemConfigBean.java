@@ -1,6 +1,9 @@
 package com.zhiyicx.baseproject.base;
 
+import android.text.TextUtils;
+
 import com.google.gson.annotations.SerializedName;
+import com.zhiyicx.baseproject.config.ApiConfig;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -43,8 +46,12 @@ public class SystemConfigBean implements Serializable {
     private int wallet_ratio;
     @SerializedName("im:serve")
     private String im_serve;
-    @SerializedName("im:helper")
-    private ArrayList<ImHelperBean> im_helper;
+    /**
+     * 新版小助手
+     */
+    @SerializedName("im:helper-user")
+    private String newImHelper;
+
     @SerializedName("ad")
     private ArrayList<Advert> mAdverts; // 广告
     @SerializedName("wallet:recharge-type")
@@ -181,12 +188,29 @@ public class SystemConfigBean implements Serializable {
         this.im_serve = im_serve;
     }
 
+    /**
+     * 新版的小助手数据放入原有的数据模型
+     *
+     * @return
+     */
     public ArrayList<ImHelperBean> getIm_helper() {
-        return im_helper;
+        ArrayList<ImHelperBean> imHelperBeans = new ArrayList<>();
+        if (!TextUtils.isEmpty(newImHelper)) {
+            ImHelperBean imHelperBean = new ImHelperBean();
+            imHelperBean.setUid(newImHelper);
+            imHelperBean.setUrl(ApiConfig.APP_DOMAIN + ApiConfig.URL_ABOUT_US);
+            imHelperBeans.add(imHelperBean);
+        }
+        return imHelperBeans;
     }
 
-    public void setIm_helper(ArrayList<ImHelperBean> im_helper) {
-        this.im_helper = im_helper;
+
+    public String getNewImHelper() {
+        return newImHelper;
+    }
+
+    public void setNewImHelper(String newImHelper) {
+        this.newImHelper = newImHelper;
     }
 
     public ArrayList<Advert> getAdverts() {
@@ -846,31 +870,4 @@ public class SystemConfigBean implements Serializable {
         }
     }
 
-    @Override
-    public String toString() {
-        return "SystemConfigBean{" +
-                "wallet_ratio=" + wallet_ratio +
-                ", im_serve='" + im_serve + '\'' +
-                ", im_helper=" + im_helper +
-                ", mAdverts=" + mAdverts +
-                ", mWalletTtype=" + Arrays.toString(mWalletTtype) +
-                ", mNewsContribute=" + mNewsContribute +
-                ", mAppversion=" + mAppversion +
-                ", excellentQuestion=" + excellentQuestion +
-                ", onlookQuestion=" + onlookQuestion +
-                ", anonymityRule='" + anonymityRule + '\'' +
-                ", newsPayContribute=" + newsPayContribute +
-                ", mFeed=" + mFeed +
-                ", checkin=" + checkin +
-                ", mCircleGroup=" + mCircleGroup +
-                ", serverVersion='" + serverVersion + '\'' +
-                ", walletCash=" + walletCash +
-                ", walletRecharge=" + walletRecharge +
-                ", walletTransform=" + walletTransform +
-                ", currencyCash=" + currencyCash +
-                ", currencyRecharge=" + currencyRecharge +
-                ", registerSettings=" + registerSettings +
-                ", site=" + site +
-                '}';
-    }
 }
