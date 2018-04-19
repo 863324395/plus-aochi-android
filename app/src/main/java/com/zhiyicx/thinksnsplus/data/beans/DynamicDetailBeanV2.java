@@ -647,7 +647,19 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable, Ser
         private String created_at;
         private String updated_at;
         private String url;
+        private String cover;
         private transient GlideUrl glideUrl;
+
+        public Video() {
+        }
+
+        public String getCover() {
+            return cover;
+        }
+
+        public void setCover(String cover) {
+            this.cover = cover;
+        }
 
         public GlideUrl getGlideUrl() {
             return glideUrl;
@@ -741,6 +753,7 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable, Ser
             this.url = url;
         }
 
+
         @Override
         public int describeContents() {
             return 0;
@@ -756,11 +769,9 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable, Ser
             dest.writeInt(this.height);
             dest.writeInt(this.width);
             dest.writeString(this.created_at);
-            dest.writeString(this.url);
             dest.writeString(this.updated_at);
-        }
-
-        public Video() {
+            dest.writeString(this.url);
+            dest.writeString(this.cover);
         }
 
         protected Video(Parcel in) {
@@ -772,8 +783,9 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable, Ser
             this.height = in.readInt();
             this.width = in.readInt();
             this.created_at = in.readString();
-            this.url = in.readString();
             this.updated_at = in.readString();
+            this.url = in.readString();
+            this.cover = in.readString();
         }
 
         public static final Creator<Video> CREATOR = new Creator<Video>() {

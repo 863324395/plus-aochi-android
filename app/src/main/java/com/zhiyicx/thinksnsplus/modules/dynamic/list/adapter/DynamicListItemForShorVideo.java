@@ -49,14 +49,11 @@ public class DynamicListItemForShorVideo extends DynamicListBaseItem {
 
     public DynamicListItemForShorVideo(Context context) {
         super(context);
-        int maxWidth = context.getResources().getDimensionPixelOffset(R.dimen.dynamic_image_max_width);
-        mImageContainerWith = mImageContainerWith > maxWidth ? maxWidth : mImageContainerWith;
     }
 
     public DynamicListItemForShorVideo(Context context, ZhiyiVideoView.ShareInterface shareInterface) {
         super(context);
         int maxWidth = context.getResources().getDimensionPixelOffset(R.dimen.dynamic_image_max_width);
-        mImageContainerWith = mImageContainerWith > maxWidth ? maxWidth : mImageContainerWith;
         mShareInterface = shareInterface;
     }
 
@@ -130,7 +127,7 @@ public class DynamicListItemForShorVideo extends DynamicListBaseItem {
 
             view.getLayoutParams().height = height;
             Glide.with(mContext)
-                    .load(video.getUrl())
+                    .load(video.getCover())
                     .override(with, height)
                     .placeholder(R.drawable.shape_default_image)
                     .diskCacheStrategy(DiskCacheStrategy.ALL)

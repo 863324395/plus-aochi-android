@@ -230,6 +230,8 @@ public class CoverFragment extends TSFragment implements MediaPlayerWrapper.IMed
     public void onVideoPrepare() {
         if (isPre) {
             mVideoView.start();
+        }else{
+            mVideoView.seekTo(1);
         }
         mSeekBar.setMax(mVideoView.getVideoDuration());
         mSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {

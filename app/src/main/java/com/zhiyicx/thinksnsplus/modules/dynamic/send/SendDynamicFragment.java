@@ -720,6 +720,7 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                 DynamicDetailBeanV2.Video video = new DynamicDetailBeanV2.Video();
                 video.setCreated_at(dynamicDetailBeanV2.getCreated_at());
                 video.setHeight(videoInfo.getHeight());
+                video.setCover(videoInfo.getCover());
                 video.setWidth(videoInfo.getWidth());
                 video.setUrl(videoInfo.getPath());
                 dynamicDetailBeanV2.setVideo(video);

@@ -39,12 +39,13 @@ public class CameraUtils {
     private static final int Weight = 1000;
 
     // 这里反过来是因为相机的分辨率跟屏幕的分辨率宽高刚好反过来
-    public static Ratio mRatio = Ratio.RATIO_1_1;
+    public static Ratio mRatio = Ratio.RATIO_16_9_2_1_1;
 
     public enum Ratio {
         RATIO_16_9(0.5625f),
         RATIO_4_3(0.75f),
-        RATIO_1_1(0.75f);
+        RATIO_4_3_2_1_1(0.75f),
+        RATIO_16_9_2_1_1(0.75f);
         private float ratio;
 
         Ratio(float ratio) {
@@ -56,7 +57,7 @@ public class CameraUtils {
         }
     }
 
-    private static int mCameraID = Camera.CameraInfo.CAMERA_FACING_FRONT;
+    private static int mCameraID = Camera.CameraInfo.CAMERA_FACING_BACK;
     private static Camera mCamera;
     // 相机帧率
     private static int mCameraPreviewFps;
@@ -97,14 +98,14 @@ public class CameraUtils {
         mCamera.setParameters(parameters);
         int width = DEFAULT_16_9_WIDTH;
         int height = DEFAULT_16_9_HEIGHT;
-        if (mRatio == Ratio.RATIO_4_3 || mRatio == Ratio.RATIO_1_1) {
+        if (mRatio == Ratio.RATIO_4_3 || mRatio == Ratio.RATIO_4_3_2_1_1) {
             width = DEFAULT_4_3_WIDTH;
             height = DEFAULT_4_3_HEIGHT;
         }
         setPreviewSize(mCamera, width, height);
         setPictureSize(mCamera, width, height);
         calculateCameraPreviewOrientation((Activity) context);
-        TextureRotationUtils.setRatio_1_1(mRatio == Ratio.RATIO_1_1, getPreviewSize());
+        TextureRotationUtils.setRatio_1_1(mRatio, getPreviewSize());
         mCamera.setDisplayOrientation(mOrientation);
     }
 
@@ -445,7 +446,7 @@ public class CameraUtils {
     private static void setPreviewSize(Camera camera, int expectWidth, int expectHeight) {
         Camera.Parameters parameters = camera.getParameters();
         Camera.Size size = calculatePerfectSize(parameters.getSupportedPreviewSizes(),
-                expectWidth, expectHeight, CalculateType.Max);
+                expectWidth, expectHeight, CalculateType.Lower);
         parameters.setPreviewSize(size.width, size.height);
         camera.setParameters(parameters);
     }

@@ -122,6 +122,9 @@ public class RenderThread extends HandlerThread implements SurfaceTexture.OnFram
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     void surfaceCreated(SurfaceHolder holder) {
+        if (mEglCore!=null){
+            return;
+        }
         mEglCore = new EglCore(null, EglCore.FLAG_RECORDABLE);
         mDisplaySurface = new WindowSurface(mEglCore, holder.getSurface(), false);
         mDisplaySurface.makeCurrent();
