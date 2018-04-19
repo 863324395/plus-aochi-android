@@ -203,8 +203,6 @@ public abstract class AutoPlayScrollListener extends RecyclerView.OnScrollListen
         Rect rect = new Rect();
         boolean b = view.getLocalVisibleRect(rect);
         if (b) {
-            LogUtils.d("rect.width()::"+rect.width() +"比上 "+view.getMeasuredWidth());
-            LogUtils.d("rect.height()::"+rect.height() +"比上 "+view.getMeasuredHeight());
             if (rect.width() == view.getMeasuredWidth() && rect.height() == view.getMeasuredHeight()) {
                 return ALL_VISIBLE;
             }
