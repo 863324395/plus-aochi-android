@@ -1079,4 +1079,5 @@
     <string name="add_to_black_list">加入黑名单</string>
     <string name="add_black_list_success">操作成功</string>
     <string name="remove_black_list_success">操作成功</string>
+    <string name="integartion_not_enough">积分不足</string>
 </resources>

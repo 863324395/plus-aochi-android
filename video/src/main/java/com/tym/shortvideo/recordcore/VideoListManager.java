@@ -10,6 +10,9 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+import static com.tym.shortvideo.utils.TrimVideoUtil.MIN_TIME_FRAME;
+import static com.tym.shortvideo.utils.TrimVideoUtil.VIDEO_MAX_DURATION;
+
 /**
  * 视频文件管理器
  * Created by cain.huang on 2017/12/29.
@@ -18,8 +21,8 @@ import java.util.List;
 public class VideoListManager {
 
     // 十秒时长
-    public static final int DURATION_TEN_SECOND = 15 * 1000;
-    public static final int DURATION_THREE_SECOND = 3 * 1000;
+    public static final int DURATION_TEN_SECOND = VIDEO_MAX_DURATION * 1000;
+    public static final int DURATION_THREE_SECOND = MIN_TIME_FRAME * 1000;
     // 三分钟时长
     public static final int DURATION_THREE_MINUTE = 180 * 1000;
 

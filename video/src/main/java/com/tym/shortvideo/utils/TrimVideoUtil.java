@@ -26,7 +26,7 @@ import java.util.List;
 public class TrimVideoUtil {
 
     private static final String TAG = TrimVideoUtil.class.getSimpleName();
-    public static final int VIDEO_MAX_DURATION = 10;
+    public static final int VIDEO_MAX_DURATION = 15;
     public static final int MIN_TIME_FRAME = 3;
     private static int thumb_Width = (DeviceUtils.getScreenWidth() - DeviceUtils.dipToPX(20)) /
             VIDEO_MAX_DURATION;

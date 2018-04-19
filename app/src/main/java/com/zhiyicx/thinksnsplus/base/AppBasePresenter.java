@@ -107,7 +107,7 @@ public abstract class AppBasePresenter<V extends IBaseView> extends BasePresente
                                     .getCurrencyRecharge().isOpen()) {
                                 mRootView.goRecharge(IntegrationRechargeActivity.class);
                             } else {
-                                return Observable.error(new RuntimeException(mContext.getString(R.string.handle_fail)));
+                                return Observable.error(new RuntimeException(mContext.getString(R.string.integartion_not_enough)));
                             }
                             return Observable.error(new RuntimeException(DEFAULT_INTEGRATION_EXCEPTION_MESSAGE));
                         }
@@ -116,7 +116,7 @@ public abstract class AppBasePresenter<V extends IBaseView> extends BasePresente
                                 .getCurrencyRecharge().isOpen()) {
                             mRootView.goRecharge(IntegrationRechargeActivity.class);
                         } else {
-                            return Observable.error(new RuntimeException(mContext.getString(R.string.handle_fail)));
+                            return Observable.error(new RuntimeException(mContext.getString(R.string.integartion_not_enough)));
                         }
                         return Observable.error(new RuntimeException(DEFAULT_INTEGRATION_EXCEPTION_MESSAGE));
                     }
