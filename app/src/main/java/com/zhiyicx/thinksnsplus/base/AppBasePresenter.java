@@ -76,16 +76,18 @@ public abstract class AppBasePresenter<V extends IBaseView> extends BasePresente
     protected Observable<Object> handleWalletBlance(long amount) {
         return mCommentRepository.getCurrentLoginUserInfo()
                 .flatMap(userInfoBean -> {
-                    mUserInfoBeanGreenDao.insertOrReplace(userInfoBean);
-                    if (userInfoBean.getWallet() != null) {
-                        mWalletBeanGreenDao.insertOrReplace(userInfoBean.getWallet());
-                        if (userInfoBean.getWallet().getBalance() < amount) {
+                    if (amount > 0) {
+                        mUserInfoBeanGreenDao.insertOrReplace(userInfoBean);
+                        if (userInfoBean.getWallet() != null) {
+                            mWalletBeanGreenDao.insertOrReplace(userInfoBean.getWallet());
+                            if (userInfoBean.getWallet().getBalance() < amount) {
+                                mRootView.goRecharge(WalletActivity.class);
+                                return Observable.error(new RuntimeException(DEFAULT_WALLET_EXCEPTION_MESSAGE));
+                            }
+                        } else {
                             mRootView.goRecharge(WalletActivity.class);
                             return Observable.error(new RuntimeException(DEFAULT_WALLET_EXCEPTION_MESSAGE));
                         }
-                    } else {
-                        mRootView.goRecharge(WalletActivity.class);
-                        return Observable.error(new RuntimeException(DEFAULT_WALLET_EXCEPTION_MESSAGE));
                     }
                     return Observable.just(userInfoBean);
                 });
@@ -101,8 +103,18 @@ public abstract class AppBasePresenter<V extends IBaseView> extends BasePresente
         return mCommentRepository.getCurrentLoginUserInfo()
                 .flatMap(userInfoBean -> {
                     mUserInfoBeanGreenDao.insertOrReplace(userInfoBean);
-                    if (userInfoBean.getCurrency() != null) {
-                        if (userInfoBean.getCurrency().getSum() < amount) {
+                    if (amount > 0) {
+                        if (userInfoBean.getCurrency() != null) {
+                            if (userInfoBean.getCurrency().getSum() < amount) {
+                                if (getSystemConfigBean() != null && getSystemConfigBean().getCurrencyRecharge() != null && getSystemConfigBean()
+                                        .getCurrencyRecharge().isOpen()) {
+                                    mRootView.goRecharge(IntegrationRechargeActivity.class);
+                                } else {
+                                    return Observable.error(new RuntimeException(mContext.getString(R.string.integartion_not_enough)));
+                                }
+                                return Observable.error(new RuntimeException(DEFAULT_INTEGRATION_EXCEPTION_MESSAGE));
+                            }
+                        } else {
                             if (getSystemConfigBean() != null && getSystemConfigBean().getCurrencyRecharge() != null && getSystemConfigBean()
                                     .getCurrencyRecharge().isOpen()) {
                                 mRootView.goRecharge(IntegrationRechargeActivity.class);
@@ -111,14 +123,6 @@ public abstract class AppBasePresenter<V extends IBaseView> extends BasePresente
                             }
                             return Observable.error(new RuntimeException(DEFAULT_INTEGRATION_EXCEPTION_MESSAGE));
                         }
-                    } else {
-                        if (getSystemConfigBean() != null && getSystemConfigBean().getCurrencyRecharge() != null && getSystemConfigBean()
-                                .getCurrencyRecharge().isOpen()) {
-                            mRootView.goRecharge(IntegrationRechargeActivity.class);
-                        } else {
-                            return Observable.error(new RuntimeException(mContext.getString(R.string.integartion_not_enough)));
-                        }
-                        return Observable.error(new RuntimeException(DEFAULT_INTEGRATION_EXCEPTION_MESSAGE));
                     }
                     return Observable.just(userInfoBean);
                 });
