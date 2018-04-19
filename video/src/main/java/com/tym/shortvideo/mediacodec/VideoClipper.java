@@ -368,8 +368,8 @@ public class VideoClipper {
         //设置视频的编码参数
         MediaFormat mediaFormat = MediaFormat.createVideoFormat("video/avc", encodeW, encodeH);
         // 1.5M
-        mediaFormat.setInteger(MediaFormat.KEY_BIT_RATE, 1572864);
-        mediaFormat.setInteger(MediaFormat.KEY_FRAME_RATE, 24);
+        mediaFormat.setInteger(MediaFormat.KEY_BIT_RATE, 2097152);
+        mediaFormat.setInteger(MediaFormat.KEY_FRAME_RATE, 20);
         mediaFormat.setInteger(MediaFormat.KEY_COLOR_FORMAT, MediaCodecInfo.CodecCapabilities.COLOR_FormatSurface);
         mediaFormat.setInteger(MediaFormat.KEY_I_FRAME_INTERVAL, 1);
         videoEncoder.configure(mediaFormat, null, null, MediaCodec.CONFIGURE_FLAG_ENCODE);

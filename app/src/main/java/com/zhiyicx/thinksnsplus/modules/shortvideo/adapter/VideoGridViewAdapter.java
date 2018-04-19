@@ -36,12 +36,11 @@ public class VideoGridViewAdapter extends CommonAdapter<VideoInfo> {
     }
 
     /**
-     *
      * @param holder
      * @param video
      * @param position
      * @link https://blog.csdn.net/u012947056/article/details/78508986
-     *        DiskCacheStrategy.RESULT && DiskCacheStrategy.SOURCE
+     * DiskCacheStrategy.RESULT && DiskCacheStrategy.SOURCE
      */
     @Override
     protected void convert(ViewHolder holder, VideoInfo video, int position) {
@@ -53,8 +52,10 @@ public class VideoGridViewAdapter extends CommonAdapter<VideoInfo> {
             holder.setText(R.id.tv_duration, DateUtil.convertSecondsToTime(video.getDuration() / 1000));
             Glide.with(mContext)
                     .load(video.getPath())
-            .diskCacheStrategy(DiskCacheStrategy.RESULT)
-            .into(holder.getImageViwe(R.id.iv_cover));
+                    .placeholder(R.drawable.shape_default_image)
+                    .error(R.drawable.shape_default_image)
+                    .diskCacheStrategy(DiskCacheStrategy.RESULT)
+                    .into(holder.getImageViwe(R.id.iv_cover));
         }
 
 

@@ -341,7 +341,7 @@ public class TrimVideoUtil {
                                                            continue;
                                                        }
 
-                                                       if (video.getDuration() < 500) {
+                                                       if (video.getDuration() < 3000) {
                                                            continue;
                                                        }
                                                        videos.add(video);
