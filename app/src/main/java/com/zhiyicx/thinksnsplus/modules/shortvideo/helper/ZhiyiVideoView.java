@@ -65,6 +65,13 @@ public class ZhiyiVideoView extends JZVideoPlayerStandard {
         super(context, attrs);
     }
 
+
+
+    @Override
+    public void setUp(String url, int screen, Object... objects) {
+        super.setUp(url, screen, objects);
+    }
+
     @Override
     public void onPrepared() {
         super.onPrepared();
@@ -349,6 +356,12 @@ public class ZhiyiVideoView extends JZVideoPlayerStandard {
             e.printStackTrace();
         }
 //        JZMediaManager.instance().jzMediaInterface.setVolume(1f, 1f);
+    }
+
+    @Override
+    public void startWindowTiny() {
+        // 彻底做掉小窗播放
+        //super.startWindowTiny();
     }
 
     @Override

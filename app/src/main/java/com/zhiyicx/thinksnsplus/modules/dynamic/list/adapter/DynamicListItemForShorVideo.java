@@ -20,12 +20,15 @@ import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhiyicx.thinksnsplus.modules.shortvideo.helper.ZhiyiVideoView;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
+import java.util.LinkedHashMap;
+
 import cn.jzvd.JZMediaManager;
 import cn.jzvd.JZUtils;
 import cn.jzvd.JZVideoPlayer;
 import cn.jzvd.JZVideoPlayerManager;
 import cn.jzvd.JZVideoPlayerStandard;
 
+import static cn.jzvd.JZVideoPlayer.URL_KEY_DEFAULT;
 import static com.zhiyicx.thinksnsplus.data.beans.DynamicListAdvert.DEFAULT_ADVERT_FROM_TAG;
 
 /**
@@ -150,24 +153,38 @@ public class DynamicListItemForShorVideo extends DynamicListBaseItem {
                     .into(view.thumbImageView);
 
         }
-        view.setUp(videoUrl, JZVideoPlayerStandard.SCREEN_WINDOW_LIST);
+
+
         if (JZVideoPlayerManager.getFirstFloor() != null
                 && JZVideoPlayerManager.getFirstFloor().positionInList == positon
-                && JZUtils.dataSourceObjectsContainsUri(JZVideoPlayerManager.getFirstFloor().dataSourceObjects, JZMediaManager.getCurrentDataSource())
                 && !JZVideoPlayerManager.getCurrentJzvd().equals(view)) {
 
-            JZVideoPlayer first = JZVideoPlayerManager.getFirstFloor();
-            if (first instanceof ZhiyiVideoView) {
-                ZhiyiVideoView videoView = (ZhiyiVideoView) first;
-                if (!videoFrom().equals(videoView.mVideoFrom)) {
-                    return;
-                }
+            boolean isDetailBackToList = false;
+            LinkedHashMap<String, Object> map = (LinkedHashMap) JZVideoPlayerManager.getFirstFloor().dataSourceObjects[0];
+            if (map != null) {
+                isDetailBackToList = videoUrl.equals(map.get(URL_KEY_DEFAULT).toString());
             }
-            first.textureViewContainer.removeView(JZMediaManager.textureView);
-            view.setState(first.currentState);
-            view.addTextureView();
-            JZVideoPlayerManager.setFirstFloor(view);
-            view.startProgressTimer();
+
+            if (isDetailBackToList) {
+                view.setUp(videoUrl, JZVideoPlayerStandard.SCREEN_WINDOW_LIST);
+
+                JZVideoPlayer first = JZVideoPlayerManager.getFirstFloor();
+                if (first instanceof ZhiyiVideoView) {
+                    ZhiyiVideoView videoView = (ZhiyiVideoView) first;
+                    if (!videoFrom().equals(videoView.mVideoFrom)) {
+                        return;
+                    }
+                }
+                first.textureViewContainer.removeView(JZMediaManager.textureView);
+                view.setState(first.currentState);
+                view.addTextureView();
+                JZVideoPlayerManager.setFirstFloor(view);
+                view.startProgressTimer();
+            } else {
+                view.setUp(videoUrl, JZVideoPlayerStandard.SCREEN_WINDOW_LIST);
+            }
+        } else {
+            view.setUp(videoUrl, JZVideoPlayerStandard.SCREEN_WINDOW_LIST);
         }
 
         view.positionInList = positon;
@@ -180,7 +197,7 @@ public class DynamicListItemForShorVideo extends DynamicListBaseItem {
 
     @Override
     public boolean isForViewType(DynamicDetailBeanV2 item, int position) {
-        return item.getVideo() != null&& item.getFeed_from() != DEFAULT_ADVERT_FROM_TAG;
+        return item.getVideo() != null && item.getFeed_from() != DEFAULT_ADVERT_FROM_TAG;
     }
 
     @Override

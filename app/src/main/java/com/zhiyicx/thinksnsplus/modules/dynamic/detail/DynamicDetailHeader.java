@@ -61,12 +61,15 @@ import com.zhiyicx.thinksnsplus.widget.DynamicHorizontalStackIconView;
 import com.zhiyicx.thinksnsplus.widget.ReWardView;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 import cn.jzvd.JZMediaManager;
 import cn.jzvd.JZUtils;
 import cn.jzvd.JZVideoPlayerManager;
 import cn.jzvd.JZVideoPlayerStandard;
+
+import static cn.jzvd.JZVideoPlayer.URL_KEY_DEFAULT;
 
 /**
  * @Describe 动态详情头部信息
@@ -197,22 +200,44 @@ public class DynamicDetailHeader {
 
                 String videoUrl = String.format(ApiConfig.APP_DOMAIN + ApiConfig.FILE_PATH,
                         dynamicBean.getVideo().getVideo_id());
-                videoView.setUp(videoUrl, JZVideoPlayerStandard.SCREEN_WINDOW_LIST);
-                videoView.positionInList = 0;
-                if (JZVideoPlayerManager.getFirstFloor() != null) {
-                    videoView.setState(state);
-                    videoView.positionInList = JZVideoPlayerManager.getFirstFloor().positionInList;
-                    videoView.addTextureView();
-                    if (JZVideoPlayerManager.getFirstFloor() instanceof ZhiyiVideoView) {
-                        ZhiyiVideoView firstFloor = (ZhiyiVideoView) JZVideoPlayerManager.getFirstFloor();
-                        videoView.mVideoFrom = firstFloor.mVideoFrom;
+
+
+                LogUtils.d(JZMediaManager.getCurrentDataSource());
+                if (JZVideoPlayerManager.getFirstFloor() != null
+                        && !JZVideoPlayerManager.getCurrentJzvd().equals(videoView)) {
+
+                    boolean isListToDetail = false;
+                    LinkedHashMap<String, Object> map = (LinkedHashMap) JZVideoPlayerManager.getFirstFloor().dataSourceObjects[0];
+                    if (map != null) {
+                        isListToDetail = videoUrl.equals(map.get(URL_KEY_DEFAULT).toString());
                     }
-                    JZVideoPlayerManager.setFirstFloor(videoView);
-                    videoView.startProgressTimer();
-                    if (state == ZhiyiVideoView.CURRENT_STATE_PAUSE) {
-                        videoView.startButton.callOnClick();
+
+                    if (isListToDetail){
+                        videoView.setUp(videoUrl, JZVideoPlayerStandard.SCREEN_WINDOW_LIST);
+                        videoView.positionInList = 0;
+
+                        videoView.setState(state);
+                        videoView.positionInList = JZVideoPlayerManager.getFirstFloor().positionInList;
+                        videoView.addTextureView();
+                        if (JZVideoPlayerManager.getFirstFloor() instanceof ZhiyiVideoView) {
+                            ZhiyiVideoView firstFloor = (ZhiyiVideoView) JZVideoPlayerManager.getFirstFloor();
+                            videoView.mVideoFrom = firstFloor.mVideoFrom;
+                        }
+                        JZVideoPlayerManager.setFirstFloor(videoView);
+                        videoView.startProgressTimer();
+                        if (state == ZhiyiVideoView.CURRENT_STATE_PAUSE) {
+                            videoView.startButton.callOnClick();
+                        }
+                    }else{
+                        videoView.setUp(videoUrl, JZVideoPlayerStandard.SCREEN_WINDOW_LIST);
+                        videoView.positionInList = 0;
                     }
+
+                } else {
+                    videoView.setUp(videoUrl, JZVideoPlayerStandard.SCREEN_WINDOW_LIST);
+                    videoView.positionInList = 0;
                 }
+
                 Glide.with(mContext)
                         .load(video.getGlideUrl())
                         .placeholder(R.drawable.shape_default_image)
