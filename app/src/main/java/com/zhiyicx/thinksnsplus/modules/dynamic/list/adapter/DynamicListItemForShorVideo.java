@@ -11,6 +11,7 @@ import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
+import com.bumptech.glide.signature.StringSignature;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.FastBlur;
@@ -128,8 +129,8 @@ public class DynamicListItemForShorVideo extends DynamicListBaseItem {
             Glide.with(mContext)
                     .load(video.getCover())
                     .override(with, height)
+                    .signature(new StringSignature(String.valueOf(System.currentTimeMillis())))
                     .placeholder(R.drawable.shape_default_image)
-                    .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .error(R.drawable.shape_default_image)
                     .listener(new RequestListener<String, GlideDrawable>() {
                         @Override

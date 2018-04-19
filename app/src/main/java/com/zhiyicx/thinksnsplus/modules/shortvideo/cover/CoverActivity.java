@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
 import com.zhiyicx.baseproject.base.TSActivity;
+import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
+import com.zhiyicx.thinksnsplus.modules.shortvideo.record.RecordFragment;
 
 import java.util.ArrayList;
 
@@ -18,9 +20,9 @@ import static com.zhiyicx.thinksnsplus.modules.shortvideo.cover.CoverFragment.RE
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class CoverActivity extends TSActivity {
+public class CoverActivity extends TSActivity<AppBasePresenter, CoverFragment> {
     @Override
-    protected Fragment getFragment() {
+    protected CoverFragment getFragment() {
         return CoverFragment.newInstance(getIntent().getExtras());
     }
 
@@ -49,6 +51,10 @@ public class CoverActivity extends TSActivity {
             return;
         }
         context.startActivity(intent);
+    }
 
+    @Override
+    public void onBackPressed() {
+        mContanierFragment.onBackPressed();
     }
 }
