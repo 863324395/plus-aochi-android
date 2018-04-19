@@ -59,7 +59,7 @@ public class DynamicDetailAdvertHeader {
         adverts = adverts.subList(0, adverts.size() >= 3 ? 3 : adverts.size());
         for (int i = 0; i < adverts.size(); i++) {
             FilterImageView imageView = new FilterImageView(mContext);
-            imageView.setImageResource(R.mipmap.icon);
+            imageView.setImageResource(R.drawable.shape_default_image);
             imageView.setLayoutParams(params);
             mAdvertContainer.addView(imageView);
             final int position = i;

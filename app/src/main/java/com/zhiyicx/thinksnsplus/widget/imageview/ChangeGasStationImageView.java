@@ -21,7 +21,6 @@ import com.zhiyicx.thinksnsplus.R;
  */
 public class ChangeGasStationImageView extends android.support.v7.widget.AppCompatImageView {
     private static final int DEFAULT_RADUIS_SIZE = 20;
-    private Path mPath = new Path();
     private RectF mRectF = new RectF(0, 0, 0, 0);
 
     /*圆角的半径，依次为左上角 x y 半径，右上角，右下角，左下角*/
@@ -70,6 +69,8 @@ public class ChangeGasStationImageView extends android.support.v7.widget.AppComp
     protected void onDraw(Canvas canvas) {
         mRectF.right = getWidth();
         mRectF.bottom = getHeight();
+        Path mPath = new Path();
+
         mPath.addRoundRect(mRectF, rids, Path.Direction.CW);
         canvas.clipPath(mPath);
         super.onDraw(canvas);

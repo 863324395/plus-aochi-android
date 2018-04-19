@@ -14,6 +14,7 @@ import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.DrawableProvider;
+import com.zhiyicx.common.utils.FileUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.AnimationRectBean;
 import com.zhiyicx.thinksnsplus.modules.gallery.GalleryActivity;
@@ -44,8 +45,9 @@ public class ChatRowPicture extends ChatBaseRow {
     private int mMaxNetImageWith;
 
 
-
     private AppCompatImageView mIvChatContent;
+    private AppCompatImageView mIvChatContentMask;
+
 
     public ChatRowPicture(Context context, EMMessage message, int position, BaseAdapter adapter, ChatUserInfoBean chatUserInfoBean) {
         super(context, message, position, adapter, chatUserInfoBean);
@@ -63,6 +65,7 @@ public class ChatRowPicture extends ChatBaseRow {
     protected void onFindViewById() {
         super.onFindViewById();
         mIvChatContent = (AppCompatImageView) findViewById(R.id.iv_chat_content);
+        mIvChatContentMask = (AppCompatImageView) findViewById(R.id.iv_chat_content_mask);
     }
 
     @Override
@@ -72,8 +75,14 @@ public class ChatRowPicture extends ChatBaseRow {
         // 图片地址
         int width;
         int height;
-        String url = !TextUtils.isEmpty(imageMessageBody.getLocalUrl()) ? imageMessageBody.getRemoteUrl() : imageMessageBody.getRemoteUrl();
-        if (!TextUtils.isEmpty(imageMessageBody.getLocalUrl()) && TextUtils.isEmpty(imageMessageBody.getRemoteUrl())) {
+        String url;
+        // 自己发送的,并且文件还存在
+        boolean isUseLocalImage = message.direct() == EMMessage.Direct.SEND && !TextUtils.isEmpty(imageMessageBody.getLocalUrl()) && FileUtils
+                .isFileExists
+                        (imageMessageBody.getLocalUrl());
+        url = isUseLocalImage ? imageMessageBody.getLocalUrl() : imageMessageBody.getRemoteUrl();
+
+        if (isUseLocalImage) {
             // 本地
             BitmapFactory.Options option = DrawableProvider.getPicsWHByFile(imageMessageBody.getLocalUrl());
             if (option.outWidth == 0) {
@@ -102,6 +111,10 @@ public class ChatRowPicture extends ChatBaseRow {
         layoutParams.width = width;
         layoutParams.height = height;
         mIvChatContent.setLayoutParams(layoutParams);
+        RelativeLayout.LayoutParams layoutParamsMask = (RelativeLayout.LayoutParams) mIvChatContentMask.getLayoutParams();
+        layoutParamsMask.width = width;
+        layoutParamsMask.height = height;
+        mIvChatContentMask.setLayoutParams(layoutParamsMask);
 
         ImageUtils.loadImageDefault(mIvChatContent, url);
 
@@ -125,6 +138,7 @@ public class ChatRowPicture extends ChatBaseRow {
                     GalleryActivity.startToGallery(getContext(), 0, imageBeanList,
                             animationRectBeanArrayList);
                 });
+
     }
 
     @Override
