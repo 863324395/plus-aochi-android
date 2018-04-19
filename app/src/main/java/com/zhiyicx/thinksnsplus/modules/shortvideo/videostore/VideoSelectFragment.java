@@ -46,6 +46,7 @@ import static com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.POPUPWI
  * @Description
  */
 public class VideoSelectFragment extends TSListFragment {
+    private static final int DEFAUT_CLOUMS = 4;
 
     private ActionPopupWindow mPopWindow;
 
@@ -82,7 +83,7 @@ public class VideoSelectFragment extends TSListFragment {
         super.initData();
         copyData = new ArrayList<>();
         mRvList.setOverScrollMode(View.OVER_SCROLL_NEVER);
-        mRvList.setPadding(20, 20, 0, 0);
+        mRvList.setPadding(0, getResources().getDimensionPixelOffset(R.dimen.spacing_small), -getResources().getDimensionPixelOffset(R.dimen.spacing_small), getResources().getDimensionPixelOffset(R.dimen.spacing_small));
         mRvList.setBackgroundColor(0xffffffff);
 
         TrimVideoUtil.getAllVideoFiles(mActivity, (videoInfos, integer) -> mActivity.runOnUiThread(() -> {
@@ -131,12 +132,13 @@ public class VideoSelectFragment extends TSListFragment {
 
     @Override
     protected RecyclerView.ItemDecoration getItemDecoration() {
-        return new TGridDecoration(20, 20, true);
+        return new TGridDecoration(getResources().getDimensionPixelOffset(R.dimen.spacing_small), getResources().getDimensionPixelOffset(R.dimen
+                .spacing_small), true);
     }
 
     @Override
     protected RecyclerView.LayoutManager getLayoutManager() {
-        return new GridLayoutManager(mActivity, 4);
+        return new GridLayoutManager(mActivity, DEFAUT_CLOUMS);
     }
 
     /**
@@ -177,7 +179,7 @@ public class VideoSelectFragment extends TSListFragment {
                         if (videoInfo.getDuration() <= CountDownManager.getInstance().getMinMilliSeconds()) {
                             ArrayList<String> arrayList = new ArrayList<>();
                             arrayList.add(videoInfo.getPath());
-                            CoverActivity.startCoverActivity(mActivity, arrayList, false,false);
+                            CoverActivity.startCoverActivity(mActivity, arrayList, false, false);
 //                            PreviewActivity.startPreviewActivity(mActivity, arrayList);
                         } else {
                             TrimmerActivity.startTrimmerActivity(mActivity, videoInfo);

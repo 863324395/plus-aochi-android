@@ -380,7 +380,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
         setAdapter(adapter, new DynamicListItemForEightImage(getContext()));
         setAdapter(adapter, new DynamicListItemForNineImage(getContext()));
         setAdapter(adapter, new DynamicListItemForAdvert(getContext()));
-        setAdapter(adapter, new DynamicListItemForShorVideo(getContext(), this){
+        setAdapter(adapter, new DynamicListItemForShorVideo(getContext(), this) {
             @Override
             protected String videoFrom() {
                 return mDynamicType;
@@ -420,13 +420,15 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
 
     @Override
     public void onNetResponseSuccess(@NotNull List<DynamicDetailBeanV2> data, boolean isLoadMore) {
-        try {// 添加广告
-            RealAdvertListBean realAdvertListBean = mListAdvert.get(getPage() - 1);
-            DynamicListAdvert advert = realAdvertListBean.getAdvertFormat().getAnalog();
-            long maxId = data.get(data.size() - 1).getMaxId();
-            data.add(DynamicListAdvert.advert2Dynamic(advert, maxId));
-        } catch (Exception ignore) {
-            ignore.printStackTrace();
+        if (mListAdvert != null && getPage() <= mListAdvert.size()) {
+            try {// 添加广告
+                RealAdvertListBean realAdvertListBean = mListAdvert.get(getPage() - 1);
+                DynamicListAdvert advert = realAdvertListBean.getAdvertFormat().getAnalog();
+                long maxId = data.get(data.size() - 1).getMaxId();
+                data.add(DynamicListAdvert.advert2Dynamic(advert, maxId));
+            } catch (Exception ignore) {
+                ignore.printStackTrace();
+            }
         }
         super.onNetResponseSuccess(data, isLoadMore);
     }

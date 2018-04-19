@@ -53,6 +53,8 @@ public class VideoGridViewAdapter extends CommonAdapter<VideoInfo> {
             holder.setText(R.id.tv_duration, DateUtil.convertSecondsToTime(video.getDuration() / 1000));
             Glide.with(mContext)
                     .load(video.getPath())
+                    .placeholder(R.drawable.shape_default_image)
+                    .error(R.drawable.shape_default_error_image)
             .diskCacheStrategy(DiskCacheStrategy.RESULT)
             .into(holder.getImageViwe(R.id.iv_cover));
         }
