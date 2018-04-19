@@ -516,7 +516,9 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable, Ser
 
         int with = ImageUtils.getmImageContainerWith();
         int height = (with * netHeight / netWidth);
-        int mImageMaxHeight = ImageUtils.getmImageMaxHeight();
+
+        // 视频特殊处理，最大宽高 ImageUtils.getmImageContainerWith()
+        int mImageMaxHeight = ImageUtils.getmImageContainerWith();
         height = height > mImageMaxHeight ? mImageMaxHeight : height;
         // 单张图最小高度
         height = height < DEFALT_IMAGE_HEIGHT ? DEFALT_IMAGE_HEIGHT : height;
