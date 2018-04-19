@@ -128,5 +128,19 @@ public interface PersonalCenterContract {
         void shareUserInfo(UserInfoBean userInfoBean);
 
         List<ChatUserInfoBean> getChatUserList(UserInfoBean userInfoBean);
+
+        /**
+         * 移除黑名单
+         *
+         * @param userInfoBean
+         */
+        void removeBlackLIst(UserInfoBean userInfoBean);
+
+        /**
+         * 加入黑名单
+         *
+         * @param userInfoBean
+         */
+        void addToBlackList(UserInfoBean userInfoBean);
     }
 }

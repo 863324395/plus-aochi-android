@@ -324,7 +324,7 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                         @Override
                         public GlideUrl requestGlideUrl() {
                             return ImageUtils.imagePathConvertV2(canLook, mImageBean.getStorage_id(), 0, 0,
-                                    ImageZipConfig.IMAGE_ZIP_BIG, AppApplication.getTOKEN());
+                                    ImageUtils.imageIsGif(imageBean.getImgMimeType())?ImageZipConfig.IMAGE_100_ZIP:ImageZipConfig.IMAGE_ZIP_BIG, AppApplication.getTOKEN());
                         }
                     }
                             .requestGlideUrl())
@@ -362,7 +362,7 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                             DrawableRequestBuilder builder = Glide.with(context)
                                     .load(
                                             ImageUtils.imagePathConvertV2(canLook, mImageBean.getStorage_id(), 0, 0,
-                                                    ImageZipConfig.IMAGE_ZIP_BIG, AppApplication.getTOKEN())
+                                                    ImageUtils.imageIsGif(imageBean.getImgMimeType())?ImageZipConfig.IMAGE_100_ZIP:ImageZipConfig.IMAGE_ZIP_BIG, AppApplication.getTOKEN())
                                     )
                                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                                     .listener(new RequestListener<GlideUrl, GlideDrawable>() {

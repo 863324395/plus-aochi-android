@@ -52,7 +52,7 @@ public class BlackListAdapter extends CommonAdapter<UserInfoBean> {
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .subscribe(aVoid -> {
                     // 黑名单操作,移除黑名单
-                    mPresenter.removeBlackList();
+                    mPresenter.removeBlackList(position);
                 });
 
         // 设置用户名，用户简介

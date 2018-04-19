@@ -11,6 +11,7 @@ import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.widget.UserAvatarView;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
@@ -47,7 +48,7 @@ public class SelectFriendsAllAdapter extends CommonAdapter<UserInfoBean> {
         RxView.clicks(holder.getConvertView())
                 .subscribe(aVoid -> {
                     if (mListener != null && userInfoBean.getIsSelected() != STATE_CAN_NOT_BE_CHANGED) {
-                        if (userInfoBean.getIsSelected() == STATE_SELECTED){
+                        if (userInfoBean.getIsSelected() == STATE_SELECTED) {
                             userInfoBean.setIsSelected(STATE_UNSELECTED);
                         } else {
                             userInfoBean.setIsSelected(STATE_SELECTED);
@@ -55,6 +56,12 @@ public class SelectFriendsAllAdapter extends CommonAdapter<UserInfoBean> {
                         setSelectedState(cbFriends, userInfoBean);
                         mListener.onUserSelected(userInfoBean);
                     }
+                });
+        RxView.clicks(ivUserPortrait)
+                .subscribe(aVoid -> {
+                    // 个人中心
+                    PersonalCenterFragment.startToPersonalCenter(holder.getConvertView()
+                            .getContext(), userInfoBean);
                 });
     }
 

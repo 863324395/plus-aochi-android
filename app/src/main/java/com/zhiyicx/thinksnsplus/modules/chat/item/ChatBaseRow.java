@@ -70,7 +70,13 @@ public class ChatBaseRow extends EaseChatRow {
 
     @Override
     protected void onViewUpdate(EMMessage msg) {
-        mTvMessageStatus.setText(context.getString(msg.isAcked() ? R.string.chat_send_message_read : R.string.chat_send_message_unread));
+        if (msg.isAcked()) {
+            mTvMessageStatus.setVisibility(GONE);
+        } else {
+            mTvMessageStatus.setVisibility(VISIBLE);
+            mTvMessageStatus.setText(R.string.chat_send_message_unread);
+
+        }
         switch (msg.status()) {
             case CREATE:
                 onMessageCreate();
@@ -92,6 +98,7 @@ public class ChatBaseRow extends EaseChatRow {
     protected void onSetUpView() {
         this.mUserInfoBean = TSEMHyphenate.getInstance().getChatUser(message.getFrom());
         // 头像
+        mTvMessageStatus.setVisibility(VISIBLE);
         mTvMessageStatus.setText(context.getString(R.string.chat_send_message_unread));
         ImageUtils.loadUserHead(mUserInfoBean, mIvChatHeadpic, false);
         // 时间

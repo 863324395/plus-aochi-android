@@ -17,6 +17,7 @@ import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.config.MarkdownConfig;
 import com.zhiyicx.baseproject.impl.share.UmengSharePolicyImpl;
+import com.zhiyicx.common.BuildConfig;
 import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.thridmanager.share.OnShareCallbackListener;
@@ -283,13 +284,13 @@ public class PersonalCenterPresenter extends AppBasePresenter<PersonalCenterCont
         return list;
     }
 
-    private ChatUserInfoBean getChatUser(UserInfoBean userInfoBean){
+    private ChatUserInfoBean getChatUser(UserInfoBean userInfoBean) {
         ChatUserInfoBean chatUserInfoBean = new ChatUserInfoBean();
         chatUserInfoBean.setUser_id(userInfoBean.getUser_id());
         chatUserInfoBean.setAvatar(userInfoBean.getAvatar());
         chatUserInfoBean.setName(userInfoBean.getName());
         chatUserInfoBean.setSex(userInfoBean.getSex());
-        if (userInfoBean.getVerified() != null){
+        if (userInfoBean.getVerified() != null) {
             ChatVerifiedBean verifiedBean = new ChatVerifiedBean();
             verifiedBean.setDescription(userInfoBean.getVerified().getDescription());
             verifiedBean.setIcon(userInfoBean.getVerified().getIcon());
@@ -625,7 +626,7 @@ public class PersonalCenterPresenter extends AppBasePresenter<PersonalCenterCont
                             mRootView.getListDatas().get(dynamicPosition).getPaid_node().setPaid(true);
                             mRootView.getListDatas().get(dynamicPosition).setFeed_content(data.getData());
                             if (data.getData() != null) {
-                                String friendlyContent = data.getData().replaceAll(MarkdownConfig.NETSITE_FORMAT,  Link
+                                String friendlyContent = data.getData().replaceAll(MarkdownConfig.NETSITE_FORMAT, Link
                                         .DEFAULT_NET_SITE);
                                 if (friendlyContent.length() > DYNAMIC_LIST_CONTENT_MAX_SHOW_SIZE) {
                                     friendlyContent = friendlyContent.substring(0, DYNAMIC_LIST_CONTENT_MAX_SHOW_SIZE) + "...";
@@ -741,8 +742,8 @@ public class PersonalCenterPresenter extends AppBasePresenter<PersonalCenterCont
                 .observeOn(Schedulers.io())
                 .map(bundle -> {
                     boolean isNeedRefresh = bundle.getBoolean(DYNAMIC_LIST_NEED_REFRESH);
-                    int dynamicPosition=-1;
-                    if (isNeedRefresh){
+                    int dynamicPosition = -1;
+                    if (isNeedRefresh) {
                         DynamicDetailBeanV2 dynamicBean = bundle.getParcelable(DYNAMIC_DETAIL_DATA);
                         int position = bundle.getInt(DYNAMIC_DETAIL_DATA_POSITION);
                         // 是否是更新收费信息
@@ -779,6 +780,65 @@ public class PersonalCenterPresenter extends AppBasePresenter<PersonalCenterCont
     public void deleteDynamic(DynamicDetailBeanV2 dynamicBean) {
         deleteDynamic(dynamicBean, mRootView.getListDatas().indexOf(dynamicBean));
         LogUtils.d(EventBusTagConfig.DYNAMIC_LIST_DELETE_UPDATE);
+    }
+
+    /**
+     * 加入黑名单
+     *
+     * @param userInfoBean
+     */
+    @Override
+    public void addToBlackList(UserInfoBean userInfoBean) {
+        Subscription subscribe = mUserInfoRepository.addUserToBlackList(userInfoBean.getUser_id())
+                .subscribe(new BaseSubscribeForV2<Object>() {
+                    @Override
+                    protected void onSuccess(Object data) {
+                        mRootView.showSnackSuccessMessage(mContext.getString(R.string.add_black_list_success));
+                        mRootView.refreshData();
+                    }
+
+                    @Override
+                    protected void onFailure(String message, int code) {
+                        mRootView.showSnackErrorMessage(message);
+
+                    }
+
+                    @Override
+                    protected void onException(Throwable throwable) {
+                        showErrorTip(throwable);
+                    }
+                });
+        addSubscrebe(subscribe);
+
+    }
+
+    /**
+     * 移除好友
+     *
+     * @param userInfoBean
+     */
+    @Override
+    public void removeBlackLIst(UserInfoBean userInfoBean) {
+        Subscription subscribe = mUserInfoRepository.removeUserFromBlackList(userInfoBean.getUser_id())
+                .subscribe(new BaseSubscribeForV2<Object>() {
+                    @Override
+                    protected void onSuccess(Object data) {
+                        mRootView.showSnackSuccessMessage(mContext.getString(R.string.remove_black_list_success));
+                        mRootView.refreshData();
+                        EventBus.getDefault().post(userInfoBean.getUser_id(), EventBusTagConfig.EVENT_USER_REMOVE_FROM_BLACK_LIST);
+                    }
+
+                    @Override
+                    protected void onFailure(String message, int code) {
+                        mRootView.showSnackErrorMessage(message);
+                    }
+
+                    @Override
+                    protected void onException(Throwable throwable) {
+                        showErrorTip(throwable);
+                    }
+                });
+        addSubscrebe(subscribe);
     }
 
     @Override

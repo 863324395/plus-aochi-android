@@ -53,11 +53,11 @@ public interface FollowFansClient {
     /**
      * 获取用户的好友列表
      *
-     * @param max_id     offset
+     * @param offset     offset
      * @param limitCount 每页数据
      * @return Observable
      */
     @GET(APP_PATH_DELETE_USER_FRIENDS_LIST)
-    Observable<List<UserInfoBean>> getUserFriendsList(@Query("offset") long max_id, @Query("limit") Integer limitCount, @Query("keyword") String keyword);
+    Observable<List<UserInfoBean>> getUserFriendsList(@Query("offset") long offset, @Query("limit") Integer limitCount, @Query("keyword") String keyword);
 
 }

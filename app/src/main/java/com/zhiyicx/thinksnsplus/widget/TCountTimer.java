@@ -19,11 +19,18 @@ public class TCountTimer extends CountDownTimer {
     private TextView mBtn;
     private String mEndStr;
     private int mNormalColor, mTimingColor;
+    /**
+     * 跳过
+     */
     private String mDurStr;
     private boolean canUseOntick;
     private boolean canUseListener = true;
     private boolean durStrBehindTime;
     private OnTimeListener mOnTimeListener;
+    /**
+     * 数据显示差异，3s 应该显示 3 2 1， 还是 2 1 0 ,true： 3 ，2 ，1
+     */
+    private boolean mIsNeedDisplayOffset;
 
     public static final class Builder {
         private int time_count = 6000;
@@ -31,10 +38,12 @@ public class TCountTimer extends CountDownTimer {
         private TextView btn;
         private String endStr;
         private int normalColor, timingColor;
-        private String durStr;
+        private String durStr; // 跳过
         private boolean canUseOntick;
         private boolean canUseListener = true;
         private boolean durStrBehindTime;
+        private boolean mIsNeedDisplayOffset = true;
+
         private OnTimeListener onTimeListener;
 
         private Builder(TCountTimer timer) {
@@ -49,13 +58,14 @@ public class TCountTimer extends CountDownTimer {
             this.canUseListener = timer.canUseListener;
             this.durStrBehindTime = timer.durStrBehindTime;
             this.onTimeListener = timer.mOnTimeListener;
+            this.mIsNeedDisplayOffset = timer.mIsNeedDisplayOffset;
         }
 
         private Builder() {
         }
 
         public Builder buildTimeCount(int time_count) {
-            this.time_count = time_count + 1000;
+            this.time_count = time_count;
             return this;
         }
 
@@ -71,6 +81,11 @@ public class TCountTimer extends CountDownTimer {
 
         public Builder buildEndStr(String endStr) {
             this.endStr = endStr;
+            return this;
+        }
+
+        public Builder isNeedDisplayOffset(boolean isNeedDisplayOffset) {
+            this.mIsNeedDisplayOffset = isNeedDisplayOffset;
             return this;
         }
 
@@ -124,11 +139,13 @@ public class TCountTimer extends CountDownTimer {
         this.mNormalColor = builder.normalColor;
         this.mTimingColor = builder.timingColor;
         this.mTime_interval = builder.time_interval;
-        this.mTime_count = builder.time_count;
         this.canUseOntick = builder.canUseOntick;
         this.canUseListener = builder.canUseListener;
         this.durStrBehindTime = builder.durStrBehindTime;
         this.mOnTimeListener = builder.onTimeListener;
+        this.mIsNeedDisplayOffset = builder.mIsNeedDisplayOffset;
+        this.mTime_count = builder.time_count;
+
     }
 
     public static Builder builder() {
@@ -152,16 +169,16 @@ public class TCountTimer extends CountDownTimer {
             String str;
             if (!TextUtils.isEmpty(mDurStr)) {
                 if (durStrBehindTime) {
-                    str = 0 + "s" + " " + mDurStr;
+                    str = 1 + "s" + " " + mDurStr;
                 } else {
-                    str = mDurStr + " " + 0 + "s";
+                    str = mDurStr + " " + 1 + "s";
                 }
             } else {
-                str = 0 + "s";
+                str = 1 + "s";
             }
             mBtn.setText(str);
         }
-        LogUtils.d("onFinish::"+(mOnTimeListener != null && canUseListener));
+        LogUtils.d("onFinish::" + (mOnTimeListener != null && canUseListener));
         mBtn.setEnabled(canUseOntick);
         if (mOnTimeListener != null && canUseListener) {
             mOnTimeListener.onFinish();
@@ -171,6 +188,10 @@ public class TCountTimer extends CountDownTimer {
     // 计时过程显示
     @Override
     public void onTick(long millisUntilFinished) {
+        if (mIsNeedDisplayOffset) {
+            millisUntilFinished += 1000;
+        }
+
         if (mBtn == null) {
             replease();
             return;

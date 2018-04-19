@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.feedback;
 
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
 
@@ -82,11 +83,12 @@ public class FeedBackFragment extends TSFragment<FeedBackContract.Presenter> imp
         mToolbarRight.setEnabled(false);
 
 //        Observable.combineLatest(RxTextView.textChanges(mTvFeedbackContract), RxTextView.textChanges(mEtDynamicContent.getEtContent()),
-//                (charSequence, charSequence2) -> charSequence.toString().replaceAll(" ", "").length() > 0 && charSequence2.toString().replaceAll(" ", "").length() > 0)
+//                (charSequence, charSequence2) -> charSequence.toString().replaceAll(" ", "").length() > 0 && charSequence2.toString().replaceAll
+// (" ", "").length() > 0)
 //                .subscribe(enable -> mToolbarRight.setEnabled(enable), throwable -> throwable.printStackTrace());
 
         RxTextView.textChanges(mEtDynamicContent.getEtContent())
-                .map(charSequence -> charSequence.toString().replaceAll(" ", "").length() > 0).subscribe(aBoolean ->
+                .map(charSequence -> !TextUtils.isEmpty(charSequence.toString().trim())).subscribe(aBoolean ->
                 mToolbarRight.setEnabled(aBoolean)
         );
 

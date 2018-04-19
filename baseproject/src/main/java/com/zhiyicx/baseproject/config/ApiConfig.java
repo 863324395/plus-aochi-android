@@ -32,7 +32,7 @@ public class ApiConfig {
     public static final String APP_DOMAIN_FORMAL = "https://tsplus.zhibocloud.cn/";// 正式服务器
     public static final String APP_DOMAIN_FOR_TEARCHER_QIAO = "http://192.168.2.65/";// 乔老师本地服务器
 
-    public static String APP_DOMAIN = APP_DOMAIN_FORMAL;
+    public static String APP_DOMAIN = APP_DOMAIN_TEST;
 
     public static final String URL_ABOUT_US = "api/" + API_VERSION_2 + "/aboutus";// 关于我们网站
     public static final String URL_JIPU_SHOP = "http://demo.jipukeji.com";// 极铺购物地址
@@ -906,6 +906,12 @@ public class ApiConfig {
     public static final String APP_PATH_GET_USER_AROUND = "api/" + API_VERSION_2 + "/around-amap";
     // User Append Follower Count
     public static final String APP_PATH_USER_APPEND_FOLLOWER_COUNT = "api/" + API_VERSION_2 + "/user/counts";
+    // 获取用户黑名单列表
+    public static final String APP_PATH_GET_USER_BLACK_LIST = "api/" + API_VERSION_2 + "/user/blacks";
+    // 把用户加入黑名单
+    public static final String APP_PATH_ADD_USER_TO_BLACK_LIST = "api/" + API_VERSION_2 + "/user/black/{user_id}";
+    // 把用户加入黑名单
+    public static final String APP_PATH_REMOVE_USER_FROM_BLACK_LIST = "api/" + API_VERSION_2 + "/user/black/{user_id}";
 
     /**
      * 签到

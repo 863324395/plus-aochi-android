@@ -105,9 +105,7 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.View>
         mDynamicCommentBeanGreenDao = dynamicCommentBeanGreenDao;
         mSendDynamicDataBeanV2GreenDao = sendDynamicDataBeanV2GreenDao;
         mTopDynamicBeanGreenDao = topDynamicBeanGreenDao;
-        if (rootView instanceof Fragment) {
-            mSharePolicy = new UmengSharePolicyImpl(((Fragment) rootView).getActivity());
-        }
+
         mDynamicRepository = baseDynamicRepository;
     }
 

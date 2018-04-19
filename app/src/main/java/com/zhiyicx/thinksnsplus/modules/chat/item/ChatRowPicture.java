@@ -144,7 +144,4 @@ public class ChatRowPicture extends ChatBaseRow {
         }
     }
 
-    public AppCompatImageView getIvChatContent() {
-        return mIvChatContent;
-    }
 }
