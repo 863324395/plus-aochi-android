@@ -267,18 +267,20 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
                     }
                 });
 
-        // 自动播放
-//        mRvList.addOnScrollListener(new AutoPlayScrollListener() {
-//            @Override
-//            public int getPlayerViewId() {
-//                return R.id.videoplayer;
-//            }
-//
-//            @Override
-//            public boolean canAutoPlay() {
-//                return NetUtils.isWifiConnected(getContext().getApplicationContext());
-//            }
-//        });
+        // 自动播放 - 滑出屏幕暂停也在这里面
+        mRvList.addOnScrollListener(new AutoPlayScrollListener() {
+            @Override
+            public int getPlayerViewId() {
+                return R.id.videoplayer;
+            }
+
+            @Override
+            public boolean canAutoPlay() {
+                // NetUtils.isWifiConnected(getContext().getApplicationContext())
+                // 暂时关闭滑动自动播放
+                return false;
+            }
+        });
     }
 
 
