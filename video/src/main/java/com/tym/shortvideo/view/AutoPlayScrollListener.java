@@ -72,7 +72,6 @@ public abstract class AutoPlayScrollListener extends RecyclerView.OnScrollListen
                     }
                 }
             default: // TODO 滑出屏幕暂停
-//                autoPlayVideo(recyclerView, VideoTagEnum.TAG_PAUSE_VIDEO);
                 if (JZVideoPlayerManager.getCurrentJzvd() != null
                         && JZVideoPlayerManager.getCurrentJzvd().currentState == JZVideoPlayerStandard.CURRENT_STATE_PLAYING) {
                     if (PART_VISIBLE == checkVisibility(JZVideoPlayerManager.getCurrentJzvd())) {
@@ -204,7 +203,9 @@ public abstract class AutoPlayScrollListener extends RecyclerView.OnScrollListen
         Rect rect = new Rect();
         boolean b = view.getLocalVisibleRect(rect);
         if (b) {
-            if (rect.width() == view.getMeasuredWidth() && rect.height() <= view.getMeasuredHeight() / 4) {
+            LogUtils.d("rect.width()::"+rect.width() +"比上 "+view.getMeasuredWidth());
+            LogUtils.d("rect.height()::"+rect.height() +"比上 "+view.getMeasuredHeight());
+            if (rect.width() == view.getMeasuredWidth() && rect.height() == view.getMeasuredHeight()) {
                 return ALL_VISIBLE;
             }
             return PART_VISIBLE;
