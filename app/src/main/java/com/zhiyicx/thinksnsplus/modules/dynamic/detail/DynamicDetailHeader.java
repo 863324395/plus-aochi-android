@@ -99,6 +99,7 @@ public class DynamicDetailHeader {
      * Gif 是否直接播放
      */
     private boolean mIsGifPlay = false;
+    private boolean isListToDetail =false;
 
     View getDynamicDetailHeader() {
         return mDynamicDetailHeader;
@@ -206,7 +207,6 @@ public class DynamicDetailHeader {
                 if (JZVideoPlayerManager.getFirstFloor() != null
                         && !JZVideoPlayerManager.getCurrentJzvd().equals(videoView)) {
 
-                    boolean isListToDetail = false;
                     LinkedHashMap<String, Object> map = (LinkedHashMap) JZVideoPlayerManager.getFirstFloor().dataSourceObjects[0];
                     if (map != null) {
                         isListToDetail = videoUrl.equals(map.get(URL_KEY_DEFAULT).toString());
@@ -582,5 +582,7 @@ public class DynamicDetailHeader {
         void onImageClick(int iamgePosition, long amount, int note);
     }
 
-
+    public boolean isListToDetail() {
+        return isListToDetail;
+    }
 }

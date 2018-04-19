@@ -5,11 +5,8 @@ import android.content.Intent;
 import com.zhiyicx.baseproject.base.TSActivity;
 import com.zhiyicx.baseproject.impl.share.ShareModule;
 import com.zhiyicx.baseproject.impl.share.UmengSharePolicyImpl;
-import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.modules.shortvideo.helper.ZhiyiVideoView;
-
-import cn.jzvd.JZVideoPlayer;
 
 public class DynamicDetailActivity extends TSActivity<DynamicDetailPresenter, DynamicDetailFragment> {
 
@@ -49,4 +46,9 @@ public class DynamicDetailActivity extends TSActivity<DynamicDetailPresenter, Dy
         UmengSharePolicyImpl.onDestroy(this);
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mContanierFragment.replaceVideoIfNeed();
+    }
 }

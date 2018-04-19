@@ -60,6 +60,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
+import cn.jzvd.JZVideoPlayer;
 
 import static android.app.Activity.RESULT_OK;
 import static android.view.View.GONE;
@@ -836,5 +837,11 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
         dismissPop(mPayImagePopWindow);
         dismissPop(mReSendCommentPopWindow);
         super.onDestroyView();
+    }
+
+    public void replaceVideoIfNeed(){
+        if (!mDynamicDetailHeader.isListToDetail()) {
+            JZVideoPlayer.releaseAllVideos();
+        }
     }
 }
