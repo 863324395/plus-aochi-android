@@ -670,6 +670,11 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
                     ImageView imageView = (ImageView) layoutManager.findViewByPosition
                             (dataPosition + mHeaderAndFooterWrapper.getHeadersCount())
                             .findViewById(R.id.siv_0);
+                    if (imageView == null) {
+                        imageView = (ImageView) layoutManager.findViewByPosition
+                                (dataPosition + mHeaderAndFooterWrapper.getHeadersCount())
+                                .findViewById(R.id.thumb);
+                    }
                     shareBitMap = ConvertUtils.drawable2BitmapWithWhiteBg(getContext(), imageView
                             .getDrawable(), R.mipmap.icon);
                 } catch (Exception e) {
