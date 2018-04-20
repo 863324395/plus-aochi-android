@@ -313,6 +313,10 @@ public class TrimVideoUtil {
                                                                .getColumnIndex(MediaStore.Video
                                                                        .Media.HEIGHT)));
 
+                                                       LogUtils.d("---------------------------------------");
+                                                       LogUtils.d("path::" + cursor.getString(cursor
+                                                               .getColumnIndex(MediaStore.Video
+                                                                       .Media.DATA)));
                                                        LogUtils.d("duration::" + cursor.getLong(cursor
                                                                .getColumnIndex(MediaStore.Video
                                                                        .Media.DURATION)));
@@ -322,6 +326,7 @@ public class TrimVideoUtil {
                                                        LogUtils.d("height::" + cursor.getInt(cursor
                                                                .getColumnIndex(MediaStore.Video
                                                                        .Media.HEIGHT)));
+                                                       LogUtils.d("---------------------------------------");
 
                                                        video.setDuration((int) cursor.getLong(cursor
                                                                .getColumnIndex(MediaStore.Video

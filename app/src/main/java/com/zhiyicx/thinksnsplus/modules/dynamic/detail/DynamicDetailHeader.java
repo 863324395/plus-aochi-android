@@ -99,7 +99,7 @@ public class DynamicDetailHeader {
      * Gif 是否直接播放
      */
     private boolean mIsGifPlay = false;
-    private boolean isListToDetail =false;
+    private boolean isListToDetail = false;
 
     View getDynamicDetailHeader() {
         return mDynamicDetailHeader;
@@ -177,13 +177,15 @@ public class DynamicDetailHeader {
         final Context context = mTitle.getContext();
         // 设置图片
         List<DynamicDetailBeanV2.ImagesBean> photoList = dynamicBean.getImages();
-        if ((photoList == null || photoList.isEmpty()) && dynamicBean.getVideo() == null) {
+        boolean hasImage = photoList != null && !photoList.isEmpty();
+        boolean hasVideo = dynamicBean.getVideo() != null;
+        if (!hasImage && !hasVideo) {
             mPhotoContainer.setVisibility(View.GONE);
         } else {
 
             mPhotoContainer.setVisibility(View.VISIBLE);
             DynamicDetailBeanV2.Video video = dynamicBean.getVideo();
-            if (video != null) {
+            if (hasVideo) {
                 ZhiyiVideoView videoView = new ZhiyiVideoView(mContext);
                 videoView.setShareInterface(shareInterface);
                 mPhotoContainer.addView(videoView);
@@ -210,7 +212,7 @@ public class DynamicDetailHeader {
                         isListToDetail = videoUrl.equals(map.get(URL_KEY_DEFAULT).toString());
                     }
 
-                    if (isListToDetail){
+                    if (isListToDetail) {
                         videoView.setUp(videoUrl, JZVideoPlayerStandard.SCREEN_WINDOW_LIST);
                         videoView.positionInList = 0;
 
@@ -226,7 +228,7 @@ public class DynamicDetailHeader {
                         if (state == ZhiyiVideoView.CURRENT_STATE_PAUSE) {
                             videoView.startButton.callOnClick();
                         }
-                    }else{
+                    } else {
                         videoView.setUp(videoUrl, JZVideoPlayerStandard.SCREEN_WINDOW_LIST);
                         videoView.positionInList = 0;
                     }
@@ -266,17 +268,16 @@ public class DynamicDetailHeader {
                         .into(videoView.thumbImageView);
 
 
-            }else{
+            } else {
+                for (int i = 0; i < photoList.size(); i++) {
+                    showContentImage(context, photoList, i, i == photoList.size() - 1, mPhotoContainer);
+                }
+                setImageClickListener(photoList, dynamicBean);
 
                 FilterImageView imageView = (FilterImageView) mPhotoContainer.getChildAt(0)
                         .findViewById(R.id.dynamic_content_img);
                 sharBitmap = ConvertUtils.drawable2BitmapWithWhiteBg(mContext, imageView
                         .getDrawable(), R.mipmap.icon);
-
-                for (int i = 0; i < photoList.size(); i++) {
-                    showContentImage(context, photoList, i, i == photoList.size() - 1, mPhotoContainer);
-                }
-                setImageClickListener(photoList, dynamicBean);
             }
 
         }

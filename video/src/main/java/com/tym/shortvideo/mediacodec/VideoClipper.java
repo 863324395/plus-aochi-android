@@ -468,6 +468,8 @@ public class VideoClipper {
                     encoderOutputBuffers = encoder.getOutputBuffers();
                 } else if (encoderStatus == MediaCodec.INFO_OUTPUT_FORMAT_CHANGED) {
                     MediaFormat newFormat = encoder.getOutputFormat();
+                    int rotation = videoFormat.getInteger("rotation-degrees");
+                    mMediaMuxer.setOrientationHint(rotation);
                     startMux(newFormat, 0);
                 } else if (encoderStatus < 0) {
                 } else {
@@ -514,13 +516,6 @@ public class VideoClipper {
     private void startMux(MediaFormat mediaFormat, int flag) {
         if (flag == 0) {
             muxVideoTrack = mMediaMuxer.addTrack(mediaFormat);
-            // MediaFormat.KEY_ROTATION
-            if (videoFormat.containsKey("rotation-degrees")) {
-                // Decoded video is rotated automatically in Android 5.0 lollipop.
-                // Turn off here because we don't want to encode rotated one.
-                // refer: https://android.googlesource.com/platform/frameworks/av/+blame/lollipop-release/media/libstagefright/Utils.cpp
-                videoFormat.setInteger("rotation-degrees", 0);
-            }
         } else if (flag == 1) {
             muxAudioTrack = mMediaMuxer.addTrack(mediaFormat);
         }

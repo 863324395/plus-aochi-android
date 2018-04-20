@@ -8,9 +8,8 @@
     android:minHeight="44dp"
     android:paddingLeft="@dimen/dp10"
     android:paddingTop="10dp"
+    android:background="@mipmap/pic_mask"
     android:paddingRight="@dimen/dp10">
-    <!--android:background="@mipmap/pic_mask"-->
-
 
     <TextView
         android:id="@+id/tv_toolbar_center"
