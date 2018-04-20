@@ -39,6 +39,7 @@ import com.zhiyicx.baseproject.em.manager.eventbus.TSEMessageEvent;
 import com.zhiyicx.common.BuildConfig;
 import com.zhiyicx.common.utils.ActivityHandler;
 import com.zhiyicx.common.utils.log.LogUtils;
+import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.MessageItemBeanV2;
@@ -1094,7 +1095,7 @@ public class TSEMHyphenate {
 
     private ChatUserInfoBean getChatUser(UserInfoBean userInfoBean) {
         if (userInfoBean == null) {
-            return new ChatUserInfoBean("");
+            return new ChatUserInfoBean(AppApplication.getContext().getString(R.string.user_had_deleted));
         }
         ChatUserInfoBean chatUserInfoBean = new ChatUserInfoBean();
         chatUserInfoBean.setUser_id(userInfoBean.getUser_id());

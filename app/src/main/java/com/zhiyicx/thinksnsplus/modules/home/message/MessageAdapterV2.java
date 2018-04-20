@@ -31,6 +31,7 @@ import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.ChatGroupBean;
 import com.zhiyicx.thinksnsplus.data.beans.MessageItemBeanV2;
+import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.i.OnUserInfoClickListener;
 import com.zhiyicx.thinksnsplus.modules.chat.ChatActivity;
 import com.zhiyicx.thinksnsplus.modules.chat.call.TSEMHyphenate;
@@ -84,13 +85,17 @@ public class MessageAdapterV2 extends CommonAdapter<MessageItemBeanV2> implement
         switch (messageItemBean.getConversation().getType()) {
             case Chat:
                 // 私聊
+                UserInfoBean singleChatUserinfo =messageItemBean.getUserInfo();
+                if(singleChatUserinfo==null){
+                    TSEMHyphenate.getInstance().getChatUser(messageItemBean.getEmKey());
+                }
                 userAvatarView.getIvVerify().setVisibility(View.VISIBLE);
-                ImageUtils.loadUserHead(TSEMHyphenate.getInstance().getChatUser(messageItemBean.getEmKey()), userAvatarView, false);
+                ImageUtils.loadUserHead(singleChatUserinfo, userAvatarView, false);
                 // 响应事件
-                holder.setText(R.id.tv_name, TSEMHyphenate.getInstance().getChatUser(messageItemBean.getEmKey()).getName());
+                holder.setText(R.id.tv_name, singleChatUserinfo.getName());
                 setUserInfoClick(holder.getView(R.id.tv_name), messageItemBean);
                 setUserInfoClick(holder.getView(R.id.iv_headpic), messageItemBean);
-                swipeLayout.setSwipeEnabled(mPresenter == null || !mPresenter.checkUserIsImHelper(messageItemBean.getUserInfo().getUser_id()));
+                swipeLayout.setSwipeEnabled(mPresenter == null || (singleChatUserinfo!=null&&!mPresenter.checkUserIsImHelper(singleChatUserinfo.getUser_id())));
                 break;
             case GroupChat:
                 // 群组
