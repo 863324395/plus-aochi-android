@@ -1083,4 +1083,7 @@
     <string name="add_black_list_success">操作成功</string>
     <string name="remove_black_list_success">操作成功</string>
     <string name="integartion_not_enough">积分不足</string>
+    <string name="unbind_sure_tip_format">您已绑定%s，是否解除绑定？</string>
+    <string name="sure_unbind">解除绑定</string>
+    <string name="reserved">保留</string>
 </resources>
