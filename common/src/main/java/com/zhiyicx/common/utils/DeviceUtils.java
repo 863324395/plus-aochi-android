@@ -18,9 +18,11 @@ import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Looper;
 import android.os.MessageQueue;
 import android.os.PowerManager;
+import android.os.StatFs;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
@@ -99,12 +101,8 @@ public class DeviceUtils {
      * @return
      */
     public static boolean isExitsSdcard() {
-        if (android.os.Environment.getExternalStorageState().equals(
-                android.os.Environment.MEDIA_MOUNTED)) {
-            return true;
-        } else {
-            return false;
-        }
+        return android.os.Environment.getExternalStorageState().equals(
+                android.os.Environment.MEDIA_MOUNTED);
     }
 
     public static int getStatuBarHeight(Context context) {
@@ -811,9 +809,19 @@ public class DeviceUtils {
                     return processName;
                 }
             } catch (Exception e) {
-                LogUtils.d("Process", "Error>> :"+ e.toString());
+                LogUtils.d("Process", "Error>> :" + e.toString());
             }
         }
         return processName;
+    }
+
+    public static long getSDCardAvailableSize() {
+        if (isExitsSdcard()) {
+            StatFs fs = new StatFs(Environment.getExternalStorageDirectory().getAbsolutePath());
+            long count = fs.getAvailableBlocksLong();
+            long size = fs.getBlockSizeLong();
+            return count * size / 1024 / 1024;
+        }
+        return 0;
     }
 }

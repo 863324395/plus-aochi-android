@@ -28,6 +28,7 @@
     <string name="preview">预览</string>
     <string name="clip_speed">剪切</string>
     <string name="clip_cover">选择封面</string>
+    <string name="storage_no_free">存储空间不足</string>
 
     <string name="keepon">继续</string>
     <string name="save">保存</string>

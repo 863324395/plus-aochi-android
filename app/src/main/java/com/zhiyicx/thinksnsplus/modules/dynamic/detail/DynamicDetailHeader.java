@@ -179,8 +179,6 @@ public class DynamicDetailHeader {
         List<DynamicDetailBeanV2.ImagesBean> photoList = dynamicBean.getImages();
         if ((photoList == null || photoList.isEmpty()) && dynamicBean.getVideo() == null) {
             mPhotoContainer.setVisibility(View.GONE);
-            sharBitmap = ConvertUtils.drawBg4Bitmap(0xffffff, BitmapFactory.decodeResource(context
-                    .getResources(), R.mipmap.icon).copy(Bitmap.Config.RGB_565, true));
         } else {
 
             mPhotoContainer.setVisibility(View.VISIBLE);
@@ -271,10 +269,6 @@ public class DynamicDetailHeader {
             for (int i = 0; i < photoList.size(); i++) {
                 showContentImage(context, photoList, i, i == photoList.size() - 1, mPhotoContainer);
             }
-            FilterImageView imageView = (FilterImageView) mPhotoContainer.getChildAt(0)
-                    .findViewById(R.id.dynamic_content_img);
-            sharBitmap = ConvertUtils.drawable2BitmapWithWhiteBg(mContext, imageView
-                    .getDrawable(), R.mipmap.icon);
             setImageClickListener(photoList, dynamicBean);
         }
     }
