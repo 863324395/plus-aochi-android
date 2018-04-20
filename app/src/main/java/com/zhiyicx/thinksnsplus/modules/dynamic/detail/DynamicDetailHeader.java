@@ -254,8 +254,8 @@ public class DynamicDetailHeader {
                                     model, Target<GlideDrawable> target, boolean
                                                                    isFromMemoryCache, boolean
                                                                    isFirstResource) {
-                                sharBitmap = ConvertUtils.drawable2Bitmap(resource);
-                                Bitmap bitmap = FastBlur.blurBitmap(sharBitmap, resource
+                                sharBitmap = ConvertUtils.drawable2BitmapWithWhiteBg(mContext, resource, R.mipmap.icon);
+                                Bitmap bitmap = FastBlur.blurBitmap(ConvertUtils.drawable2Bitmap(resource), resource
                                         .getIntrinsicWidth(), resource
                                         .getIntrinsicHeight());
                                 videoView.setBackground(new BitmapDrawable(mContext.getResources
@@ -264,12 +264,21 @@ public class DynamicDetailHeader {
                             }
                         })
                         .into(videoView.thumbImageView);
-                return;
+
+
+            }else{
+
+                FilterImageView imageView = (FilterImageView) mPhotoContainer.getChildAt(0)
+                        .findViewById(R.id.dynamic_content_img);
+                sharBitmap = ConvertUtils.drawable2BitmapWithWhiteBg(mContext, imageView
+                        .getDrawable(), R.mipmap.icon);
+
+                for (int i = 0; i < photoList.size(); i++) {
+                    showContentImage(context, photoList, i, i == photoList.size() - 1, mPhotoContainer);
+                }
+                setImageClickListener(photoList, dynamicBean);
             }
-            for (int i = 0; i < photoList.size(); i++) {
-                showContentImage(context, photoList, i, i == photoList.size() - 1, mPhotoContainer);
-            }
-            setImageClickListener(photoList, dynamicBean);
+
         }
     }
 
