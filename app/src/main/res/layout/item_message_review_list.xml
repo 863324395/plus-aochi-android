@@ -108,5 +108,22 @@
         android:textColor="@color/dyanmic_top_flag"
         android:textSize="@dimen/size_icon_assist"
         tools:text="6分钟前"/>
-
+    <TextView
+        android:id="@+id/tv_reply"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginEnd="@dimen/spacing_normal"
+        android:gravity="center"
+        android:paddingTop="@dimen/spacing_small_4dp"
+        android:paddingBottom="@dimen/spacing_small_4dp"
+        android:visibility="gone"
+        android:paddingStart="@dimen/spacing_mid_small"
+        android:paddingEnd="@dimen/spacing_mid_small"
+        android:background="@drawable/shape_bg_radus_gray_"
+        android:layout_alignParentTop="true"
+        android:textColor="@color/normal_for_assist_text"
+        android:textSize="@dimen/size_icon_assist"
+        android:text="@string/reply_str"/>
 </RelativeLayout>

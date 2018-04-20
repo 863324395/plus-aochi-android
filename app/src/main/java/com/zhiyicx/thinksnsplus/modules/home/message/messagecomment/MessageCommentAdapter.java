@@ -83,6 +83,7 @@ public class MessageCommentAdapter extends CommonAdapter<CommentedBean> {
 
         ImageUtils.loadCircleUserHeadPic(commentedBean.getCommentUserInfo(), holder.getView(R.id.iv_headpic));
 
+        holder.setVisible(R.id.tv_reply,View.VISIBLE);
         if (commentedBean.getTarget_image() != null && commentedBean.getTarget_image() > 0) {
             holder.setVisible(R.id.iv_detail_image, View.VISIBLE);
             mImageLoader.loadImage(getContext(), GlideImageConfig.builder()
