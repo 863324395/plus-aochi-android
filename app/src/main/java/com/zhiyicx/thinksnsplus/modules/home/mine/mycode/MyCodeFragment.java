@@ -181,7 +181,7 @@ public class MyCodeFragment extends TSFragment<MyCodeContract.Presenter> impleme
                                     showSnackWarningMessage(getString(R.string.camera_permission_tip));
                                 }
                             });
-
+                    mScanCodePopupWindow.hide();
 
                 })
                 .item2ClickListener(() -> {
@@ -195,7 +195,7 @@ public class MyCodeFragment extends TSFragment<MyCodeContract.Presenter> impleme
 
     @Override
     public void onDestroyView() {
-        super.onDestroyView();
         dismissPop(mScanCodePopupWindow);
+        super.onDestroyView();
     }
 }

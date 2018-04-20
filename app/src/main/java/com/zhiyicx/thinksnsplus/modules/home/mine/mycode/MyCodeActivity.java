@@ -14,7 +14,7 @@ import com.zhiyicx.thinksnsplus.base.AppApplication;
  * @contact email:648129313@qq.com
  */
 
-public class MyCodeActivity extends TSActivity<MyCodePresenter, MyCodeFragment>{
+public class MyCodeActivity extends TSActivity<MyCodePresenter, MyCodeFragment> {
     @Override
     protected MyCodeFragment getFragment() {
         return new MyCodeFragment();
