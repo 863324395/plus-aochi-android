@@ -5,7 +5,6 @@ import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.media.AudioManager;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -15,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.tym.shortvideo.view.ZhiyiResizeTextureView;
 import com.umeng.socialize.bean.SHARE_MEDIA;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.log.LogUtils;
@@ -112,6 +112,13 @@ public class ZhiyiVideoView extends JZVideoPlayerStandard {
         mShareToWeiBo.setOnClickListener(this);
         mShareToWX.setOnClickListener(this);
 
+    }
+
+    @Override
+    public void initTextureView() {
+        removeTextureView();
+        JZMediaManager.textureView = new ZhiyiResizeTextureView(getContext());
+        JZMediaManager.textureView.setSurfaceTextureListener(JZMediaManager.instance());
     }
 
     @Override

@@ -72,4 +72,73 @@
               android:drawable="@mipmap/default_white0009"
               android:gravity="left"/>
     </item>
+    <item android:duration="100">
+        <clip xmlns:android="http://schemas.android.com/apk/res/android"
+              android:clipOrientation="horizontal"
+              android:drawable="@mipmap/default_white000010"
+              android:gravity="left"/>
+    </item>
+
+    <item android:duration="100">
+        <clip xmlns:android="http://schemas.android.com/apk/res/android"
+              android:clipOrientation="horizontal"
+              android:drawable="@mipmap/default_white000011"
+              android:gravity="left"/>
+    </item>
+
+    <item android:duration="100">
+        <clip xmlns:android="http://schemas.android.com/apk/res/android"
+              android:clipOrientation="horizontal"
+              android:drawable="@mipmap/default_white000012"
+              android:gravity="left"/>
+    </item>
+
+    <item android:duration="100">
+        <clip xmlns:android="http://schemas.android.com/apk/res/android"
+              android:clipOrientation="horizontal"
+              android:drawable="@mipmap/default_white000013"
+              android:gravity="left"/>
+    </item>
+
+    <item android:duration="100">
+        <clip xmlns:android="http://schemas.android.com/apk/res/android"
+              android:clipOrientation="horizontal"
+              android:drawable="@mipmap/default_white000014"
+              android:gravity="left"/>
+    </item>
+
+    <item android:duration="100">
+        <clip xmlns:android="http://schemas.android.com/apk/res/android"
+              android:clipOrientation="horizontal"
+              android:drawable="@mipmap/default_white000015"
+              android:gravity="left"/>
+    </item>
+
+    <item android:duration="100">
+        <clip xmlns:android="http://schemas.android.com/apk/res/android"
+              android:clipOrientation="horizontal"
+              android:drawable="@mipmap/default_white000016"
+              android:gravity="left"/>
+    </item>
+
+    <item android:duration="100">
+        <clip xmlns:android="http://schemas.android.com/apk/res/android"
+              android:clipOrientation="horizontal"
+              android:drawable="@mipmap/default_white000017"
+              android:gravity="left"/>
+    </item>
+
+    <item android:duration="100">
+        <clip xmlns:android="http://schemas.android.com/apk/res/android"
+              android:clipOrientation="horizontal"
+              android:drawable="@mipmap/default_white000018"
+              android:gravity="left"/>
+    </item>
+
+    <item android:duration="100">
+        <clip xmlns:android="http://schemas.android.com/apk/res/android"
+              android:clipOrientation="horizontal"
+              android:drawable="@mipmap/default_white000019"
+              android:gravity="left"/>
+    </item>
 </animation-list>
