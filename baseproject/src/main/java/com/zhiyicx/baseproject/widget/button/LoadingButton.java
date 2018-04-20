@@ -99,8 +99,9 @@ public class LoadingButton extends FrameLayout {
      * @param status true 开启动画，false 关闭动画
      */
     public void handleAnimation(boolean status) {
-        if (mAnimationDrawable == null)
+        if (mAnimationDrawable == null) {
             throw new IllegalArgumentException("load animation not be null");
+        }
         if (status) {
             if (!mAnimationDrawable.isRunning()) {
                 mIvLoad.setVisibility(VISIBLE);

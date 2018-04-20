@@ -94,7 +94,7 @@ public class MessageCommentAdapter extends CommonAdapter<CommentedBean> {
                                 , mContext.getResources().getDimensionPixelOffset(R.dimen.headpic_for_user_center)
                                 , ImageZipConfig.IMAGE_50_ZIP))
                         .imagerView(holder.getView(R.id.iv_detail_image))
-                        .placeholder(R.drawable.shape_default_image_themcolor)
+                        .errorPic(R.drawable.shape_default_image_themcolor)
                         .build());
             } else {
                 holder.setVisible(R.id.iv_video_icon, View.GONE);
