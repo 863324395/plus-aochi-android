@@ -793,6 +793,7 @@ public class PersonalCenterPresenter extends AppBasePresenter<PersonalCenterCont
                 .subscribe(new BaseSubscribeForV2<Object>() {
                     @Override
                     protected void onSuccess(Object data) {
+                        mRootView.updateUserBlackStatus(true);
                         mRootView.showSnackSuccessMessage(mContext.getString(R.string.add_black_list_success));
                         mRootView.refreshData();
                     }
@@ -824,6 +825,7 @@ public class PersonalCenterPresenter extends AppBasePresenter<PersonalCenterCont
                     @Override
                     protected void onSuccess(Object data) {
                         mRootView.showSnackSuccessMessage(mContext.getString(R.string.remove_black_list_success));
+                        mRootView.updateUserBlackStatus(false);
                         mRootView.refreshData();
                         EventBus.getDefault().post(userInfoBean.getUser_id(), EventBusTagConfig.EVENT_USER_REMOVE_FROM_BLACK_LIST);
                     }

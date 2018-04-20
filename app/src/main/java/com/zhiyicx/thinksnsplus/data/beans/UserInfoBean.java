@@ -107,7 +107,6 @@ public class UserInfoBean extends BaseListBean implements Parcelable, Serializab
     @Transient
     @SerializedName("new_wallet")
     private WalletBean wallet;
-
     /**
      * 积分
      */
@@ -122,13 +121,18 @@ public class UserInfoBean extends BaseListBean implements Parcelable, Serializab
     @Convert(converter = UserTagsBeanConverter.class, columnType = String.class)
     private List<UserTagBean> tags;
 
-    /**1.5.0新增 环信登陆的密码  用户名是uid*/
+    /**
+     * 1.5.0新增 环信登陆的密码  用户名是uid
+     */
     private String im_pwd_hash;
-    /**1.5.1新增 好友数量*/
+    /**
+     * 1.5.1新增 好友数量
+     */
     private int friends_count;
-    /**1.5.1新增 选中状态 用于选择好友列表 不存数据库
+    /**
+     * 1.5.1新增 选中状态 用于选择好友列表 不存数据库
      * 1-选中 0-未选中 -1-不可修改（即已经选中，不可改变状态
-     * */
+     */
     @Transient
     private int isSelected;
 
@@ -136,6 +140,23 @@ public class UserInfoBean extends BaseListBean implements Parcelable, Serializab
 
     private boolean has_deleted; // 标记用户是否被删除了，默认没有被删除
 
+    /**
+     * 是否是黑名单
+     */
+    private boolean blacked;
+
+
+    public boolean isBlacked() {
+        return blacked;
+    }
+
+    public boolean getBlacked() {
+        return blacked;
+    }
+
+    public void setBlacked(boolean blacked) {
+        this.blacked = blacked;
+    }
 
     public boolean isHas_deleted() {
         return has_deleted;
@@ -192,9 +213,9 @@ public class UserInfoBean extends BaseListBean implements Parcelable, Serializab
     }
 
     public String getName() {
-        if(TextUtils.isEmpty(deleted_at)) {
+        if (TextUtils.isEmpty(deleted_at)) {
             return name;
-        }else {
+        } else {
             // 该用户已被删除
             return AppApplication.getContext().getResources().getString(R.string.default_delete_user_name);
         }
@@ -683,6 +704,36 @@ public class UserInfoBean extends BaseListBean implements Parcelable, Serializab
     }
 
 
+    @Generated(hash = 753639542)
+    public UserInfoBean(Long user_id, String name, String phone, String email, String intro, int sex, String location,
+            boolean following, boolean follower, String created_at, String updated_at, String deleted_at, String avatar,
+            String cover, IntegrationBean currency, UserInfoExtraBean extra, VerifiedBean verified, List<UserTagBean> tags,
+            String im_pwd_hash, int friends_count, boolean initial_password, boolean has_deleted, boolean blacked) {
+        this.user_id = user_id;
+        this.name = name;
+        this.phone = phone;
+        this.email = email;
+        this.intro = intro;
+        this.sex = sex;
+        this.location = location;
+        this.following = following;
+        this.follower = follower;
+        this.created_at = created_at;
+        this.updated_at = updated_at;
+        this.deleted_at = deleted_at;
+        this.avatar = avatar;
+        this.cover = cover;
+        this.currency = currency;
+        this.extra = extra;
+        this.verified = verified;
+        this.tags = tags;
+        this.im_pwd_hash = im_pwd_hash;
+        this.friends_count = friends_count;
+        this.initial_password = initial_password;
+        this.has_deleted = has_deleted;
+        this.blacked = blacked;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -706,6 +757,7 @@ public class UserInfoBean extends BaseListBean implements Parcelable, Serializab
         dest.writeByte(this.follower ? (byte) 1 : (byte) 0);
         dest.writeString(this.created_at);
         dest.writeString(this.updated_at);
+        dest.writeString(this.deleted_at);
         dest.writeString(this.avatar);
         dest.writeString(this.cover);
         dest.writeParcelable(this.wallet, flags);
@@ -718,6 +770,7 @@ public class UserInfoBean extends BaseListBean implements Parcelable, Serializab
         dest.writeInt(this.isSelected);
         dest.writeByte(this.initial_password ? (byte) 1 : (byte) 0);
         dest.writeByte(this.has_deleted ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.blacked ? (byte) 1 : (byte) 0);
     }
 
     protected UserInfoBean(Parcel in) {
@@ -737,6 +790,7 @@ public class UserInfoBean extends BaseListBean implements Parcelable, Serializab
         this.follower = in.readByte() != 0;
         this.created_at = in.readString();
         this.updated_at = in.readString();
+        this.deleted_at = in.readString();
         this.avatar = in.readString();
         this.cover = in.readString();
         this.wallet = in.readParcelable(WalletBean.class.getClassLoader());
@@ -749,36 +803,7 @@ public class UserInfoBean extends BaseListBean implements Parcelable, Serializab
         this.isSelected = in.readInt();
         this.initial_password = in.readByte() != 0;
         this.has_deleted = in.readByte() != 0;
-    }
-
-    @Generated(hash = 2035715005)
-    public UserInfoBean(Long user_id, String name, String phone, String email, String intro, int sex,
-            String location, boolean following, boolean follower, String created_at, String updated_at,
-            String deleted_at, String avatar, String cover, IntegrationBean currency, UserInfoExtraBean extra,
-            VerifiedBean verified, List<UserTagBean> tags, String im_pwd_hash, int friends_count,
-            boolean initial_password, boolean has_deleted) {
-        this.user_id = user_id;
-        this.name = name;
-        this.phone = phone;
-        this.email = email;
-        this.intro = intro;
-        this.sex = sex;
-        this.location = location;
-        this.following = following;
-        this.follower = follower;
-        this.created_at = created_at;
-        this.updated_at = updated_at;
-        this.deleted_at = deleted_at;
-        this.avatar = avatar;
-        this.cover = cover;
-        this.currency = currency;
-        this.extra = extra;
-        this.verified = verified;
-        this.tags = tags;
-        this.im_pwd_hash = im_pwd_hash;
-        this.friends_count = friends_count;
-        this.initial_password = initial_password;
-        this.has_deleted = has_deleted;
+        this.blacked = in.readByte() != 0;
     }
 
     public static final Creator<UserInfoBean> CREATOR = new Creator<UserInfoBean>() {

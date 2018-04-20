@@ -226,6 +226,7 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
         }
         restoreData();
         mToolbarRight.setEnabled(false);
+        mPresenter.getallCategroys();
     }
 
     @Override

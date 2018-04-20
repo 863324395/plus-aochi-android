@@ -5,9 +5,13 @@ import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
+import com.zhiyicx.thinksnsplus.data.beans.CircleTypeBean;
 import com.zhiyicx.thinksnsplus.data.beans.circle.CreateCircleBean;
 import com.zhiyicx.thinksnsplus.data.source.local.CircleTypeBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.BaseCircleRepository;
+import com.zhiyicx.thinksnsplus.modules.information.infomain.container.InfoContainerFragment;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -21,7 +25,7 @@ import rx.schedulers.Schedulers;
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class CreateCirclePresenter extends AppBasePresenter< CreateCircleContract.View>
+public class CreateCirclePresenter extends AppBasePresenter<CreateCircleContract.View>
         implements CreateCircleContract.Presenter {
 
     @Inject
@@ -31,8 +35,8 @@ public class CreateCirclePresenter extends AppBasePresenter< CreateCircleContrac
     BaseCircleRepository mBaseCircleRepository;
 
     @Inject
-    public CreateCirclePresenter( CreateCircleContract.View rootView) {
-        super( rootView);
+    public CreateCirclePresenter(CreateCircleContract.View rootView) {
+        super(rootView);
     }
 
     @Override
@@ -127,5 +131,32 @@ public class CreateCirclePresenter extends AppBasePresenter< CreateCircleContrac
                 });
 
         addSubscrebe(subscription);
+    }
+
+    @Override
+    public void getallCategroys() {
+        mBaseCircleRepository.getCategroiesList(0, 0)
+                .subscribe(new BaseSubscribeForV2<List<CircleTypeBean>>() {
+
+                    @Override
+                    protected void onSuccess(List<CircleTypeBean> data) {
+                        // 创建默认推荐数据，服务器不反会，测试又要要，让我们自己加
+                        CircleTypeBean circleTypeBean = new CircleTypeBean();
+                        circleTypeBean.setId(Long.valueOf(InfoContainerFragment.RECOMMEND_INFO));
+                        circleTypeBean.setName(mContext.getString(R.string.info_recommend));
+                        data.add(circleTypeBean);
+                        mCircleTypeBeanGreenDao.saveMultiData(data);
+                    }
+
+                    @Override
+                    protected void onFailure(String message, int code) {
+                        super.onFailure(message, code);
+                    }
+
+                    @Override
+                    protected void onException(Throwable throwable) {
+                        super.onException(throwable);
+                    }
+                });
     }
 }
