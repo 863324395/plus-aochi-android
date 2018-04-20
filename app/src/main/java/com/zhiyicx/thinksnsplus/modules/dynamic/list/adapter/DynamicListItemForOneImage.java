@@ -96,21 +96,22 @@ public class DynamicListItemForOneImage extends DynamicListBaseItem {
             BitmapFactory.Options option = DrawableProvider.getPicsWHByFile(imageBean.getImgUrl());
             with = imageBean.getCurrentWith();
             height = imageBean.getHeight();
-            if (height == 0) {
-                if (option.outWidth == 0) {
-                    height = with;
-                } else {
-                    height = with * option.outHeight / option.outWidth;
-                    height = height > mImageMaxHeight ? mImageMaxHeight : height;
-                    // 是否是 gif
-                    view.setIshowGifTag(ImageUtils.imageIsGif(option.outMimeType));
-                    // 是否是长图
-                    view.showLongImageTag(isLongImage(option.outHeight, option.outWidth));
-                }
+            if (height == 0 && option.outWidth == 0) {
+                height = with;
+            } else {
+                height = with * option.outHeight / option.outWidth;
+                height = height > mImageMaxHeight ? mImageMaxHeight : height;
             }
             if (height <= 0) {
                 height = DEFALT_IMAGE_HEIGHT;
             }
+            if (with <= 0) {
+                with = DEFALT_IMAGE_WITH;
+            }
+            // 是否是 gif
+            view.setIshowGifTag(ImageUtils.imageIsGif(option.outMimeType));
+            // 是否是长图
+            view.showLongImageTag(isLongImage(option.outHeight, option.outWidth));
             view.setLayoutParams(new LinearLayout.LayoutParams(with, height));
 
             Glide.with(mContext)
