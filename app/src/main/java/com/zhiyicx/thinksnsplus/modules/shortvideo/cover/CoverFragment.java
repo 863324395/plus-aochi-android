@@ -336,11 +336,15 @@ public class CoverFragment extends TSFragment implements MediaPlayerWrapper.IMed
                                             mVideoInfo.setPath(result);
                                             mVideoInfo.setCover(cover);
                                             mVideoInfo.setCreateTime(System.currentTimeMillis() + "");
+
                                             mVideoInfo.setWidth(mVideoView.getVideoWidth());
                                             mVideoInfo.setHeight(mVideoView.getVideoHeight());
                                             mVideoInfo.setDuration(mVideoView.getVideoDuration());
 
-                                            // 封面
+                                            if (mVideoView.getVideoInfo().get(0).getRotation() == 90) {
+                                                mVideoInfo.setWidth(mVideoView.getVideoHeight());
+                                                mVideoInfo.setHeight(mVideoView.getVideoWidth());
+                                            }
 
                                             SendDynamicDataBean sendDynamicDataBean = new SendDynamicDataBean();
                                             sendDynamicDataBean.setDynamicBelong(SendDynamicDataBean

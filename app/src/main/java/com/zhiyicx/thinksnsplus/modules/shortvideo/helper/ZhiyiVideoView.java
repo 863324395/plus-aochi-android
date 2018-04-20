@@ -66,7 +66,6 @@ public class ZhiyiVideoView extends JZVideoPlayerStandard {
     }
 
 
-
     @Override
     public void setUp(String url, int screen, Object... objects) {
         super.setUp(url, screen, objects);
@@ -140,6 +139,14 @@ public class ZhiyiVideoView extends JZVideoPlayerStandard {
             onStatePreparing();
         } else {
             super.startVideo();
+        }
+    }
+
+    @Override
+    public void onInfo(int what, int extra) {
+        super.onInfo(what, extra);
+        if (what == 10001) {
+            JZMediaManager.textureView.setRotation(extra);
         }
     }
 
@@ -330,7 +337,7 @@ public class ZhiyiVideoView extends JZVideoPlayerStandard {
             jzVideoPlayer.setState(currentState);
             jzVideoPlayer.positionInList = this.positionInList;
             jzVideoPlayer.addTextureView();
-            JZVideoPlayer firstVideoView=JZVideoPlayerManager.getFirstFloor();
+            JZVideoPlayer firstVideoView = JZVideoPlayerManager.getFirstFloor();
             jzVideoPlayer.setBackground(firstVideoView.getBackground());
             JZVideoPlayerManager.setSecondFloor(jzVideoPlayer);
 //            final Animation ra = AnimationUtils.loadAnimation(getContext(), R.anim
