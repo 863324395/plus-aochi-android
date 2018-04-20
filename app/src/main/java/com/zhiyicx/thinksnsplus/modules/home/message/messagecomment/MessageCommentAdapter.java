@@ -83,18 +83,31 @@ public class MessageCommentAdapter extends CommonAdapter<CommentedBean> {
 
         ImageUtils.loadCircleUserHeadPic(commentedBean.getCommentUserInfo(), holder.getView(R.id.iv_headpic));
 
-        holder.setVisible(R.id.tv_reply,View.VISIBLE);
+        holder.setVisible(R.id.tv_reply, View.VISIBLE);
         if (commentedBean.getTarget_image() != null && commentedBean.getTarget_image() > 0) {
-            holder.setVisible(R.id.iv_detail_image, View.VISIBLE);
-            mImageLoader.loadImage(getContext(), GlideImageConfig.builder()
-                    .url(ImageUtils.imagePathConvertV2(commentedBean.getTarget_image().intValue()
-                            , mContext.getResources().getDimensionPixelOffset(R.dimen.headpic_for_user_center)
-                            , mContext.getResources().getDimensionPixelOffset(R.dimen.headpic_for_user_center)
-                            , ImageZipConfig.IMAGE_50_ZIP))
-                    .imagerView(holder.getView(R.id.iv_detail_image))
-                    .build());
+            holder.setVisible(R.id.fl_image_container, View.VISIBLE);
+            if (commentedBean.isHasVideo()) {
+                holder.setVisible(R.id.iv_video_icon, View.VISIBLE);
+                mImageLoader.loadImage(getContext(), GlideImageConfig.builder()
+                        .url(ImageUtils.imagePathConvertV2(commentedBean.getTarget_image().intValue()
+                                , mContext.getResources().getDimensionPixelOffset(R.dimen.headpic_for_user_center)
+                                , mContext.getResources().getDimensionPixelOffset(R.dimen.headpic_for_user_center)
+                                , ImageZipConfig.IMAGE_50_ZIP))
+                        .imagerView(holder.getView(R.id.iv_detail_image))
+                        .placeholder(R.drawable.shape_default_image_themcolor)
+                        .build());
+            } else {
+                holder.setVisible(R.id.iv_video_icon, View.GONE);
+                mImageLoader.loadImage(getContext(), GlideImageConfig.builder()
+                        .url(ImageUtils.imagePathConvertV2(commentedBean.getTarget_image().intValue()
+                                , mContext.getResources().getDimensionPixelOffset(R.dimen.headpic_for_user_center)
+                                , mContext.getResources().getDimensionPixelOffset(R.dimen.headpic_for_user_center)
+                                , ImageZipConfig.IMAGE_50_ZIP))
+                        .imagerView(holder.getView(R.id.iv_detail_image))
+                        .build());
+            }
         } else {
-            holder.setVisible(R.id.iv_detail_image, View.GONE);
+            holder.setVisible(R.id.fl_image_container, View.GONE);
         }
 
         if (commentedBean.getIsDelete()) {

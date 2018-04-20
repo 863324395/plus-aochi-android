@@ -29,7 +29,8 @@ import static com.zhiyicx.baseproject.config.ApiConfig.APP_QUESTIONS;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_QUESTIONS_ANSWER;
 
 /**
- * @Describe {@see https://github.com/zhiyicx/plus-component-feed/blob/master/documents/%E6%88%91%E6%94%B6%E5%88%B0%E7%9A%84%E8%AF%84%E8%AE%BA%E5%88%97%E8%A1%A8.md}
+ * @Describe {@see https://github.com/zhiyicx/plus-component-feed/blob/master/documents/%E6%88%91%E6%94%B6%E5%88%B0%E7%9A%84%E8%AF%84%E8%AE%BA%E5
+ * %88%97%E8%A1%A8.md}
  * @Author Jungle68
  * @Date 2017/4/12
  * @Contact master.jungle68@gmail.com
@@ -97,6 +98,8 @@ public class CommentedBean extends BaseListBean implements Serializable {
     @Transient
     private Object commentable;
 
+    private boolean hasVideo;
+
     private long source_id; // 所属资源的父 id; 圈子动态的评论，那source_id == post_id
     /**
      * Used to resolve relations
@@ -109,9 +112,10 @@ public class CommentedBean extends BaseListBean implements Serializable {
     @Generated(hash = 143748434)
     private transient CommentedBeanDao myDao;
 
-    @Generated(hash = 8688308)
-    public CommentedBean(Long id, String channel, Long target_id, String comment_content, String target_title, Long target_image, Long user_id, Long target_user,
-                         Long reply_user, String created_at, String updated_at, boolean isDelete, long source_id) {
+    @Generated(hash = 1052592665)
+    public CommentedBean(Long id, String channel, Long target_id, String comment_content, String target_title, Long target_image, Long user_id,
+                         Long target_user, Long reply_user, String created_at, String updated_at, boolean isDelete, boolean hasVideo, long
+                                     source_id) {
         this.id = id;
         this.channel = channel;
         this.target_id = target_id;
@@ -124,6 +128,7 @@ public class CommentedBean extends BaseListBean implements Serializable {
         this.created_at = created_at;
         this.updated_at = updated_at;
         this.isDelete = isDelete;
+        this.hasVideo = hasVideo;
         this.source_id = source_id;
     }
 
@@ -210,6 +215,14 @@ public class CommentedBean extends BaseListBean implements Serializable {
         this.updated_at = updated_at;
     }
 
+    public boolean isHasVideo() {
+        return hasVideo;
+    }
+
+    public void setHasVideo(boolean hasVideo) {
+        this.hasVideo = hasVideo;
+    }
+
     public Long getTarget_image() {
         if (target_image != null || commentable == null) {
             return target_image;
@@ -220,8 +233,14 @@ public class CommentedBean extends BaseListBean implements Serializable {
                 case APP_LIKE_FEED:
 
                     JSONObject jsonObject = new JSONObject(gson.toJson(commentable));
-                    JSONArray jsonArray = jsonObject.getJSONArray("images");
-                    target_image = (long) jsonArray.getJSONObject(0).getDouble("id");
+                    if (jsonObject.has("video") && !jsonObject.isNull("video")) {
+                        JSONObject videe0 = jsonObject.getJSONObject("video");
+                        target_image = videe0.getLong("cover_id");
+                        hasVideo = true;
+                    } else {
+                        JSONArray jsonArray = jsonObject.getJSONArray("images");
+                        target_image = (long) jsonArray.getJSONObject(0).getDouble("id");
+                    }
 
                     break;
                 case APP_LIKE_GROUP_POST:
@@ -552,6 +571,11 @@ public class CommentedBean extends BaseListBean implements Serializable {
             throw new DaoException("Entity is detached from DAO context");
         }
         myDao.update(this);
+    }
+
+
+    public boolean getHasVideo() {
+        return this.hasVideo;
     }
 
 
