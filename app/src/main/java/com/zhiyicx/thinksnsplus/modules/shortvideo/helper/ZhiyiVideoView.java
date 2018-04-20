@@ -352,8 +352,13 @@ public class ZhiyiVideoView extends JZVideoPlayerStandard {
 //            jzVideoPlayer.setAnimation(ra);
 
             int orientation;
+            float rotation = 0;
+            if (JZMediaManager.textureView instanceof ZhiyiResizeTextureView) {
+                ZhiyiResizeTextureView resizeTextureView = (ZhiyiResizeTextureView) JZMediaManager.textureView;
+                rotation = resizeTextureView.getRotation();
+            }
             if (JZMediaManager.instance().currentVideoWidth > JZMediaManager.instance()
-                    .currentVideoHeight) {
+                    .currentVideoHeight && rotation == 0) {
                 // 横屏
                 orientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE;
             } else {
