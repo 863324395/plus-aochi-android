@@ -297,7 +297,7 @@
                 app:leftImage="@mipmap/ico_me_collect"
                 app:leftText="@string/mine_collect"
                 app:rightImage="@mipmap/ic_arrow_smallgrey"
-                app:showLine="true"/>
+                app:showLine="false"/>
             <!--购买的音乐-->
             <com.zhiyicx.baseproject.widget.button.CombinationButton
                 android:id="@+id/bt_music"
