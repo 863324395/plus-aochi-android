@@ -15,7 +15,8 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="@dimen/spacing_normal"
             android:orientation="vertical">
             <!--头像，用户名，简介-->
             <RelativeLayout
@@ -329,7 +330,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/full_button_height"
                 android:visibility="visible"
-                android:layout_marginTop="@dimen/spacing_mid"
+                android:layout_marginTop="@dimen/spacing_normal"
                 app:dividerLeftMargin="@dimen/spacing_normal"
                 app:dividerRightMargin="@dimen/spacing_normal"
                 app:leftImage="@mipmap/ico_me_draft"
