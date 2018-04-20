@@ -861,7 +861,7 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                             if (dynamicType == SendDynamicDataBean.VIDEO_TEXT_DYNAMIC) {
                                 ArrayList<String> srcList = new ArrayList<>();
                                 srcList.add(mSendDynamicDataBean.getVideoInfo().getPath());
-                                CoverActivity.startCoverActivity(mActivity, srcList, true, false);
+                                CoverActivity.startCoverActivity(mActivity, srcList, true, false,false);
                                 return;
                             }
 

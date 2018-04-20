@@ -606,7 +606,7 @@ public class RecordFragment extends TSFragment implements SurfaceHolder.Callback
             // 隐藏删除和预览按钮
             ArrayList<String> arrayList = new ArrayList<>(VideoListManager.getInstance()
                     .getSubVideoPathList());
-            CoverActivity.startCoverActivity(mActivity, arrayList, false, false);
+            CoverActivity.startCoverActivity(mActivity, arrayList, false, false,true);
 //            PreviewActivity.startPreviewActivity(mActivity, arrayList);
             mActivity.finish();
         }

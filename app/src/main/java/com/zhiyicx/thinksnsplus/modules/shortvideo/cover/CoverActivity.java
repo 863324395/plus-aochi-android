@@ -38,11 +38,12 @@ public class CoverActivity extends TSActivity<AppBasePresenter, CoverFragment> {
      * @param pre 是否是动态发布页的预览
      * @param hasFilter 是否有滤镜界面
      */
-    public static void startCoverActivity(Context context, ArrayList<String> path,boolean pre,boolean hasFilter) {
+    public static void startCoverActivity(Context context, ArrayList<String> path,boolean pre,boolean hasFilter,boolean back2record) {
         Bundle bundle = new Bundle();
         bundle.putStringArrayList(CoverFragment.PATH, path);
         bundle.putBoolean(CoverFragment.PREVIEW,pre);
         bundle.putBoolean(CoverFragment.FILTER,hasFilter);
+        bundle.putBoolean(CoverFragment.BACKTORECORD,back2record);
         Intent intent = new Intent(context, CoverActivity.class);
         intent.putExtras(bundle);
         if (context instanceof Activity) {

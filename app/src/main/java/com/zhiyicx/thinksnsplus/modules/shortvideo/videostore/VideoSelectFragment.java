@@ -179,7 +179,7 @@ public class VideoSelectFragment extends TSListFragment {
                         if (videoInfo.getDuration() <= CountDownManager.getInstance().getMinMilliSeconds()) {
                             ArrayList<String> arrayList = new ArrayList<>();
                             arrayList.add(videoInfo.getPath());
-                            CoverActivity.startCoverActivity(mActivity, arrayList, false, false);
+                            CoverActivity.startCoverActivity(mActivity, arrayList, false, false,false);
 //                            PreviewActivity.startPreviewActivity(mActivity, arrayList);
                         } else {
                             TrimmerActivity.startTrimmerActivity(mActivity, videoInfo);

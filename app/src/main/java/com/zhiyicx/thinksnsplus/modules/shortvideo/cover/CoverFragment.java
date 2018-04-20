@@ -58,8 +58,9 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
  */
 public class CoverFragment extends TSFragment implements MediaPlayerWrapper.IMediaCallback {
     public static final String PATH = "path";
-    public static final String PREVIEW = " ";
+    public static final String PREVIEW = "preview";
     public static final String FILTER = "filter";
+    public static final String BACKTORECORD = "backtorecord";
     public static final int REQUEST_COVER_CODE = 1000;
     public static final int REQUEST_DELETE_CODE = 2000;
 
@@ -82,6 +83,7 @@ public class CoverFragment extends TSFragment implements MediaPlayerWrapper.IMed
     private boolean isPre;
     private boolean hasFilter;
     private boolean mResumed;
+    private boolean mBack2Record;
 
     private Subscription mSubscription;
 
@@ -155,7 +157,9 @@ public class CoverFragment extends TSFragment implements MediaPlayerWrapper.IMed
                         mActivity.setResult(Activity.RESULT_CANCELED);
                         mActivity.finish();
                     } else if (!hasFilter) {
-                        startActivity(new Intent(mActivity, RecordActivity.class));
+                        if (mBack2Record){
+                            startActivity(new Intent(mActivity, RecordActivity.class));
+                        }
                         mActivity.finish();
                     }
 
@@ -197,6 +201,7 @@ public class CoverFragment extends TSFragment implements MediaPlayerWrapper.IMed
         mVideoInfo = new VideoInfo();
         isPre = getArguments().getBoolean(PREVIEW);
         hasFilter = getArguments().getBoolean(FILTER);
+        mBack2Record = getArguments().getBoolean(BACKTORECORD);
         mVideoView.setVideoPath(srcList);
         mSeekBar.setVisibility(isPre ? View.GONE : View.VISIBLE);
 
