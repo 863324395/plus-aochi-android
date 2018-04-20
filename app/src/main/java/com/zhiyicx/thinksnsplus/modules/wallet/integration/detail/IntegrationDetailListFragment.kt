@@ -206,6 +206,10 @@ class IntegrationDetailListFragment : TSListFragment<IntegrationDetailContract.P
         //        initTopPopWindow();
     }
 
+    override fun setUseStatusView(): Boolean {
+        return false
+    }
+
     override fun getItemDecoration(): RecyclerView.ItemDecoration {
         return CustomLinearDecoration(0, resources.getDimensionPixelSize(R.dimen
                 .divider_line), 0, 0, ContextCompat.getDrawable(context, R.drawable
