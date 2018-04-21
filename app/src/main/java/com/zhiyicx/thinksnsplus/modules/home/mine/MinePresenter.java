@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.home.mine;
 
 import android.os.Bundle;
+import android.text.TextUtils;
 
 import com.zhiyicx.baseproject.base.SystemConfigBean;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
@@ -129,6 +130,14 @@ public class MinePresenter extends AppBasePresenter<MineContract.View> implement
     }
 
     /**
+     * 用户信息在后台更新后，在该处进行刷新，这儿获取的是自己的用户信息
+     */
+    @Subscriber(tag = EventBusTagConfig.EVENT_USERINFO_UPDATE)
+    public void upDataUserInfo(UserInfoBean userInfoBean) {
+        mRootView.setUserInfo(userInfoBean);
+    }
+
+    /**
      * 更新粉丝数量、系統消息
      */
     @Subscriber(tag = EventBusTagConfig.EVENT_IM_SET_MINE_FANS_TIP_VISABLE)
@@ -161,6 +170,10 @@ public class MinePresenter extends AppBasePresenter<MineContract.View> implement
                 .subscribe(new BaseSubscribeForV2<UserInfoBean>() {
                     @Override
                     protected void onSuccess(UserInfoBean data) {
+                        UserInfoBean userInfoBean = mUserInfoBeanGreenDao.getUserInfoById(String.valueOf(data.getUser_id()));
+                        if (!TextUtils.isEmpty(userInfoBean.getLocalAvatar())) {
+                            data.setAvatar(userInfoBean.getLocalAvatar());
+                        }
                         mUserInfoBeanGreenDao.insertOrReplace(data);
                         if (data.getWallet() != null) {
                             mWalletBeanGreenDao.insertOrReplace(data.getWallet());
@@ -209,5 +222,10 @@ public class MinePresenter extends AppBasePresenter<MineContract.View> implement
             mRootView.updateCertification(info);
         }
     }
+
+//    @Subscriber(tag = EventBusTagConfig.EVENT_USER_HEADPIC_UPDATE)
+//    public void headpicUpdate(String tip) {
+//        updateUserInfo();
+//    }
 
 }

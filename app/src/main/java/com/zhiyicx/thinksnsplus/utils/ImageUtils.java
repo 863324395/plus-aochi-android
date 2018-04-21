@@ -4,11 +4,13 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 
+import com.bumptech.glide.DrawableRequestBuilder;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.load.model.LazyHeaders;
@@ -20,6 +22,7 @@ import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircle
 import com.zhiyicx.baseproject.widget.UserAvatarView;
 import com.zhiyicx.baseproject.widget.imageview.FilterImageView;
 import com.zhiyicx.common.utils.DeviceUtils;
+import com.zhiyicx.common.utils.FileUtils;
 import com.zhiyicx.common.utils.SharePreferenceUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
@@ -314,6 +317,13 @@ public class ImageUtils {
         loadUserAvatar(userInfoBean, imageView, withBorder);
     }
 
+    /**
+     * 加载通用用户信息
+     *
+     * @param userInfoBean
+     * @param imageView
+     * @param withBorder
+     */
     private static void loadUserAvatar(UserInfoBean userInfoBean, ImageView imageView, boolean withBorder) {
         String avatar = "";
         if (userInfoBean != null && userInfoBean.getUser_id() != null) {
@@ -338,19 +348,28 @@ public class ImageUtils {
             }
             laste_request_time = System.currentTimeMillis();
         }
-        int defaultAvatar = getDefaultAvatar(userInfoBean);
-        Glide.with(imageView.getContext())
-                .load(TextUtils.isEmpty(avatar) ? R.drawable.shape_default_image : avatar)
-                .signature(new StringSignature(String.valueOf(mHeadPicSigture)))
-                .placeholder(withBorder ? defaultAvatar : defaultAvatar)
-                .error(withBorder ? defaultAvatar : defaultAvatar)
-                .transform(withBorder ?
-                        new GlideCircleBorderTransform(imageView.getContext().getApplicationContext(), imageView.getResources()
-                                .getDimensionPixelSize(R.dimen.spacing_tiny), ContextCompat.getColor(imageView.getContext(), R.color.white))
-                        : new GlideCircleTransform(imageView.getContext().getApplicationContext()))
+        int defaultErrorAvatar = getDefaultAvatar(userInfoBean);
+
+        DrawableRequestBuilder drawableRequestBuilder = Glide.with(imageView.getContext())
+                .load(TextUtils.isEmpty(avatar) ? R.drawable.shape_default_image : avatar);
+//                .signature(new StringSignature(String.valueOf(mHeadPicSigture)));
+
+        drawableRequestBuilder.placeholder(withBorder ? defaultErrorAvatar : defaultErrorAvatar);
+
+        drawableRequestBuilder.transform(withBorder ?
+                new GlideCircleBorderTransform(imageView.getContext().getApplicationContext(), imageView.getResources()
+                        .getDimensionPixelSize(R.dimen.spacing_tiny), ContextCompat.getColor(imageView.getContext(), R.color.white))
+                : new GlideCircleTransform(imageView.getContext().getApplicationContext()))
                 .into(imageView);
     }
 
+    /**
+     * 加载聊天页用户信息
+     *
+     * @param userInfoBean
+     * @param imageView
+     * @param withBorder
+     */
     private static void loadUserAvatar(ChatUserInfoBean userInfoBean, ImageView imageView, boolean withBorder) {
         String avatar = "";
         if (userInfoBean != null && userInfoBean.getUser_id() != null) {

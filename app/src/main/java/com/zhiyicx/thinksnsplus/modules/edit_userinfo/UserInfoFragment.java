@@ -32,6 +32,7 @@ import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.AreaBean;
 import com.zhiyicx.thinksnsplus.data.beans.LocationBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
@@ -44,6 +45,8 @@ import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhiyicx.baseproject.widget.UserAvatarView;
 import com.zhiyicx.thinksnsplus.widget.UserInfoInroduceInputView;
 import com.zhy.view.flowlayout.TagFlowLayout;
+
+import org.simple.eventbus.EventBus;
 
 import java.util.ArrayList;
 import java.util.HashMap;
