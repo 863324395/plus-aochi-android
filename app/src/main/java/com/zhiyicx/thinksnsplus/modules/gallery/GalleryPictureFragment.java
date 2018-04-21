@@ -317,8 +317,7 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
         canLook = toll == null || !(toll.getPaid() != null && !toll.getPaid() && toll.getToll_type_string().equals(Toll.LOOK_TOLL_TYPE));
         mLlToll.setVisibility(!canLook ? View.VISIBLE : View.GONE);
         final int w, h;
-//        w = imageBean.getWidth() > screenW ? screenW : (int) imageBean.getWidth();
-        w = screenW;
+        w = screenW;//        w = imageBean.getWidth() > screenW ? screenW : (int) imageBean.getWidth();
         h = (int) (w * imageBean.getHeight() / imageBean.getWidth());
         // 本地图片
         if (imageBean.getImgUrl() != null) {
@@ -336,7 +335,9 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                         @Override
                         public GlideUrl requestGlideUrl() {
                             return ImageUtils.imagePathConvertV2(canLook, mImageBean.getStorage_id(), w, h,
-                                    ImageUtils.imageIsGif(imageBean.getImgMimeType()) ? ImageZipConfig.IMAGE_100_ZIP : ImageZipConfig
+                                    ImageUtils.isLongImage((float) imageBean.getHeight(), (float) imageBean.getWidth())
+                                            || ImageUtils.imageIsGif(imageBean.getImgMimeType())
+                                            ? ImageZipConfig.IMAGE_100_ZIP : ImageZipConfig
                                             .IMAGE_ZIP_BIG, AppApplication.getTOKEN());
                         }
                     }
@@ -375,7 +376,8 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                             DrawableRequestBuilder builder = Glide.with(context)
                                     .load(
                                             ImageUtils.imagePathConvertV2(canLook, mImageBean.getStorage_id(), w, h,
-                                                    ImageUtils.imageIsGif(imageBean.getImgMimeType()) ? ImageZipConfig.IMAGE_100_ZIP :
+                                                    ImageUtils.isLongImage((float) imageBean.getHeight(), (float) imageBean.getWidth())
+                                                            || ImageUtils.imageIsGif(imageBean.getImgMimeType()) ? ImageZipConfig.IMAGE_100_ZIP :
                                                             ImageZipConfig.IMAGE_ZIP_BIG, AppApplication.getTOKEN())
                                     )
                                     .diskCacheStrategy(DiskCacheStrategy.ALL)

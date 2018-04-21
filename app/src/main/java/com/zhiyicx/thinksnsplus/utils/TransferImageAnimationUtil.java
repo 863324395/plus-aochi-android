@@ -21,7 +21,7 @@ import com.zhiyicx.thinksnsplus.data.beans.AnimationRectBean;
 
 public class TransferImageAnimationUtil {
     // 动画持续时间
-    public static final int ANIMATION_DURATION = 350;
+    public static final int ANIMATION_DURATION = 300;
 
     /**
      * 退出时的控件缩放处理
