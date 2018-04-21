@@ -78,18 +78,22 @@ public class FollowFansListFragment extends TSListFragment<FollowFansListContrac
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
         this.mIsVisibleToUser = isVisibleToUser;
-        if (mIsVisibleToUser && pageType == FANS_FRAGMENT_PAGE && mPresenter != null) {
-            //清除粉丝未读数
-            mPresenter.cleanNewFans();
-        }
+        clearNewFansCount();
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        if (mIsVisibleToUser && pageType == FANS_FRAGMENT_PAGE) {
+        clearNewFansCount();
+    }
+
+    /**
+     * 清空新粉丝数量
+     */
+    private void clearNewFansCount() {
+        if (mIsVisibleToUser && pageType == FANS_FRAGMENT_PAGE && mPresenter != null) {
             //清除粉丝未读数
-            mFollowFansListPresenter.cleanNewFans();
+            mPresenter.cleanNewFans();
         }
     }
 

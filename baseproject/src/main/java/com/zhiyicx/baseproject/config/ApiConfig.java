@@ -905,7 +905,10 @@ public class ApiConfig {
     // 根据经纬度查询周围最多50KM内的 TS+ 用户
     public static final String APP_PATH_GET_USER_AROUND = "api/" + API_VERSION_2 + "/around-amap";
     // User Append Follower Count
-    public static final String APP_PATH_USER_APPEND_FOLLOWER_COUNT = "api/" + API_VERSION_2 + "/user/counts";
+    public static final String APP_PATH_USER_APPEND_MESSAGE_COUNT = "api/" + API_VERSION_2 + "/user/counts";
+    // 清空消息未读数
+    public static final String APP_PATH_USER_APPEND_READ_MESSAGE = "api/" + API_VERSION_2 + "/user/counts";
+    //
     // 获取用户黑名单列表
     public static final String APP_PATH_GET_USER_BLACK_LIST = "api/" + API_VERSION_2 + "/user/blacks";
     // 把用户加入黑名单

@@ -200,9 +200,6 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
     protected void setRightClick() {
         super.setRightClick();
         startActivity(new Intent(mActivity, MyCodeActivity.class));
-        if (mPresenter != null) {
-            mPresenter.readMessageByKey(NotificationConfig.NOTIFICATION_KEY_NOTICES);
-        }
     }
 
     @OnClick({R.id.rl_userinfo_container, R.id.ll_fans_container, R.id.ll_follow_container, R.id.bt_my_info,

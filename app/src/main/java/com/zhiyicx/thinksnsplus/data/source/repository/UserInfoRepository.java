@@ -995,6 +995,19 @@ public class UserInfoRepository implements IUserInfoRepository {
     }
 
     /**
+     * 清空消息未读数
+     *
+     * @param type UserFollowerCountBean.UserBean
+     * @return
+     */
+    @Override
+    public Observable<Object> clearUserMessageCount(String type) {
+        return mUserInfoClient.clearUserMessageCount(type)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    /**
      * @param offset 偏移量，当前请求数据条数
      * @return
      */

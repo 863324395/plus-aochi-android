@@ -68,11 +68,6 @@ public class MinePresenter extends AppBasePresenter<MineContract.View> implement
     }
 
     @Override
-    public List<SystemConfigBean.ImHelperBean> getImHelper() {
-        return mSystemRepository.getBootstrappersInfoFromLocal().getIm_helper();
-    }
-
-    @Override
     public void getUserInfoFromDB() {
         if (mUserInfoBeanGreenDao == null) {
             return;
@@ -88,13 +83,15 @@ public class MinePresenter extends AppBasePresenter<MineContract.View> implement
             }
             mRootView.setUserInfo(userInfoBean);
         }
-        setMineTipVisable(false);
 
+        /**
+         * 获取最新粉丝数量
+         */
         Subscription subscribe = mUserInfoRepository.getUserAppendFollowerCount()
                 .subscribe(new BaseSubscribeForV2<UserFollowerCountBean>() {
                     @Override
                     protected void onSuccess(UserFollowerCountBean data) {
-                        mRootView.setNewFollowTip(data.getUser().getFollowing());
+                        setFollowFansCount(data == null || data.getUser() == null ? 0 : data.getUser().getFollowing());
 
                     }
                 });
@@ -141,21 +138,11 @@ public class MinePresenter extends AppBasePresenter<MineContract.View> implement
      * 更新粉丝数量、系統消息
      */
     @Subscriber(tag = EventBusTagConfig.EVENT_IM_SET_MINE_FANS_TIP_VISABLE)
-    public void setMineTipVisable(boolean isVisiable) {
-        // 关注消息
-        FlushMessages followFlushMessages = mFlushMessageBeanGreenDao.getFlushMessgaeByKey(NotificationConfig.NOTIFICATION_KEY_FOLLOWS);
-        mRootView.setNewFollowTip(followFlushMessages != null ? followFlushMessages.getCount() : 0);
-        // 系统消息
-        FlushMessages systemInfoFlushMessages = mFlushMessageBeanGreenDao.getFlushMessgaeByKey(NotificationConfig.NOTIFICATION_KEY_NOTICES);
-        mRootView.setNewSystemInfo(systemInfoFlushMessages != null && systemInfoFlushMessages.getCount() > 0);
-        // 更新底部红点
-        EventBus.getDefault().post((followFlushMessages != null && followFlushMessages.getCount() > 0) || (systemInfoFlushMessages != null &&
-                systemInfoFlushMessages.getCount() > 0), EventBusTagConfig.EVENT_IM_SET_MINE_TIP_VISABLE);
-    }
+    public void setFollowFansCount(int count) {
 
-    @Override
-    public void readMessageByKey(String key) {
-        mFlushMessageBeanGreenDao.readMessageByKey(key);
+        mRootView.setNewFollowTip(count);
+        // 更新底部红点
+        EventBus.getDefault().post(count > 0, EventBusTagConfig.EVENT_IM_SET_MINE_TIP_VISABLE);
     }
 
     /**
@@ -182,11 +169,6 @@ public class MinePresenter extends AppBasePresenter<MineContract.View> implement
                     }
                 });
         addSubscrebe(subscribe);
-    }
-
-    @Override
-    public int getBalanceRatio() {
-        return mSystemRepository.getBootstrappersInfoFromLocal().getWallet_ratio();
     }
 
     @Override

@@ -45,23 +45,14 @@ public interface MineContract {
          * 从数据库获取当前用户的信息
          */
         void getUserInfoFromDB();
-        /**
-         * 通过 key 标记消息已读
-         *
-         * @param key
-         */
-        void readMessageByKey(String key);
 
         /**
          * 更新用户信息
          */
         void updateUserInfo();
 
-        int getBalanceRatio();
-
         void getCertificationInfo();
 
-        List<SystemConfigBean.ImHelperBean> getImHelper();
     }
 
 }

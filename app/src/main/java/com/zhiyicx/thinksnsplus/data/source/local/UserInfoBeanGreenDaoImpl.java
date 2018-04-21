@@ -86,12 +86,17 @@ public class UserInfoBeanGreenDaoImpl extends CommonCacheImpl<UserInfoBean> {
 
     @Override
     public long insertOrReplace(UserInfoBean newData) {
+        if (newData == null) {
+            return 0;
+        }
         UserInfoBeanDao userInfoBeanDao = getWDaoSession().getUserInfoBeanDao();
-        if (TextUtils.isEmpty(newData.getLocalAvatar())&&newData.getUser_id() == AppApplication.getMyUserIdWithdefault()) {
+        if (TextUtils.isEmpty(newData.getLocalAvatar()) && newData.getUser_id() == AppApplication.getMyUserIdWithdefault()) {
             UserInfoBean myUser = getUserInfoById(String.valueOf(newData.getUser_id()));
-            newData.setLocalAvatar(myUser.getLocalAvatar());
-            if (!TextUtils.isEmpty(newData.getLocalAvatar())) {
-                newData.setAvatar(newData.getLocalAvatar());
+            if (myUser != null) {
+                newData.setLocalAvatar(myUser.getLocalAvatar());
+                if (!TextUtils.isEmpty(newData.getLocalAvatar())) {
+                    newData.setAvatar(newData.getLocalAvatar());
+                }
             }
         }
 
