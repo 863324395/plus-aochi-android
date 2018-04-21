@@ -74,8 +74,6 @@ public class UserInfoPresenter extends AppBasePresenter<UserInfoContract.View> i
                         currentLoginUserInfo.setLocalAvatar(filePath);
                         mUserInfoBeanGreenDao.insertOrReplace(currentLoginUserInfo);
                         ImageUtils.updateCurrentLoginUserHeadPicSignature(mContext);
-//                        EventBus.getDefault().post(currentLoginUserInfo, EventBusTagConfig.EVENT_USERINFO_UPDATE);
-
                         mRootView.setUpLoadHeadIconState(1, "");
                     }
 

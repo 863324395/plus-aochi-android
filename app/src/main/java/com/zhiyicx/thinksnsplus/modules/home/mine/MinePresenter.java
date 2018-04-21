@@ -223,9 +223,5 @@ public class MinePresenter extends AppBasePresenter<MineContract.View> implement
         }
     }
 
-//    @Subscriber(tag = EventBusTagConfig.EVENT_USER_HEADPIC_UPDATE)
-//    public void headpicUpdate(String tip) {
-//        updateUserInfo();
-//    }
 
 }
