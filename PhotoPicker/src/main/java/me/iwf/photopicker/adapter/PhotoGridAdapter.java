@@ -13,6 +13,7 @@ import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
+import com.zhiyicx.common.utils.FileUtils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -25,6 +26,7 @@ import me.iwf.photopicker.event.OnItemCheckListener;
 import me.iwf.photopicker.event.OnPhotoClickListener;
 import me.iwf.photopicker.utils.AndroidLifecycleUtils;
 import me.iwf.photopicker.utils.MediaStoreHelper;
+import me.iwf.photopicker.widget.GifTagImageView;
 
 /**
  * Created by donglua on 15/5/31.
@@ -131,7 +133,7 @@ public class PhotoGridAdapter extends SelectableAdapter<PhotoGridAdapter.PhotoVi
             }
 
             final boolean isChecked = isSelected(photo);
-
+            holder.ivPhoto.setIshowGifTag("image/gif".equals(FileUtils.getMimeTypeByFile(new File(photo.getPath()))));
             holder.vSelected.setSelected(isChecked);
             holder.ivPhoto.setSelected(isChecked);
             holder.vSelected.setVisibility(previewEnable ? View.VISIBLE : View.GONE);
@@ -190,12 +192,12 @@ public class PhotoGridAdapter extends SelectableAdapter<PhotoGridAdapter.PhotoVi
 
 
     public static class PhotoViewHolder extends RecyclerView.ViewHolder {
-        private ImageView ivPhoto;
+        private GifTagImageView ivPhoto;
         private View vSelected;
 
         public PhotoViewHolder(View itemView) {
             super(itemView);
-            ivPhoto = (ImageView) itemView.findViewById(R.id.iv_photo);
+            ivPhoto = (GifTagImageView) itemView.findViewById(R.id.iv_photo);
             vSelected = itemView.findViewById(R.id.v_selected);
         }
     }
