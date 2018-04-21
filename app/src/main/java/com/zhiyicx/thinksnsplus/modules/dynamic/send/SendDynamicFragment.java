@@ -3,6 +3,7 @@ package com.zhiyicx.thinksnsplus.modules.dynamic.send;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
+import android.media.Image;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
@@ -31,6 +32,7 @@ import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl;
 import com.zhiyicx.baseproject.impl.photoselector.PhotoSeletorImplModule;
 import com.zhiyicx.baseproject.widget.button.CombinationButton;
+import com.zhiyicx.baseproject.widget.imageview.FilterImageView;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.ActivityHandler;
 import com.zhiyicx.common.utils.AndroidBug5497Workaround;
@@ -56,6 +58,7 @@ import com.zhiyicx.thinksnsplus.modules.photopicker.PhotoAlbumDetailsActivity;
 import com.zhiyicx.thinksnsplus.modules.photopicker.PhotoViewActivity;
 import com.zhiyicx.thinksnsplus.modules.shortvideo.cover.CoverActivity;
 import com.zhiyicx.thinksnsplus.modules.shortvideo.videostore.VideoSelectActivity;
+import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhiyicx.thinksnsplus.widget.UserInfoInroduceInputView;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
@@ -797,7 +800,7 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                 View convertView = holder.getConvertView();
                 convertView.getLayoutParams().width = width / ITEM_COLUM;
                 convertView.getLayoutParams().height = width / ITEM_COLUM;
-                final ImageView imageView = holder.getView(R.id.iv_dynamic_img);
+                final FilterImageView imageView = holder.getView(R.id.iv_dynamic_img);
                 final ImageView paintView = holder.getView(R.id.iv_dynamic_img_paint);
                 final View filterView = holder.getView(R.id.iv_dynamic_img_filter);
                 if (TextUtils.isEmpty(imageBean.getImgUrl())) {
@@ -830,11 +833,13 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                     }
                     Glide.with(getContext())
                             .load(imageBean.getImgUrl())
+                            .asBitmap()
                             .signature(new StringSignature(String.valueOf(System.currentTimeMillis())))
                             .placeholder(R.drawable.shape_default_image)
                             .error(R.drawable.shape_default_error_image)
                             .override(convertView.getLayoutParams().width, convertView.getLayoutParams().height)
                             .into(imageView);
+                    imageView.setIshowGifTag(ImageUtils.imageIsGif(imageBean.getImgMimeType()));
 
                 }
                 imageView.setOnClickListener(v -> {
@@ -861,7 +866,7 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                             if (dynamicType == SendDynamicDataBean.VIDEO_TEXT_DYNAMIC) {
                                 ArrayList<String> srcList = new ArrayList<>();
                                 srcList.add(mSendDynamicDataBean.getVideoInfo().getPath());
-                                CoverActivity.startCoverActivity(mActivity, srcList, true, false,false);
+                                CoverActivity.startCoverActivity(mActivity, srcList, true, false, false);
                                 return;
                             }
 
