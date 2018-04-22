@@ -87,7 +87,8 @@ public class VideoPreviewView extends GLSurfaceView implements GLSurfaceView.Ren
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, CameraUtils.getCurrentRatio() ==
-                CameraUtils.Ratio.RATIO_1_1 ? widthMeasureSpec : heightMeasureSpec);
+                CameraUtils.Ratio.RATIO_4_3_2_1_1 || CameraUtils.getCurrentRatio() ==
+                CameraUtils.Ratio.RATIO_16_9_2_1_1 ? widthMeasureSpec : heightMeasureSpec);
     }
 
     @Override
@@ -194,6 +195,10 @@ public class VideoPreviewView extends GLSurfaceView implements GLSurfaceView.Ren
      */
     public int getVideoDuration() {
         return mMediaPlayer.getCurVideoDuration();
+    }
+
+    public int getTotalVIdeoDuration(){
+        return mMediaPlayer.getVideoDuration();
     }
 
     public int getVideoWidth() {

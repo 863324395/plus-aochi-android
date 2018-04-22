@@ -26,7 +26,7 @@ import java.util.List;
 public class TrimVideoUtil {
 
     private static final String TAG = TrimVideoUtil.class.getSimpleName();
-    public static final int VIDEO_MAX_DURATION = 10;
+    public static final int VIDEO_MAX_DURATION = 15;
     public static final int MIN_TIME_FRAME = 3;
     private static int thumb_Width = (DeviceUtils.getScreenWidth() - DeviceUtils.dipToPX(20)) /
             VIDEO_MAX_DURATION;
@@ -313,6 +313,10 @@ public class TrimVideoUtil {
                                                                .getColumnIndex(MediaStore.Video
                                                                        .Media.HEIGHT)));
 
+                                                       LogUtils.d("---------------------------------------");
+                                                       LogUtils.d("path::" + cursor.getString(cursor
+                                                               .getColumnIndex(MediaStore.Video
+                                                                       .Media.DATA)));
                                                        LogUtils.d("duration::" + cursor.getLong(cursor
                                                                .getColumnIndex(MediaStore.Video
                                                                        .Media.DURATION)));
@@ -322,6 +326,7 @@ public class TrimVideoUtil {
                                                        LogUtils.d("height::" + cursor.getInt(cursor
                                                                .getColumnIndex(MediaStore.Video
                                                                        .Media.HEIGHT)));
+                                                       LogUtils.d("---------------------------------------");
 
                                                        video.setDuration((int) cursor.getLong(cursor
                                                                .getColumnIndex(MediaStore.Video
@@ -341,7 +346,7 @@ public class TrimVideoUtil {
                                                            continue;
                                                        }
 
-                                                       if (video.getDuration() < 500) {
+                                                       if (video.getDuration() < 3000) {
                                                            continue;
                                                        }
                                                        videos.add(video);

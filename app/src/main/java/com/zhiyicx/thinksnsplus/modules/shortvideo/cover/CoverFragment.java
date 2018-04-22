@@ -34,6 +34,7 @@ import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.base.EmptySubscribe;
 import com.zhiyicx.thinksnsplus.data.beans.SendDynamicDataBean;
 import com.zhiyicx.thinksnsplus.modules.dynamic.send.SendDynamicActivity;
+import com.zhiyicx.thinksnsplus.modules.shortvideo.record.RecordActivity;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -57,8 +58,9 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
  */
 public class CoverFragment extends TSFragment implements MediaPlayerWrapper.IMediaCallback {
     public static final String PATH = "path";
-    public static final String PREVIEW = " ";
+    public static final String PREVIEW = "preview";
     public static final String FILTER = "filter";
+    public static final String BACKTORECORD = "backtorecord";
     public static final int REQUEST_COVER_CODE = 1000;
     public static final int REQUEST_DELETE_CODE = 2000;
 
@@ -81,6 +83,7 @@ public class CoverFragment extends TSFragment implements MediaPlayerWrapper.IMed
     private boolean isPre;
     private boolean hasFilter;
     private boolean mResumed;
+    private boolean mBack2Record;
 
     private Subscription mSubscription;
 
@@ -90,6 +93,11 @@ public class CoverFragment extends TSFragment implements MediaPlayerWrapper.IMed
         CoverFragment fragment = new CoverFragment();
         fragment.setArguments(bundle);
         return fragment;
+    }
+
+    @Override
+    public void onBackPressed() {
+        mToolbarLeft.performClick();
     }
 
     @Override
@@ -145,8 +153,16 @@ public class CoverFragment extends TSFragment implements MediaPlayerWrapper.IMed
                     if (mSubscription != null && !mSubscription.isUnsubscribed()) {
                         mSubscription.unsubscribe();
                     }
-                    mActivity.setResult(Activity.RESULT_CANCELED);
-                    mActivity.finish();
+                    if (isPre) {
+                        mActivity.setResult(Activity.RESULT_CANCELED);
+                        mActivity.finish();
+                    } else if (!hasFilter) {
+                        if (mBack2Record){
+                            startActivity(new Intent(mActivity, RecordActivity.class));
+                        }
+                        mActivity.finish();
+                    }
+
                 });
 
         mVideoView.setIMediaCallback(this);
@@ -161,7 +177,7 @@ public class CoverFragment extends TSFragment implements MediaPlayerWrapper.IMed
                     bitmap,
                     ParamsManager.VideoCover);
 
-            if (hasFilter){
+            if (hasFilter) {
                 mProgressDialog.dismiss();
                 Bundle bundle = new Bundle();
                 bundle.putString(PATH, cover);
@@ -169,7 +185,7 @@ public class CoverFragment extends TSFragment implements MediaPlayerWrapper.IMed
                 intent.putExtras(bundle);
                 mActivity.setResult(Activity.RESULT_OK, intent);
                 mActivity.finish();
-            }else{
+            } else {
                 combineVideo(cover);
             }
 
@@ -185,6 +201,7 @@ public class CoverFragment extends TSFragment implements MediaPlayerWrapper.IMed
         mVideoInfo = new VideoInfo();
         isPre = getArguments().getBoolean(PREVIEW);
         hasFilter = getArguments().getBoolean(FILTER);
+        mBack2Record = getArguments().getBoolean(BACKTORECORD);
         mVideoView.setVideoPath(srcList);
         mSeekBar.setVisibility(isPre ? View.GONE : View.VISIBLE);
 
@@ -230,8 +247,10 @@ public class CoverFragment extends TSFragment implements MediaPlayerWrapper.IMed
     public void onVideoPrepare() {
         if (isPre) {
             mVideoView.start();
+        } else {
+            mVideoView.seekTo(1);
         }
-        mSeekBar.setMax(mVideoView.getVideoDuration());
+        mSeekBar.setMax(mVideoView.getTotalVIdeoDuration());
         mSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
@@ -308,13 +327,49 @@ public class CoverFragment extends TSFragment implements MediaPlayerWrapper.IMed
                                             LogUtils.d(TAG, "合并失败");
                                         }
                                         VideoListManager.getInstance().removeAllSubVideo();
-                                        clipVideo(s,cover);
+
+                                        // 裁剪 压缩
+                                        // clipVideo(s,cover);
+
+                                        FileUtils.updateMediaStore(mActivity, s, (result, uri) -> {
+
+                                            mVideoInfo.setPath(result);
+                                            mVideoInfo.setCover(cover);
+                                            mVideoInfo.setCreateTime(System.currentTimeMillis() + "");
+
+                                            mVideoInfo.setWidth(mVideoView.getVideoWidth());
+                                            mVideoInfo.setHeight(mVideoView.getVideoHeight());
+                                            mVideoInfo.setDuration(mVideoView.getVideoDuration());
+
+                                            if (mVideoView.getVideoInfo().get(0).getRotation() == 90) {
+                                                mVideoInfo.setWidth(mVideoView.getVideoHeight());
+                                                mVideoInfo.setHeight(mVideoView.getVideoWidth());
+                                            }
+
+                                            SendDynamicDataBean sendDynamicDataBean = new SendDynamicDataBean();
+                                            sendDynamicDataBean.setDynamicBelong(SendDynamicDataBean
+                                                    .NORMAL_DYNAMIC);
+                                            List<ImageBean> pic = new ArrayList<>();
+                                            ImageBean imageBean = new ImageBean();
+                                            imageBean.setImgUrl(mVideoInfo.getCover());
+                                            pic.add(imageBean);
+                                            sendDynamicDataBean.setDynamicPrePhotos(pic);
+                                            sendDynamicDataBean.setDynamicType(SendDynamicDataBean
+                                                    .VIDEO_TEXT_DYNAMIC);
+                                            sendDynamicDataBean.setVideoInfo(mVideoInfo);
+                                            SendDynamicActivity.startToSendDynamicActivity(getContext(),
+                                                    sendDynamicDataBean);
+
+                                            mProgressDialog.dismiss();
+                                            mActivity.finish();
+                                        });
+
                                     }
                                 }));
 
     }
 
-    private void clipVideo(String path,String cover) {
+    private void clipVideo(String path, String cover) {
 
         mSubscription = Observable.just(path)
                 .subscribe(new BaseSubscribeForV2<String>() {

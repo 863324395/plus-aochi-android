@@ -368,8 +368,8 @@ public class VideoClipper {
         //设置视频的编码参数
         MediaFormat mediaFormat = MediaFormat.createVideoFormat("video/avc", encodeW, encodeH);
         // 1.5M
-        mediaFormat.setInteger(MediaFormat.KEY_BIT_RATE, 1572864);
-        mediaFormat.setInteger(MediaFormat.KEY_FRAME_RATE, 24);
+        mediaFormat.setInteger(MediaFormat.KEY_BIT_RATE, 2097152);
+        mediaFormat.setInteger(MediaFormat.KEY_FRAME_RATE, 20);
         mediaFormat.setInteger(MediaFormat.KEY_COLOR_FORMAT, MediaCodecInfo.CodecCapabilities.COLOR_FormatSurface);
         mediaFormat.setInteger(MediaFormat.KEY_I_FRAME_INTERVAL, 1);
         videoEncoder.configure(mediaFormat, null, null, MediaCodec.CONFIGURE_FLAG_ENCODE);
@@ -468,6 +468,7 @@ public class VideoClipper {
                     encoderOutputBuffers = encoder.getOutputBuffers();
                 } else if (encoderStatus == MediaCodec.INFO_OUTPUT_FORMAT_CHANGED) {
                     MediaFormat newFormat = encoder.getOutputFormat();
+                    mMediaMuxer.setOrientationHint(videoRotation);
                     startMux(newFormat, 0);
                 } else if (encoderStatus < 0) {
                 } else {
@@ -514,13 +515,6 @@ public class VideoClipper {
     private void startMux(MediaFormat mediaFormat, int flag) {
         if (flag == 0) {
             muxVideoTrack = mMediaMuxer.addTrack(mediaFormat);
-            // MediaFormat.KEY_ROTATION
-            if (videoFormat.containsKey("rotation-degrees")) {
-                // Decoded video is rotated automatically in Android 5.0 lollipop.
-                // Turn off here because we don't want to encode rotated one.
-                // refer: https://android.googlesource.com/platform/frameworks/av/+blame/lollipop-release/media/libstagefright/Utils.cpp
-                videoFormat.setInteger("rotation-degrees", 0);
-            }
         } else if (flag == 1) {
             muxAudioTrack = mMediaMuxer.addTrack(mediaFormat);
         }

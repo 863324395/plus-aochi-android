@@ -35,9 +35,9 @@ public class AspectFrameLayout extends FrameLayout {
         if (aspectRatio < 0) {
             throw new IllegalArgumentException("ratio < 0");
         }
-        if (ratio== CameraUtils.Ratio.RATIO_1_1){
-            mTargetAspect=1;
-        }else{
+        if (ratio == CameraUtils.Ratio.RATIO_4_3_2_1_1 || ratio == CameraUtils.Ratio.RATIO_16_9_2_1_1) {
+            mTargetAspect = 1;
+        } else {
             mTargetAspect = aspectRatio;
         }
         requestLayout();

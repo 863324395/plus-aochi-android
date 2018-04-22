@@ -242,7 +242,9 @@ public class BaseMessageRepository implements IBaseMessageRepository {
                                                 if (list1.get(i).getConversation().getType() == EMConversation.EMConversationType.Chat) {
                                                     try {
                                                         int key = Integer.parseInt(list1.get(i).getEmKey());
-                                                        list1.get(i).setUserInfo(userInfoBeanSparseArray.get(key));
+                                                        if (list1.get(i).getUserInfo() == null) {
+                                                            list1.get(i).setUserInfo(userInfoBeanSparseArray.get(key));
+                                                        }
                                                     } catch (NumberFormatException e) {
                                                         e.printStackTrace();
                                                     }

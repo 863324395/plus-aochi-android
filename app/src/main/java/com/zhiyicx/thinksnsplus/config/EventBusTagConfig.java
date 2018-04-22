@@ -257,4 +257,6 @@ public class EventBusTagConfig {
     // 黑名单中移除用户
     public static final String EVENT_USER_REMOVE_FROM_BLACK_LIST = "user_remove_from_balck_list";
 
+    public static final String EVENT_USER_HEADPIC_UPDATE="event_user_update_headpic";
+
 }

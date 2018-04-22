@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.data.source.local;
 
 import android.app.Application;
+import android.text.TextUtils;
 
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.thinksnsplus.R;
@@ -85,7 +86,20 @@ public class UserInfoBeanGreenDaoImpl extends CommonCacheImpl<UserInfoBean> {
 
     @Override
     public long insertOrReplace(UserInfoBean newData) {
+        if (newData == null) {
+            return 0;
+        }
         UserInfoBeanDao userInfoBeanDao = getWDaoSession().getUserInfoBeanDao();
+        if (TextUtils.isEmpty(newData.getLocalAvatar()) && newData.getUser_id() == AppApplication.getMyUserIdWithdefault()) {
+            UserInfoBean myUser = getUserInfoById(String.valueOf(newData.getUser_id()));
+            if (myUser != null) {
+                newData.setLocalAvatar(myUser.getLocalAvatar());
+                if (!TextUtils.isEmpty(newData.getLocalAvatar())) {
+                    newData.setAvatar(newData.getLocalAvatar());
+                }
+            }
+        }
+
         return userInfoBeanDao.insertOrReplace(newData);
     }
 
@@ -150,7 +164,8 @@ public class UserInfoBeanGreenDaoImpl extends CommonCacheImpl<UserInfoBean> {
         }
         UserInfoBeanDao userInfoBeanDao = getRDaoSession().getUserInfoBeanDao();
         return userInfoBeanDao.queryBuilder()
-                .where(UserInfoBeanDao.Properties.Follower.eq(true), UserInfoBeanDao.Properties.Following.eq(true), UserInfoBeanDao.Properties.User_id.lt(maxId))
+                .where(UserInfoBeanDao.Properties.Follower.eq(true), UserInfoBeanDao.Properties.Following.eq(true), UserInfoBeanDao.Properties
+                        .User_id.lt(maxId))
                 .limit(TSListFragment.DEFAULT_PAGE_SIZE)
                 .orderDesc(UserInfoBeanDao.Properties.User_id)
                 .list();
@@ -179,7 +194,7 @@ public class UserInfoBeanGreenDaoImpl extends CommonCacheImpl<UserInfoBean> {
         try {
             userId = Long.parseLong(id);
         } catch (Exception e) {
-            return  AppApplication.getContext().getResources().getString(R.string.default_delete_user_name);
+            return AppApplication.getContext().getResources().getString(R.string.default_delete_user_name);
         }
         UserInfoBeanDao userInfoBeanDao = getRDaoSession().getUserInfoBeanDao();
         UserInfoBean userInfoBean = userInfoBeanDao.load(userId);

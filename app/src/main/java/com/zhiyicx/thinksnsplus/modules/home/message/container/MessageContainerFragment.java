@@ -129,6 +129,11 @@ public class MessageContainerFragment extends TSViewPagerFragment implements Eas
     }
 
     @Override
+    protected View getRightViewOfMusicWindow() {
+        return mTsvToolbar.getRightTextView();
+    }
+
+    @Override
     protected boolean setUseSatusbar() {
         return true;
     }

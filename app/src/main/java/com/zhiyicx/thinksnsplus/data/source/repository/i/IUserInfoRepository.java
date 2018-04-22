@@ -20,13 +20,17 @@ import java.util.HashMap;
 import java.util.List;
 
 import retrofit2.http.DELETE;
+import retrofit2.http.Field;
+import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
+import retrofit2.http.PATCH;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
 import rx.Observable;
 
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_ADD_USER_TO_BLACK_LIST;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_USER_BLACK_LIST;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_USER_APPEND_READ_MESSAGE;
 
 /**
  * @Describe 用户相关
@@ -416,6 +420,13 @@ public interface IUserInfoRepository {
      */
     Observable<UserFollowerCountBean> getUserAppendFollowerCount();
 
+    /**
+     * 清空消息未读数
+     *
+     * @param type UserFollowerCountBean.UserBean
+     * @return
+     */
+    Observable<Object> clearUserMessageCount(String type);
 
     /**
      * @param offset 偏移量，当前请求数据条数
@@ -427,12 +438,12 @@ public interface IUserInfoRepository {
      * @param userId 用户 id
      * @return 把用户加入黑名单
      */
-    Observable<Object> addUserToBlackList( Long userId);
+    Observable<Object> addUserToBlackList(Long userId);
 
     /**
      * @param userId 用户 id
      * @return 把用户移除黑名单
      */
-    Observable<Object> removeUserFromBlackList( Long userId);
+    Observable<Object> removeUserFromBlackList(Long userId);
 
 }

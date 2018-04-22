@@ -1,7 +1,6 @@
 package com.zhiyicx.thinksnsplus.data.source.remote;
 
 import com.zhiyicx.baseproject.config.ApiConfig;
-import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.beans.CheckInBean;
@@ -70,7 +69,8 @@ import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_REPORT_USER;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_REWARD_USER;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_SEARCH_RECOMMENT_USER;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_UPDATE_USER_LOCATION;
-import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_USER_APPEND_FOLLOWER_COUNT;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_USER_APPEND_MESSAGE_COUNT;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_USER_APPEND_READ_MESSAGE;
 
 /**
  * @author Jungle68
@@ -177,6 +177,7 @@ public interface UserInfoClient {
      */
     @GET(ApiConfig.APP_PATH_GET_UNREAD_NOTIFICATION)
     Observable<UnReadNotificaitonBean> getUnreadNotificationData();
+
 
     /**
      * 通知列表
@@ -531,8 +532,18 @@ public interface UserInfoClient {
      *
      * @return
      */
-    @GET(APP_PATH_USER_APPEND_FOLLOWER_COUNT)
+    @GET(APP_PATH_USER_APPEND_MESSAGE_COUNT)
     Observable<UserFollowerCountBean> getUserAppendFollowerCount();
+
+    /**
+     * 清空消息未读数
+     *
+     * @param type UserFollowerCountBean.UserBean
+     * @return
+     */
+    @FormUrlEncoded
+    @PATCH(APP_PATH_USER_APPEND_READ_MESSAGE)
+    Observable<Object> clearUserMessageCount(@Field("type") String type);
 
     /**
      * @return 当前登录用户的黑名单列表

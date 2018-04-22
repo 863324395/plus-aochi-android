@@ -422,7 +422,7 @@ public class VideoTrimmerView extends FrameLayout {
 
     public void onSaveClicked() {
         if (mEndPosition / 1000 - mStartPosition / 1000 < TrimVideoUtil.MIN_TIME_FRAME) {
-            ToastUtils.showToast("视频长不足3秒,无法上传");
+            ToastUtils.showToast(getResources().getString(R.string.video_duration_limit));
         } else {
             mVideoView.pause();
             TrimVideoUtil.trim(mContext, mSrc, com.tym.shortvideo.utils.FileUtils.getPath(ParamsManager.VideoPath,ParamsManager.CompressVideo),

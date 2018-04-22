@@ -33,12 +33,12 @@ public class SendDynamicActivity extends TSActivity<SendDynamicPresenter, SendDy
         super.onNewIntent(intent);
         mContanierFragment.onActivityResult(RESULT_OK,RESULT_OK,intent);
     }
-    // 重复了，fragmentActivity已经回调了一次
-//    @Override
-//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-//        super.onActivityResult(requestCode, resultCode, data);
-//        mContanierFragment.onActivityResult(requestCode,resultCode,data);
-//    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        mContanierFragment.onActivityResult(requestCode,resultCode,data);
+    }
 
     @Override
     public void onBackPressed() {

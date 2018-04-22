@@ -27,7 +27,7 @@ public class DynamicDetailAdvertHeader {
     private View mRootView;
     private LinearLayout mAdvertContainer;
     private LinearLayout mLLAdvert;
-    private LinearLayout mLLAdvertTag;
+    private View mLLAdvertTag;
     private TextView mTitle;
     private Context mContext;
     private List<RealAdvertListBean> mAdvertListBeans;
@@ -43,7 +43,7 @@ public class DynamicDetailAdvertHeader {
         mRootView = rootView;
         mTitle = (TextView) mRootView.findViewById(R.id.tv_advert_title);
         mAdvertContainer = (LinearLayout) mRootView.findViewById(R.id.fl_advert_container);
-        mLLAdvertTag = (LinearLayout) mRootView.findViewById(R.id.ll_advert_tag);
+        mLLAdvertTag = mRootView.findViewById(R.id.ll_advert_tag);
         mLLAdvert = (LinearLayout) mRootView.findViewById(R.id.ll_advert);
         setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
     }
@@ -54,12 +54,13 @@ public class DynamicDetailAdvertHeader {
 
     public void setAdverts(List<RealAdvertListBean> adverts) {
         mAdvertListBeans = adverts;
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(0, mContext.getResources().getDimensionPixelSize(R.dimen.channel_advert_height));
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(0, mContext.getResources().getDimensionPixelSize(R.dimen
+                .channel_advert_height));
         params.weight = 1;
         adverts = adverts.subList(0, adverts.size() >= 3 ? 3 : adverts.size());
         for (int i = 0; i < adverts.size(); i++) {
             FilterImageView imageView = new FilterImageView(mContext);
-            imageView.setImageResource(R.mipmap.icon);
+            imageView.setImageResource(R.drawable.shape_default_image);
             imageView.setLayoutParams(params);
             mAdvertContainer.addView(imageView);
             final int position = i;

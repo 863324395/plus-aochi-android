@@ -31,7 +31,7 @@ public class EncoderManager {
     // 录制比特率
     private int mRecordBitrate;
     // 录制帧率
-    private int mFrameRate = 25;
+    private int mFrameRate = 20;
     // 像素资料量
     private int mBPP = 4;
 
@@ -129,7 +129,8 @@ public class EncoderManager {
             mRecordBitrate *= HDValue;
         } else {
             // 1.5M，之前约定的，现在看来 1.5兆 的码率不够清晰
-            mRecordBitrate = 1572864;
+            // 后来修改为 2M 2018-4-19 10:57:23
+            mRecordBitrate = 2075152;
         }
         try {
 

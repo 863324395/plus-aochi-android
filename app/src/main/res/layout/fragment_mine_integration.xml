@@ -56,6 +56,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/full_button_height"
             app:dividerLeftMargin="@dimen/spacing_normal"
+            app:dividerRightMargin="@dimen/spacing_normal"
             app:leftImage="@mipmap/ico_integral_recharge"
             app:leftText="@string/recharge_integration"
             app:leftTextLeftPadding="@dimen/spacing_mid"
@@ -79,13 +80,14 @@
             app:leftImage="@mipmap/ico_integral_mall"
             app:leftText="@string/integration_shop"
             app:leftTextLeftPadding="@dimen/spacing_mid"
+            android:layout_marginBottom="@dimen/spacing_small"
             app:rightImage="@mipmap/ic_arrow_smallgrey"
             app:showLine="false"/>
 
-        <include
-            layout="@layout/advert_details"
-            />
 
+            <include
+                layout="@layout/advert_details"
+                />
     </LinearLayout>
 
     <TextView
@@ -98,7 +100,7 @@
         android:drawableLeft="@mipmap/ico_wallet_rules"
         android:drawablePadding="@dimen/spacing_small"
         android:padding="@dimen/spacing_large"
-        android:textColor="@color/rule_tip_color"
         android:text="@string/integration_rule"
+        android:textColor="@color/rule_tip_color"
         />
 </RelativeLayout>

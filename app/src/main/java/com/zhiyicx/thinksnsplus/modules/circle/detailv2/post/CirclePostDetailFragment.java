@@ -469,7 +469,7 @@ public class CirclePostDetailFragment extends TSListFragment<CirclePostDetailCon
                         showAuditTipPopupWindow(getString(R.string.circle_member_added_blacklist));
                         return;
                     }
-                    Bitmap bitmap = FileUtils.readImgFromFile(getActivity(), "info_share");
+                    Bitmap bitmap = FileUtils.readImgFromFile(getActivity(), "info_share.jpg");
                     mPresenter.shareInfo(bitmap);
                     break;
                 // 更多

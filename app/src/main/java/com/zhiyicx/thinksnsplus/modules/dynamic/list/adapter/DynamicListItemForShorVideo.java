@@ -11,6 +11,7 @@ import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
+import com.bumptech.glide.signature.StringSignature;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.FastBlur;
@@ -19,12 +20,15 @@ import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhiyicx.thinksnsplus.modules.shortvideo.helper.ZhiyiVideoView;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
+import java.util.LinkedHashMap;
+
 import cn.jzvd.JZMediaManager;
 import cn.jzvd.JZUtils;
 import cn.jzvd.JZVideoPlayer;
 import cn.jzvd.JZVideoPlayerManager;
 import cn.jzvd.JZVideoPlayerStandard;
 
+import static cn.jzvd.JZVideoPlayer.URL_KEY_DEFAULT;
 import static com.zhiyicx.thinksnsplus.data.beans.DynamicListAdvert.DEFAULT_ADVERT_FROM_TAG;
 
 /**
@@ -49,14 +53,10 @@ public class DynamicListItemForShorVideo extends DynamicListBaseItem {
 
     public DynamicListItemForShorVideo(Context context) {
         super(context);
-        int maxWidth = context.getResources().getDimensionPixelOffset(R.dimen.dynamic_image_max_width);
-        mImageContainerWith = mImageContainerWith > maxWidth ? maxWidth : mImageContainerWith;
     }
 
     public DynamicListItemForShorVideo(Context context, ZhiyiVideoView.ShareInterface shareInterface) {
         super(context);
-        int maxWidth = context.getResources().getDimensionPixelOffset(R.dimen.dynamic_image_max_width);
-        mImageContainerWith = mImageContainerWith > maxWidth ? maxWidth : mImageContainerWith;
         mShareInterface = shareInterface;
     }
 
@@ -130,10 +130,10 @@ public class DynamicListItemForShorVideo extends DynamicListBaseItem {
 
             view.getLayoutParams().height = height;
             Glide.with(mContext)
-                    .load(video.getUrl())
+                    .load(video.getCover())
                     .override(with, height)
+                    .signature(new StringSignature(String.valueOf(System.currentTimeMillis())))
                     .placeholder(R.drawable.shape_default_image)
-                    .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .error(R.drawable.shape_default_image)
                     .listener(new RequestListener<String, GlideDrawable>() {
                         @Override
@@ -153,24 +153,38 @@ public class DynamicListItemForShorVideo extends DynamicListBaseItem {
                     .into(view.thumbImageView);
 
         }
-        view.setUp(videoUrl, JZVideoPlayerStandard.SCREEN_WINDOW_LIST);
+
+
         if (JZVideoPlayerManager.getFirstFloor() != null
                 && JZVideoPlayerManager.getFirstFloor().positionInList == positon
-                && JZUtils.dataSourceObjectsContainsUri(JZVideoPlayerManager.getFirstFloor().dataSourceObjects, JZMediaManager.getCurrentDataSource())
                 && !JZVideoPlayerManager.getCurrentJzvd().equals(view)) {
 
-            JZVideoPlayer first = JZVideoPlayerManager.getFirstFloor();
-            if (first instanceof ZhiyiVideoView) {
-                ZhiyiVideoView videoView = (ZhiyiVideoView) first;
-                if (!videoFrom().equals(videoView.mVideoFrom)) {
-                    return;
-                }
+            boolean isDetailBackToList = false;
+            LinkedHashMap<String, Object> map = (LinkedHashMap) JZVideoPlayerManager.getFirstFloor().dataSourceObjects[0];
+            if (map != null) {
+                isDetailBackToList = videoUrl.equals(map.get(URL_KEY_DEFAULT).toString());
             }
-            first.textureViewContainer.removeView(JZMediaManager.textureView);
-            view.setState(first.currentState);
-            view.addTextureView();
-            JZVideoPlayerManager.setFirstFloor(view);
-            view.startProgressTimer();
+
+            if (isDetailBackToList) {
+                view.setUp(videoUrl, JZVideoPlayerStandard.SCREEN_WINDOW_LIST);
+
+                JZVideoPlayer first = JZVideoPlayerManager.getFirstFloor();
+                if (first instanceof ZhiyiVideoView) {
+                    ZhiyiVideoView videoView = (ZhiyiVideoView) first;
+                    if (!videoFrom().equals(videoView.mVideoFrom)) {
+                        return;
+                    }
+                }
+                first.textureViewContainer.removeView(JZMediaManager.textureView);
+                view.setState(first.currentState);
+                view.addTextureView();
+                JZVideoPlayerManager.setFirstFloor(view);
+                view.startProgressTimer();
+            } else {
+                view.setUp(videoUrl, JZVideoPlayerStandard.SCREEN_WINDOW_LIST);
+            }
+        } else {
+            view.setUp(videoUrl, JZVideoPlayerStandard.SCREEN_WINDOW_LIST);
         }
 
         view.positionInList = positon;
@@ -183,7 +197,7 @@ public class DynamicListItemForShorVideo extends DynamicListBaseItem {
 
     @Override
     public boolean isForViewType(DynamicDetailBeanV2 item, int position) {
-        return item.getVideo() != null&& item.getFeed_from() != DEFAULT_ADVERT_FROM_TAG;
+        return item.getVideo() != null && item.getFeed_from() != DEFAULT_ADVERT_FROM_TAG;
     }
 
     @Override

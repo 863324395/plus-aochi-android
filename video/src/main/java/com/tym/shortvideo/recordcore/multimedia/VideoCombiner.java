@@ -128,6 +128,8 @@ public class VideoCombiner {
         }
 
         if (hasVideoFormat) {
+            int rotation = mVideoFormat.getInteger("rotation-degrees");
+            mMuxer.setOrientationHint(rotation);
             mOutVideoTrackIndex = mMuxer.addTrack(mVideoFormat);
         }
 

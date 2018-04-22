@@ -17,7 +17,6 @@ import com.tym.shortvideo.view.VideoTrimmerView;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.modules.shortvideo.cover.CoverActivity;
-import com.zhiyicx.thinksnsplus.modules.shortvideo.preview.PreviewActivity;
 
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
@@ -143,7 +142,7 @@ public class TrimmerFragment extends TSFragment implements TrimVideoListener {
             ArrayList<String> arrayList = new ArrayList<>();
             arrayList.add(path);
             VideoListManager.getInstance().addSubVideo(path, mVideoTrimmerView.getDuration());
-            CoverActivity.startCoverActivity(mActivity, arrayList, false,false);
+            CoverActivity.startCoverActivity(mActivity, arrayList, false, false,false);
 //            PreviewActivity.startPreviewActivity(mActivity, arrayList);
             mActivity.finish();
         });

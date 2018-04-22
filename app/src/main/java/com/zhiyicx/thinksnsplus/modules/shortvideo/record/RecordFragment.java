@@ -257,6 +257,7 @@ public class RecordFragment extends TSFragment implements SurfaceHolder.Callback
 
     @Override
     public void onDestroyView() {
+        DrawerManager.getInstance().surfaceDestroyed();
         DrawerManager.getInstance().destoryTrhead();
         if (mWarnPopupWindow != null && mWarnPopupWindow.isShowing()) {
             mWarnPopupWindow.dismiss();
@@ -605,7 +606,7 @@ public class RecordFragment extends TSFragment implements SurfaceHolder.Callback
             // 隐藏删除和预览按钮
             ArrayList<String> arrayList = new ArrayList<>(VideoListManager.getInstance()
                     .getSubVideoPathList());
-            CoverActivity.startCoverActivity(mActivity, arrayList, false, false);
+            CoverActivity.startCoverActivity(mActivity, arrayList, false, false,true);
 //            PreviewActivity.startPreviewActivity(mActivity, arrayList);
             mActivity.finish();
         }
@@ -853,6 +854,7 @@ public class RecordFragment extends TSFragment implements SurfaceHolder.Callback
         LinkedList<SubVideo> localData = VideoListManager.getInstance().getSubVideoList();
         int duration = 0;
         if (localData != null && !localData.isEmpty()) {
+            mIvLeft.setImageResource(R.mipmap.ico_video_delete);
             mBtnTake.setProgressMax((int) CountDownManager.getInstance().getMaxMilliSeconds());
             mTymTest.setProgressMax((int) CountDownManager.getInstance().getMaxMilliSeconds());
             mTymTest.setProgressMin((int) CountDownManager.getInstance().getMinMilliSeconds());
@@ -869,6 +871,7 @@ public class RecordFragment extends TSFragment implements SurfaceHolder.Callback
                 }
 
             }
+
         }
         if (duration >= CountDownManager.getInstance().getMinMilliSeconds()) {
             mToolbarRight.setVisibility(View.VISIBLE);

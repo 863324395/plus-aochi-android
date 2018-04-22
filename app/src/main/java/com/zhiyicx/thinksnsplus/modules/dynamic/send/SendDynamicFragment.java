@@ -3,6 +3,7 @@ package com.zhiyicx.thinksnsplus.modules.dynamic.send;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
+import android.media.Image;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
@@ -23,7 +24,6 @@ import com.bumptech.glide.signature.StringSignature;
 import com.jakewharton.rxbinding.widget.RxRadioGroup;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.tym.shortvideo.media.VideoInfo;
-import com.tym.shortvideo.recodrender.ParamsManager;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.config.PayConfig;
@@ -32,6 +32,7 @@ import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl;
 import com.zhiyicx.baseproject.impl.photoselector.PhotoSeletorImplModule;
 import com.zhiyicx.baseproject.widget.button.CombinationButton;
+import com.zhiyicx.baseproject.widget.imageview.FilterImageView;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.ActivityHandler;
 import com.zhiyicx.common.utils.AndroidBug5497Workaround;
@@ -57,11 +58,11 @@ import com.zhiyicx.thinksnsplus.modules.photopicker.PhotoAlbumDetailsActivity;
 import com.zhiyicx.thinksnsplus.modules.photopicker.PhotoViewActivity;
 import com.zhiyicx.thinksnsplus.modules.shortvideo.cover.CoverActivity;
 import com.zhiyicx.thinksnsplus.modules.shortvideo.videostore.VideoSelectActivity;
+import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhiyicx.thinksnsplus.widget.UserInfoInroduceInputView;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -104,7 +105,7 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
     @BindView(R.id.send_dynamic_ll_toll)
     LinearLayout mLLToll;
     @BindView(R.id.ll_send_dynamic)
-    LinearLayout ll_send_dynamic;
+    LinearLayout mLlSendDynamic;
     @BindView(R.id.tv_choose_tip)
     TextView mTvChooseTip;
     @BindView(R.id.tv_word_limit)
@@ -120,7 +121,7 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
     @BindView(R.id.et_input)
     EditText mEtInput;
     @BindView(R.id.sl_send_dynamic)
-    ScrollView sl_send_dynamic;
+    ScrollView mSlSendDynamic;
     @BindView(R.id.v_horizontal_line)
     View mTitleUnderLine;
 
@@ -469,12 +470,24 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
     @Override
     public void getPhotoSuccess(List<ImageBean> photoList) {
         if (isPhotoListChanged(cachePhotos, photoList)) {
+            // 图片改变了
             hasTollPic = false;
             selectedPhotos.clear();
             selectedPhotos.addAll(photoList);
             addPlaceHolder();
             setSendDynamicState();// 每次刷新图片后都要判断发布按钮状态
             mCommonAdapter.notifyDataSetChanged();
+        } else {
+            // 图片没改边
+            if (selectedPhotos != null) {
+                hasTollPic = false;
+                for (ImageBean selectedPhoto : selectedPhotos) {
+                    if (selectedPhoto.getToll_type() > 0) {
+                        hasTollPic = true;
+                        return;
+                    }
+                }
+            }
         }
     }
 
@@ -632,7 +645,7 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                 if (!isToll) {
                     mTollMoney = 0;
                 }
-                sl_send_dynamic.smoothScrollTo(0, 0);
+                mSlSendDynamic.smoothScrollTo(0, 0);
             } else {
                 mCommonAdapter.notifyDataSetChanged();
             }
@@ -710,6 +723,7 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                 DynamicDetailBeanV2.Video video = new DynamicDetailBeanV2.Video();
                 video.setCreated_at(dynamicDetailBeanV2.getCreated_at());
                 video.setHeight(videoInfo.getHeight());
+                video.setCover(videoInfo.getCover());
                 video.setWidth(videoInfo.getWidth());
                 video.setUrl(videoInfo.getPath());
                 dynamicDetailBeanV2.setVideo(video);
@@ -786,7 +800,7 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                 View convertView = holder.getConvertView();
                 convertView.getLayoutParams().width = width / ITEM_COLUM;
                 convertView.getLayoutParams().height = width / ITEM_COLUM;
-                final ImageView imageView = holder.getView(R.id.iv_dynamic_img);
+                final FilterImageView imageView = holder.getView(R.id.iv_dynamic_img);
                 final ImageView paintView = holder.getView(R.id.iv_dynamic_img_paint);
                 final View filterView = holder.getView(R.id.iv_dynamic_img_filter);
                 if (TextUtils.isEmpty(imageBean.getImgUrl())) {
@@ -819,11 +833,13 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                     }
                     Glide.with(getContext())
                             .load(imageBean.getImgUrl())
+                            .asBitmap()
                             .signature(new StringSignature(String.valueOf(System.currentTimeMillis())))
                             .placeholder(R.drawable.shape_default_image)
                             .error(R.drawable.shape_default_error_image)
                             .override(convertView.getLayoutParams().width, convertView.getLayoutParams().height)
                             .into(imageView);
+                    imageView.setIshowGifTag(ImageUtils.imageIsGif(imageBean.getImgMimeType()));
 
                 }
                 imageView.setOnClickListener(v -> {
@@ -850,7 +866,7 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                             if (dynamicType == SendDynamicDataBean.VIDEO_TEXT_DYNAMIC) {
                                 ArrayList<String> srcList = new ArrayList<>();
                                 srcList.add(mSendDynamicDataBean.getVideoInfo().getPath());
-                                CoverActivity.startCoverActivity(mActivity, srcList, true,false);
+                                CoverActivity.startCoverActivity(mActivity, srcList, true, false, false);
                                 return;
                             }
 
@@ -999,6 +1015,7 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
 
     @Override
     public void initInstructionsPop(String title, String des) {
+        DeviceUtils.hideSoftKeyboard(getContext(), mRootView);
         if (mInstructionsPopupWindow != null) {
             mInstructionsPopupWindow = mInstructionsPopupWindow.newBuilder()
                     .item1Str(title)

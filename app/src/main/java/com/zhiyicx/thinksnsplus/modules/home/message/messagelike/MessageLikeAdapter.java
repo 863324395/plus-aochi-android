@@ -82,16 +82,30 @@ public class MessageLikeAdapter extends CommonAdapter<DigedBean> {
         ((TextView) holder.getView(R.id.tv_review)).setCompoundDrawables(null, null, mLikeDrawable, null);
         ImageUtils.loadCircleUserHeadPic(digedBean.getDigUserInfo(), holder.getView(R.id.iv_headpic));
         if (digedBean.getSource_cover() != null&&digedBean.getSource_cover()>0) {
-            holder.setVisible(R.id.iv_detail_image, View.VISIBLE);
-            mImageLoader.loadImage(getContext(), GlideImageConfig.builder()
-                    .url(ImageUtils.imagePathConvertV2(digedBean.getSource_cover().intValue()
-                            , mContext.getResources().getDimensionPixelOffset(R.dimen.headpic_for_user_center)
-                            , mContext.getResources().getDimensionPixelOffset(R.dimen.headpic_for_user_center)
-                            , ImageZipConfig.IMAGE_50_ZIP))
-                    .imagerView(holder.getView(R.id.iv_detail_image))
-                    .build());
+            holder.setVisible(R.id.fl_image_container, View.VISIBLE);
+            if (digedBean.isHasVideo()) {
+                holder.setVisible(R.id.iv_video_icon, View.VISIBLE);
+                mImageLoader.loadImage(getContext(), GlideImageConfig.builder()
+                        .url(ImageUtils.imagePathConvertV2(digedBean.getSource_cover().intValue()
+                                , mContext.getResources().getDimensionPixelOffset(R.dimen.headpic_for_user_center)
+                                , mContext.getResources().getDimensionPixelOffset(R.dimen.headpic_for_user_center)
+                                , ImageZipConfig.IMAGE_50_ZIP))
+                        .imagerView(holder.getView(R.id.iv_detail_image))
+                        .errorPic(R.drawable.shape_default_image_themcolor)
+                        .build());
+            } else {
+                holder.setVisible(R.id.iv_video_icon, View.GONE);
+                mImageLoader.loadImage(getContext(), GlideImageConfig.builder()
+                        .url(ImageUtils.imagePathConvertV2(digedBean.getSource_cover().intValue()
+                                , mContext.getResources().getDimensionPixelOffset(R.dimen.headpic_for_user_center)
+                                , mContext.getResources().getDimensionPixelOffset(R.dimen.headpic_for_user_center)
+                                , ImageZipConfig.IMAGE_50_ZIP))
+                        .imagerView(holder.getView(R.id.iv_detail_image))
+                        .build());
+            }
+
         } else {
-            holder.setVisible(R.id.iv_detail_image, View.GONE);
+            holder.setVisible(R.id.fl_image_container, View.GONE);
 
         }
         if (digedBean.getIsDelete()) {

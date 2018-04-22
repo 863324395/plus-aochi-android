@@ -13,16 +13,8 @@ import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.ToOne;
 import org.greenrobot.greendao.annotation.Transient;
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.List;
-
-import static android.R.attr.data;
-import static android.R.attr.track;
-import static android.R.id.list;
-import static com.umeng.analytics.pro.x.J;
-import static com.umeng.analytics.pro.x.l;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_LIKE_FEED;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_LIKE_GROUP_POST;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_LIKE_MUSIC;
@@ -32,7 +24,8 @@ import static com.zhiyicx.baseproject.config.ApiConfig.APP_QUESTIONS;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_QUESTIONS_ANSWER;
 
 /**
- * @Describe {@see https://github.com/zhiyicx/plus-likeable_type-feed/blob/master/documents/%E6%88%91%E6%94%B6%E5%88%B0%E7%9A%84%E8%B5%9E%E5%88%97%E8%A1%A8.md}
+ * @Describe {@see https://github.com/zhiyicx/plus-likeable_type-feed/blob/master/documents/%E6%88%91%E6%94%B6%E5%88%B0%E7%9A%84%E8%B5%9E%E5%88%97
+ * %E8%A1%A8.md}
  * @Author Jungle68
  * @Date 2017/4/12
  * @Contact master.jungle68@gmail.com
@@ -66,7 +59,7 @@ public class DigedBean extends BaseListBean {
     private boolean isDelete;
     @Transient
     private Object likeable;
-
+    private boolean hasVideo;
     private Long source_cover;
 
     private String source_content;
@@ -83,9 +76,9 @@ public class DigedBean extends BaseListBean {
     private transient DigedBeanDao myDao;
 
 
-    @Generated(hash = 1442865455)
-    public DigedBean(Long id, Long user_id, Long target_user, String created_at, String updated_at, String likeable_type, Long likeable_id, boolean isDelete,
-                     Long source_cover, String source_content, long source_id) {
+    @Generated(hash = 1025183715)
+    public DigedBean(Long id, Long user_id, Long target_user, String created_at, String updated_at, String likeable_type, Long likeable_id,
+            boolean isDelete, boolean hasVideo, Long source_cover, String source_content, long source_id) {
         this.id = id;
         this.user_id = user_id;
         this.target_user = target_user;
@@ -94,6 +87,7 @@ public class DigedBean extends BaseListBean {
         this.likeable_type = likeable_type;
         this.likeable_id = likeable_id;
         this.isDelete = isDelete;
+        this.hasVideo = hasVideo;
         this.source_cover = source_cover;
         this.source_content = source_content;
         this.source_id = source_id;
@@ -178,6 +172,13 @@ public class DigedBean extends BaseListBean {
         this.likeable = likeable;
     }
 
+    public boolean isHasVideo() {
+        return hasVideo;
+    }
+
+    public void setHasVideo(boolean hasVideo) {
+        this.hasVideo = hasVideo;
+    }
 
     public Long getSource_cover() {
         if (source_cover != null || likeable == null) {
@@ -189,12 +190,20 @@ public class DigedBean extends BaseListBean {
                 case APP_LIKE_FEED:
 
                     JSONObject jsonObject = new JSONObject(gson.toJson(likeable));
-                    if (jsonObject.has("images")) {
-                        JSONArray jsonArray = jsonObject.getJSONArray("images");
-                        if (jsonArray.length() > 0) {
-                            source_cover = (long) jsonArray.getJSONObject(0).getDouble("id");
+                    if (jsonObject.has("video")&& !jsonObject.isNull("video")) {
+                        JSONObject videe0 = jsonObject.getJSONObject("video");
+                        source_cover = videe0.getLong("cover_id");
+                        hasVideo=true;
+                    } else {
+                        if (jsonObject.has("images")) {
+                            JSONArray jsonArray = jsonObject.getJSONArray("images");
+                            if (jsonArray.length() > 0) {
+                                source_cover = (long) jsonArray.getJSONObject(0).getDouble("id");
+                            }
                         }
                     }
+
+
                     break;
                 case APP_LIKE_GROUP_POST:
                     JSONObject jsonObject2 = new JSONObject(gson.toJson(likeable));
@@ -500,6 +509,10 @@ public class DigedBean extends BaseListBean {
             throw new DaoException("Entity is detached from DAO context");
         }
         myDao.update(this);
+    }
+
+    public boolean getHasVideo() {
+        return this.hasVideo;
     }
 
     /** called by internal mechanisms, do not call yourself. */

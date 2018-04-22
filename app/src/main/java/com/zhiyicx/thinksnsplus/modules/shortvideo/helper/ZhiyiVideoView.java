@@ -5,7 +5,6 @@ import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.media.AudioManager;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -15,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.tym.shortvideo.view.ZhiyiResizeTextureView;
 import com.umeng.socialize.bean.SHARE_MEDIA;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.log.LogUtils;
@@ -65,6 +65,12 @@ public class ZhiyiVideoView extends JZVideoPlayerStandard {
         super(context, attrs);
     }
 
+
+    @Override
+    public void setUp(String url, int screen, Object... objects) {
+        super.setUp(url, screen, objects);
+    }
+
     @Override
     public void onPrepared() {
         super.onPrepared();
@@ -109,6 +115,13 @@ public class ZhiyiVideoView extends JZVideoPlayerStandard {
     }
 
     @Override
+    public void initTextureView() {
+        removeTextureView();
+        JZMediaManager.textureView = new ZhiyiResizeTextureView(getContext());
+        JZMediaManager.textureView.setSurfaceTextureListener(JZMediaManager.instance());
+    }
+
+    @Override
     public int getLayoutId() {
         return R.layout.zhiyi_layout_standard;
     }
@@ -133,6 +146,14 @@ public class ZhiyiVideoView extends JZVideoPlayerStandard {
             onStatePreparing();
         } else {
             super.startVideo();
+        }
+    }
+
+    @Override
+    public void onInfo(int what, int extra) {
+        super.onInfo(what, extra);
+        if (what == 10001) {
+            JZMediaManager.textureView.setRotation(extra);
         }
     }
 
@@ -323,7 +344,7 @@ public class ZhiyiVideoView extends JZVideoPlayerStandard {
             jzVideoPlayer.setState(currentState);
             jzVideoPlayer.positionInList = this.positionInList;
             jzVideoPlayer.addTextureView();
-            JZVideoPlayer firstVideoView=JZVideoPlayerManager.getFirstFloor();
+            JZVideoPlayer firstVideoView = JZVideoPlayerManager.getFirstFloor();
             jzVideoPlayer.setBackground(firstVideoView.getBackground());
             JZVideoPlayerManager.setSecondFloor(jzVideoPlayer);
 //            final Animation ra = AnimationUtils.loadAnimation(getContext(), R.anim
@@ -331,8 +352,13 @@ public class ZhiyiVideoView extends JZVideoPlayerStandard {
 //            jzVideoPlayer.setAnimation(ra);
 
             int orientation;
+            float rotation = 0;
+            if (JZMediaManager.textureView instanceof ZhiyiResizeTextureView) {
+                ZhiyiResizeTextureView resizeTextureView = (ZhiyiResizeTextureView) JZMediaManager.textureView;
+                rotation = resizeTextureView.getRotation();
+            }
             if (JZMediaManager.instance().currentVideoWidth > JZMediaManager.instance()
-                    .currentVideoHeight) {
+                    .currentVideoHeight && rotation == 0) {
                 // 横屏
                 orientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE;
             } else {
@@ -349,6 +375,12 @@ public class ZhiyiVideoView extends JZVideoPlayerStandard {
             e.printStackTrace();
         }
 //        JZMediaManager.instance().jzMediaInterface.setVolume(1f, 1f);
+    }
+
+    @Override
+    public void startWindowTiny() {
+        // 彻底做掉小窗播放
+        //super.startWindowTiny();
     }
 
     @Override

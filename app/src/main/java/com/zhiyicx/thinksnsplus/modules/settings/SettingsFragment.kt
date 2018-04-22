@@ -27,6 +27,7 @@ import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow
 import com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME
 import com.zhiyicx.common.utils.DeviceUtils
 import com.zhiyicx.common.utils.SharePreferenceUtils
+import com.zhiyicx.common.widget.popwindow.CustomPopupWindow
 import com.zhiyicx.common.widget.popwindow.CustomPopupWindow.POPUPWINDOW_ALPHA
 import com.zhiyicx.thinksnsplus.R
 import com.zhiyicx.thinksnsplus.modules.chat.ChatActivity
@@ -260,22 +261,21 @@ class SettingsFragment : TSFragment<SettingsContract.Presenter>(), SettingsContr
      * 初始化清理缓存选择弹框
      */
     private fun initCleanCachePopupWindow() {
-        if (mCleanCachePopupWindow != null) {
-            return
-        }
+
         mCleanCachePopupWindow = ActionPopupWindow.builder()
                 .item1Str(String.format(getString(R.string.is_sure_clean_cache), mBtCleanCache!!.rightText))
                 .item2Str(getString(R.string.determine))
                 .bottomStr(getString(R.string.cancel))
                 .isOutsideTouch(true)
                 .isFocus(true)
-                .backgroundAlpha(0.8f)
+                .backgroundAlpha(CustomPopupWindow.POPUPWINDOW_ALPHA)
                 .with(activity)
                 .item2ClickListener {
                     mPresenter.cleanCache()
                     mCleanCachePopupWindow!!.hide()
                 }
-                .bottomClickListener { mCleanCachePopupWindow!!.hide() }.build()
+                .bottomClickListener { mCleanCachePopupWindow!!.hide() }
+                .build()
 
     }
 

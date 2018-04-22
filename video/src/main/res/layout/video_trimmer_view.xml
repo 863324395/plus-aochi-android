@@ -34,7 +34,7 @@
             android:layout_width="match_parent"
             android:layout_height="30dp"
             android:gravity="center"
-            android:text="拖动选择你要发表的10秒以内片段"
+            android:text="拖动选择你要发表的15秒以内片段"
             android:textColor="#444444"
             android:textSize="12dp" />
 

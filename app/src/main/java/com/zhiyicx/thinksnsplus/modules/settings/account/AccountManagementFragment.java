@@ -2,9 +2,9 @@ package com.zhiyicx.thinksnsplus.modules.settings.account;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.TextView;
 
 import com.jakewharton.rxbinding.view.RxView;
 import com.umeng.socialize.UMAuthListener;
@@ -13,6 +13,8 @@ import com.umeng.socialize.bean.SHARE_MEDIA;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.widget.button.CombinationButton;
+import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
+import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.ActionPopupWindowItem2ClickListener;
 import com.zhiyicx.common.utils.SkinUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
@@ -30,6 +32,7 @@ import butterknife.BindView;
 import static com.zhiyicx.baseproject.config.ApiConfig.PROVIDER_WECHAT;
 import static com.zhiyicx.baseproject.config.ApiConfig.PROVIDER_WEIBO;
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
+import static com.zhiyicx.common.widget.popwindow.CustomPopupWindow.POPUPWINDOW_ALPHA;
 import static com.zhiyicx.thinksnsplus.modules.settings.bind.AccountBindActivity.BUNDLE_BIND_DATA;
 import static com.zhiyicx.thinksnsplus.modules.settings.bind.AccountBindActivity.BUNDLE_BIND_STATE;
 import static com.zhiyicx.thinksnsplus.modules.settings.bind.AccountBindActivity.BUNDLE_BIND_TYPE;
@@ -59,6 +62,11 @@ public class AccountManagementFragment extends TSFragment<AccountManagementContr
 
     private List<String> mBindAccounts = new ArrayList<>();
     private UserInfoBean mCurrentUser;
+    /**
+     * 解绑前的提示弹框
+     */
+    private ActionPopupWindow mCheckSurePop;
+
 
     @Override
     protected int getBodyLayoutId() {
@@ -175,7 +183,7 @@ public class AccountManagementFragment extends TSFragment<AccountManagementContr
             if (TextUtils.isEmpty(mCurrentUser.getPhone())) {
                 showSnackErrorMessage(getString(R.string.you_must_bind_phone));
             } else {
-                mPresenter.bindOrUnbindThirdAccount(provider, null, false);
+                initCheckSurePop(provider);
             }
         } else {
             if (TextUtils.isEmpty(mCurrentUser.getPhone())) {
@@ -364,4 +372,41 @@ public class AccountManagementFragment extends TSFragment<AccountManagementContr
     }
 
 
+    /**
+     * 解绑前的提示选择弹框
+     */
+    private void initCheckSurePop(String provider) {
+        int tipformat;
+        switch (provider) {
+            case ApiConfig.PROVIDER_QQ:
+                tipformat = R.string.qq_share;
+                break;
+            case ApiConfig.PROVIDER_WEIBO:
+                tipformat = R.string.weibo_share;
+                break;
+            case ApiConfig.PROVIDER_WECHAT:
+                tipformat = R.string.weChat_share;
+                break;
+            default:
+                tipformat = R.string.qq_share;
+
+        }
+        mCheckSurePop = ActionPopupWindow.builder()
+                .item1Str(getString(R.string.unbind_sure_tip_format, getString(tipformat)))
+                .item2Str(getString(R.string.sure_unbind))
+                .item2Color(ContextCompat.getColor(getContext(), R.color.important_for_note))
+                .bottomStr(getString(R.string.reserved))
+                .isOutsideTouch(true)
+                .isFocus(true)
+                .backgroundAlpha(POPUPWINDOW_ALPHA)
+                .with(mActivity)
+                .item2ClickListener(() -> {
+                    mPresenter.bindOrUnbindThirdAccount(provider, null, false);
+                    mCheckSurePop.hide();
+                })
+                .bottomClickListener(() -> mCheckSurePop.hide())
+                .build();
+        mCheckSurePop.show();
+
+    }
 }

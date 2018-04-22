@@ -55,14 +55,28 @@
         android:orientation="horizontal"
         android:padding="@dimen/spacing_small">
 
-        <com.zhiyicx.baseproject.widget.imageview.FilterImageView
-            android:id="@+id/iv_detail_image"
-            android:layout_width="@dimen/headpic_for_notification"
-            android:layout_height="@dimen/headpic_for_notification"
+        <FrameLayout
+            android:id="@+id/fl_image_container"
+            android:layout_width="wrap_content"
             android:layout_marginRight="@dimen/spacing_small"
-            android:scaleType="centerCrop"
-            tools:src="@mipmap/ic_launcher">
-        </com.zhiyicx.baseproject.widget.imageview.FilterImageView>
+            android:layout_height="wrap_content">
+
+            <com.zhiyicx.baseproject.widget.imageview.FilterImageView
+                android:id="@+id/iv_detail_image"
+                android:layout_width="@dimen/headpic_for_notification"
+                android:layout_height="@dimen/headpic_for_notification"
+                android:scaleType="centerCrop"
+                tools:src="@drawable/shape_default_image">
+            </com.zhiyicx.baseproject.widget.imageview.FilterImageView>
+
+            <ImageView
+                android:id="@+id/iv_video_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/ico_notice_video"
+                android:layout_gravity="center"/>
+
+        </FrameLayout>
 
         <TextView
             android:id="@+id/tv_deatil"
@@ -109,4 +123,22 @@
         android:textSize="@dimen/size_icon_assist"
         tools:text="6分钟前"/>
 
+    <TextView
+        android:id="@+id/tv_reply"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginEnd="@dimen/spacing_normal"
+        android:background="@drawable/shape_bg_radus_gray_"
+        android:gravity="center"
+        android:paddingBottom="@dimen/spacing_small_4dp"
+        android:paddingEnd="@dimen/spacing_mid_small"
+        android:paddingStart="@dimen/spacing_mid_small"
+        android:paddingTop="@dimen/spacing_small_4dp"
+        android:text="@string/reply_str"
+        android:textColor="@color/normal_for_assist_text"
+        android:textSize="@dimen/size_icon_assist"
+        android:visibility="gone"/>
 </RelativeLayout>

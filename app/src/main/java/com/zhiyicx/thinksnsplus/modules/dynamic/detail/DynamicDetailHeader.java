@@ -61,12 +61,15 @@ import com.zhiyicx.thinksnsplus.widget.DynamicHorizontalStackIconView;
 import com.zhiyicx.thinksnsplus.widget.ReWardView;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 import cn.jzvd.JZMediaManager;
 import cn.jzvd.JZUtils;
 import cn.jzvd.JZVideoPlayerManager;
 import cn.jzvd.JZVideoPlayerStandard;
+
+import static cn.jzvd.JZVideoPlayer.URL_KEY_DEFAULT;
 
 /**
  * @Describe 动态详情头部信息
@@ -96,6 +99,7 @@ public class DynamicDetailHeader {
      * Gif 是否直接播放
      */
     private boolean mIsGifPlay = false;
+    private boolean isListToDetail = false;
 
     View getDynamicDetailHeader() {
         return mDynamicDetailHeader;
@@ -173,15 +177,15 @@ public class DynamicDetailHeader {
         final Context context = mTitle.getContext();
         // 设置图片
         List<DynamicDetailBeanV2.ImagesBean> photoList = dynamicBean.getImages();
-        if ((photoList == null || photoList.isEmpty()) && dynamicBean.getVideo() == null) {
+        boolean hasImage = photoList != null && !photoList.isEmpty();
+        boolean hasVideo = dynamicBean.getVideo() != null;
+        if (!hasImage && !hasVideo) {
             mPhotoContainer.setVisibility(View.GONE);
-            sharBitmap = ConvertUtils.drawBg4Bitmap(0xffffff, BitmapFactory.decodeResource(context
-                    .getResources(), R.mipmap.icon).copy(Bitmap.Config.RGB_565, true));
         } else {
 
             mPhotoContainer.setVisibility(View.VISIBLE);
             DynamicDetailBeanV2.Video video = dynamicBean.getVideo();
-            if (video != null) {
+            if (hasVideo) {
                 ZhiyiVideoView videoView = new ZhiyiVideoView(mContext);
                 videoView.setShareInterface(shareInterface);
                 mPhotoContainer.addView(videoView);
@@ -197,22 +201,43 @@ public class DynamicDetailHeader {
 
                 String videoUrl = String.format(ApiConfig.APP_DOMAIN + ApiConfig.FILE_PATH,
                         dynamicBean.getVideo().getVideo_id());
-                videoView.setUp(videoUrl, JZVideoPlayerStandard.SCREEN_WINDOW_LIST);
-                videoView.positionInList = 0;
-                if (JZVideoPlayerManager.getFirstFloor() != null) {
-                    videoView.setState(state);
-                    videoView.positionInList = JZVideoPlayerManager.getFirstFloor().positionInList;
-                    videoView.addTextureView();
-                    if (JZVideoPlayerManager.getFirstFloor() instanceof ZhiyiVideoView) {
-                        ZhiyiVideoView firstFloor = (ZhiyiVideoView) JZVideoPlayerManager.getFirstFloor();
-                        videoView.mVideoFrom = firstFloor.mVideoFrom;
+
+
+                LogUtils.d(JZMediaManager.getCurrentDataSource());
+                if (JZVideoPlayerManager.getFirstFloor() != null
+                        && !JZVideoPlayerManager.getCurrentJzvd().equals(videoView)) {
+
+                    LinkedHashMap<String, Object> map = (LinkedHashMap) JZVideoPlayerManager.getFirstFloor().dataSourceObjects[0];
+                    if (map != null) {
+                        isListToDetail = videoUrl.equals(map.get(URL_KEY_DEFAULT).toString());
                     }
-                    JZVideoPlayerManager.setFirstFloor(videoView);
-                    videoView.startProgressTimer();
-                    if (state == ZhiyiVideoView.CURRENT_STATE_PAUSE) {
-                        videoView.startButton.callOnClick();
+
+                    if (isListToDetail) {
+                        videoView.setUp(videoUrl, JZVideoPlayerStandard.SCREEN_WINDOW_LIST);
+                        videoView.positionInList = 0;
+
+                        videoView.setState(state);
+                        videoView.positionInList = JZVideoPlayerManager.getFirstFloor().positionInList;
+                        videoView.addTextureView();
+                        if (JZVideoPlayerManager.getFirstFloor() instanceof ZhiyiVideoView) {
+                            ZhiyiVideoView firstFloor = (ZhiyiVideoView) JZVideoPlayerManager.getFirstFloor();
+                            videoView.mVideoFrom = firstFloor.mVideoFrom;
+                        }
+                        JZVideoPlayerManager.setFirstFloor(videoView);
+                        videoView.startProgressTimer();
+                        if (state == ZhiyiVideoView.CURRENT_STATE_PAUSE) {
+                            videoView.startButton.callOnClick();
+                        }
+                    } else {
+                        videoView.setUp(videoUrl, JZVideoPlayerStandard.SCREEN_WINDOW_LIST);
+                        videoView.positionInList = 0;
                     }
+
+                } else {
+                    videoView.setUp(videoUrl, JZVideoPlayerStandard.SCREEN_WINDOW_LIST);
+                    videoView.positionInList = 0;
                 }
+
                 Glide.with(mContext)
                         .load(video.getGlideUrl())
                         .placeholder(R.drawable.shape_default_image)
@@ -231,8 +256,8 @@ public class DynamicDetailHeader {
                                     model, Target<GlideDrawable> target, boolean
                                                                    isFromMemoryCache, boolean
                                                                    isFirstResource) {
-                                sharBitmap = ConvertUtils.drawable2Bitmap(resource);
-                                Bitmap bitmap = FastBlur.blurBitmap(sharBitmap, resource
+                                sharBitmap = ConvertUtils.drawable2BitmapWithWhiteBg(mContext, resource, R.mipmap.icon);
+                                Bitmap bitmap = FastBlur.blurBitmap(ConvertUtils.drawable2Bitmap(resource), resource
                                         .getIntrinsicWidth(), resource
                                         .getIntrinsicHeight());
                                 videoView.setBackground(new BitmapDrawable(mContext.getResources
@@ -241,16 +266,20 @@ public class DynamicDetailHeader {
                             }
                         })
                         .into(videoView.thumbImageView);
-                return;
+
+
+            } else {
+                for (int i = 0; i < photoList.size(); i++) {
+                    showContentImage(context, photoList, i, i == photoList.size() - 1, mPhotoContainer);
+                }
+                setImageClickListener(photoList, dynamicBean);
+
+                FilterImageView imageView = (FilterImageView) mPhotoContainer.getChildAt(0)
+                        .findViewById(R.id.dynamic_content_img);
+                sharBitmap = ConvertUtils.drawable2BitmapWithWhiteBg(mContext, imageView
+                        .getDrawable(), R.mipmap.icon);
             }
-            for (int i = 0; i < photoList.size(); i++) {
-                showContentImage(context, photoList, i, i == photoList.size() - 1, mPhotoContainer);
-            }
-            FilterImageView imageView = (FilterImageView) mPhotoContainer.getChildAt(0)
-                    .findViewById(R.id.dynamic_content_img);
-            sharBitmap = ConvertUtils.drawable2BitmapWithWhiteBg(mContext, imageView
-                    .getDrawable(), R.mipmap.icon);
-            setImageClickListener(photoList, dynamicBean);
+
         }
     }
 
@@ -557,5 +586,7 @@ public class DynamicDetailHeader {
         void onImageClick(int iamgePosition, long amount, int note);
     }
 
-
+    public boolean isListToDetail() {
+        return isListToDetail;
+    }
 }

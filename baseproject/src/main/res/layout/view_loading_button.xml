@@ -29,6 +29,6 @@
         android:layout_marginLeft="@dimen/spacing_normal"
         android:layout_toRightOf="@id/tv_text"
         android:visibility="gone"
-        android:src="@drawable/frame_loading_white"/>
+        android:src="@drawable/frame_loading_login_button"/>
 </RelativeLayout>
 

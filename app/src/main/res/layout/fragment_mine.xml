@@ -11,11 +11,12 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/bgColor">
+     >
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="@dimen/spacing_normal"
             android:orientation="vertical">
             <!--头像，用户名，简介-->
             <RelativeLayout
@@ -296,7 +297,7 @@
                 app:leftImage="@mipmap/ico_me_collect"
                 app:leftText="@string/mine_collect"
                 app:rightImage="@mipmap/ic_arrow_smallgrey"
-                app:showLine="true"/>
+                app:showLine="false"/>
             <!--购买的音乐-->
             <com.zhiyicx.baseproject.widget.button.CombinationButton
                 android:id="@+id/bt_music"
@@ -329,7 +330,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/full_button_height"
                 android:visibility="visible"
-                android:layout_marginTop="@dimen/spacing_mid"
+                android:layout_marginTop="@dimen/spacing_normal"
                 app:dividerLeftMargin="@dimen/spacing_normal"
                 app:dividerRightMargin="@dimen/spacing_normal"
                 app:leftImage="@mipmap/ico_me_draft"

@@ -29,10 +29,10 @@ public class ApiConfig {
     public static final boolean APP_IS_NEED_SSH_CERTIFICATE = true;// 自定义证书时使用false
     public static final String APP_DOMAIN_DEV = "https://dev.zhibocloud.cn/";// 模拟在线正式服务器
     public static final String APP_DOMAIN_TEST = "http://test-plus.zhibocloud.cn/";// 在线测试服务器
-    public static final String APP_DOMAIN_FORMAL = "https://tsplus.zhibocloud.cn/";// 正式服务器
-    public static final String APP_DOMAIN_FOR_TEARCHER_QIAO = "http://192.168.2.65/";// 乔老师本地服务器
+    public static final String APP_DOMAIN_FORMAL = "http://192.168.2.26/";// 正式服务器
+    public static final String APP_DOMAIN_FOR_TEARCHER_QIAO = "http://192.168.2.24/";// 乔老师本地服务器
 
-    public static String APP_DOMAIN = APP_DOMAIN_TEST;
+    public static String APP_DOMAIN = APP_DOMAIN_FORMAL;
 
     public static final String URL_ABOUT_US = "api/" + API_VERSION_2 + "/aboutus";// 关于我们网站
     public static final String URL_JIPU_SHOP = "http://demo.jipukeji.com";// 极铺购物地址
@@ -905,7 +905,10 @@ public class ApiConfig {
     // 根据经纬度查询周围最多50KM内的 TS+ 用户
     public static final String APP_PATH_GET_USER_AROUND = "api/" + API_VERSION_2 + "/around-amap";
     // User Append Follower Count
-    public static final String APP_PATH_USER_APPEND_FOLLOWER_COUNT = "api/" + API_VERSION_2 + "/user/counts";
+    public static final String APP_PATH_USER_APPEND_MESSAGE_COUNT = "api/" + API_VERSION_2 + "/user/counts";
+    // 清空消息未读数
+    public static final String APP_PATH_USER_APPEND_READ_MESSAGE = "api/" + API_VERSION_2 + "/user/counts";
+    //
     // 获取用户黑名单列表
     public static final String APP_PATH_GET_USER_BLACK_LIST = "api/" + API_VERSION_2 + "/user/blacks";
     // 把用户加入黑名单

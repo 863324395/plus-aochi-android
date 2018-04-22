@@ -26,20 +26,67 @@ public class TextureRotationUtils {
             1.0f, 1.0f,  // 3 top right
     };
 
-    public static void setRatio_1_1(boolean b, Size size) {
-        if (b) {
-            TextureVertices[0] = 0.0f;
-            TextureVertices[1] = 0.0f;
+    public static void setRatio_1_1(CameraUtils.Ratio ratio, Size size) {
+        boolean is1_1 = ratio.getRatio() == 0.75f;
 
-            TextureVertices[2] = 1.0f;
-            TextureVertices[3] = 0.0f;
+        /**
+         *  16:9 转 1:1
+         *  不知为何， 16:9 转 1:1 计算得到的值并不好用，相差了 0.02f
+         *
+         TextureVertices[0] = 0.0f;
+         TextureVertices[1] = 0.880625f;
 
-            TextureVertices[4] = 0.0f;
-            TextureVertices[5] = 0.875f;
+         TextureVertices[2] = 1.0f;
+         TextureVertices[3] = 0.880625f;
 
-            TextureVertices[6] = 1.0f;
-            TextureVertices[7] = 0.875f;
-            RecordManager.RECORD_HEIGHT = RecordManager.RECORD_WIDTH = Math.min(size.getHeight(), size.getWidth());
+         TextureVertices[4] = 0.0f;
+         TextureVertices[5] = 0.119375f;
+
+         TextureVertices[6] = 1.0f;
+         TextureVertices[7] = 0.119375f;
+
+         4:3 转 1:1
+
+         TextureVertices[0] = 0.0f;
+         TextureVertices[1] = 0.0625f;
+
+         TextureVertices[2] = 1.0f;
+         TextureVertices[3] = 0.0625f;
+
+         TextureVertices[4] = 0.0f;
+         TextureVertices[5] = 0.9375f;
+
+         TextureVertices[6] = 1.0f;
+         TextureVertices[7] = 0.9375f;
+         */
+
+        if (is1_1) {
+            if (ratio == CameraUtils.Ratio.RATIO_4_3_2_1_1){
+                TextureVertices[0] = 0.0f;
+                TextureVertices[1] = 0.0625f;
+
+                TextureVertices[2] = 1.0f;
+                TextureVertices[3] = 0.0625f;
+
+                TextureVertices[4] = 0.0f;
+                TextureVertices[5] = 0.9375f;
+
+                TextureVertices[6] = 1.0f;
+                TextureVertices[7] = 0.9375f;
+            }else if (ratio == CameraUtils.Ratio.RATIO_16_9_2_1_1){
+                TextureVertices[0] = 0.0f;
+                TextureVertices[1] = 0.880625f;
+
+                TextureVertices[2] = 1.0f;
+                TextureVertices[3] = 0.880625f;
+
+                TextureVertices[4] = 0.0f;
+                TextureVertices[5] = 0.119375f;
+
+                TextureVertices[6] = 1.0f;
+                TextureVertices[7] = 0.119375f;
+            }
+//            RecordManager.RECORD_HEIGHT = RecordManager.RECORD_WIDTH = Math.min(size.getHeight(), size.getWidth());
         } else {
             TextureVertices[0] = 0.0f;
             TextureVertices[1] = 0.0f;

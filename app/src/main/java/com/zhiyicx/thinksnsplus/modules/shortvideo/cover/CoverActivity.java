@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
 import com.zhiyicx.baseproject.base.TSActivity;
+import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
+import com.zhiyicx.thinksnsplus.modules.shortvideo.record.RecordFragment;
 
 import java.util.ArrayList;
 
@@ -18,9 +20,9 @@ import static com.zhiyicx.thinksnsplus.modules.shortvideo.cover.CoverFragment.RE
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class CoverActivity extends TSActivity {
+public class CoverActivity extends TSActivity<AppBasePresenter, CoverFragment> {
     @Override
-    protected Fragment getFragment() {
+    protected CoverFragment getFragment() {
         return CoverFragment.newInstance(getIntent().getExtras());
     }
 
@@ -36,11 +38,12 @@ public class CoverActivity extends TSActivity {
      * @param pre 是否是动态发布页的预览
      * @param hasFilter 是否有滤镜界面
      */
-    public static void startCoverActivity(Context context, ArrayList<String> path,boolean pre,boolean hasFilter) {
+    public static void startCoverActivity(Context context, ArrayList<String> path,boolean pre,boolean hasFilter,boolean back2record) {
         Bundle bundle = new Bundle();
         bundle.putStringArrayList(CoverFragment.PATH, path);
         bundle.putBoolean(CoverFragment.PREVIEW,pre);
         bundle.putBoolean(CoverFragment.FILTER,hasFilter);
+        bundle.putBoolean(CoverFragment.BACKTORECORD,back2record);
         Intent intent = new Intent(context, CoverActivity.class);
         intent.putExtras(bundle);
         if (context instanceof Activity) {
@@ -49,6 +52,10 @@ public class CoverActivity extends TSActivity {
             return;
         }
         context.startActivity(intent);
+    }
 
+    @Override
+    public void onBackPressed() {
+        mContanierFragment.onBackPressed();
     }
 }

@@ -4,7 +4,7 @@
                                             android:layout_height="wrap_content"
     >
     <!-- android:background="@drawable/__picker_photo_bg"-->
-    <ImageView
+    <me.iwf.photopicker.widget.GifTagImageView
         android:id="@+id/iv_photo"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

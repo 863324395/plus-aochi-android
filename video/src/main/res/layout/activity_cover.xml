@@ -7,19 +7,62 @@
     android:fitsSystemWindows="false"
     android:orientation="vertical">
 
-    <include layout="@layout/toolbar_video"/>
+    <RelativeLayout
+        android:id="@+id/rl_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:background="@mipmap/pic_mask"
+        android:minHeight="44dp"
+        android:paddingLeft="@dimen/dp10"
+        android:paddingRight="@dimen/dp10"
+        android:paddingTop="24dp">
+
+
+        <TextView
+            android:id="@+id/tv_toolbar_center"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_gravity="center_horizontal"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:maxLines="1"
+            android:textColor="@color/white"
+            android:textSize="18sp"/>
+
+        <TextView
+            android:id="@+id/tv_toolbar_left"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_centerVertical="true"
+            android:gravity="center"
+            android:textColor="@color/white"
+            android:textSize="16sp"/>
+
+        <TextView
+            android:id="@+id/tv_toolbar_right"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_gravity="right"
+            android:gravity="center"
+            android:textColor="@color/white"
+            android:textSize="16sp"/>
+    </RelativeLayout>
+
 
     <com.tym.shortvideo.view.VideoPreviewView
         android:id="@+id/videoView"
-        android:layout_centerInParent="true"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        android:layout_centerInParent="true"/>
 
     <android.support.v7.widget.AppCompatSeekBar
-        android:layout_alignBottom="@+id/videoView"
         android:id="@+id/sk_cover"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/videoView"
         android:background="@null"
         android:max="100"
         android:maxHeight="1dp"
@@ -30,7 +73,6 @@
         android:paddingTop="8dp"
         android:progressDrawable="@drawable/video_progress"
         android:thumb="@drawable/jz_bottom_seek_thumb"/>
-
 
 
 </RelativeLayout>

@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
@@ -15,6 +16,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.text.TextUtils;
 
+import com.hyphenate.util.ImageUtils;
 import com.tbruyelle.rxpermissions.Permission;
 import com.yalantis.ucrop.UCrop;
 import com.zhiyicx.baseproject.R;
@@ -229,6 +231,16 @@ public class PhotoSelectorImpl implements IPhotoSelector<ImageBean> {
 
     @Override
     public void startToCraft(String imgPath) {
+        String mimeType = FileUtils.getMimeTypeByFile(new File(imgPath));
+        try {
+            if ("image/gif".equals(mimeType)) {
+                Bitmap bitmap = BitmapFactory.decodeFile(imgPath);
+                imgPath = FileUtils.saveBitmapToFile(mFragment.getContext(), bitmap, "tsplus.jpg");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         String destinationFileName = "SampleCropImage" + format() + ".jpg";
         UCrop uCrop = UCrop.of(Uri.fromFile(new File(imgPath)), Uri.fromFile(new File(mFragment
                 .getActivity().getCacheDir(), destinationFileName)));
@@ -311,6 +323,7 @@ public class PhotoSelectorImpl implements IPhotoSelector<ImageBean> {
                     } else {
                         ImageBean imageBean = new ImageBean();
                         imageBean.setImgUrl(mTakePhotoPath);
+                        imageBean.setImgMimeType(FileUtils.getMimeTypeByFile(file));
                         photosList.add(imageBean);
                         mTIPhotoBackListener.getPhotoSuccess(photosList);
                     }
@@ -370,6 +383,8 @@ public class PhotoSelectorImpl implements IPhotoSelector<ImageBean> {
                     for (int i = 0; i < photos.size(); i++) {
                         ImageBean imageBean = new ImageBean();
                         imageBean.setImgUrl(photos.get(i));
+                        imageBean.setImgMimeType(FileUtils.getMimeTypeByFile(new File(photos.get(i))));
+
                         if (tollMap.containsKey(photos.get(i))) {
                             imageBean.setToll(tollMap.get(photos.get(i)).getToll());
                         } else {
@@ -419,6 +434,7 @@ public class PhotoSelectorImpl implements IPhotoSelector<ImageBean> {
         imageBean.setHeight(height);
         imageBean.setWidth(width);
         imageBean.setImgUrl(imgPath);
+        imageBean.setImgMimeType(FileUtils.getMimeTypeByFile(new File(imgPath)));
         return imageBean;
     }
 

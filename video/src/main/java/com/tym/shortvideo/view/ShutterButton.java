@@ -238,7 +238,7 @@ public class ShutterButton extends AppCompatImageView {
 
             case MotionEvent.ACTION_UP:
                 LogUtils.d("up");
-                long offset=System.currentTimeMillis()-time;
+                long offset=System.currentTimeMillis() - time;
                 LogUtils.d("offset::"+offset);
                 if (offset>=200){
 

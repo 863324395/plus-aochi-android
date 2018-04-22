@@ -267,18 +267,20 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
                     }
                 });
 
-        // 自动播放
-//        mRvList.addOnScrollListener(new AutoPlayScrollListener() {
-//            @Override
-//            public int getPlayerViewId() {
-//                return R.id.videoplayer;
-//            }
-//
-//            @Override
-//            public boolean canAutoPlay() {
-//                return NetUtils.isWifiConnected(getContext().getApplicationContext());
-//            }
-//        });
+        // 自动播放 - 滑出屏幕暂停也在这里面
+        mRvList.addOnScrollListener(new AutoPlayScrollListener() {
+            @Override
+            public int getPlayerViewId() {
+                return R.id.videoplayer;
+            }
+
+            @Override
+            public boolean canAutoPlay() {
+                // NetUtils.isWifiConnected(getContext().getApplicationContext())
+                // 暂时关闭滑动自动播放
+                return false;
+            }
+        });
     }
 
 
@@ -380,7 +382,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
         setAdapter(adapter, new DynamicListItemForEightImage(getContext()));
         setAdapter(adapter, new DynamicListItemForNineImage(getContext()));
         setAdapter(adapter, new DynamicListItemForAdvert(getContext()));
-        setAdapter(adapter, new DynamicListItemForShorVideo(getContext(), this){
+        setAdapter(adapter, new DynamicListItemForShorVideo(getContext(), this) {
             @Override
             protected String videoFrom() {
                 return mDynamicType;
@@ -420,13 +422,15 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
 
     @Override
     public void onNetResponseSuccess(@NotNull List<DynamicDetailBeanV2> data, boolean isLoadMore) {
-        try {// 添加广告
-            RealAdvertListBean realAdvertListBean = mListAdvert.get(getPage() - 1);
-            DynamicListAdvert advert = realAdvertListBean.getAdvertFormat().getAnalog();
-            long maxId = data.get(data.size() - 1).getMaxId();
-            data.add(DynamicListAdvert.advert2Dynamic(advert, maxId));
-        } catch (Exception ignore) {
-            ignore.printStackTrace();
+        if (mListAdvert != null && getPage() <= mListAdvert.size()) {
+            try {// 添加广告
+                RealAdvertListBean realAdvertListBean = mListAdvert.get(getPage() - 1);
+                DynamicListAdvert advert = realAdvertListBean.getAdvertFormat().getAnalog();
+                long maxId = data.get(data.size() - 1).getMaxId();
+                data.add(DynamicListAdvert.advert2Dynamic(advert, maxId));
+            } catch (Exception ignore) {
+                ignore.printStackTrace();
+            }
         }
         super.onNetResponseSuccess(data, isLoadMore);
     }
@@ -666,6 +670,11 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
                     ImageView imageView = (ImageView) layoutManager.findViewByPosition
                             (dataPosition + mHeaderAndFooterWrapper.getHeadersCount())
                             .findViewById(R.id.siv_0);
+                    if (imageView == null) {
+                        imageView = (ImageView) layoutManager.findViewByPosition
+                                (dataPosition + mHeaderAndFooterWrapper.getHeadersCount())
+                                .findViewById(R.id.thumb);
+                    }
                     shareBitMap = ConvertUtils.drawable2BitmapWithWhiteBg(getContext(), imageView
                             .getDrawable(), R.mipmap.icon);
                 } catch (Exception e) {

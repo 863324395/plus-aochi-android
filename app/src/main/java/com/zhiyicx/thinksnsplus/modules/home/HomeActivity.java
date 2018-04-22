@@ -12,9 +12,14 @@ import com.zhiyicx.common.utils.ActivityUtils;
 import com.zhiyicx.thinksnsplus.config.JpushMessageTypeConfig;
 import com.zhiyicx.thinksnsplus.data.beans.JpushMessageBean;
 import com.zhiyicx.thinksnsplus.modules.shortvideo.helper.NetChangeReceiver;
+import com.zhiyicx.thinksnsplus.modules.shortvideo.helper.ZhiyiVideoView;
 
+import cn.jzvd.JZMediaManager;
+import cn.jzvd.JZUtils;
 import cn.jzvd.JZVideoPlayer;
 import cn.jzvd.JZVideoPlayerManager;
+
+import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment.DYNAMIC_VIDEO_STATE;
 
 
 /**
@@ -85,7 +90,12 @@ public class HomeActivity extends TSActivity {
     @Override
     public void onPause() {
         super.onPause();
-//        JZVideoPlayer.releaseAllVideos();
+        JZVideoPlayer jzVideoPlayer = JZVideoPlayerManager.getCurrentJzvd();
+        if (jzVideoPlayer != null) {
+            if (JZUtils.scanForActivity(jzVideoPlayer.getContext()) instanceof HomeActivity) {
+                jzVideoPlayer.onStateNormal();
+            }
+        }
     }
 
     @Override

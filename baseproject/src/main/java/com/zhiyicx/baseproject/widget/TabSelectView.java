@@ -162,6 +162,14 @@ public class TabSelectView extends FrameLayout {
     }
 
     /**
+     * 获取右边 view
+     * @return
+     */
+    public TextView getRightTextView() {
+        return tvToolbarRight;
+    }
+
+    /**
      * 设置文字颜色
      *
      * @param leftColor 文字的颜色值，不是颜色resID

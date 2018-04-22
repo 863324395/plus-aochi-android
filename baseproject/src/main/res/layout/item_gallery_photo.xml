@@ -13,7 +13,7 @@
         android:layout_height="match_parent"
         android:layout_gravity="center"
         android:gravity="center"
-        android:scaleType="centerInside"
+        android:scaleType="fitXY"
         android:visibility="invisible"/>
 
     <ImageView
@@ -22,7 +22,7 @@
         android:layout_height="match_parent"
         android:layout_gravity="center"
         android:gravity="center"
-        android:scaleType="centerInside"/>
+        android:scaleType="fitXY"/>
 
     <ProgressBar
         android:id="@+id/pb_progress"

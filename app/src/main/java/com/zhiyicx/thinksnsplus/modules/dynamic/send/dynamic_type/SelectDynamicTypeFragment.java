@@ -21,6 +21,7 @@ import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl;
 import com.zhiyicx.baseproject.impl.photoselector.PhotoSeletorImplModule;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
+import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.FileUtils;
 import com.zhiyicx.common.utils.SharePreferenceUtils;
 import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
@@ -253,15 +254,19 @@ public class SelectDynamicTypeFragment extends TSFragment<SelectDynamicTypeContr
                 mRxPermissions.request(Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO)
                         .subscribe(aBoolean -> {
                             if (aBoolean) {
-                                SendDynamicDataBean sendDynamicDataBean = SharePreferenceUtils.getObject(mActivity, SharePreferenceUtils
-                                        .VIDEO_DYNAMIC);
-                                if (checkVideoDraft(sendDynamicDataBean)) {
-                                    SendDynamicActivity.startToSendDynamicActivity(getContext(),
-                                            sendDynamicDataBean);
+                                if (DeviceUtils.getSDCardAvailableSize() >= 100) {
+                                    SendDynamicDataBean sendDynamicDataBean = SharePreferenceUtils.getObject(mActivity, SharePreferenceUtils
+                                            .VIDEO_DYNAMIC);
+                                    if (checkVideoDraft(sendDynamicDataBean)) {
+                                        SendDynamicActivity.startToSendDynamicActivity(getContext(),
+                                                sendDynamicDataBean);
+                                    } else {
+                                        startActivity(new Intent(getActivity(), VideoSelectActivity.class));
+                                    }
+                                    closeActivity();
                                 } else {
-                                    startActivity(new Intent(getActivity(), VideoSelectActivity.class));
+                                    showSnackErrorMessage(getString(R.string.storage_no_free));
                                 }
-                                closeActivity();
                             } else {
                                 showSnackWarningMessage(getString(R.string.please_open_camera_and_mic_permisssion));
 

@@ -81,7 +81,13 @@ class IntegrationDetailListFragment : TSListFragment<IntegrationDetailContract.P
     override fun showToolbar() = mChooseType == null
 
     override fun showToolBarDivider() = mChooseType == null
+    override fun setUseSatusbar(): Boolean {
+        return false
+    }
 
+    override fun setUseStatusView(): Boolean {
+        return false
+    }
     override fun isNeedRefreshDataWhenComeIn() = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -205,6 +211,7 @@ class IntegrationDetailListFragment : TSListFragment<IntegrationDetailContract.P
         super.initView(rootView)
         //        initTopPopWindow();
     }
+
 
     override fun getItemDecoration(): RecyclerView.ItemDecoration {
         return CustomLinearDecoration(0, resources.getDimensionPixelSize(R.dimen

@@ -27,6 +27,8 @@ public interface CreateCircleContract {
         void updateCircle(CreateCircleBean createCircleBean);
         String getCircleCategoryName(int category);
         void getRule();
+
+        void getallCategroys();
     }
 
 }

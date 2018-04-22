@@ -71,6 +71,7 @@ public class UserInfoPresenter extends AppBasePresenter<UserInfoContract.View> i
                         UserInfoBean currentLoginUserInfo = mUserInfoBeanGreenDao.getSingleDataFromCache(AppApplication.getmCurrentLoginAuth()
                                 .getUser_id());
                         currentLoginUserInfo.setAvatar(filePath);
+                        currentLoginUserInfo.setLocalAvatar(filePath);
                         mUserInfoBeanGreenDao.insertOrReplace(currentLoginUserInfo);
                         ImageUtils.updateCurrentLoginUserHeadPicSignature(mContext);
                         mRootView.setUpLoadHeadIconState(1, "");
@@ -112,7 +113,6 @@ public class UserInfoPresenter extends AppBasePresenter<UserInfoContract.View> i
                         } else {
                             mRootView.setUpLoadHeadIconState(2, "");
                         }
-                        EventBus.getDefault().post(EventBusTagConfig.EVENT_USERINFO_UPDATE);
                         upDateUserInfo(userInfos);
                     }
 
@@ -198,24 +198,17 @@ public class UserInfoPresenter extends AppBasePresenter<UserInfoContract.View> i
         }
         if (changeUserInfo.containsKey(UserInfoFragment.USER_LOCATION)) {
             mUserInfoBean.setLocation((String) changeUserInfo.get(UserInfoFragment.USER_LOCATION));
-//            mUserInfoBean.setProvince((String) changeUserInfo.get(UserInfoFragment.USER_PROVINCE));
-//            mUserInfoBean.setCity((String) changeUserInfo.get(UserInfoFragment.USER_CITY));
-//            if (changeUserInfo.containsKey(UserInfoFragment.USER_AREA)) {
-//                mUserInfoBean.setArea((String) changeUserInfo.get(UserInfoFragment.USER_AREA));
-//            }
+
         }
         if (changeUserInfo.containsKey(UserInfoFragment.USER_INTRO)) {
             mUserInfoBean.setIntro((String) changeUserInfo.get(UserInfoFragment.USER_INTRO));
         }
-        if (changeUserInfo.containsKey(UserInfoFragment.USER_STORAGE_TASK_ID)) {
-            mUserInfoBean.setAvatar((String) changeUserInfo.get(UserInfoFragment.USER_LOCAL_IMG_PATH));
-        }
         // 提示用户主页更新用户信息
         List<UserInfoBean> userInfoBeanList = new ArrayList<>();
         userInfoBeanList.add(mUserInfoBean);
-        EventBus.getDefault().post(userInfoBeanList, EventBusTagConfig.EVENT_USERINFO_UPDATE);
         // 修改数据库内容
         mUserInfoBeanGreenDao.insertOrReplace(mUserInfoBean);
+        EventBus.getDefault().post(userInfoBeanList, EventBusTagConfig.EVENT_USERINFO_UPDATE);
     }
 
     /**

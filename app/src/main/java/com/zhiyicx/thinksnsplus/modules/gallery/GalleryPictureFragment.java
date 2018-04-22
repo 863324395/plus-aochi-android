@@ -268,6 +268,9 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
 
     }
 
+    /**
+     * 保存图片
+     */
     public void saveImage() {
         // 通过GLide获取bitmap,有缓存读缓存
         GlideUrl glideUrl = ImageUtils.imagePathConvertV2(mImageBean.getStorage_id(), (int) mImageBean.getWidth(), (int) mImageBean.getHeight()
@@ -283,6 +286,14 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                 });
     }
 
+    /**
+     * 构造函数
+     *
+     * @param imageBean
+     * @param rect
+     * @param animationIn
+     * @return
+     */
     public static GalleryPictureFragment newInstance(ImageBean imageBean, AnimationRectBean rect,
                                                      boolean animationIn) {
         GalleryPictureFragment fragment = new GalleryPictureFragment();
@@ -306,7 +317,7 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
         canLook = toll == null || !(toll.getPaid() != null && !toll.getPaid() && toll.getToll_type_string().equals(Toll.LOOK_TOLL_TYPE));
         mLlToll.setVisibility(!canLook ? View.VISIBLE : View.GONE);
         final int w, h;
-        w = imageBean.getWidth() > screenW ? screenW : (int) imageBean.getWidth();
+        w = screenW;//        w = imageBean.getWidth() > screenW ? screenW : (int) imageBean.getWidth();
         h = (int) (w * imageBean.getHeight() / imageBean.getWidth());
         // 本地图片
         if (imageBean.getImgUrl() != null) {
@@ -323,8 +334,11 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                     .load(new CustomImageSizeModelImp(imageBean) {
                         @Override
                         public GlideUrl requestGlideUrl() {
-                            return ImageUtils.imagePathConvertV2(canLook, mImageBean.getStorage_id(), 0, 0,
-                                    ImageUtils.imageIsGif(imageBean.getImgMimeType())?ImageZipConfig.IMAGE_100_ZIP:ImageZipConfig.IMAGE_ZIP_BIG, AppApplication.getTOKEN());
+                            return ImageUtils.imagePathConvertV2(canLook, mImageBean.getStorage_id(), w, h,
+                                    ImageUtils.isLongImage((float) imageBean.getHeight(), (float) imageBean.getWidth())
+                                            || ImageUtils.imageIsGif(imageBean.getImgMimeType())
+                                            ? ImageZipConfig.IMAGE_100_ZIP : ImageZipConfig
+                                            .IMAGE_ZIP_BIG, AppApplication.getTOKEN());
                         }
                     }
                             .requestGlideUrl())
@@ -361,8 +375,10 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                             // 原图没有缓存，从cacheOnlyStreamLoader抛出异常，在这儿加载高清图
                             DrawableRequestBuilder builder = Glide.with(context)
                                     .load(
-                                            ImageUtils.imagePathConvertV2(canLook, mImageBean.getStorage_id(), 0, 0,
-                                                    ImageUtils.imageIsGif(imageBean.getImgMimeType())?ImageZipConfig.IMAGE_100_ZIP:ImageZipConfig.IMAGE_ZIP_BIG, AppApplication.getTOKEN())
+                                            ImageUtils.imagePathConvertV2(canLook, mImageBean.getStorage_id(), w, h,
+                                                    ImageUtils.isLongImage((float) imageBean.getHeight(), (float) imageBean.getWidth())
+                                                            || ImageUtils.imageIsGif(imageBean.getImgMimeType()) ? ImageZipConfig.IMAGE_100_ZIP :
+                                                            ImageZipConfig.IMAGE_ZIP_BIG, AppApplication.getTOKEN())
                                     )
                                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                                     .listener(new RequestListener<GlideUrl, GlideDrawable>() {
@@ -442,7 +458,8 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
     private void loadOriginImage(ImageBean imageBean) {
         final int w, h;
 
-        w = imageBean.getWidth() > screenW ? screenW : (int) imageBean.getWidth();
+//        w = imageBean.getWidth() > screenW ? screenW : (int) imageBean.getWidth();
+        w = screenW;
         h = (int) (w * imageBean.getHeight() / imageBean.getWidth());
         // 禁止点击查看原图按钮
         mTvOriginPhoto.setClickable(false);
@@ -715,9 +732,9 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
     @Override
     public void onDestroy() {
         DeviceUtils.gc();
-        super.onDestroy();
         dismissPop(mPayPopWindow);
         dismissPop(mActionPopupWindow);
+        super.onDestroy();
     }
 
     private void initCenterPopWindow(int resId) {

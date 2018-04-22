@@ -124,8 +124,8 @@ public class MyCodeFragment extends TSFragment<MyCodeContract.Presenter> impleme
             mTvUserName.setText(userInfo.getName());
             mTvUserIntro.setText(String.format(getString(R.string.default_intro_format), userInfo.getIntro()));
             ImageUtils.loadCircleUserHeadPic(userInfo, mUserAvatar);
-            mShareBitmap = ConvertUtils.drawable2BitmapWithWhiteBg(getContext(), mUserAvatar.getIvAvatar().getDrawable(), R.mipmap.icon);
-            if (TextUtils.isEmpty(userInfo.getAvatar())){
+
+            if (TextUtils.isEmpty(userInfo.getAvatar())) {
                 // 为空那就用默认的头像咯
                 mPresenter.createUserCodePic(BitmapFactory.decodeResource(getResources(), ImageUtils.getDefaultAvatar(userInfo)));
             }
@@ -181,11 +181,14 @@ public class MyCodeFragment extends TSFragment<MyCodeContract.Presenter> impleme
                                     showSnackWarningMessage(getString(R.string.camera_permission_tip));
                                 }
                             });
-
+                    mScanCodePopupWindow.hide();
 
                 })
                 .item2ClickListener(() -> {
                     // 分享
+                    if (mShareBitmap == null) {
+                        mShareBitmap = ConvertUtils.drawable2BitmapWithWhiteBg(getContext(), mUserAvatar.getIvAvatar().getDrawable(), R.mipmap.icon);
+                    }
                     mPresenter.shareMyQrCode(mShareBitmap);
                     mScanCodePopupWindow.hide();
                 })
@@ -195,7 +198,10 @@ public class MyCodeFragment extends TSFragment<MyCodeContract.Presenter> impleme
 
     @Override
     public void onDestroyView() {
-        super.onDestroyView();
+        if (mShareBitmap != null && !mShareBitmap.isRecycled()) {
+            mShareBitmap.recycle();
+        }
         dismissPop(mScanCodePopupWindow);
+        super.onDestroyView();
     }
 }
