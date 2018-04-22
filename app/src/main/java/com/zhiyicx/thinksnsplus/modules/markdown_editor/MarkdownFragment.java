@@ -774,6 +774,14 @@ public class MarkdownFragment<Draft extends BaseDraftBean, P extends MarkdownCon
         HtmlRenderer renderer = HtmlRenderer.builder(options).build();
         Node document = parser.parse(result);
         result = renderer.render(document);
+        String markdownImage="(?<=@)<img src=\"(\\d+)\" alt=\"((\\S+))\" />";
+        Matcher imageMarkdownMatcher = Pattern.compile(markdownImage).matcher(result);
+        while (imageMarkdownMatcher.find()) {
+            String name = imageMarkdownMatcher.group(2);
+            int id = Integer.parseInt(imageMarkdownMatcher.group(1));
+            String markdown = " @![" + name + "](" + id + ")";
+            result = result.replaceFirst(imageMarkdownMatcher.group(0), markdown);
+        }
         pareseBodyResult();
         return result;
     }
@@ -804,7 +812,7 @@ public class MarkdownFragment<Draft extends BaseDraftBean, P extends MarkdownCon
                 "           <div class=\"markdown\">" + markdown + "</div>" +
                 "       </div>" +
                 "   </div>" +
-                "   <input class=\"dec\" type=\"text\" placeholder=\"请输入图片名字\">" +
+                "   <input class=\"dec\" type=\"text\" placeholder=\""+name+"\">" +
                 "</div>" +
                 "<div><br></div>";
     }
