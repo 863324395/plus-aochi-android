@@ -64,12 +64,25 @@
             android:visibility="visible">
 
             <EditText
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
                 android:id="@+id/et_sendmessage"
-                style="@style/style_edit_bg_line"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="@dimen/chat_detail_input_menu_send_voice_height"
                 android:layout_centerVertical="true"
+                android:background="@drawable/ease_chat_press_speak_btn"
                 android:hint="@string/default_input_hint"
+                android:paddingTop="@dimen/spacing_small_3dp"
+                android:paddingBottom="@dimen/spacing_small_3dp"
                 android:imeOptions="actionSend"
-                android:maxLength="255"/>
+                android:maxLength="255"
+                android:maxLines="@integer/max_lines"
+
+                android:paddingLeft="@dimen/spacing_small"
+                android:paddingRight="@dimen/spacing_small"
+                android:textColor="@color/important_for_content"
+                android:textSize="@dimen/size_content_assist"/>
 
             <RelativeLayout
                 android:id="@+id/rl_face"
@@ -115,8 +128,8 @@
             android:id="@+id/btn_send"
             android:layout_width="@dimen/button_send_with"
             android:layout_height="@dimen/button_send_height"
-            android:layout_marginRight="@dimen/spacing_normal"
             android:layout_marginLeft="@dimen/spacing_mid"
+            android:layout_marginRight="@dimen/spacing_normal"
             android:background="@drawable/selector_button_corner_solid_small"
             android:gravity="center"
             android:text="@string/send"
