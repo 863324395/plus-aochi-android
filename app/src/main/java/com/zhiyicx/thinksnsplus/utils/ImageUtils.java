@@ -142,7 +142,7 @@ public class ImageUtils {
                         SHAREPREFERENCE_USER_COVER_SIGNATURE, mHeadPicSigture);
         Glide.with(imageView.getContext())
                 .load(userInfoBean.getCover())
-                .signature(new StringSignature(String.valueOf(mCoverSigture)))
+//                .signature(new StringSignature(String.valueOf(mCoverSigture)))
                 .placeholder(R.mipmap.default_pic_personal)
                 .error(R.mipmap.default_pic_personal)
                 .into(imageView);
@@ -212,7 +212,7 @@ public class ImageUtils {
             Glide.with(imageView.getContext())
                     .load(TextUtils.isEmpty(userInfoBean.getVerified().getIcon()) ? R.drawable.shape_default_image : userInfoBean.getVerified()
                             .getIcon())
-                    .signature(new StringSignature(String.valueOf(mHeadPicSigture)))
+//                    .signature(new StringSignature(String.valueOf(mHeadPicSigture)))
                     .placeholder(userInfoBean.getVerified().getType().equals(SendCertificationBean.ORG) ? R.mipmap.pic_identi_company : R.mipmap
                             .pic_identi_individual)
                     .error(userInfoBean.getVerified().getType().equals(SendCertificationBean.ORG) ? R.mipmap.pic_identi_company : R.mipmap
@@ -248,7 +248,7 @@ public class ImageUtils {
             Glide.with(imageView.getContext())
                     .load(TextUtils.isEmpty(userInfoBean.getVerified().getIcon()) ? R.drawable.shape_default_image : userInfoBean.getVerified()
                             .getIcon())
-                    .signature(new StringSignature(String.valueOf(mHeadPicSigture)))
+//                    .signature(new StringSignature(String.valueOf(mHeadPicSigture)))
                     .placeholder(userInfoBean.getVerified().getType().equals(SendCertificationBean.ORG) ? R.mipmap.pic_identi_company : R.mipmap
                             .pic_identi_individual)
                     .error(userInfoBean.getVerified().getType().equals(SendCertificationBean.ORG) ? R.mipmap.pic_identi_company : R.mipmap
@@ -290,7 +290,7 @@ public class ImageUtils {
             }
             Glide.with(imageView.getContext())
                     .load(userInfoBean.getVerified().getIcon())
-                    .signature(new StringSignature(String.valueOf(mHeadPicSigture)))
+//                    .signature(new StringSignature(String.valueOf(mHeadPicSigture)))
                     .placeholder(userInfoBean.getVerified().getType().equals(SendCertificationBean.ORG) ? R.mipmap.pic_identi_company : R.mipmap
                             .pic_identi_individual)
                     .error(userInfoBean.getVerified().getType().equals(SendCertificationBean.ORG) ? R.mipmap.pic_identi_company : R.mipmap
@@ -352,7 +352,7 @@ public class ImageUtils {
 
         DrawableRequestBuilder drawableRequestBuilder = Glide.with(imageView.getContext())
                 .load(TextUtils.isEmpty(avatar) ? R.drawable.shape_default_image : avatar)
-                .signature(new StringSignature(String.valueOf(mHeadPicSigture)));
+//                .signature(new StringSignature(String.valueOf(mHeadPicSigture)));
 
         drawableRequestBuilder.placeholder(withBorder ? defaultErrorAvatar : defaultErrorAvatar);
 
@@ -397,7 +397,7 @@ public class ImageUtils {
         int defaultAvatar = getDefaultAvatar(userInfoBean);
         Glide.with(imageView.getContext())
                 .load(TextUtils.isEmpty(avatar) ? R.drawable.shape_default_image : avatar)
-                .signature(new StringSignature(String.valueOf(mHeadPicSigture)))
+//                .signature(new StringSignature(String.valueOf(mHeadPicSigture)))
                 .placeholder(withBorder ? defaultAvatar : defaultAvatar)
                 .error(withBorder ? defaultAvatar : defaultAvatar)
                 .transform(withBorder ?
