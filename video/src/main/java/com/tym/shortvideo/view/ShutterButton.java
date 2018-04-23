@@ -227,23 +227,30 @@ public class ShutterButton extends AppCompatImageView {
 //                if (isDeleteMode()) {
 //                    return true;
 //                }
+
+                break;
+
+            case MotionEvent.ACTION_MOVE:
+                LogUtils.d("move");
                 if (!mOpenMode) {
                     startRecord(firstX, firstY);
                 }
                 break;
 
-            case MotionEvent.ACTION_MOVE:
-                LogUtils.d("move");
-                break;
-
             case MotionEvent.ACTION_UP:
                 LogUtils.d("up");
-                long offset=System.currentTimeMillis() - time;
-                LogUtils.d("offset::"+offset);
-                if (offset>=200){
-
+                long offset = System.currentTimeMillis() - time;
+                LogUtils.d("offset::" + offset);
+                if (offset >= 200) {
+                    stopRecord();
+                }else{
+                    if (!mOpenMode) {
+                        startRecord(firstX, firstY);
+                    }else{
+                        stopRecord();
+                    }
                 }
-                stopRecord();
+
                 break;
             case MotionEvent.ACTION_CANCEL:
 
