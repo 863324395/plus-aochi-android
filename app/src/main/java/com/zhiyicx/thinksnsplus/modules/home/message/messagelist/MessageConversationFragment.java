@@ -12,9 +12,11 @@ import com.hyphenate.chat.EMCmdMessageBody;
 import com.hyphenate.chat.EMConversation;
 import com.hyphenate.easeui.EaseConstant;
 import com.zhiyicx.baseproject.base.TSListFragment;
+import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.em.manager.util.TSEMConstants;
 import com.zhiyicx.baseproject.em.manager.eventbus.TSEMConnectionEvent;
 import com.zhiyicx.baseproject.em.manager.eventbus.TSEMessageEvent;
+import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.baseproject.widget.recycleview.BlankClickRecycleView;
 import com.zhiyicx.common.base.BaseFragment;
 import com.zhiyicx.common.utils.ToastUtils;
@@ -29,6 +31,7 @@ import com.zhiyicx.thinksnsplus.modules.chat.ChatActivity;
 import com.zhiyicx.thinksnsplus.modules.home.message.MessageAdapterV2;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
 import com.zhiyicx.thinksnsplus.widget.TSSearchView;
+import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 
 import org.jetbrains.annotations.NotNull;
 import org.simple.eventbus.Subscriber;
@@ -41,6 +44,8 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 
+import static com.zhiyicx.common.widget.popwindow.CustomPopupWindow.POPUPWINDOW_ALPHA;
+
 /**
  * @author Catherine
  * @describe
@@ -49,12 +54,16 @@ import butterknife.BindView;
  */
 public class MessageConversationFragment extends TSListFragment<MessageConversationContract.Presenter, MessageItemBeanV2>
         implements MessageConversationContract.View, MessageAdapterV2.OnSwipeItemClickListener,
-        OnUserInfoClickListener, BlankClickRecycleView.BlankClickListener {
+        OnUserInfoClickListener, BlankClickRecycleView.BlankClickListener, MessageAdapterV2.OnConversationItemLongClickListener {
 
     @Inject
     MessageConversationPresenter mConversationPresenter;
     @BindView(R.id.searchView)
     TSSearchView mSearchView;
+    /**
+     * 删除确认弹框
+     */
+    private ActionPopupWindow mCheckSurePop;
 
     @Override
     protected boolean useEventBus() {
@@ -146,9 +155,10 @@ public class MessageConversationFragment extends TSListFragment<MessageConversat
 
     @Override
     protected RecyclerView.Adapter getAdapter() {
-        MessageAdapterV2 commonAdapter = new MessageAdapterV2(getActivity(), mListDatas,mPresenter);
+        MessageAdapterV2 commonAdapter = new MessageAdapterV2(getActivity(), mListDatas, mPresenter);
         commonAdapter.setOnSwipItemClickListener(this);
         commonAdapter.setOnUserInfoClickListener(this);
+        commonAdapter.setOnConversationItemLongClickListener(this);
         return commonAdapter;
     }
 
@@ -194,7 +204,8 @@ public class MessageConversationFragment extends TSListFragment<MessageConversat
             return;
         }
         ChatActivity.startChatActivity(mActivity, messageItemBean.getConversation().conversationId()
-                , messageItemBean.getConversation().getType() == EMConversation.EMConversationType.Chat ? EaseConstant.CHATTYPE_SINGLE : EaseConstant.CHATTYPE_GROUP);
+                , messageItemBean.getConversation().getType() == EMConversation.EMConversationType.Chat ? EaseConstant.CHATTYPE_SINGLE :
+                        EaseConstant.CHATTYPE_GROUP);
     }
 
     @Override
@@ -216,6 +227,10 @@ public class MessageConversationFragment extends TSListFragment<MessageConversat
 
     @Override
     public void onRightClick(int position) {
+        deleteChatConversation(position);
+    }
+
+    private void deleteChatConversation(int position) {
         mPresenter.deleteConversation(position);
         refreshData();
     }
@@ -278,5 +293,44 @@ public class MessageConversationFragment extends TSListFragment<MessageConversat
                 }
             }
         });
+    }
+
+
+    /**
+     * 解绑前的提示选择弹框
+     *
+     * @param position 被删除项在列表中的位置
+     */
+    private void initCheckSurePop(int position) {
+
+        mCheckSurePop = ActionPopupWindow
+                .builder()
+                .item1Str(getString(R.string.chat_delete_sure))
+                .item2Str(getString(R.string.ts_delete))
+                .item2Color(ContextCompat.getColor(getContext(), R.color.important_for_note))
+                .bottomStr(getString(R.string.cancel))
+                .isOutsideTouch(true)
+                .isFocus(true)
+                .backgroundAlpha(POPUPWINDOW_ALPHA)
+                .with(mActivity)
+                .item2ClickListener(() -> {
+                    deleteChatConversation(position);
+                    mCheckSurePop.hide();
+                })
+                .bottomClickListener(() -> mCheckSurePop.hide())
+                .build();
+        mCheckSurePop.show();
+
+    }
+
+    @Override
+    public void onDestroyView() {
+        dismissPop(mCheckSurePop);
+        super.onDestroyView();
+    }
+
+    @Override
+    public void onConversationItemLongClick(int position) {
+        initCheckSurePop(position);
     }
 }

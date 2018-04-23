@@ -67,7 +67,6 @@ public class AccountManagementFragment extends TSFragment<AccountManagementContr
      * 解绑前的提示弹框
      */
     private ActionPopupWindow mCheckSurePop;
-    private UmengSharePolicyImpl mUmengSharePolicy;
 
 
     @Override
@@ -90,7 +89,8 @@ public class AccountManagementFragment extends TSFragment<AccountManagementContr
 
         initUserListener();
         initThirdListener();
-        mUmengSharePolicy = new UmengSharePolicyImpl(getContext());
+        // 初始化友盟，删除后会导致第一次使用失败，如果不这样，可以简单一点，把 UmengSharePolicyImpl 的 static 修改为公开的
+        UmengSharePolicyImpl umengSharePolicy = new UmengSharePolicyImpl(getContext());
 
     }
 
@@ -359,6 +359,12 @@ public class AccountManagementFragment extends TSFragment<AccountManagementContr
     public void onResume() {
         super.onResume();
         mPresenter.updaeUserInfo();
+    }
+
+    @Override
+    public void onDestroyView() {
+        dismissPop(mCheckSurePop);
+        super.onDestroyView();
     }
 
     @Override

@@ -56,6 +56,7 @@ public class MessageAdapterV2 extends CommonAdapter<MessageItemBeanV2> implement
 
     private SwipeItemMangerImpl mItemManger;
     private OnSwipeItemClickListener mOnSwipeItemClickListener;
+    private OnConversationItemLongClickListener mOnConversationItemLongClickListener;
     private OnUserInfoClickListener mOnUserInfoClickListener;
     private MessageConversationContract.Presenter mPresenter;
 
@@ -80,13 +81,14 @@ public class MessageAdapterV2 extends CommonAdapter<MessageItemBeanV2> implement
     private void setItemData(ViewHolder holder, final MessageItemBeanV2 messageItemBean, final int position) {
         // 右边
         final SwipeLayout swipeLayout = holder.getView(R.id.swipe);
+        swipeLayout.setSwipeEnabled(false);
         UserAvatarView userAvatarView = holder.getView(R.id.iv_headpic);
         holder.getTextView(R.id.tv_time).setCompoundDrawables(null, null, null, null);
         switch (messageItemBean.getConversation().getType()) {
             case Chat:
                 // 私聊
-                UserInfoBean singleChatUserinfo =messageItemBean.getUserInfo();
-                if(singleChatUserinfo==null){
+                UserInfoBean singleChatUserinfo = messageItemBean.getUserInfo();
+                if (singleChatUserinfo == null) {
                     TSEMHyphenate.getInstance().getChatUser(messageItemBean.getEmKey());
                 }
                 userAvatarView.getIvVerify().setVisibility(View.VISIBLE);
@@ -95,7 +97,8 @@ public class MessageAdapterV2 extends CommonAdapter<MessageItemBeanV2> implement
                 holder.setText(R.id.tv_name, singleChatUserinfo.getName());
                 setUserInfoClick(holder.getView(R.id.tv_name), messageItemBean);
                 setUserInfoClick(holder.getView(R.id.iv_headpic), messageItemBean);
-                swipeLayout.setSwipeEnabled(mPresenter == null || (singleChatUserinfo!=null&&!mPresenter.checkUserIsImHelper(singleChatUserinfo.getUser_id())));
+//                swipeLayout.setSwipeEnabled(mPresenter == null || (singleChatUserinfo!=null&&!mPresenter.checkUserIsImHelper(singleChatUserinfo
+// .getUser_id())));
                 break;
             case GroupChat:
                 // 群组
@@ -125,7 +128,7 @@ public class MessageAdapterV2 extends CommonAdapter<MessageItemBeanV2> implement
                         () : chatGroupBean.getName(), chatGroupBean == null ? group.getMemberCount() : chatGroupBean.getAffiliations_count());
                 // + "(" + chatGroupBean.getAffiliations_count() + ")";
                 holder.setText(R.id.tv_name, groupName);
-                swipeLayout.setSwipeEnabled(true);
+//                swipeLayout.setSwipeEnabled(true);
                 setUserInfoClick(holder.getView(R.id.tv_name), messageItemBean);
                 setUserInfoClick(holder.getView(R.id.iv_headpic), messageItemBean);
                 break;
@@ -239,6 +242,21 @@ public class MessageAdapterV2 extends CommonAdapter<MessageItemBeanV2> implement
                     }
                     mItemManger.closeAllItems();
                 });
+        RxView.longClicks(holder.getView(R.id.rl_left))
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
+                .subscribe(aVoid -> {
+                    if (mPresenter == null || hasItemOpend()) {
+                        closeAllItems();
+                        return;
+                    }
+                    // 小助手不可以被删除
+                    boolean isCantDelete = messageItemBean.getConversation().getType() == EMConversation.EMConversationType.Chat && messageItemBean.getUserInfo() != null && mPresenter.checkUserIsImHelper(messageItemBean.getUserInfo()
+                            .getUser_id());
+                    if (mOnConversationItemLongClickListener != null && !isCantDelete) {
+                        mOnConversationItemLongClickListener.onConversationItemLongClick(position);
+                    }
+                    mItemManger.closeAllItems();
+                });
         mItemManger.bindView(holder.getConvertView(), position);
 
     }
@@ -331,9 +349,17 @@ public class MessageAdapterV2 extends CommonAdapter<MessageItemBeanV2> implement
         mOnUserInfoClickListener = onUserInfoClickListener;
     }
 
+    public void setOnConversationItemLongClickListener(OnConversationItemLongClickListener onConversationItemLongClickListener) {
+        mOnConversationItemLongClickListener = onConversationItemLongClickListener;
+    }
+
     public interface OnSwipeItemClickListener {
         void onLeftClick(int position);
 
         void onRightClick(int position);
+    }
+
+    public interface OnConversationItemLongClickListener {
+        void onConversationItemLongClick(int position);
     }
 }
