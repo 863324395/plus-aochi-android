@@ -99,8 +99,8 @@ public class ChatRowPicture extends ChatBaseRow {
             width = imageMessageBody.getWidth();
             height = imageMessageBody.getHeight();
             if (width > mMaxNetImageWith) {
-                int caculateHeith = (int) (((float) mMaxNetImageWith / width) * height);
-                height = caculateHeith > height ? height : caculateHeith;
+                int calculateHeight = (int) (((float) mMaxNetImageWith / width) * height);
+                height = calculateHeight > height ? height : calculateHeight;
                 width = mMaxNetImageWith;
             }
         }

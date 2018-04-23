@@ -30,6 +30,7 @@ import com.zhiyicx.common.utils.SharePreferenceUtils
 import com.zhiyicx.common.widget.popwindow.CustomPopupWindow
 import com.zhiyicx.common.widget.popwindow.CustomPopupWindow.POPUPWINDOW_ALPHA
 import com.zhiyicx.thinksnsplus.R
+import com.zhiyicx.thinksnsplus.base.AppApplication
 import com.zhiyicx.thinksnsplus.modules.chat.ChatActivity
 import com.zhiyicx.thinksnsplus.modules.feedback.FeedBackActivity
 import com.zhiyicx.thinksnsplus.modules.guide.GuideActivity
@@ -206,7 +207,13 @@ class SettingsFragment : TSFragment<SettingsContract.Presenter>(), SettingsContr
                 .subscribe {
                     // 意见反馈跳转 ts+ 小助手 2018-3-12 11:47:12 by tym
                     val tsHlepers = mPresenter.imHelper
-                    if (tsHlepers == null || tsHlepers.isEmpty() && EMClient.getInstance().isConnected) {
+                    var isNeedFeedBack = false
+                    try {
+                        isNeedFeedBack = tsHlepers == null || tsHlepers.isEmpty() || AppApplication.getMyUserIdWithdefault() == tsHlepers[0].uid.toLong() || !EMClient.getInstance().isConnected
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
+                    if (isNeedFeedBack) {
                         startActivity(Intent(mActivity, FeedBackActivity::class.java))
                     } else {
                         ChatActivity.startChatActivity(mActivity, tsHlepers[0].uid.toString(),
