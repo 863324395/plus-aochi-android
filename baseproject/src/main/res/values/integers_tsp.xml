@@ -40,7 +40,7 @@
     <!-- 简介最多输入字符数量 -->
     <integer name="introduce_input_max_size">50</integer>
     <!-- 简介输入到多少字符的时候显示提示 -->
-    <integer name="show_introduce_input_size">25</integer>
+    <integer name="show_introduce_input_size">33</integer>
 
     <!-- 创建圈子公告最多输入字符数量 -->
     <integer name="circle_notice_input_max_size">2000</integer>
