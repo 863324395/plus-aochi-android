@@ -1,5 +1,9 @@
 package com.zhiyicx.thinksnsplus.modules.markdown_editor;
 
+import android.content.ClipData;
+import android.content.ClipDescription;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -174,8 +178,28 @@ public class MarkdownFragment<Draft extends BaseDraftBean, P extends MarkdownCon
      */
     protected void editorPreLoad() {
         mDraftBean = getDraftData();
+        handleClipboardContent();
         if (mDraftBean == null) {
             mRichTextView.load();
+        }
+    }
+
+    /**
+     * 把剪切板的文字去除样式
+     */
+    protected void handleClipboardContent() {
+        ClipboardManager clipboardManager = (ClipboardManager) mActivity.getSystemService(Context.CLIPBOARD_SERVICE);
+        //判断剪切版时候有内容
+        if (clipboardManager != null && clipboardManager.hasPrimaryClip()) {
+            ClipData clipData = clipboardManager.getPrimaryClip();
+            //获取 ClipDescription
+            ClipDescription clipDescription = clipboardManager.getPrimaryClipDescription();
+            //获取 lable
+            String lable = clipDescription.getLabel().toString();
+            //获取 text
+            String text = clipData.getItemAt(0).coerceToText(mActivity).toString();
+            ClipData mClipData = ClipData.newPlainText("Label", text);
+            clipboardManager.setPrimaryClip(mClipData);
         }
     }
 
@@ -311,7 +335,8 @@ public class MarkdownFragment<Draft extends BaseDraftBean, P extends MarkdownCon
     }
 
     /**
-     *提取网页内容 js 回掉
+     * 提取网页内容 js 回掉
+     *
      * @param title      标题
      * @param markdwon   markdown 格式内容
      * @param noMarkdown 纯文字内容
@@ -344,6 +369,7 @@ public class MarkdownFragment<Draft extends BaseDraftBean, P extends MarkdownCon
 
     /**
      * 图片删除 js 回掉
+     *
      * @param tagId
      */
     @Override
@@ -442,6 +468,7 @@ public class MarkdownFragment<Draft extends BaseDraftBean, P extends MarkdownCon
 
     /**
      * 设置按钮点击
+     *
      * @param isSelected
      */
     @Override
@@ -451,6 +478,7 @@ public class MarkdownFragment<Draft extends BaseDraftBean, P extends MarkdownCon
 
     /**
      * 链接点击 js 回掉
+     *
      * @param name
      * @param url
      */
@@ -461,6 +489,7 @@ public class MarkdownFragment<Draft extends BaseDraftBean, P extends MarkdownCon
 
     /**
      * 图片点击 js 回掉
+     *
      * @param id
      */
     @Override
@@ -476,6 +505,7 @@ public class MarkdownFragment<Draft extends BaseDraftBean, P extends MarkdownCon
 
     /**
      * 底部操作栏 文字样式选项卡 监听
+     *
      * @param isSelect
      */
     @Override
@@ -486,6 +516,7 @@ public class MarkdownFragment<Draft extends BaseDraftBean, P extends MarkdownCon
     /**
      * 编辑器初始化加载完成
      * 许多操作都必须在这里，比如 执行与编辑器交互的 js 方法
+     *
      * @param ready
      */
     @Override
@@ -499,7 +530,8 @@ public class MarkdownFragment<Draft extends BaseDraftBean, P extends MarkdownCon
 
     /**
      * 编辑器 标题 和 内容 输入监听
-     * @param titleLength 标题字数
+     *
+     * @param titleLength   标题字数
      * @param contentLength 内容字数
      */
     @Override
@@ -551,7 +583,8 @@ public class MarkdownFragment<Draft extends BaseDraftBean, P extends MarkdownCon
 
     /**
      * 图片你传进度
-     * @param id 时间戳
+     *
+     * @param id       时间戳
      * @param filePath
      * @param progress
      * @param imgeId
@@ -568,8 +601,9 @@ public class MarkdownFragment<Draft extends BaseDraftBean, P extends MarkdownCon
 
     /**
      * 图片上传失败
+     *
      * @param filePath
-     * @param id 时间戳
+     * @param id       时间戳
      */
     @Override
     public void onFailed(String filePath, long id) {
@@ -620,10 +654,11 @@ public class MarkdownFragment<Draft extends BaseDraftBean, P extends MarkdownCon
 
     /**
      * 草稿箱
-     * @param title 标题
-     * @param markdown markdown 内容
+     *
+     * @param title      标题
+     * @param markdown   markdown 内容
      * @param noMarkdown 非 markdown 内容
-     * @param html 全部网页内容
+     * @param html       全部网页内容
      */
     protected void initEditWarningPop(String title, String markdown, String noMarkdown, String
             html) {
@@ -667,6 +702,7 @@ public class MarkdownFragment<Draft extends BaseDraftBean, P extends MarkdownCon
 
     /**
      * 插入链接的弹窗
+     *
      * @param dialog
      * @param isChange
      */
@@ -696,6 +732,7 @@ public class MarkdownFragment<Draft extends BaseDraftBean, P extends MarkdownCon
 
     /**
      * 点击图片弹窗
+     *
      * @param dialog
      * @param items
      */
@@ -774,7 +811,7 @@ public class MarkdownFragment<Draft extends BaseDraftBean, P extends MarkdownCon
         HtmlRenderer renderer = HtmlRenderer.builder(options).build();
         Node document = parser.parse(result);
         result = renderer.render(document);
-        String markdownImage="(?<=@)<img src=\"(\\d+)\" alt=\"((\\S+))\" />";
+        String markdownImage = "(?<=@)<img src=\"(\\d+)\" alt=\"((\\S+))\" />";
         Matcher imageMarkdownMatcher = Pattern.compile(markdownImage).matcher(result);
         while (imageMarkdownMatcher.find()) {
             String name = imageMarkdownMatcher.group(2);
@@ -788,9 +825,10 @@ public class MarkdownFragment<Draft extends BaseDraftBean, P extends MarkdownCon
 
     /**
      * 将 markdown 图片格式 还原为编辑器需要的图片html
-     * @param tagId 图片时间戳，唯一标准
-     * @param id 图片
-     * @param name 图片名称
+     *
+     * @param tagId     图片时间戳，唯一标准
+     * @param id        图片
+     * @param name      图片名称
      * @param imagePath 图片地址
      * @return
      */
@@ -812,14 +850,15 @@ public class MarkdownFragment<Draft extends BaseDraftBean, P extends MarkdownCon
                 "           <div class=\"markdown\">" + markdown + "</div>" +
                 "       </div>" +
                 "   </div>" +
-                "   <input class=\"dec\" type=\"text\" placeholder=\""+name+"\">" +
+                "   <input class=\"dec\" type=\"text\" placeholder=\"" + name + "\">" +
                 "</div>" +
                 "<div><br></div>";
     }
 
     /**
      * 将 markdown 链接格式 还原为编辑器需要的图片html
-     * @param url 链接地址
+     *
+     * @param url  链接地址
      * @param name 链接名
      * @return
      */
@@ -829,7 +868,8 @@ public class MarkdownFragment<Draft extends BaseDraftBean, P extends MarkdownCon
 
     /**
      * 拼接 编辑器需要的 html ，为草稿箱所用
-     * @param title 内容默认文字
+     *
+     * @param title   内容默认文字
      * @param content 内容
      * @return
      */
