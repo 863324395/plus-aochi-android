@@ -16,17 +16,12 @@ import com.zhiyicx.common.thridmanager.share.ShareContent;
 import com.zhiyicx.common.thridmanager.share.SharePolicy;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.thinksnsplus.R;
-import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.MusicAlbumDetailsBean;
 import com.zhiyicx.thinksnsplus.data.beans.MusicDetaisBean;
-import com.zhiyicx.thinksnsplus.data.beans.WalletBean;
 import com.zhiyicx.thinksnsplus.data.source.local.MusicAlbumDetailsBeanGreenDaoImpl;
-import com.zhiyicx.thinksnsplus.data.source.local.WalletBeanGreenDaoImpl;
-import com.zhiyicx.thinksnsplus.data.source.repository.CommentRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.MusicDetailRepository;
-import com.zhiyicx.thinksnsplus.modules.wallet.WalletActivity;
 
 import org.simple.eventbus.EventBus;
 
@@ -73,7 +68,7 @@ public class MusicDetailPresenter extends AppBasePresenter<
         amount = mRootView.getListDatas().get(position).getStorage().getAmount();
         Subscription subscribe = handleIntegrationBlance((long) amount)
                 .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R
-                        .string.transaction_doing)))
+                        .string.ts_pay_check_handle_doing)))
                 .flatMap(o -> mCommentRepository.paykNote(note))
                 .subscribe(new BaseSubscribeForV2<BaseJsonV2<String>>() {
                     @Override

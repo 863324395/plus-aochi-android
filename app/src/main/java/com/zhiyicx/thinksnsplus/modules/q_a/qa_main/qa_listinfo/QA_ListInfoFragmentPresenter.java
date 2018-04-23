@@ -22,7 +22,6 @@ import javax.inject.Inject;
 
 import rx.Observable;
 import rx.Subscription;
-import rx.functions.Func1;
 
 /**
  * @Author Jliuer
@@ -101,7 +100,7 @@ public class QA_ListInfoFragmentPresenter extends AppBasePresenter<QA_ListInfoCo
     public void payForOnlook(long answer_id, int position) {
         Subscription subscription = handleWalletBlance((long) getSystemConfig().getOnlookQuestion())
                 .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R
-                        .string.transaction_doing)))
+                        .string.ts_pay_check_handle_doing)))
                 .flatMap(o -> mBaseQARepository.payForOnlook(answer_id))
                 .subscribe(new BaseSubscribeForV2<BaseJsonV2<AnswerInfoBean>>() {
                     @Override

@@ -10,18 +10,13 @@ import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.QAPublishBean;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
-import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
-import com.zhiyicx.thinksnsplus.data.source.local.WalletBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.BaseQARepository;
-import com.zhiyicx.thinksnsplus.data.source.repository.CommentRepository;
-import com.zhiyicx.thinksnsplus.modules.wallet.WalletActivity;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import javax.inject.Inject;
 
-import rx.Observable;
 import rx.Subscription;
 
 /**
@@ -102,7 +97,7 @@ public class QARewardPresenter extends AppBasePresenter<QARewardContract.View>
 
         Subscription subscribe = handleIntegrationBlance((long) amount)
                 .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R
-                        .string.transaction_doing)))
+                        .string.ts_pay_check_handle_doing)))
                 .flatMap(o -> mBaseQARepository.resetReward(question_id, amount))
                 .subscribe(new BaseSubscribeForV2<BaseJsonV2<Object>>() {
                     @Override

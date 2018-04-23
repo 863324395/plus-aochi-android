@@ -539,6 +539,7 @@
     <string name="bill_doing_fialed">操作失败</string>
     <string name="transaction_fail">交易失败</string>
     <string name="transaction_doing">审核中&#8230;</string>
+    <string name="ts_pay_check_handle_doing">处理中&#8230;</string>
 
     <!--意见反馈-->
     <string name="hint_phone_or_email">请输入电话或者邮箱，方便我们与您联系</string>

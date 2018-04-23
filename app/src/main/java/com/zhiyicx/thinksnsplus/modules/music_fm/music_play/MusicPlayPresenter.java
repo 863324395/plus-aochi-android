@@ -9,23 +9,17 @@ import com.zhiyicx.baseproject.config.ImageZipConfig;
 import com.zhiyicx.baseproject.impl.share.UmengSharePolicyImpl;
 import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
-import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.common.thridmanager.share.OnShareCallbackListener;
 import com.zhiyicx.common.thridmanager.share.Share;
 import com.zhiyicx.common.thridmanager.share.ShareContent;
 import com.zhiyicx.common.thridmanager.share.SharePolicy;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.thinksnsplus.R;
-import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
-import com.zhiyicx.thinksnsplus.data.beans.WalletBean;
 import com.zhiyicx.thinksnsplus.data.source.local.MusicAlbumDetailsBeanGreenDaoImpl;
-import com.zhiyicx.thinksnsplus.data.source.local.WalletBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.BaseMusicRepository;
-import com.zhiyicx.thinksnsplus.data.source.repository.CommentRepository;
-import com.zhiyicx.thinksnsplus.modules.wallet.WalletActivity;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 
 import org.simple.eventbus.EventBus;
@@ -70,7 +64,7 @@ public class MusicPlayPresenter extends AppBasePresenter<
         double amount;
         amount = mRootView.getListDatas().get(position).getStorage().getAmount();
         Subscription subscribe = handleIntegrationBlance((long) amount)
-                .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R.string.transaction_doing)))
+                .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R.string.ts_pay_check_handle_doing)))
                 .flatMap(o -> mCommentRepository.paykNote(note))
                 .subscribe(new BaseSubscribeForV2<BaseJsonV2<String>>() {
                     @Override

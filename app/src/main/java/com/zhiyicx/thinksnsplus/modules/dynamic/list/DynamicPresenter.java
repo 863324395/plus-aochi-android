@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
-import android.util.SparseArray;
 
 import com.klinker.android.link_builder.Link;
 import com.umeng.socialize.bean.SHARE_MEDIA;
@@ -563,7 +562,7 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.View>
 
         Subscription subscribe = handleIntegrationBlance((long) amount)
                 .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R
-                        .string.transaction_doing)))
+                        .string.ts_pay_check_handle_doing)))
                 .flatMap(o -> mCommentRepository.paykNote(note))
                 .flatMap(stringBaseJsonV2 -> {
                     if (isImage) {

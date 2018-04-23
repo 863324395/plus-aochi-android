@@ -17,14 +17,12 @@ import org.jetbrains.annotations.NotNull;
 import org.simple.eventbus.EventBus;
 import org.simple.eventbus.Subscriber;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
 
 import rx.Observable;
 import rx.Subscription;
-import rx.functions.Func1;
 
 /**
  * @author Catherine
@@ -70,7 +68,7 @@ public class TopicDetailListPresenter extends AppBasePresenter<TopicDetailListCo
     public void payForOnlook(long answer_id, int position) {
         Subscription subscription = handleWalletBlance((long) getSystemConfigBean().getOnlookQuestion())
                 .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R
-                        .string.transaction_doing)))
+                        .string.ts_pay_check_handle_doing)))
                 .flatMap(o -> mBaseQARepository.payForOnlook(answer_id))
                 .subscribe(new BaseSubscribeForV2<BaseJsonV2<AnswerInfoBean>>() {
                     @Override
