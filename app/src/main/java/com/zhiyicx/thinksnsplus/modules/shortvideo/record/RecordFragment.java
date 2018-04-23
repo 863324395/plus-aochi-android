@@ -259,6 +259,7 @@ public class RecordFragment extends TSFragment implements SurfaceHolder.Callback
     public void onDestroyView() {
         DrawerManager.getInstance().surfaceDestroyed();
         DrawerManager.getInstance().destoryTrhead();
+        CountDownManager.getInstance().cancelTimerWithoutSaving();
         if (mWarnPopupWindow != null && mWarnPopupWindow.isShowing()) {
             mWarnPopupWindow.dismiss();
         }
