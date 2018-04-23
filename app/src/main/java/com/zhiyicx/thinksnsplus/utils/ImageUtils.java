@@ -351,7 +351,7 @@ public class ImageUtils {
         int defaultErrorAvatar = getDefaultAvatar(userInfoBean);
 
         DrawableRequestBuilder drawableRequestBuilder = Glide.with(imageView.getContext())
-                .load(TextUtils.isEmpty(avatar) ? R.drawable.shape_default_image : avatar)
+                .load(TextUtils.isEmpty(avatar) ? R.drawable.shape_default_image : avatar);
 //                .signature(new StringSignature(String.valueOf(mHeadPicSigture)));
 
         drawableRequestBuilder.placeholder(withBorder ? defaultErrorAvatar : defaultErrorAvatar);

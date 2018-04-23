@@ -85,5 +85,8 @@ public class BlackListFragment extends TSListFragment<BlackListContract.Presente
     public void removeSuccess(int position) {
         mListDatas.remove(position);
         refreshData();
+        if(mListDatas.isEmpty()){
+            startRefrsh();
+        }
     }
 }
