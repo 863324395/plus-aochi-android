@@ -14,7 +14,6 @@
         <FrameLayout
             android:id="@+id/fl_image_contaienr"
             android:layout_width="match_parent"
-            android:background="@color/themeColor"
             android:layout_gravity="center"
             android:layout_height="wrap_content">
 
@@ -22,14 +21,12 @@
                 android:id="@+id/iv_orin_pager"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/red"
                 android:scaleType="fitStart"
                 android:visibility="invisible"/>
 
             <ImageView
                 android:id="@+id/iv_pager"
                 android:layout_width="match_parent"
-                android:background="@color/red"
                 android:scaleType="fitStart"
                 android:layout_height="wrap_content"
                  />

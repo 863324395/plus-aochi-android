@@ -12,6 +12,7 @@ import com.umeng.socialize.UMShareAPI;
 import com.umeng.socialize.bean.SHARE_MEDIA;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
+import com.zhiyicx.baseproject.impl.share.UmengSharePolicyImpl;
 import com.zhiyicx.baseproject.widget.button.CombinationButton;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.ActionPopupWindowItem2ClickListener;
@@ -66,6 +67,7 @@ public class AccountManagementFragment extends TSFragment<AccountManagementContr
      * 解绑前的提示弹框
      */
     private ActionPopupWindow mCheckSurePop;
+    private UmengSharePolicyImpl mUmengSharePolicy;
 
 
     @Override
@@ -88,6 +90,8 @@ public class AccountManagementFragment extends TSFragment<AccountManagementContr
 
         initUserListener();
         initThirdListener();
+        mUmengSharePolicy = new UmengSharePolicyImpl(getContext());
+
     }
 
     @Override
@@ -178,61 +182,61 @@ public class AccountManagementFragment extends TSFragment<AccountManagementContr
     }
 
     private void handleThirdAccount(String provider) {
-        // 跳转绑定/解绑QQ
-        if (mBindAccounts.contains(provider)) { // 解绑
-            if (TextUtils.isEmpty(mCurrentUser.getPhone())) {
-                showSnackErrorMessage(getString(R.string.you_must_bind_phone));
+            // 跳转绑定/解绑QQ
+            if (mBindAccounts.contains(provider)) { // 解绑
+                if (TextUtils.isEmpty(mCurrentUser.getPhone())) {
+                    showSnackErrorMessage(getString(R.string.you_must_bind_phone));
+                } else {
+                    initCheckSurePop(provider);
+                }
             } else {
-                initCheckSurePop(provider);
-            }
-        } else {
-            if (TextUtils.isEmpty(mCurrentUser.getPhone())) {
-                showSnackErrorMessage(getString(R.string.you_must_bind_phone2));
-            } else {
-                // 绑定
-                switch (provider) {
-                    case ApiConfig.PROVIDER_QQ:
-                        // QQ 和微信 该版本不提供网页支持，故提示安装应用
-                        if (UMShareAPI.get(getContext()).isInstall(getActivity(), SHARE_MEDIA.QQ)) {
-                            thridLogin(SHARE_MEDIA.QQ);
-                        } else {
-                            showSnackErrorMessage(getString(R.string.please_install_app));
-                        }
-                        break;
-                    case ApiConfig.PROVIDER_WEIBO:
+                if (TextUtils.isEmpty(mCurrentUser.getPhone())) {
+                    showSnackErrorMessage(getString(R.string.you_must_bind_phone2));
+                } else {
+                    // 绑定
+                    switch (provider) {
+                        case ApiConfig.PROVIDER_QQ:
+                            // QQ 和微信 该版本不提供网页支持，故提示安装应用
+                            if (UMShareAPI.get(getContext()).isInstall(getActivity(), SHARE_MEDIA.QQ)) {
+                                thridLogin(SHARE_MEDIA.QQ);
+                            } else {
+                                showSnackErrorMessage(getString(R.string.please_install_app));
+                            }
+                            break;
+                        case ApiConfig.PROVIDER_WEIBO:
 //                        if (UMShareAPI.get(getContext()).isInstall(getActivity(), SHARE_MEDIA.SINA)) {
 
-                        thridLogin(SHARE_MEDIA.SINA);
+                            thridLogin(SHARE_MEDIA.SINA);
 //                        } else {
 //                            showSnackErrorMessage(getString(R.string.please_install_app));
 //                        }
-                        break;
-                    case ApiConfig.PROVIDER_WECHAT:
-                        if (UMShareAPI.get(getContext()).isInstall(getActivity(), SHARE_MEDIA.WEIXIN)) {
+                            break;
+                        case ApiConfig.PROVIDER_WECHAT:
+                            if (UMShareAPI.get(getContext()).isInstall(getActivity(), SHARE_MEDIA.WEIXIN)) {
 
-                            thridLogin(SHARE_MEDIA.WEIXIN);
-                        } else {
-                            showSnackErrorMessage(getString(R.string.please_install_app));
-                        }
-                        break;
-                    default:
-                        if (UMShareAPI.get(getContext()).isInstall(getActivity(), SHARE_MEDIA.QQ)) {
+                                thridLogin(SHARE_MEDIA.WEIXIN);
+                            } else {
+                                showSnackErrorMessage(getString(R.string.please_install_app));
+                            }
+                            break;
+                        default:
+                            if (UMShareAPI.get(getContext()).isInstall(getActivity(), SHARE_MEDIA.QQ)) {
 
-                            thridLogin(SHARE_MEDIA.QQ);
-                        } else {
-                            showSnackErrorMessage(getString(R.string.please_install_app));
-                        }
+                                thridLogin(SHARE_MEDIA.QQ);
+                            } else {
+                                showSnackErrorMessage(getString(R.string.please_install_app));
+                            }
+                    }
+
                 }
-
             }
-        }
     }
 
 
     public void thridLogin(SHARE_MEDIA type) {
         showSnackLoadingMessage(getString(R.string.loading_state));
-        UMShareAPI mShareAPI = UMShareAPI.get(getActivity());
-        mShareAPI.getPlatformInfo(getActivity(), type, authListener);
+        UMShareAPI mShareAPI = UMShareAPI.get(mActivity);
+        mShareAPI.getPlatformInfo(mActivity, type, authListener);
 
     }
 
@@ -285,7 +289,7 @@ public class AccountManagementFragment extends TSFragment<AccountManagementContr
          */
         @Override
         public void onError(SHARE_MEDIA platform, int action, Throwable t) {
-            showSnackErrorMessage(getString(R.string.login_fail));
+            showSnackErrorMessage(getString(R.string.bind_fail));
         }
 
         /**
@@ -295,7 +299,7 @@ public class AccountManagementFragment extends TSFragment<AccountManagementContr
          */
         @Override
         public void onCancel(SHARE_MEDIA platform, int action) {
-            showSnackWarningMessage(getString(R.string.login_cancel));
+            showSnackWarningMessage(getString(R.string.bind_cancel));
         }
     };
 

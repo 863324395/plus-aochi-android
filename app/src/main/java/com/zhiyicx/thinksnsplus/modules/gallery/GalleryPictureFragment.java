@@ -166,17 +166,19 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
         mImageBean = getArguments() != null ? (ImageBean) getArguments().getParcelable("url") : null;
         assert mImageBean != null;
 
-        double scale=screenW/mImageBean.getWidth();
+        double scale = screenW / mImageBean.getWidth();
+
+        int height = (int) (mImageBean.getHeight() * scale);
         if (mImageBean.getWidth() > 0 && mImageBean.getHeight() > 0) {
             ViewGroup.LayoutParams params = mIvOriginPager.getLayoutParams();
             params.width = screenW;
-            params.height = (int) (mImageBean.getHeight()*scale);
+            params.height = height<DeviceUtils.getScreenHeight(getContext())?DeviceUtils.getScreenHeight(getContext()):height;
             mIvOriginPager.setLayoutParams(params);
         }
         if (mImageBean.getWidth() > 0 && mImageBean.getHeight() > 0) {
             ViewGroup.LayoutParams params = mIvPager.getLayoutParams();
             params.width = screenW;
-            params.height = (int) (mImageBean.getHeight()*scale);
+            params.height = height<DeviceUtils.getScreenHeight(getContext())?DeviceUtils.getScreenHeight(getContext()):height;
             mIvPager.setLayoutParams(params);
         }
         if (mImageBean.getImgUrl() != null) {

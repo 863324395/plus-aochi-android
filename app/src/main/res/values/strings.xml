@@ -1086,4 +1086,6 @@
     <string name="unbind_sure_tip_format">您已绑定%s，是否解除绑定？</string>
     <string name="sure_unbind">解除绑定</string>
     <string name="reserved">保留</string>
+    <string name="bind_fail">绑定失败</string>
+    <string name="bind_cancel">取消绑定</string>
 </resources>
