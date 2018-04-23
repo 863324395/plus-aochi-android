@@ -29,6 +29,7 @@ public class UserFollowerCountBean {
      */
     public static class UserBean {
         public static final String MESSAGE_TYPE_FOLLOWING = "following";
+        public static final String MESSAGE_TYPE_MUTUAL = "mutual";
         public static final String MESSAGE_TYPE_LIKED = "liked";
         public static final String MESSAGE_TYPE_COMMENTED = "commented";
         public static final String MESSAGE_TYPE_SYSTEM = "system";
@@ -42,6 +43,7 @@ public class UserFollowerCountBean {
          * system : 1  最新系统消息数
          * news-comment-pinned : 1  最新资讯评论置顶数
          * feed-comment-pinned：1   最新动态评论置顶数
+         * mutual：1   最新好友数
          */
 
         private int following;
@@ -52,6 +54,15 @@ public class UserFollowerCountBean {
         private int newsCommentPinned;
         @SerializedName("feed-comment-pinned")
         private int feedCommentPinned;
+        private int mutual;
+
+        public int getMutual() {
+            return mutual;
+        }
+
+        public void setMutual(int mutual) {
+            this.mutual = mutual;
+        }
 
         public int getFollowing() {
             return following;

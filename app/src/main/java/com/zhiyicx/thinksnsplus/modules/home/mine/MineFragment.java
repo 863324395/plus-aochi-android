@@ -88,6 +88,8 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
     CombinationButton mBtCertification;
     @BindView(R.id.bv_fans_new_count)
     BadgeView mVvFansNewCount;
+    @BindView(R.id.bv_friends_new_count)
+    BadgeView mBvFriendsNewCount;
 
     /**
      * 选择认证人类型的弹窗
@@ -373,6 +375,13 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
     public void setNewFollowTip(int count) {
         mVvFansNewCount.setBadgeCount(Integer.parseInt(ConvertUtils.messageNumberConvert(count)));
     }
+
+
+    @Override
+    public void setNewFriendsTip(int count) {
+        mBvFriendsNewCount.setBadgeCount(Integer.parseInt(ConvertUtils.messageNumberConvert(count)));
+    }
+
 
     @Override
     public void setNewSystemInfo(boolean isShow) {

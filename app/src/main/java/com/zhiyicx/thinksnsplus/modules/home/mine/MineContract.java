@@ -32,6 +32,12 @@ public interface MineContract {
         void setNewFollowTip(int count);
 
         /**
+         * 新的好友
+         * @param count
+         */
+        void setNewFriendsTip(int count);
+
+        /**
          * 是否有新系统消息
          */
         void setNewSystemInfo(boolean isShow);

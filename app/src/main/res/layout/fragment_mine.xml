@@ -175,30 +175,43 @@
                         android:layout_marginTop="@dimen/spacing_small_3dp"
                         />
                 <!--好友-->
-                <LinearLayout
-                        android:id="@+id/ll_friends_container"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:orientation="vertical">
-                    <!--关注数量-->
+                <RelativeLayout
+                    android:id="@+id/ll_friends_container"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+                    <!--粉丝数量-->
                     <TextView
-                            android:id="@+id/tv_friends_count"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textColor="@color/themeColor"
-                            android:textSize="@dimen/size_content_assist"
-                            tools:text="12233"/>
+                        android:id="@+id/tv_friends_count"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:textColor="@color/themeColor"
+                        android:textSize="@dimen/size_content_assist"
+                        tools:text="23456"/>
+
+                    <com.zhiyicx.baseproject.widget.BadgeView
+                        android:id="@+id/bv_friends_new_count"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/spacing_mid_small_8dp"
+                        android:layout_toRightOf="@id/tv_friends_count"
+                        android:textSize="@dimen/size_icon_assist"
+                        android:textStyle="normal"/>
 
                     <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="@dimen/spacing_small_4dp"
-                            android:text="@string/friends"
-                            android:textColor="@color/important_for_content"
-                            android:textSize="@dimen/size_content_assist"/>
-                </LinearLayout>
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/tv_friends_count"
+                        android:layout_marginTop="@dimen/spacing_small_4dp"
+                        android:text="@string/friends"
+                        android:layout_centerHorizontal="true"
+                        android:textColor="@color/important_for_content"
+                        android:textSize="@dimen/size_content_assist"/>
+
+                </RelativeLayout>
+
             </LinearLayout>
 
             <!--个人主页-->

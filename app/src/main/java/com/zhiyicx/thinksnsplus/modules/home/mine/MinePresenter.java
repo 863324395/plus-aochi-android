@@ -91,7 +91,7 @@ public class MinePresenter extends AppBasePresenter<MineContract.View> implement
                 .subscribe(new BaseSubscribeForV2<UserFollowerCountBean>() {
                     @Override
                     protected void onSuccess(UserFollowerCountBean data) {
-                        setFollowFansCount(data == null || data.getUser() == null ? 0 : data.getUser().getFollowing());
+                        setFollowFansCount(data);
 
                     }
                 });
@@ -138,11 +138,14 @@ public class MinePresenter extends AppBasePresenter<MineContract.View> implement
      * 更新粉丝数量、系統消息
      */
     @Subscriber(tag = EventBusTagConfig.EVENT_IM_SET_MINE_FANS_TIP_VISABLE)
-    public void setFollowFansCount(int count) {
-
-        mRootView.setNewFollowTip(count);
+    public void setFollowFansCount(UserFollowerCountBean data) {
+        int followingCount = data == null || data.getUser() == null ? 0 : data.getUser().getFollowing();
+        int firendsCount = data == null || data.getUser() == null ? 0 : data.getUser().getMutual();
+        mRootView.setNewFollowTip(followingCount);
+        mRootView.setNewFriendsTip(firendsCount);
         // 更新底部红点
-        EventBus.getDefault().post(count > 0, EventBusTagConfig.EVENT_IM_SET_MINE_TIP_VISABLE);
+        boolean isShowMessagTip = followingCount > 0 || firendsCount > 0;
+        EventBus.getDefault().post(isShowMessagTip, EventBusTagConfig.EVENT_IM_SET_MINE_TIP_VISABLE);
     }
 
     /**

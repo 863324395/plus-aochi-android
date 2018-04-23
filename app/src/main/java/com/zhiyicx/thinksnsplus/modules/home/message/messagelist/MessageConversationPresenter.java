@@ -254,7 +254,7 @@ public class MessageConversationPresenter extends AppBasePresenter<MessageConver
                     // 是否显示底部红点
                     boolean isShowMessageTip = false;
                     for (MessageItemBeanV2 messageItemBean : mRootView.getListDatas()) {
-                        if (messageItemBean.getConversation().getUnreadMsgCount() > 0) {
+                        if (messageItemBean.getConversation()!=null&&messageItemBean.getConversation().getUnreadMsgCount() > 0) {
                             isShowMessageTip = true;
                             break;
                         } else {

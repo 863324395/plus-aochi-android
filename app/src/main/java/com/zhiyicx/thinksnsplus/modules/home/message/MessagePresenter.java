@@ -462,7 +462,7 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.View> imp
 
                     }
                     // 更新我的消息提示
-                    EventBus.getDefault().post(true, EventBusTagConfig.EVENT_IM_SET_MINE_FANS_TIP_VISABLE);
+//                    EventBus.getDefault().post(true, EventBusTagConfig.EVENT_IM_SET_MINE_FANS_TIP_VISABLE);
                     checkBottomMessageTip();
                     return true;
                 })

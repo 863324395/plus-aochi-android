@@ -7,9 +7,11 @@ import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
+import com.zhiyicx.thinksnsplus.data.beans.UserFollowerCountBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.BaseFriendsRepository;
+import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -27,14 +29,17 @@ import rx.Subscription;
  * @contact email:648129313@qq.com
  */
 @FragmentScoped
-public class MyFriendsListPresenter extends AppBasePresenter< MyFriendsListContract.View>
-        implements MyFriendsListContract.Presenter{
+public class MyFriendsListPresenter extends AppBasePresenter<MyFriendsListContract.View>
+        implements MyFriendsListContract.Presenter {
 
     @Inject
     BaseFriendsRepository mBaseFriendsRepository;
 
     @Inject
-    public MyFriendsListPresenter( MyFriendsListContract.View rootView) {
+    UserInfoRepository mUserInfoRepository;
+
+    @Inject
+    public MyFriendsListPresenter(MyFriendsListContract.View rootView) {
         super(rootView);
     }
 
@@ -60,7 +65,14 @@ public class MyFriendsListPresenter extends AppBasePresenter< MyFriendsListContr
                     }
                 });
         addSubscrebe(subscription);
+        mUserInfoRepository.clearUserMessageCount(UserFollowerCountBean.UserBean.MESSAGE_TYPE_MUTUAL)
+                .subscribe(new BaseSubscribeForV2<Object>() {
+                    @Override
+                    protected void onSuccess(Object data) {
+                    }
+                });
     }
+
 
     @Override
     public void requestCacheData(Long maxId, boolean isLoadMore) {
@@ -81,13 +93,13 @@ public class MyFriendsListPresenter extends AppBasePresenter< MyFriendsListContr
         return list;
     }
 
-    private ChatUserInfoBean getChatUser(UserInfoBean userInfoBean){
+    private ChatUserInfoBean getChatUser(UserInfoBean userInfoBean) {
         ChatUserInfoBean chatUserInfoBean = new ChatUserInfoBean();
         chatUserInfoBean.setUser_id(userInfoBean.getUser_id());
         chatUserInfoBean.setAvatar(userInfoBean.getAvatar());
         chatUserInfoBean.setName(userInfoBean.getName());
         chatUserInfoBean.setSex(userInfoBean.getSex());
-        if (userInfoBean.getVerified() != null){
+        if (userInfoBean.getVerified() != null) {
             ChatVerifiedBean verifiedBean = new ChatVerifiedBean();
             verifiedBean.setDescription(userInfoBean.getVerified().getDescription());
             verifiedBean.setIcon(userInfoBean.getVerified().getIcon());
