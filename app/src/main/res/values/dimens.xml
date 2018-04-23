@@ -132,5 +132,6 @@
     <dimen name="integration_withdrawals_et_padding">14dp</dimen>
     <dimen name="ts_chat_item_iamge_raduis">12dp</dimen>
     <dimen name="black_list_remove_bt_paddingleft">13dp</dimen>
+    <dimen name="certify_margin_top">18dp</dimen>
 
 </resources>

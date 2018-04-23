@@ -7,22 +7,34 @@
     android:background="@android:color/black"
     android:fillViewport="true">
 
-    <ImageView
-        android:id="@+id/iv_orin_pager"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="center"
-        android:gravity="center"
-        android:scaleType="fitXY"
-        android:visibility="invisible"/>
+        android:layout_height="wrap_content">
 
-    <ImageView
-        android:id="@+id/iv_pager"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="center"
-        android:gravity="center"
-        android:scaleType="fitXY"/>
+        <FrameLayout
+            android:id="@+id/fl_image_contaienr"
+            android:layout_width="match_parent"
+            android:background="@color/themeColor"
+            android:layout_gravity="center"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/iv_orin_pager"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/red"
+                android:scaleType="fitStart"
+                android:visibility="invisible"/>
+
+            <ImageView
+                android:id="@+id/iv_pager"
+                android:layout_width="match_parent"
+                android:background="@color/red"
+                android:scaleType="fitStart"
+                android:layout_height="wrap_content"
+                 />
+        </FrameLayout>
+    </ScrollView>
 
     <ProgressBar
         android:id="@+id/pb_progress"

@@ -5,12 +5,15 @@ import android.animation.ObjectAnimator;
 import android.graphics.Rect;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.ImageView;
 
 import com.zhiyicx.common.utils.DrawableProvider;
 import com.zhiyicx.thinksnsplus.data.beans.AnimationRectBean;
+
+import static com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListBaseItem.DEFALT_IMAGE_HEIGHT;
 
 /**
  * @author LiuChao
@@ -21,7 +24,7 @@ import com.zhiyicx.thinksnsplus.data.beans.AnimationRectBean;
 
 public class TransferImageAnimationUtil {
     // 动画持续时间
-    public static final int ANIMATION_DURATION = 300;
+    public static final int ANIMATION_DURATION = 200;
 
     /**
      * 退出时的控件缩放处理
@@ -70,7 +73,7 @@ public class TransferImageAnimationUtil {
             imageView.animate().translationX(deltaLeft).translationY(deltaTop)
                     .scaleY(startHScale)
                     .scaleX(startWScale)
-                    .alpha(.1f).setDuration(ANIMATION_DURATION)
+                    .alpha(0f).setDuration(ANIMATION_DURATION)
                     .setInterpolator(new AccelerateDecelerateInterpolator())
                     .withEndAction(new Runnable() {
                         @Override
@@ -106,7 +109,7 @@ public class TransferImageAnimationUtil {
      * @param endAction 在监听ViewTree的同时，需要处理一些其他操作，在新的线程中进行
      */
     public static void startInAnim(final AnimationRectBean rect, final ImageView imageView, final Runnable endAction) {
-        if(imageView==null){
+        if (imageView == null) {
             return;
         }
         imageView.getViewTreeObserver()
@@ -132,10 +135,6 @@ public class TransferImageAnimationUtil {
 
                         float startScale = (float) finalBounds.width() / startBounds.width();
 
-                        if (startScale * startBounds.height() > finalBounds.height()) {
-                            startScale = (float) finalBounds.height() / startBounds.height();
-                        }
-
                         int deltaTop = startBounds.top - finalBounds.top;
                         int deltaLeft = startBounds.left - finalBounds.left;
                         // 位移+缩小
@@ -145,14 +144,15 @@ public class TransferImageAnimationUtil {
 
                         imageView.setScaleX(1 / startScale);
                         imageView.setScaleY(1 / startScale);
-
                         imageView.setTranslationX(deltaLeft);
                         imageView.setTranslationY(deltaTop);
-
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                            imageView.animate().translationY(0).translationX(0)
+                            imageView.animate()
+                                    .translationY(0)
+                                    .translationX(0)
                                     .scaleY(1)
-                                    .scaleX(1).setDuration(ANIMATION_DURATION)
+                                    .scaleX(1)
+                                    .setDuration(ANIMATION_DURATION)
                                     .setInterpolator(
                                             new AccelerateDecelerateInterpolator())
                                     .withEndAction(endAction);

@@ -16,6 +16,7 @@ import android.support.v4.view.animation.FastOutSlowInInterpolator;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Interpolator;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -88,6 +89,8 @@ import static com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListB
  */
 public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presenter> implements View.OnLongClickListener, PhotoViewAttacher
         .OnPhotoTapListener, GalleryConstract.View {
+    @BindView(R.id.fl_image_contaienr)
+    FrameLayout mFlImageContaienr;
     @BindView(R.id.iv_orin_pager)
     ImageView mIvOriginPager;
     @BindView(R.id.iv_pager)
@@ -154,10 +157,7 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                 .build()
                 .inject(this);
         checkAndLoadImage();
-        // wifi 是否连接
-        if (NetUtils.isWifiConnected(getContext().getApplicationContext())) {
 
-        }
     }
 
     private void checkAndLoadImage() {
@@ -165,6 +165,20 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
         final AnimationRectBean rect = getArguments().getParcelable("rect");
         mImageBean = getArguments() != null ? (ImageBean) getArguments().getParcelable("url") : null;
         assert mImageBean != null;
+
+        double scale=screenW/mImageBean.getWidth();
+        if (mImageBean.getWidth() > 0 && mImageBean.getHeight() > 0) {
+            ViewGroup.LayoutParams params = mIvOriginPager.getLayoutParams();
+            params.width = screenW;
+            params.height = (int) (mImageBean.getHeight()*scale);
+            mIvOriginPager.setLayoutParams(params);
+        }
+        if (mImageBean.getWidth() > 0 && mImageBean.getHeight() > 0) {
+            ViewGroup.LayoutParams params = mIvPager.getLayoutParams();
+            params.width = screenW;
+            params.height = (int) (mImageBean.getHeight()*scale);
+            mIvPager.setLayoutParams(params);
+        }
         if (mImageBean.getImgUrl() != null) {
             // 本地图片不需要查看原图
             mTvOriginPhoto.setVisibility(View.GONE);

@@ -231,29 +231,31 @@ public class DrawableProvider {
             int bitmapWidth = drawable.getIntrinsicWidth();
             int bitmapHeight = drawable.getIntrinsicHeight();
 
-            int imageViewWidth = imageView.getWidth() - imageView.getPaddingLeft() - imageView
-                    .getPaddingRight();
+//            int imageViewWidth = imageView.getWidth() - imageView.getPaddingLeft() - imageView
+//                    .getPaddingRight();
+            int imageViewWidth = DeviceUtils.getScreenWidth(imageView.getContext());
             int imageviewHeight = imageView.getHeight() - imageView.getPaddingTop() - imageView
                     .getPaddingBottom();
 
             float startScale;
-            if ((float) imageViewWidth / bitmapWidth
-                    > (float) imageviewHeight / bitmapHeight) {
-                // Extend start bounds horizontally
-                startScale = (float) imageviewHeight / bitmapHeight;
-            } else {
+//            if ((float) imageViewWidth / bitmapWidth
+//                    > (float) imageviewHeight / bitmapHeight) {
+//                // Extend start bounds horizontally
+//                startScale = (float) imageviewHeight / bitmapHeight;
+//            } else {
                 startScale = (float) imageViewWidth / bitmapWidth;
-            }
-
-            bitmapHeight = (int) (bitmapHeight * startScale);
-            bitmapWidth = (int) (bitmapWidth * startScale);
-
+//            }
+//
+//            bitmapHeight = (int) (bitmapHeight * startScale);
+//            bitmapWidth = (int) (bitmapWidth * startScale);
+            bitmapHeight= (int) (bitmapHeight*startScale);
             int deltaX = (imageViewWidth - bitmapWidth) / 2;
             int deltaY = (imageviewHeight - bitmapHeight) / 2;
 
-            rect.set(rect.left + deltaX, rect.top + deltaY, rect.right - deltaX,
-                    rect.bottom - deltaY);
-
+//            rect.set(rect.left + deltaX, rect.top + deltaY, rect.right - deltaX,
+//                    rect.bottom - deltaY);
+            rect.set(0, 0, imageViewWidth,
+                    bitmapHeight);
             return rect;
         } else {
             return null;
