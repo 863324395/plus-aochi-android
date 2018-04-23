@@ -53,6 +53,8 @@ public class LocationRecommentFragment extends TSFragment<LocationRecommentContr
     RecyclerView mRvHotCity;
     @BindView(R.id.tv_cancel)
     TextView mTvSearchCancel;
+    @BindView(R.id.tv_hot_city_tip)
+    TextView mTvHotCityTip;
 
     /**
      * 声明 AMapLocationClientOption 对象
@@ -155,6 +157,13 @@ public class LocationRecommentFragment extends TSFragment<LocationRecommentContr
     public void updateHotCity(List<LocationBean> data) {
         mHotCitys.addAll(data);
         mRvHotCity.setAdapter(initUnsubscribeAdapter());
+        if(!mHotCitys.isEmpty()){
+            mTvHotCityTip.setVisibility(View.VISIBLE);
+            mRvHotCity.setVisibility(View.VISIBLE);
+        }else {
+            mTvHotCityTip.setVisibility(View.GONE);
+            mRvHotCity.setVisibility(View.GONE);
+        }
     }
 
 

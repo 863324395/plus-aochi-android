@@ -132,9 +132,11 @@
             </LinearLayout>
 
             <TextView
+                android:id="@+id/tv_hot_city_tip"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="@dimen/spacing_normal"
+                android:visibility="gone"
                 android:text="@string/hot_location"
                 android:textColor="@color/normal_for_assist_text"
                 android:textSize="@dimen/size_content_comment"/>
@@ -144,6 +146,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/white"
+                android:visibility="gone"
                 android:paddingBottom="@dimen/spacing_mid"
                 android:paddingLeft="@dimen/spacing_small"
                 android:paddingRight="@dimen/spacing_small"
