@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.findsomeone.search.name;
 
+import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
@@ -28,6 +29,10 @@ public class SearchSomeOnePresenter extends AppBasePresenter<SearchSomeOneContra
     UserInfoRepository mUserInfoRepository;
     private Subscription searchSub;
 
+    private String mSeachText;
+
+    private List<UserInfoBean> mRecommentUserList = new ArrayList<>();
+
 
     @Inject
     public SearchSomeOnePresenter(SearchSomeOneContract.View rootView) {
@@ -36,6 +41,30 @@ public class SearchSomeOnePresenter extends AppBasePresenter<SearchSomeOneContra
 
     @Override
     public void requestNetData(Long maxId, boolean isLoadMore) {
+        if (searchSub != null && !searchSub.isUnsubscribed()) {
+            searchSub.unsubscribe();
+        }
+
+        searchSub = mUserInfoRepository.searchUserInfo(null, mSeachText, maxId.intValue(), null, TSListFragment.DEFAULT_PAGE_SIZE)
+                .subscribe(new BaseSubscribeForV2<List<UserInfoBean>>() {
+                    @Override
+                    protected void onSuccess(List<UserInfoBean> data) {
+
+                        mRootView.onNetResponseSuccess(data, isLoadMore);
+                    }
+
+                    @Override
+                    protected void onFailure(String message, int code) {
+                        super.onFailure(message, code);
+                        mRootView.onResponseError(null, isLoadMore);
+                    }
+
+                    @Override
+                    protected void onException(Throwable throwable) {
+                        mRootView.onResponseError(throwable, isLoadMore);
+                    }
+                });
+        addSubscrebe(searchSub);
 
     }
 
@@ -51,39 +80,21 @@ public class SearchSomeOnePresenter extends AppBasePresenter<SearchSomeOneContra
 
     @Override
     public void searchUser(String name) {
-        if (searchSub != null && !searchSub.isUnsubscribed()) {
-            searchSub.unsubscribe();
-        }
-
-        searchSub = mUserInfoRepository.searchUserInfo(null, name, null, null, null)
-                .subscribe(new BaseSubscribeForV2<List<UserInfoBean>>() {
-                    @Override
-                    protected void onSuccess(List<UserInfoBean> data) {
-
-                        mRootView.onNetResponseSuccess(data, false);
-                    }
-
-                    @Override
-                    protected void onFailure(String message, int code) {
-                        super.onFailure(message, code);
-                        mRootView.onResponseError(null, false);
-                    }
-
-                    @Override
-                    protected void onException(Throwable throwable) {
-                        mRootView.onResponseError(throwable, false);
-                    }
-                });
-        addSubscrebe(searchSub);
-
+        mSeachText = name;
+        requestNetData(0L, false);
     }
 
     @Override
     public void getRecommentUser() {
+        if (mRecommentUserList != null) {
+            mRootView.onNetResponseSuccess(mRecommentUserList, false);
+            return;
+        }
         Subscription subscribe = mUserInfoRepository.getRecommendUserInfo()
                 .subscribe(new BaseSubscribeForV2<List<UserInfoBean>>() {
                     @Override
                     protected void onSuccess(List<UserInfoBean> data) {
+                        mRecommentUserList = data;
                         mRootView.onNetResponseSuccess(data, false);
                     }
 

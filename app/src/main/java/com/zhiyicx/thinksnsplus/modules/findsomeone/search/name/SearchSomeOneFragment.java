@@ -18,6 +18,10 @@ import com.zhiyicx.thinksnsplus.modules.findsomeone.list.FindSomeOneListAdapter;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 
+import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
+
 import butterknife.BindView;
 import butterknife.OnClick;
 
@@ -40,6 +44,8 @@ public class SearchSomeOneFragment extends TSListFragment<SearchSomeOneContract.
     RelativeLayout mFragmentInfoSearchContainer;
     @BindView(R.id.fragment_search_cancle)
     TextView mTvSearchCancel;
+    @BindView(R.id.ll_container)
+    View mLlContainer;
 
 
     public static SearchSomeOneFragment newInstance(Bundle args) {
@@ -66,7 +72,7 @@ public class SearchSomeOneFragment extends TSListFragment<SearchSomeOneContract.
 
     @Override
     protected boolean isLoadingMoreEnable() {
-        return false;
+        return true;
     }
 
     @Override
@@ -80,11 +86,17 @@ public class SearchSomeOneFragment extends TSListFragment<SearchSomeOneContract.
         setEmptyViewVisiable(false);
         RxTextView.editorActionEvents(mFragmentInfoSearchEdittext).subscribe(textViewEditorActionEvent -> {
             if (textViewEditorActionEvent.actionId() == EditorInfo.IME_ACTION_SEARCH) {
-                mPresenter.searchUser(mFragmentInfoSearchEdittext.getText().toString());
-                DeviceUtils.hideSoftKeyboard(getContext(), mFragmentInfoSearchEdittext);
+                if (!TextUtils.isEmpty(textViewEditorActionEvent.toString().trim())) {
+                    mPresenter.searchUser(mFragmentInfoSearchEdittext.getText().toString().trim());
+                    DeviceUtils.hideSoftKeyboard(getContext(), mFragmentInfoSearchEdittext);
+                } else {
+                    mPresenter.getRecommentUser();
+                }
+
             }
         });
-        mRvList.setBackgroundResource(R.color.white);
+        mRvList.setBackgroundResource(R.color.bgColor);
+        mLlContainer.setBackgroundResource(R.color.white);
 //        RxTextView.afterTextChangeEvents(mFragmentInfoSearchEdittext)
 //                .subscribe(textViewAfterTextChangeEvent -> {
 //                    mPresenter.searchUser(textViewAfterTextChangeEvent.editable().toString());
@@ -152,5 +164,10 @@ public class SearchSomeOneFragment extends TSListFragment<SearchSomeOneContract.
     @Override
     public void upDateFollowFansState(int index) {
         refreshData(index);
+    }
+
+    @Override
+    protected Long getMaxId(@NotNull List<UserInfoBean> data) {
+        return (long) mListDatas.size();
     }
 }
