@@ -3,6 +3,7 @@ package com.zhiyicx.thinksnsplus.modules.shortvideo.helper;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.graphics.Color;
+import android.graphics.drawable.AnimationDrawable;
 import android.media.AudioManager;
 import android.util.AttributeSet;
 import android.view.View;
@@ -40,6 +41,7 @@ public class ZhiyiVideoView extends JZVideoPlayerStandard {
 
     public ImageView mShareImageView;
     public ImageView mDefaultStartImageView;
+    public ImageView mVideoLoadingImageView;
 
     public LinearLayout mShareLineLinearLayout;
 
@@ -95,6 +97,7 @@ public class ZhiyiVideoView extends JZVideoPlayerStandard {
         super.init(context);
         mShareImageView = (ImageView) findViewById(R.id.share);
         mDefaultStartImageView = (ImageView) findViewById(R.id.first_start);
+        mVideoLoadingImageView = (ImageView) findViewById(R.id.iv_loading);
         mShareLineLinearLayout = (LinearLayout) findViewById(R.id.ll_share_line_container);
         mShareLinearLayout = (LinearLayout) findViewById(R.id.ll_share_container);
 
@@ -179,6 +182,9 @@ public class ZhiyiVideoView extends JZVideoPlayerStandard {
     public void onStatePreparingChangingUrl(int urlMapIndex, long seekToInAdvance) {
         super.onStatePreparingChangingUrl(urlMapIndex, seekToInAdvance);
         mDefaultStartImageView.setVisibility(GONE);
+        loadingProgressBar.setVisibility(GONE);
+        mVideoLoadingImageView.setVisibility(VISIBLE);
+        ((AnimationDrawable) mVideoLoadingImageView.getDrawable()).start();
     }
 
     @Override
@@ -270,6 +276,17 @@ public class ZhiyiVideoView extends JZVideoPlayerStandard {
         }
     }
 
+    @Override
+    public void setAllControlsVisiblity(int topCon, int bottomCon, int startBtn, int loadingPro, int thumbImg, int bottomPro, int retryLayout) {
+        super.setAllControlsVisiblity(topCon, bottomCon, startBtn, loadingPro, thumbImg, bottomPro, retryLayout);
+        loadingProgressBar.setVisibility(GONE);
+        mVideoLoadingImageView.setVisibility(loadingPro);
+        if (loadingPro == GONE || loadingPro == INVISIBLE) {
+            ((AnimationDrawable) mVideoLoadingImageView.getDrawable()).stop();
+            return;
+        }
+        ((AnimationDrawable) mVideoLoadingImageView.getDrawable()).start();
+    }
 
     @Override
     public void updateStartImage() {

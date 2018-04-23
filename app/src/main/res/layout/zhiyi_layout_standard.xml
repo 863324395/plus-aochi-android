@@ -182,6 +182,17 @@
         android:indeterminateDrawable="@drawable/frame_loading_white"
         android:visibility="invisible"/>
 
+    <ImageView
+        android:id="@+id/iv_loading"
+        android:padding="@dimen/dp10"
+        android:layout_width="@dimen/jz_start_button_w_h_normal"
+        android:layout_height="@dimen/jz_start_button_w_h_normal"
+        android:background="@drawable/round"
+        android:src="@drawable/frame_loading_white"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:visibility="invisible"/>
+
     <RelativeLayout
         android:id="@+id/start_layout"
         android:layout_width="wrap_content"
