@@ -9,6 +9,7 @@ import com.github.tamir7.contacts.Query;
 import com.zhiyicx.baseproject.base.SystemConfigBean;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.ContactsBean;
@@ -83,10 +84,21 @@ public class ContactsPresenter extends AppBasePresenter<ContactsContract.View> i
         })
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
+                .flatMap((Func1<List<ContactsBean>, Observable<List<ContactsBean>>>) contactsBeans -> mUserInfoRepository.getCurrentLoginUserInfo()
+                        .map(userInfoBean -> {
+                            mUserInfoBeanGreenDao.insertOrReplace(userInfoBean);
+                            return contactsBeans;
+                        }))
                 .flatMap(contacts -> {
                     ArrayList<String> phones = new ArrayList<>();
+                    UserInfoBean currenUser = mUserInfoBeanGreenDao.getUserInfoById(String.valueOf(AppApplication.getMyUserIdWithdefault()));
+
                     for (ContactsBean contact : contacts) {
-                        phones.add(contact.getPhone());
+                        if (currenUser != null && contact.getPhone().equals(currenUser.getPhone())) {
+                            // 自己的不加入
+                        } else {
+                            phones.add(contact.getPhone());
+                        }
                     }
                     return mUserInfoRepository.getUsersByPhone(phones)
                             .observeOn(Schedulers.io())
@@ -101,14 +113,17 @@ public class ContactsPresenter extends AppBasePresenter<ContactsContract.View> i
                                 notAdd.setTitle(mContext.getString(R.string.contact_not_add_ts_plust));
                                 contactsContainerBeens.add(hadAdd);
                                 contactsContainerBeens.add(notAdd);
-
                                 for (ContactsBean contact : contacts) {
-                                    List<UserInfoBean> tmp = mUserInfoBeanGreenDao.getUserInfoByPhone(contact.getPhone());
-                                    if (!tmp.isEmpty()) {
-                                        contact.setUser(tmp.get(0));
-                                        hadAdd.getContacts().add(contact);
-                                    } else {
-                                        notAdd.getContacts().add(contact);
+                                    if (currenUser != null && contact.getPhone().equals(currenUser.getPhone())) {
+                                     continue;
+                                    }else {
+                                        List<UserInfoBean> tmp = mUserInfoBeanGreenDao.getUserInfoByPhone(contact.getPhone());
+                                        if (!tmp.isEmpty()) {
+                                            contact.setUser(tmp.get(0));
+                                            hadAdd.getContacts().add(contact);
+                                        } else {
+                                            notAdd.getContacts().add(contact);
+                                        }
                                     }
                                 }
                                 return contactsContainerBeens;
