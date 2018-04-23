@@ -28,12 +28,13 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 
 /**
  * @author Catherine
- * @describe 图片消息
+ * @describe 图片消息 ,修改这 Jungle68  email:master.jungle68@gmail.com
  * @date 2018/1/8
  * @contact email:648129313@qq.com
  */
 
 public class ChatRowPicture extends ChatBaseRow {
+    private static final int DEFAULT_IMAGE_MINE_SIZE = 350;
     private static final int DEFAULT_IMAGE_SIZE = 400;
     /**
      * 显示本地图片最大为屏幕 1/3
@@ -46,8 +47,6 @@ public class ChatRowPicture extends ChatBaseRow {
 
 
     private AppCompatImageView mIvChatContent;
-    private AppCompatImageView mIvChatContentMask;
-
 
     public ChatRowPicture(Context context, EMMessage message, int position, BaseAdapter adapter, ChatUserInfoBean chatUserInfoBean) {
         super(context, message, position, adapter, chatUserInfoBean);
@@ -65,7 +64,6 @@ public class ChatRowPicture extends ChatBaseRow {
     protected void onFindViewById() {
         super.onFindViewById();
         mIvChatContent = (AppCompatImageView) findViewById(R.id.iv_chat_content);
-        mIvChatContentMask = (AppCompatImageView) findViewById(R.id.iv_chat_content_mask);
     }
 
     @Override
@@ -106,15 +104,17 @@ public class ChatRowPicture extends ChatBaseRow {
                 width = mMaxNetImageWith;
             }
         }
+        // 给一个最小值
+        if (width < DEFAULT_IMAGE_MINE_SIZE) {
+            height = (int) ((float)DEFAULT_IMAGE_MINE_SIZE / width * height);
+            width = DEFAULT_IMAGE_MINE_SIZE;
+        }
+
 
         RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) mIvChatContent.getLayoutParams();
         layoutParams.width = width;
         layoutParams.height = height;
         mIvChatContent.setLayoutParams(layoutParams);
-        RelativeLayout.LayoutParams layoutParamsMask = (RelativeLayout.LayoutParams) mIvChatContentMask.getLayoutParams();
-        layoutParamsMask.width = width;
-        layoutParamsMask.height = height;
-        mIvChatContentMask.setLayoutParams(layoutParamsMask);
 
         ImageUtils.loadImageDefault(mIvChatContent, url);
 

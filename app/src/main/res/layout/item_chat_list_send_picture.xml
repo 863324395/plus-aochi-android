@@ -53,15 +53,6 @@
                     android:scaleType="fitXY"
                     />
 
-                <android.support.v7.widget.AppCompatImageView
-                    android:id="@+id/iv_chat_content_mask"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:scaleType="fitXY"
-                    android:visibility="gone"
-                    android:src="@drawable/pic_chat"
-                    />
-
             </RelativeLayout>
 
             <FrameLayout
