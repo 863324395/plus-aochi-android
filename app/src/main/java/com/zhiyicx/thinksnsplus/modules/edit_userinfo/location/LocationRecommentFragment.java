@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -15,9 +14,7 @@ import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationClient;
 import com.amap.api.location.AMapLocationClientOption;
 import com.amap.api.location.AMapLocationListener;
-import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.base.TSFragment;
-import com.zhiyicx.common.config.ConstantConfig;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.LocationBean;
@@ -29,7 +26,6 @@ import com.zhy.adapter.recyclerview.base.ViewHolder;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -173,8 +169,7 @@ public class LocationRecommentFragment extends TSFragment<LocationRecommentContr
                 startActivityForResult(intent, REQUST_CODE_AREA);
                 break;
             case R.id.tv_cancel:
-                getActivity().setResult(RESULT_OK, getActivity().getIntent());
-                getActivity().finish();
+                normalBack();
                 break;
             case R.id.iv_location:
                 startLocation();
@@ -194,6 +189,13 @@ public class LocationRecommentFragment extends TSFragment<LocationRecommentContr
                 break;
             default:
         }
+    }
+
+    /**
+     * 没选择直接返回了
+     */
+    private void normalBack() {
+        getActivity().finish();
     }
 
     @Override
@@ -297,8 +299,7 @@ public class LocationRecommentFragment extends TSFragment<LocationRecommentContr
 
     @Override
     public void onBackPressed() {
-        getActivity().setResult(RESULT_OK, getActivity().getIntent());
-        getActivity().finish();
+        normalBack();
     }
 
     @Override
