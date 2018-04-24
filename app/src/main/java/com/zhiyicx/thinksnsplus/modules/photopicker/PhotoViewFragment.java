@@ -7,7 +7,6 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.ColorMatrix;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
@@ -31,7 +30,6 @@ import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.AnimationRectBean;
 import com.zhiyicx.thinksnsplus.data.beans.PhotoViewDataCacheBean;
-import com.zhiyicx.thinksnsplus.data.beans.SendDynamicDataBean;
 import com.zhiyicx.thinksnsplus.modules.dynamic.send.SendDynamicActivity;
 import com.zhiyicx.thinksnsplus.modules.dynamic.send.picture_toll.PictureTollActivity;
 
@@ -83,8 +81,6 @@ public class PhotoViewFragment extends TSFragment {
     private boolean hasAnim = false;
     private boolean hasRightTitle = false;
 
-    private final ColorMatrix colorizerMatrix = new ColorMatrix();
-
     /**
      * 点击第几张图片进入的预览界面
      */
@@ -95,25 +91,27 @@ public class PhotoViewFragment extends TSFragment {
      */
     private ImageBean mImageBean;
 
+
+    /**
+     * 这两个用来记录图片选中的信息，因为要点击完成才能真正的处理图片是否选择 （取消图片选中状态需要点击完成才能实现，但是选中只需要点击选择按钮）
+     */
+    private ArrayList<ImageBean> unCheckImage = new ArrayList<>();
+    private ArrayList<String> unCheckImagePath = new ArrayList<>();
+
+    /**
+     * 上个页面选中的图片地址
+     */
+    private ArrayList<String> seletedPaths = new ArrayList<>();
+    /**
+     * 由于取消选中需要点击完成才能实现，故用一个 tmp 来处理当前图片是否被选中
+     */
+    private ArrayList<String> mCheckImagePath = new ArrayList<>();
     /**
      * 所有要发布的图片
      */
     private ArrayList<ImageBean> mSeletedPic;
 
-    /**
-     * 这两个用来记录图片选中的信息，因为要点击完成才能真正的处理图片是否选择
-     */
-    private ArrayList<ImageBean> unCheckImage = new ArrayList<>();
-    private ArrayList<String> unCheckImagePath = new ArrayList<>();
-
-    private ArrayList<String> seletedPaths;
-
     private ArrayList<String> allPaths;
-
-    /**
-     * 已选中的图片
-     */
-    private ArrayList<String> checkImagePath = new ArrayList<>();
 
 
     @Override
@@ -149,6 +147,43 @@ public class PhotoViewFragment extends TSFragment {
         return R.layout.fragment_photo_view;
     }
 
+
+    @Override
+    protected boolean showToolbar() {
+        return true;
+    }
+
+    @Override
+    protected boolean showToolBarDivider() {
+        return true;
+    }
+
+    @Override
+    protected void setLeftClick() {
+        getActivity().onBackPressed();
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+
+        if (sPhotoViewDataCacheBean != null) {
+            List<String> seletedPathsTmps = sPhotoViewDataCacheBean.getSelectedPhoto();
+            // 由于是静态的，克隆一份，防止改变数据源
+            seletedPaths.addAll(seletedPathsTmps);
+            mCheckImagePath.addAll(seletedPaths);
+            mSeletedPic = sPhotoViewDataCacheBean.getSelectedPhotos();
+            removePlaceHolder(mSeletedPic);
+            allPaths = sPhotoViewDataCacheBean.getAllPhotos();
+            currentItem = sPhotoViewDataCacheBean.getCurrentPosition();
+            hasRightTitle = sPhotoViewDataCacheBean.isToll();
+            rectList = sPhotoViewDataCacheBean.getAnimationRectBeanArrayList();
+            maxCount = sPhotoViewDataCacheBean.getMaxCount();
+            mPagerAdapter = new SectionsPagerAdapter(getChildFragmentManager());
+        }
+    }
+
     @Override
     protected void initView(View rootView) {
         if (mSeletedPic.size() != 0) {
@@ -177,7 +212,7 @@ public class PhotoViewFragment extends TSFragment {
                 hasAnim = currentItem == position;
 
                 // 是否包含了已经选中的图片
-                mRbSelectPhoto.setChecked(checkImagePath.contains(allPaths.get(position)));
+                mRbSelectPhoto.setChecked(mCheckImagePath.contains(allPaths.get(position)));
 
             }
 
@@ -188,79 +223,69 @@ public class PhotoViewFragment extends TSFragment {
         });
 
         // 初始化设置当前选择的数量
-        mBtComplete.setEnabled(seletedPaths.size() > 0);
-        mBtComplete.setText(getString(R.string.album_selected_count, seletedPaths.size(),
+        mBtComplete.setEnabled(mCheckImagePath.size() > 0);
+        mBtComplete.setText(getString(R.string.album_selected_count, mCheckImagePath.size(),
                 maxCount));
 
         // 初始化选择checkbox
         if (!allPaths.isEmpty()) {
-            mRbSelectPhoto.setChecked(seletedPaths.contains(allPaths.get(currentItem)));
+            mRbSelectPhoto.setChecked(mCheckImagePath.contains(allPaths.get(currentItem)));
         }
         mRbSelectPhoto.setOnCheckedChangeListener((buttonView, isChecked) -> {
 
-        });
-        mRbSelectPhoto.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            // 两种情况会走这儿，以一种 pager 切换，图片选中和未选中切换，第二种 点击 checkbox
 
             String path = allPaths.get(mViewPager.getCurrentItem());
+            // 已经被选上了
+            boolean isChoosed = mCheckImagePath.contains(path);
+            // 是否已经是最大选择数量
+            boolean isMaxChoose = mCheckImagePath.size() >= maxCount;
             // 达到最大选择数量，添加新的图片，进行提示
-            if (seletedPaths.size() >= maxCount && !seletedPaths.contains(path) && isChecked) {
+            if (isMaxChoose && !isChoosed && isChecked) {
                 ToastUtils.showToast(getString(R.string.choose_max_photos, maxCount));
                 mRbSelectPhoto.setChecked(false);
                 return;
             }
+
+            if (isChoosed && isChecked) {
+                return;
+            }
+
             if (isChecked) {
                 // 当前选择该图片，如果还没有添加过，就进行添加
                 if (!seletedPaths.contains(path)) {
-
-                    checkImagePath.add(path);
-
                     seletedPaths.add(path);
+                }
+                if (!mCheckImagePath.contains(path)) {
+                    mCheckImagePath.add(path);
+                }
+                if (!mSeletedPic.contains(mImageBean)) {
                     mSeletedPic.add(mImageBean);
-                    unCheckImagePath.remove(path);
-                    unCheckImage.remove(mImageBean);
-                } else {
-                    checkImagePath.remove(path);
-                    unCheckImage.remove(mImageBean);
-                    unCheckImagePath.remove(path);
-                    //tolls.remove(mImageBean);
                 }
+                unCheckImagePath.remove(path);
+                unCheckImage.remove(mImageBean);
             } else {
-                // 当前取消选择改图片，直接移除 old version
-                // 当前取消选择改图片，不能直接移除，要点击完成才能去
-//                seletedPaths.remove(path);
-//                tolls.remove(mImageBean);
-                if (!unCheckImagePath.contains(path)) {
-                    unCheckImage.add(mImageBean);
-                    unCheckImagePath.add(path);
+                if (isChoosed) {
+                    if (!unCheckImage.contains(mImageBean)) {
+                        unCheckImage.add(mImageBean);
+                    }
+                    if (!unCheckImagePath.contains(path)) {
+                        unCheckImagePath.add(path);
+                    }
+                    mCheckImagePath.remove(path);
                 }
-                checkImagePath.remove(path);
 
             }
             // 没有选择图片时，是否可以点击完成，应该可以点击，所以注释了下面的代码；需求改变，不需要点击了 #337
-            mBtComplete.setEnabled(seletedPaths.size() > 0);
+            mBtComplete.setEnabled(mCheckImagePath.size() > 0);
             // 重置当前的选择数量
-            mBtComplete.setText(getString(R.string.album_selected_count, seletedPaths.size() - unCheckImagePath.size(),
+            mBtComplete.setText(getString(R.string.album_selected_count, mCheckImagePath.size(),
                     maxCount));
             // 通知图片列表进行刷新
             // 在 PhotoAlbumDetailsFragment 的 refreshDataAndUI() 方法中进行订阅
             // EventBus.getDefault().post(seletedPaths, EventBusTagConfig
             // .EVENT_SELECTED_PHOTO_UPDATE);
         });
-    }
-
-    @Override
-    protected boolean showToolbar() {
-        return true;
-    }
-
-    @Override
-    protected boolean showToolBarDivider() {
-        return true;
-    }
-
-    @Override
-    protected void setLeftClick() {
-        getActivity().onBackPressed();
     }
 
     @Override
@@ -271,28 +296,6 @@ public class PhotoViewFragment extends TSFragment {
     @Override
     protected boolean useEventBus() {
         return true;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-
-        if (sPhotoViewDataCacheBean != null) {
-            seletedPaths = sPhotoViewDataCacheBean.getSelectedPhoto();
-            checkImagePath.addAll(seletedPaths);
-
-            // 由于是静态的，克隆一份，防止改变数据源
-            seletedPaths = (ArrayList<String>) seletedPaths.clone();
-            allPaths = sPhotoViewDataCacheBean.getAllPhotos();
-            currentItem = sPhotoViewDataCacheBean.getCurrentPosition();
-            hasRightTitle = sPhotoViewDataCacheBean.isToll();
-            rectList = sPhotoViewDataCacheBean.getAnimationRectBeanArrayList();
-            maxCount = sPhotoViewDataCacheBean.getMaxCount();
-            mSeletedPic = sPhotoViewDataCacheBean.getSelectedPhotos();
-            removePlaceHolder(mSeletedPic);
-            mPagerAdapter = new SectionsPagerAdapter(getChildFragmentManager());
-        }
     }
 
     @Override

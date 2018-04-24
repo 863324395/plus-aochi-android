@@ -188,19 +188,25 @@ public class MarkdownFragment<Draft extends BaseDraftBean, P extends MarkdownCon
      * 把剪切板的文字去除样式
      */
     protected void handleClipboardContent() {
-        ClipboardManager clipboardManager = (ClipboardManager) mActivity.getSystemService(Context.CLIPBOARD_SERVICE);
-        //判断剪切版时候有内容
-        if (clipboardManager != null && clipboardManager.hasPrimaryClip()) {
-            ClipData clipData = clipboardManager.getPrimaryClip();
-            //获取 ClipDescription
-            ClipDescription clipDescription = clipboardManager.getPrimaryClipDescription();
-            //获取 lable
-            String lable = clipDescription.getLabel().toString();
-            //获取 text
-            String text = clipData.getItemAt(0).coerceToText(mActivity).toString();
-            ClipData mClipData = ClipData.newPlainText("Label", text);
-            clipboardManager.setPrimaryClip(mClipData);
+        // TODO: 2018/4/24  此处数据未检测空
+        try {
+            ClipboardManager clipboardManager = (ClipboardManager) mActivity.getSystemService(Context.CLIPBOARD_SERVICE);
+            //判断剪切版时候有内容
+            if (clipboardManager != null && clipboardManager.hasPrimaryClip()) {
+                ClipData clipData = clipboardManager.getPrimaryClip();
+                //获取 ClipDescription
+                ClipDescription clipDescription = clipboardManager.getPrimaryClipDescription();
+                //获取 lable
+                String lable = clipDescription.getLabel().toString();
+                //获取 text
+                String text = clipData.getItemAt(0).coerceToText(mActivity).toString();
+                ClipData mClipData = ClipData.newPlainText("Label", text);
+                clipboardManager.setPrimaryClip(mClipData);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+
     }
 
     /**
