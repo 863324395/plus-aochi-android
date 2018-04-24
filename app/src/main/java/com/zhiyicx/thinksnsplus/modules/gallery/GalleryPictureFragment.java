@@ -564,7 +564,7 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
             }
             // 退出隐藏查看原图按钮，防止显示在透明背景上
             mTvOriginPhoto.setVisibility(View.GONE);
-            getActivity().overridePendingTransition(0, 0);
+//            getActivity().overridePendingTransition(0, 0);
             AnimationRectBean rect = getArguments().getParcelable("rect");
             TransferImageAnimationUtil.animateClose(backgroundAnimator, rect, mIvPager);
 
@@ -578,7 +578,7 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
             }
             // 退出隐藏查看原图按钮，防止显示在透明背景上
             mTvOriginPhoto.setVisibility(View.GONE);
-            getActivity().overridePendingTransition(0, 0);
+//            getActivity().overridePendingTransition(0, 0);
             AnimationRectBean rect = getArguments().getParcelable("rect");
             TransferImageAnimationUtil.animateClose(backgroundAnimator, rect, mIvOriginPager);
         }

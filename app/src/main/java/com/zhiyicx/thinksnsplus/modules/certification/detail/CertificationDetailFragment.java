@@ -76,6 +76,8 @@ public class CertificationDetailFragment extends TSFragment<CertificationDetailC
     private UserCertificationInfo mInfo;
     private List<ImageBean> imageBeen;
     ArrayList<AnimationRectBean> mAnimationRectBeanArrayList;
+    private int mImageWith;
+    private int mImageHeight;
 
     public CertificationDetailFragment instance(Bundle bundle) {
         CertificationDetailFragment fragment = new CertificationDetailFragment();
@@ -86,6 +88,14 @@ public class CertificationDetailFragment extends TSFragment<CertificationDetailC
     @Override
     protected void initView(View rootView) {
         initType();
+
+         mImageWith = (DeviceUtils.getScreenWidth(mActivity) - getResources().getDimensionPixelOffset(R.dimen.spacing_mid) * 2 - getResources()
+                .getDimensionPixelOffset(R.dimen.certification_detail_width) - getResources().getDimensionPixelOffset(R.dimen.spacing_small)) / 2;
+         mImageHeight = mImageWith * 3 / 4;
+        mIvPicOne.getLayoutParams().width= mImageWith;
+        mIvPicOne.getLayoutParams().height= mImageHeight;
+        mIvPicTwo.getLayoutParams().width= mImageWith;
+        mIvPicTwo.getLayoutParams().height= mImageHeight;
     }
 
     @Override
@@ -151,14 +161,14 @@ public class CertificationDetailFragment extends TSFragment<CertificationDetailC
             imageBeen.clear();
             if (files.size() > 0) {
                 Glide.with(getContext())
-                        .load(ImageUtils.imagePathConvertV2(info.getData().getFiles().get(0), 200, 100, ImageZipConfig.IMAGE_100_ZIP))
+                        .load(ImageUtils.imagePathConvertV2(info.getData().getFiles().get(0), mImageWith, mImageHeight, ImageZipConfig.IMAGE_70_ZIP))
                         .placeholder(R.drawable.shape_default_image)
                         .error(R.drawable.shape_default_image)
                         .into(mIvPicOne);
             }
             if (files.size() > 1) {
                 Glide.with(getContext())
-                        .load(ImageUtils.imagePathConvertV2(info.getData().getFiles().get(1), 200, 100, ImageZipConfig.IMAGE_100_ZIP))
+                        .load(ImageUtils.imagePathConvertV2(info.getData().getFiles().get(1), mImageWith, mImageHeight, ImageZipConfig.IMAGE_70_ZIP))
                         .placeholder(R.drawable.shape_default_image)
                         .error(R.drawable.shape_default_image)
                         .into(mIvPicTwo);
@@ -204,7 +214,7 @@ public class CertificationDetailFragment extends TSFragment<CertificationDetailC
             toll.setToll_type_string("");// 付费类型
             toll.setPaid_node(0);// 付费节点
             imageBean.setWidth(DeviceUtils.getScreenWidth(getContext()));
-            imageBean.setHeight(DeviceUtils.getScreenWidth(getContext())/4*3);
+            imageBean.setHeight(DeviceUtils.getScreenWidth(getContext()) / 4 * 3);
             imageBean.setToll(toll);
             imageBean.setStorage_id(mInfo.getData().getFiles().get(i));// 图片附件id
             imageBeanList.add(imageBean);

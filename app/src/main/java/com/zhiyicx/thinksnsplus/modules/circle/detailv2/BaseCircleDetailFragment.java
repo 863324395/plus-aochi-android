@@ -963,12 +963,12 @@ public class BaseCircleDetailFragment extends TSListFragment<CircleDetailContrac
 
     @Override
     public void onDestroyView() {
-        super.onDestroyView();
         dismissPop(mDeletCommentPopWindow);
         dismissPop(mReSendCommentPopWindow);
         dismissPop(mOtherPostPopWindow);
         dismissPop(mMyPostPopWindow);
         dismissPop(mPayPopWindow);
         dismissPop(mAuditTipPop);
+        super.onDestroyView();
     }
 }

@@ -24,7 +24,7 @@ import static com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListB
 
 public class TransferImageAnimationUtil {
     // 动画持续时间
-    public static final int ANIMATION_DURATION = 200;
+    public static final int ANIMATION_DURATION = 250;
 
     /**
      * 退出时的控件缩放处理
@@ -52,14 +52,6 @@ public class TransferImageAnimationUtil {
             return;
         }
 
-        float startScale = 0;
-        if ((float) finalBounds.width() / finalBounds.height()
-                > (float) startBounds.width() / startBounds.height()) {
-            // 如果大图的宽度对于高度比小图的宽度对于高度更宽，以高度比来放缩，这样能够避免动画结束，小图边缘出现空白
-            startScale = (float) startBounds.height() / finalBounds.height();
-        } else {
-            startScale = (float) startBounds.width() / finalBounds.width();
-        }
         float startWScale = (float) startBounds.width() / finalBounds.width();
         float startHScale = (float) startBounds.height() / finalBounds.height();
 
@@ -70,10 +62,12 @@ public class TransferImageAnimationUtil {
         imageView.setPivotX((imageView.getWidth() - finalBounds.width()) / 2);
         // 位移+缩小
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            imageView.animate().translationX(deltaLeft).translationY(deltaTop)
+            imageView.animate()
+                    .translationX(deltaLeft)
+                    .translationY(deltaTop)
                     .scaleY(startHScale)
                     .scaleX(startWScale)
-                    .alpha(0f).setDuration(ANIMATION_DURATION)
+                    .setDuration(ANIMATION_DURATION)
                     .setInterpolator(new AccelerateDecelerateInterpolator())
                     .withEndAction(new Runnable() {
                         @Override
