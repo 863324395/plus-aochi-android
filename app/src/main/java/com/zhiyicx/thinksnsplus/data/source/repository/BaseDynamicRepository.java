@@ -115,14 +115,14 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
         Observable<DynamicBeanV2> observable;
         // 收藏的动态地址和返回大不一样，真滴难受
         if (DYNAMIC_TYPE_MY_COLLECTION.equals(type)) {
-            observable = mDynamicClient.getCollectDynamicListV2(after, user_id, (long) TSListFragment.DEFAULT_PAGE_SIZE)
+            observable = mDynamicClient.getCollectDynamicListV2(after, user_id,  TSListFragment.DEFAULT_PAGE_SIZE)
                     .flatMap(detailBeanV2 -> {
                         DynamicBeanV2 data = new DynamicBeanV2();
                         data.setFeeds(detailBeanV2);
                         return Observable.just(data);
                     });
         } else {
-            observable = mDynamicClient.getDynamicListV2(type, after, user_id, (long) TSListFragment.DEFAULT_PAGE_SIZE, screen);
+            observable = mDynamicClient.getDynamicListV2(type, after, user_id, TSListFragment.DEFAULT_PAGE_SIZE, screen);
         }
         return dealWithDynamicListV2(observable, type, isLoadMore);
     }
@@ -304,7 +304,7 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
     @Override
     public Observable<List<DynamicCommentBean>> getDynamicCommentListV2(
             final Long feed_mark, Long feed_id, Long after) {
-        return mDynamicClient.getDynamicCommentListV2(feed_id, after, Long.valueOf(TSListFragment.DEFAULT_PAGE_SIZE))
+        return mDynamicClient.getDynamicCommentListV2(feed_id, after, TSListFragment.DEFAULT_PAGE_SIZE)
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
                 .flatMap(listBaseJson -> {

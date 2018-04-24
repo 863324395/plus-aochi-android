@@ -420,7 +420,7 @@ public interface CircleClient {
     @GET(APP_PATH_GET_CIRCLE_EARNINGLIST)
     Observable<List<CircleEarningListBean>> getCircleEarningList(@Path("circle_id") long circleId,
                                                                  @Query("start") Long start, @Query("end") Long end,
-                                                                 @Query("after") Long after, @Query("limit") Long limit,
+                                                                 @Query("after") Long after, @Query("limit") Integer limit,
                                                                  @Query("type") String type);
 
     /**

@@ -45,13 +45,14 @@ import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_QA_REPORT;
 public interface QAClient {
 
     /**
-     *
      * @return 获取问答基础配置
      */
     @GET(ApiConfig.APP_PATH_GET_QUESTIONS_CONFIG)
     Observable<QuestionConfig> getQuestionConfig();
+
     /**
      * 发布问题
+     *
      * @param body
      * @return
      */
@@ -88,6 +89,7 @@ public interface QAClient {
 
     /**
      * 更新问题
+     *
      * @param body 如果 anonymity 不传，则本字段必须存在， 回答详情。
      */
     @PATCH(ApiConfig.APP_PATH_UPDATE_QUESTION_DETAIL)
@@ -108,10 +110,11 @@ public interface QAClient {
      * @param after  获取 id 之后的数据，要获取某条话题之后的数据，传递该话题 ID。
      * @param follow 是否检查当前用户是否关注了某话题，默认为不检查，如果传递 follow 切拥有任意值（空除外），都会检查当前用户与话题的关注关系。
      * @param limit  这次请求获取的条数，默认为 20 条，为了避免过大或者错误查询，设置了一个修正值，最大 50 最小 1 。
+     * @return
      */
     @GET(ApiConfig.APP_PATH_GET_ALL_TOPIC)
     Observable<List<QATopicBean>> getQATopic(@Query("name") String name, @Query
-            ("after") Long after, @Query("follow") Long follow, @Query("limit") Long limit);
+            ("after") Long after, @Query("follow") Long follow, @Query("limit") Integer limit);
 
     /**
      * 获取回答的详细信息
@@ -128,7 +131,7 @@ public interface QAClient {
      */
     @GET(ApiConfig.APP_PATH_LIKE_ANSWER)
     Observable<List<AnswerDigListBean>> getAnswerDigList(@Path("answer_id") long answer_id, @Query
-            ("after") Long after, @Query("limit") Long limit);
+            ("after") Long after, @Query("limit") Integer limit);
 
     /**
      * 获取回答评论列表
@@ -137,14 +140,14 @@ public interface QAClient {
      */
     @GET(ApiConfig.APP_PATH_GET_ANSWER_COMMENTS)
     Observable<List<AnswerCommentListBean>> getAnswerCommentList(@Path("answer_id") long answer_id, @Query
-            ("after") Long after, @Query("limit") Long limit);
+            ("after") Long after, @Query("limit") Integer limit);
 
     /**
      * @param type 默认值为 follow 代表用户关注的话题列表，如果值为 expert 则获取该用户的专家话题（哪些话题下是专家）。
      */
     @GET(ApiConfig.APP_PATH_GET_FOLLOW_TOPIC)
     Observable<List<QATopicBean>> getQAFollowTopic(@Query("type") String type, @Query
-            ("after") Long after, @Query("limit") Long limit);
+            ("after") Long after, @Query("limit") Integer limit);
 
     /**
      * @param subject 用于搜索问题，传递话题名称关键词。
@@ -153,14 +156,14 @@ public interface QAClient {
      */
     @GET(ApiConfig.APP_PATH_GET_QUESTIONS_LSIT)
     Observable<List<QAListInfoBean>> getQAQustion(@Query("subject") String subject, @Query
-            ("offset") Long after, @Query("type") String type, @Query("limit") Long limit);
+            ("offset") Long after, @Query("type") String type, @Query("limit") Integer limit);
 
     /**
      * @param type  数据筛选类型 all-全部 invitation-邀请 reward-悬赏 other-其他 默认全部
      * @param after 获取 id 之后的数据，要获取某条问题之后的数据，传递该问题 ID。
      */
     @GET(ApiConfig.APP_PATH_GET_USER_QUESTIONS)
-    Observable<List<QAListInfoBean>> getUserQAQustion(@Query("type") String type, @Query("after") Long after, @Query("limit") Long limit);
+    Observable<List<QAListInfoBean>> getUserQAQustion(@Query("type") String type, @Query("after") Long after, @Query("limit") Integer limit);
 
     /**
      * 某话题下的问题
@@ -174,7 +177,7 @@ public interface QAClient {
      */
     @GET(ApiConfig.APP_PATH_GET_QUESTION_LIST_BY_TOPIC)
     Observable<List<QAListInfoBean>> getQAQustionByTopic(@Path("topic") String topic_id, @Query("subject") String subject, @Query
-            ("offset") Long after, @Query("type") String type, @Query("limit") Long limit);
+            ("offset") Long after, @Query("type") String type, @Query("limit") Integer limit);
 
     /**
      * 获取话题下专家列表
@@ -185,7 +188,7 @@ public interface QAClient {
      * @return
      */
     @GET(ApiConfig.APP_PATH_GET_TOPIC_EXPERTS)
-    Observable<List<ExpertBean>> getTopicExperts(@Path("topic_id") int topic_id, @Query("after") Long after, @Query("limit") Long limit);
+    Observable<List<ExpertBean>> getTopicExperts(@Path("topic_id") int topic_id, @Query("after") Long after, @Query("limit") Integer limit);
 
     /**
      * 获取话题详情
@@ -211,25 +214,32 @@ public interface QAClient {
      */
     @GET(ApiConfig.APP_PATH_GET_QUESTION_ANSWER_LIST)
     Observable<List<AnswerInfoBean>> getAnswerList(@Path("question") String question_id,
-                                                   @Query("limit") Long limit,
+                                                   @Query("limit") Integer limit,
                                                    @Query("order_type") String order_type,
                                                    @Query("offset") int size);
 
     /**
      * 获取用户发布的回答列表
      *
-     * @param type all - 全部，adoption - 被采纳的，invitation - 被邀请的，other - 其他， 默认为全部
+     * @param type
+     * @param limit
+     * @param maxId
+     * @return
      */
     @GET(ApiConfig.APP_PATH_GET_USER_ANSWER)
     Observable<List<AnswerInfoBean>> getUserAnswerList(@Query("type") String type,
-                                                       @Query("limit") Long limit,
+                                                       @Query("limit") Integer limit,
                                                        @Query("after") Long maxId);
 
     /**
      * 获取用户收藏的回答列表
+     *
+     * @param limit
+     * @param maxId
+     * @return
      */
     @GET(ApiConfig.APP_PATH_USER_COLLECT_ANSWER_FORMAT)
-    Observable<List<CollectAnswerList>> getUserCollectAnswerList(@Query("limit") Long limit, @Query("after") Long maxId);
+    Observable<List<CollectAnswerList>> getUserCollectAnswerList(@Query("limit") Integer limit, @Query("after") Long maxId);
 
     /**
      * 删除问题
@@ -257,12 +267,15 @@ public interface QAClient {
     /**
      * 获取问题的评论列表
      *
-     * @param question_id id
+     * @param question_id
+     * @param after
+     * @param limit
+     * @return
      */
     @GET(ApiConfig.APP_PATH_GET_QUESTION_COMMENT_LIST)
     Observable<List<QuestionCommentBean>> getQuestionCommentList(@Path("question") String question_id,
                                                                  @Query("after") Long after,
-                                                                 @Query("limit") Long limit);
+                                                                 @Query("limit") Integer limit);
 
     /**
      * 删除问题评论
@@ -308,6 +321,7 @@ public interface QAClient {
      * @param limit      默认 20 ，获取列表条数，修正值 1 - 30
      * @param offset     默认 0 ，数据偏移量，传递之前通过接口获取的总数。
      * @param order_type 默认值 time, time - 按照打赏时间倒序，amount - 按照金额倒序
+     * @return
      */
     @GET(APP_PATH_QA_ANSWER_REWARD_USER_LIST)
     Observable<List<RewardsListBean>> rewardQAList(@Path("answer_id") long answer_id, @Query("limit") Integer limit
@@ -315,8 +329,9 @@ public interface QAClient {
 
     /**
      * 设置悬赏 ,在没有采纳和邀请且未设置悬赏金额时，问题作者重新设置问题的悬赏
+     *
      * @param question_id
-     * @param amount 悬赏金额，积分
+     * @param amount      悬赏金额，积分
      * @return
      */
     @PATCH(ApiConfig.APP_PATH_UPDATE_QUESTION_REWARD)

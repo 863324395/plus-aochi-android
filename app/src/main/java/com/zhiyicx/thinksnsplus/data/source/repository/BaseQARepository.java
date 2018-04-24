@@ -81,21 +81,21 @@ public class BaseQARepository implements IBasePublishQuestionRepository {
 
     @Override
     public Observable<List<QATopicBean>> getAllTopic(String name, Long after, Long follow) {
-        return mQAClient.getQATopic(name, after, follow, (long) TSListFragment.DEFAULT_PAGE_SIZE)
+        return mQAClient.getQATopic(name, after, follow, TSListFragment.DEFAULT_PAGE_SIZE)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
     @Override
     public Observable<List<QAListInfoBean>> getQAQuestion(String subject, Long maxId, String type) {
-        return mQAClient.getQAQustion(subject, maxId, type, (long) TSListFragment.DEFAULT_PAGE_SIZE)
+        return mQAClient.getQAQustion(subject, maxId, type, TSListFragment.DEFAULT_PAGE_SIZE)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
     @Override
     public Observable<List<QAListInfoBean>> getUserQAQustion(String type, Long after) {
-        return mQAClient.getUserQAQustion(type, after, (long) TSListFragment.DEFAULT_PAGE_SIZE)
+        return mQAClient.getUserQAQustion(type, after, TSListFragment.DEFAULT_PAGE_SIZE)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
@@ -103,7 +103,7 @@ public class BaseQARepository implements IBasePublishQuestionRepository {
     @Override
     public Observable<List<QAListInfoBean>> getQAQuestionByTopic(String topicId, String subject,
                                                                  Long maxId, String type) {
-        return mQAClient.getQAQustionByTopic(topicId, subject, maxId, type, (long) TSListFragment
+        return mQAClient.getQAQustionByTopic(topicId, subject, maxId, type,  TSListFragment
                 .DEFAULT_PAGE_SIZE)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
@@ -111,14 +111,14 @@ public class BaseQARepository implements IBasePublishQuestionRepository {
 
     @Override
     public Observable<List<ExpertBean>> getTopicExperts(Long maxId, int topic_id) {
-        return mQAClient.getTopicExperts(topic_id, maxId, (long) TSListFragment.DEFAULT_PAGE_SIZE)
+        return mQAClient.getTopicExperts(topic_id, maxId, TSListFragment.DEFAULT_PAGE_SIZE)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
     @Override
     public Observable<List<QATopicBean>> getFollowTopic(String type, Long after) {
-        return dealMyFollowTopics(mQAClient.getQAFollowTopic(type, after, (long) TSListFragment
+        return dealMyFollowTopics(mQAClient.getQAFollowTopic(type, after, TSListFragment
                 .DEFAULT_PAGE_SIZE));
     }
 
@@ -255,7 +255,7 @@ public class BaseQARepository implements IBasePublishQuestionRepository {
 
     @Override
     public Observable<List<AnswerInfoBean>> getAnswerList(String questionId, String order_type, int size) {
-        return mQAClient.getAnswerList(questionId, (long) TSListFragment.DEFAULT_PAGE_SIZE, order_type, size)
+        return mQAClient.getAnswerList(questionId, TSListFragment.DEFAULT_PAGE_SIZE, order_type, size)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
@@ -313,7 +313,7 @@ public class BaseQARepository implements IBasePublishQuestionRepository {
 
     @Override
     public Observable<List<AnswerDigListBean>> getAnswerDigListV2(Long answer_id, Long max_id) {
-        return mQAClient.getAnswerDigList(answer_id, max_id, (long) TSListFragment.DEFAULT_PAGE_SIZE)
+        return mQAClient.getAnswerDigList(answer_id, max_id, TSListFragment.DEFAULT_PAGE_SIZE)
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
                 .flatMap(answerDigListBeen -> {
@@ -350,7 +350,7 @@ public class BaseQARepository implements IBasePublishQuestionRepository {
 
     @Override
     public Observable<List<AnswerCommentListBean>> getAnswerCommentList(long answer_id, long max_id) {
-        return mQAClient.getAnswerCommentList(answer_id, max_id, (long) TSListFragment.DEFAULT_PAGE_SIZE)
+        return mQAClient.getAnswerCommentList(answer_id, max_id, TSListFragment.DEFAULT_PAGE_SIZE)
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
                 .flatMap(answerCommentListBeen -> {
@@ -510,7 +510,7 @@ public class BaseQARepository implements IBasePublishQuestionRepository {
 
     @Override
     public Observable<List<QuestionCommentBean>> getQuestionCommentList(Long question_Id, Long max_id) {
-        return mQAClient.getQuestionCommentList(String.valueOf(question_Id), max_id, (long) TSListFragment.DEFAULT_PAGE_SIZE)
+        return mQAClient.getQuestionCommentList(String.valueOf(question_Id), max_id, TSListFragment.DEFAULT_PAGE_SIZE)
                 .observeOn(Schedulers.io())
                 .flatMap(questionCommentListBeen -> {
                     if (questionCommentListBeen.isEmpty()) {
@@ -580,14 +580,14 @@ public class BaseQARepository implements IBasePublishQuestionRepository {
         if (MyAnswerContainerFragment.TYPE_FOLLOW.equals(type)) {
             return getUserCollectAnswerList((long) TSListFragment.DEFAULT_PAGE_SIZE, maxId);
         }
-        return mQAClient.getUserAnswerList(type, (long) TSListFragment.DEFAULT_PAGE_SIZE, maxId)
+        return mQAClient.getUserAnswerList(type, TSListFragment.DEFAULT_PAGE_SIZE, maxId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
     @Override
     public Observable<List<AnswerInfoBean>> getUserCollectAnswerList(Long limit, Long maxId) {
-        return mQAClient.getUserCollectAnswerList((long) TSListFragment.DEFAULT_PAGE_SIZE, maxId)
+        return mQAClient.getUserCollectAnswerList(TSListFragment.DEFAULT_PAGE_SIZE, maxId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .flatMap(collectAnswerLists -> {

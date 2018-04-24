@@ -31,33 +31,41 @@ public interface ChannelClient {
 
     /**
      * 获取频道的动态列表
+     *
+     * @param goup_id
+     * @param limit
+     * @param max_id
+     * @return
      */
     @GET(ApiConfig.APP_PATH_GET_GROUP_DYNAMIC_LIST)
     Observable<List<GroupDynamicListBean>> getDynamicListFromGroup(@Path("group") long goup_id,
-                                                                   @Query("limit") int limit, @Query("after") long max_id);
+                                                                   @Query("limit") Integer limit, @Query("after") long max_id);
 
     /**
      * 获取所有圈子列表的接口
      *
      * @param limit  限制条数
      * @param max_id max_id
+     * @return
      */
     @GET(ApiConfig.APP_PATH_GET_ALL_GROUP)
-    Observable<List<GroupInfoBean>> getAllGroupList(@Query("limit") int limit, @Query("after") long max_id);
+    Observable<List<GroupInfoBean>> getAllGroupList(@Query("limit") Integer limit, @Query("after") long max_id);
 
     /**
      * 获取用户加入的圈子列表
      *
      * @param limit  限制条数
      * @param max_id max_id
+     * @return
      */
     @GET(ApiConfig.APP_PATH_GET_USER_JOINED_GROUP)
-    Observable<List<GroupInfoBean>> getUserJoinedGroupList(@Query("limit") int limit, @Query("after") long max_id);
+    Observable<List<GroupInfoBean>> getUserJoinedGroupList(@Query("limit") Integer limit, @Query("after") long max_id);
 
     /**
      * 加入圈子
      *
      * @param groupId 圈子id
+     * @return
      */
     @POST(ApiConfig.APP_PATH_JOIN_GROUP)
     Observable<BaseJsonV2<Object>> joinGroup(@Path("group") long groupId);
@@ -72,6 +80,7 @@ public interface ChannelClient {
 
     /**
      * 圈子详情
+     *
      * @param group_id 圈子id
      * @return
      */
@@ -83,6 +92,7 @@ public interface ChannelClient {
      *
      * @param group_id   圈子id
      * @param dynamic_id 动态id
+     * @return
      */
     @GET(ApiConfig.APP_PATH_GET_GROUP_DYNAMIC_DETAIL)
     Observable<GroupDynamicListBean> getGroupDynamicDetail(@Path("group") long group_id, @Path("post") long dynamic_id);
@@ -90,59 +100,84 @@ public interface ChannelClient {
     /**
      * 获取圈子动态的评论列表
      *
-     * @param group_id   圈子id
+     *
+     * @param group_id 圈子id
      * @param dynamic_id 动态id
+     * @param limit
+     * @param max_id
+     * @return
      */
     @GET(ApiConfig.APP_PATH_GET_GROUP_DYNAMIC_COMMENT_LIST)
     Observable<List<GroupDynamicCommentListBean>> getGroupDynamicCommentList(@Path("group") long group_id,
                                                                              @Path("post") long dynamic_id,
-                                                                             @Query("limit") int limit,
+                                                                             @Query("limit") Integer limit,
                                                                              @Query("after") long max_id);
 
     /**
      * 获取我收藏的圈子动态
+     * @param limit
+     * @param max_id
+     * @return
      */
     @GET(ApiConfig.APP_PATH_GET_MYCOLLECT_GROUP_DYNAMIC_LIST)
-    Observable<List<CollectGroupDyanmciListBean>> getMyCollectGroupDynamicList(@Query("limit") int limit,
+    Observable<List<CollectGroupDyanmciListBean>> getMyCollectGroupDynamicList(@Query("limit") Integer limit,
                                                                                @Query("after") long max_id);
 
 
     /**
      * 点赞动态
+     * @param group_id
+     * @param dynamic_id
+     * @return
      */
     @POST(ApiConfig.APP_PATH_DIGG_MYCOLLECT_GROUP_DYNAMIC)
     Observable<BaseJsonV2> diggGroupDynamic(@Path("group") long group_id, @Path("post") long dynamic_id);
 
     /**
      * 取消点赞
+     * @param group_id
+     * @param dynamic_id
+     * @return
      */
     @DELETE(ApiConfig.APP_PATH_DIGG_MYCOLLECT_GROUP_DYNAMIC)
     Observable<BaseJsonV2> cancelDiggGroupDynamic(@Path("group") long group_id, @Path("post") long dynamic_id);
 
     /**
      * 收藏动态
+     * @param group_id
+     * @param dynamic_id
+     * @return
      */
     @POST(ApiConfig.APP_PATH_COLLECT_GROUP_DYNAMIC)
     Observable<BaseJsonV2> collectGroupDynamic(@Path("group") long group_id, @Path("post") long dynamic_id);
 
     /**
      * 取消收藏
+     * @param group_id
+     * @param dynamic_id
+     * @return
      */
     @DELETE(ApiConfig.APP_PATH_COLLECT_GROUP_DYNAMIC)
     Observable<BaseJsonV2> cancelCollectGroupDynamic(@Path("group") long group_id, @Path("post") long dynamic_id);
 
     /**
-     * 获取动态点赞列表
+     *  获取动态点赞列表
+     * @param group_id
+     * @param dynamic_id
+     * @param limit
+     * @param max_id
+     * @return
      */
     @GET(ApiConfig.APP_PATH_GET_MYCOLLECT_GROUP_DYNAMIC_DIGG_LIST)
     Observable<List<DynamicDigListBean>> getDigList(@Path("group") long group_id,
                                                     @Path("post") long dynamic_id,
-                                                    @Query("limit") int limit,
+                                                    @Query("limit") Integer limit,
                                                     @Query("after") long max_id);
 
     /**
      * 发布动态 v2 接口--圈子
-     *
+     * @param group
+     * @param body
      * @return
      */
     @Headers({"Content-type:application/json;charset=UTF-8"})
@@ -152,9 +187,9 @@ public interface ChannelClient {
     /**
      * 删除动态 v2 接口--圈子
      *
-     * @param groupId 圈子id
+     * @param groupId    圈子id
      * @param dynamic_id 动态id
      */
     @DELETE(ApiConfig.APP_PATH_DELETE_GROUP_DYNAMIC)
-    Observable<BaseJsonV2<Object>> deleteGroupDynamic(@Path("group") long groupId,@Path("post") long dynamic_id);
+    Observable<BaseJsonV2<Object>> deleteGroupDynamic(@Path("group") long groupId, @Path("post") long dynamic_id);
 }

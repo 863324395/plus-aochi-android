@@ -67,46 +67,43 @@ public class BaseInfoRepository implements IBaseInfoRepository {
         }
 
         if (!TextUtils.isEmpty(key)) {
-            return mInfoMainClient.getInfoListV2(cate_id, max_id, Long.valueOf(TSListFragment.DEFAULT_PAGE_SIZE), page, key, 0);
+            return mInfoMainClient.getInfoListV2(cate_id, max_id, TSListFragment.DEFAULT_PAGE_SIZE, page, key, 0);
         } else if (max_id == 0 && isRecommend != 1) {
             // 只有下拉才获取置顶,推荐这个栏目页不要置顶资讯
             return mInfoMainClient.getInfoTopList(cate_id)
                     .observeOn(Schedulers.io())
-                    .flatMap(new Func1<List<InfoListDataBean>, Observable<List<InfoListDataBean>>>() {
-                        @Override
-                        public Observable<List<InfoListDataBean>> call(List<InfoListDataBean> infoListDataBeenTopList) {
-                            if (infoListDataBeenTopList != null) {
-                                for (InfoListDataBean infoListDataBean : infoListDataBeenTopList) {
-                                    infoListDataBean.setIsTop(true);
-                                }
+                    .flatMap((Func1<List<InfoListDataBean>, Observable<List<InfoListDataBean>>>) infoListDataBeenTopList -> {
+                        if (infoListDataBeenTopList != null) {
+                            for (InfoListDataBean infoListDataBean : infoListDataBeenTopList) {
+                                infoListDataBean.setIsTop(true);
                             }
-                            return mInfoMainClient.getInfoListV2(cate_id, max_id, Long.valueOf(TSListFragment.DEFAULT_PAGE_SIZE), page, "",
-                                    isRecommend)
-                                    .map(infoListDataBeenList -> {
-                                        if (infoListDataBeenTopList != null) {
-                                            infoListDataBeenList.addAll(0, infoListDataBeenTopList);
-                                        }
-                                        return infoListDataBeenList;
-                                    });
                         }
+                        return mInfoMainClient.getInfoListV2(cate_id, max_id, TSListFragment.DEFAULT_PAGE_SIZE, page, "",
+                                isRecommend)
+                                .map(infoListDataBeenList -> {
+                                    if (infoListDataBeenTopList != null) {
+                                        infoListDataBeenList.addAll(0, infoListDataBeenTopList);
+                                    }
+                                    return infoListDataBeenList;
+                                });
                     })
                     .observeOn(AndroidSchedulers.mainThread())
                     ;
         } else {
-            return mInfoMainClient.getInfoListV2(cate_id, max_id, Long.valueOf(TSListFragment.DEFAULT_PAGE_SIZE), page, "", isRecommend);
+            return mInfoMainClient.getInfoListV2(cate_id, max_id, TSListFragment.DEFAULT_PAGE_SIZE, page, "", isRecommend);
         }
     }
 
     @Override
     public Observable<List<InfoListDataBean>> getCollectionListV2(long max_id) {
-        return mInfoMainClient.getInfoCollectListV2(max_id, Long.valueOf(TSListFragment.DEFAULT_PAGE_SIZE))
+        return mInfoMainClient.getInfoCollectListV2(max_id, TSListFragment.DEFAULT_PAGE_SIZE)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
     @Override
     public Observable<List<InfoListDataBean>> getMyInfoList(String type, long max_id) {
-        return mInfoMainClient.getMyInfoList(max_id, Long.valueOf(TSListFragment.DEFAULT_PAGE_SIZE), type)
+        return mInfoMainClient.getMyInfoList(max_id,TSListFragment.DEFAULT_PAGE_SIZE, type)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
@@ -136,7 +133,7 @@ public class BaseInfoRepository implements IBaseInfoRepository {
 
     @Override
     public Observable<InfoCommentBean> getInfoCommentListV2(String news_id, Long max_id, Long limit) {
-        return mInfoMainClient.getInfoCommentListV2(news_id, max_id, Long.valueOf(TSListFragment.DEFAULT_PAGE_SIZE))
+        return mInfoMainClient.getInfoCommentListV2(news_id, max_id, TSListFragment.DEFAULT_PAGE_SIZE)
                 .observeOn(Schedulers.io())
                 .flatMap(infoCommentBean -> {
                     final List<Object> user_ids = new ArrayList<>();

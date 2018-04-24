@@ -51,7 +51,11 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
     /**
      * 默认每页的数量
      */
-    public static final int DEFAULT_PAGE_SIZE = 15;
+    public static final Integer DEFAULT_PAGE_SIZE = 15;
+    /**
+     * 数据库默认每页数量
+     */
+    public static final Integer DEFAULT_PAGE_DB_SIZE = 15;
 
     /**
      * 一个页面显示的最大条数，用来判断是否显示加载更多
@@ -739,7 +743,8 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
             }
         }
         // 数据加载后，所有的数据数量小于一页，说明没有更多数据了，就不要上拉加载了(除开缓存)
-        if (!isFromCache && (data == null || data.size() < getPagesize())) {
+        boolean isNetNoData = data == null || (getPagesize() != null && data.size() < getPagesize());
+        if (!isFromCache && isNetNoData) {
             mRefreshlayout.setEnableLoadmore(false);
             // mListDatas.size() >= DEFAULT_ONE_PAGE_SHOW_MAX_SIZE 当前数量大于一页显示数量时，显示加载更多
             if (showNoMoreData()) {
@@ -774,7 +779,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
      *
      * @return
      */
-    protected int getPagesize() {
+    protected Integer getPagesize() {
         return DEFAULT_PAGE_SIZE;
     }
 

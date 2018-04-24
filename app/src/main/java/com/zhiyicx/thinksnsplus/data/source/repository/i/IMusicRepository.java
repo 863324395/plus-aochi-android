@@ -31,7 +31,7 @@ public interface IMusicRepository {
     List<MusicAlbumListBean> getMusicAlbumFromCache(long maxId);
 
     // 获取收藏专辑列表
-    Observable<List<MusicAlbumListBean>> getCollectMusicList(Long max_id, Long limit);
+    Observable<List<MusicAlbumListBean>> getCollectMusicList(Long max_id, Integer limit);
 
     List<MusicAlbumListBean> getMusicCollectAlbumFromCache(long maxId);
 

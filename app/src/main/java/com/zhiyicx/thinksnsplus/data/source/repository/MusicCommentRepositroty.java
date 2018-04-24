@@ -49,45 +49,42 @@ public class MusicCommentRepositroty extends BaseMusicRepository {
     public Observable<List<MusicCommentListBean>> getMusicCommentList(String music_id,
                                                                       long max_id) {
         return mMusicClient.getMusicCommentList(music_id, max_id,
-                Long.valueOf(TSListFragment.DEFAULT_PAGE_SIZE))
+                TSListFragment.DEFAULT_PAGE_SIZE)
                 .observeOn(Schedulers.io())
-                .flatMap(new Func1<List<MusicCommentListBean>, Observable<List<MusicCommentListBean>>>() {
-                    @Override
-                    public Observable<List<MusicCommentListBean>> call(List<MusicCommentListBean> commentedBeens) {
-                        if (commentedBeens.isEmpty()) {
-                            return Observable.just(commentedBeens);
-                        } else {
-                            final List<Object> user_ids = new ArrayList<>();
-                            for (MusicCommentListBean commentListBean : commentedBeens) {
-                                user_ids.add(commentListBean.getUser_id());
-                                user_ids.add(commentListBean.getReply_user());
-                            }
-
-                            return mUserInfoRepository.getUserInfo(user_ids).map(userinfobeans -> {
-                                // 获取用户信息，并设置动态所有者的用户信息，已以评论和被评论者的用户信息
-                                SparseArray<UserInfoBean> userInfoBeanSparseArray = new
-                                        SparseArray<>();
-                                for (UserInfoBean userInfoBean : userinfobeans) {
-                                    userInfoBeanSparseArray.put(userInfoBean.getUser_id()
-                                            .intValue(), userInfoBean);
-                                }
-                                for (MusicCommentListBean commentListBean : commentedBeens) {
-                                    commentListBean.setFromUserInfoBean(
-                                            (userInfoBeanSparseArray.get((int) commentListBean
-                                                    .getUser_id())));
-                                    if (commentListBean.getReply_user() == 0) { // 如果
-                                        // reply_user_id = 0 回复动态
-                                        UserInfoBean userInfoBean = new UserInfoBean();
-                                        userInfoBean.setUser_id(0L);
-                                        commentListBean.setToUserInfoBean(userInfoBean);
-                                    } else {
-                                        commentListBean.setToUserInfoBean(userInfoBeanSparseArray.get((int) commentListBean.getReply_user()));
-                                    }
-
-                                }
-                                return commentedBeens;
-                            });
+                .flatMap((Func1<List<MusicCommentListBean>, Observable<List<MusicCommentListBean>>>) commentedBeens -> {
+                    if (commentedBeens.isEmpty()) {
+                        return Observable.just(commentedBeens);
+                    } else {
+                        final List<Object> user_ids = new ArrayList<>();
+                        for (MusicCommentListBean commentListBean : commentedBeens) {
+                            user_ids.add(commentListBean.getUser_id());
+                            user_ids.add(commentListBean.getReply_user());
                         }
+
+                        return mUserInfoRepository.getUserInfo(user_ids).map(userinfobeans -> {
+                            // 获取用户信息，并设置动态所有者的用户信息，已以评论和被评论者的用户信息
+                            SparseArray<UserInfoBean> userInfoBeanSparseArray = new
+                                    SparseArray<>();
+                            for (UserInfoBean userInfoBean : userinfobeans) {
+                                userInfoBeanSparseArray.put(userInfoBean.getUser_id()
+                                        .intValue(), userInfoBean);
+                            }
+                            for (MusicCommentListBean commentListBean : commentedBeens) {
+                                commentListBean.setFromUserInfoBean(
+                                        (userInfoBeanSparseArray.get((int) commentListBean
+                                                .getUser_id())));
+                                if (commentListBean.getReply_user() == 0) { // 如果
+                                    // reply_user_id = 0 回复动态
+                                    UserInfoBean userInfoBean = new UserInfoBean();
+                                    userInfoBean.setUser_id(0L);
+                                    commentListBean.setToUserInfoBean(userInfoBean);
+                                } else {
+                                    commentListBean.setToUserInfoBean(userInfoBeanSparseArray.get((int) commentListBean.getReply_user()));
+                                }
+
+                            }
+                            return commentedBeens;
+                        });
                     }
                 })
                 .observeOn(AndroidSchedulers.mainThread());
@@ -97,48 +94,43 @@ public class MusicCommentRepositroty extends BaseMusicRepository {
     @Override
     public Observable<List<MusicCommentListBean>> getAblumCommentList(String special_id, Long max_id) {
         return mMusicClient.getAblumCommentList(special_id, max_id,
-                Long.valueOf(TSListFragment.DEFAULT_PAGE_SIZE))
+                TSListFragment.DEFAULT_PAGE_SIZE)
                 .observeOn(Schedulers.io())
-                .flatMap(new Func1<List<MusicCommentListBean>, Observable<List<MusicCommentListBean>>>() {
+                .flatMap((Func1<List<MusicCommentListBean>, Observable<List<MusicCommentListBean>>>) listBaseJson -> {
 
-                    @Override
-                    public Observable<List<MusicCommentListBean>> call
-                            (final List<MusicCommentListBean> listBaseJson) {
-
-                        if (listBaseJson.isEmpty()) {
-                            return Observable.just(listBaseJson);
-                        } else {
-                            final List<Object> user_ids = new ArrayList<>();
-                            for (MusicCommentListBean commentListBean : listBaseJson) {
-                                user_ids.add(commentListBean.getUser_id());
-                                user_ids.add(commentListBean.getReply_user());
-                            }
-
-                            return mUserInfoRepository.getUserInfo(user_ids).map(userinfobeans -> {
-                                // 获取用户信息，并设置动态所有者的用户信息，已以评论和被评论者的用户信息
-                                SparseArray<UserInfoBean> userInfoBeanSparseArray = new
-                                        SparseArray<>();
-                                for (UserInfoBean userInfoBean : userinfobeans) {
-                                    userInfoBeanSparseArray.put(userInfoBean.getUser_id()
-                                            .intValue(), userInfoBean);
-                                }
-                                for (MusicCommentListBean commentListBean : listBaseJson) {
-                                    commentListBean.setFromUserInfoBean(
-                                            (userInfoBeanSparseArray.get((int) commentListBean
-                                                    .getUser_id())));
-                                    if (commentListBean.getReply_user() == 0) { // 如果
-                                        // reply_user_id = 0 回复动态
-                                        UserInfoBean userInfoBean = new UserInfoBean();
-                                        userInfoBean.setUser_id(0L);
-                                        commentListBean.setToUserInfoBean(userInfoBean);
-                                    } else {
-                                        commentListBean.setToUserInfoBean(userInfoBeanSparseArray.get((int) commentListBean.getReply_user()));
-                                    }
-
-                                }
-                                return listBaseJson;
-                            });
+                    if (listBaseJson.isEmpty()) {
+                        return Observable.just(listBaseJson);
+                    } else {
+                        final List<Object> user_ids = new ArrayList<>();
+                        for (MusicCommentListBean commentListBean : listBaseJson) {
+                            user_ids.add(commentListBean.getUser_id());
+                            user_ids.add(commentListBean.getReply_user());
                         }
+
+                        return mUserInfoRepository.getUserInfo(user_ids).map(userinfobeans -> {
+                            // 获取用户信息，并设置动态所有者的用户信息，已以评论和被评论者的用户信息
+                            SparseArray<UserInfoBean> userInfoBeanSparseArray = new
+                                    SparseArray<>();
+                            for (UserInfoBean userInfoBean : userinfobeans) {
+                                userInfoBeanSparseArray.put(userInfoBean.getUser_id()
+                                        .intValue(), userInfoBean);
+                            }
+                            for (MusicCommentListBean commentListBean : listBaseJson) {
+                                commentListBean.setFromUserInfoBean(
+                                        (userInfoBeanSparseArray.get((int) commentListBean
+                                                .getUser_id())));
+                                if (commentListBean.getReply_user() == 0) { // 如果
+                                    // reply_user_id = 0 回复动态
+                                    UserInfoBean userInfoBean = new UserInfoBean();
+                                    userInfoBean.setUser_id(0L);
+                                    commentListBean.setToUserInfoBean(userInfoBean);
+                                } else {
+                                    commentListBean.setToUserInfoBean(userInfoBeanSparseArray.get((int) commentListBean.getReply_user()));
+                                }
+
+                            }
+                            return listBaseJson;
+                        });
                     }
                 })
                 .observeOn(AndroidSchedulers.mainThread());

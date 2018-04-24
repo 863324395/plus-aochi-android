@@ -65,7 +65,7 @@ public interface InfoMainClient {
     @GET(APP_PATH_INFO_LIST_V2)
     Observable<List<InfoListDataBean>> getInfoListV2(@Query("cate_id") String cate_id,
                                                      @Query("after") Long max_id,
-                                                     @Query("limit") Long limit,
+                                                     @Query("limit") Integer limit,
                                                      @Query("page") Long page,
                                                      @Query("key") String key,
                                                      @Query("recommend") int isRecommend);
@@ -87,7 +87,7 @@ public interface InfoMainClient {
     @GET(APP_PATH_INFO_DIG_LIST)
     Observable<List<InfoDigListBean>> getInfoDigList(@Path("news") String news_id,
                                                      @Query("after") Long max_id,
-                                                     @Query("limit") int limit);
+                                                     @Query("limit") Integer limit);
 
     /**
      * 获取一条资讯的相关资讯
@@ -101,11 +101,11 @@ public interface InfoMainClient {
     // 获取收藏的资讯列表
     @GET(APP_PATH_INFO_COLLECTION_LIST)
     Observable<List<InfoListDataBean>> getInfoCollectListV2(@Query("after") Long after,
-                                                            @Query("limit") Long limit);
+                                                            @Query("limit") Integer limit);
 
     @GET(APP_PATH_GET_MY_INFO)
     Observable<List<InfoListDataBean>> getMyInfoList(@Query("after") Long max_id,
-                                                     @Query("limit") Long limit, @Query("type") String type);
+                                                     @Query("limit") Integer limit, @Query("type") String type);
 
     // 订阅某类资讯
     @PATCH(APP_PATH_INFO_FOLLOW_LIST)
@@ -115,7 +115,7 @@ public interface InfoMainClient {
     @GET(APP_PATH_INFO_GET_COMMENT)
     Observable<InfoCommentBean> getInfoCommentListV2(@Path("news") String news_id,
                                                      @Query("after") Long max_id,
-                                                     @Query("limit") Long limit);
+                                                     @Query("limit") Integer limit);
 
     /**
      * 资讯投稿
@@ -194,7 +194,7 @@ public interface InfoMainClient {
      */
     @GET(ApiConfig.APP_PATH_GET_REVIEW_INFO_COMMENT)
     Observable<List<TopNewsCommentListBean>> getNewsReviewComment(@Query("after") int after, @Query("limit")
-            int limit);
+            Integer limit);
 
     /**
      * 资讯评论置顶审核通过 V2

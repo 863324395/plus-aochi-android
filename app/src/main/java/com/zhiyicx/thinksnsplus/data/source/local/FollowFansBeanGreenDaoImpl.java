@@ -145,7 +145,7 @@ public class FollowFansBeanGreenDaoImpl extends CommonCacheImpl<FollowFansBean> 
                 , userId + ""
                 , FollowFansBean.IFOLLOWED_STATE + ""
                 , maxId + ""
-                , TSListFragment.DEFAULT_PAGE_SIZE + "");
+                , TSListFragment.DEFAULT_PAGE_DB_SIZE + "");
         LogUtils.i("fansList_db-->" + followFansBeanList.size() + followFansBeanList.toString());
         return followFansBeanList;
     }
@@ -168,7 +168,7 @@ public class FollowFansBeanGreenDaoImpl extends CommonCacheImpl<FollowFansBean> 
                 , userId + ""
                 , FollowFansBean.IFOLLOWED_STATE + ""
                 , maxId + ""
-                , TSListFragment.DEFAULT_PAGE_SIZE + ""
+                , TSListFragment.DEFAULT_PAGE_DB_SIZE + ""
         );
         LogUtils.i("followList_db-->" + followFansBeanList.size() + followFansBeanList.toString());
         return followFansBeanList;
@@ -194,7 +194,7 @@ public class FollowFansBeanGreenDaoImpl extends CommonCacheImpl<FollowFansBean> 
                 , FollowFansBean.IFOLLOWED_STATE + ""
                 , FollowFansBean.IFOLLOWED_STATE + ""
                 , maxId + ""
-                , TSListFragment.DEFAULT_PAGE_SIZE + "");
+                , TSListFragment.DEFAULT_PAGE_DB_SIZE + "");
 
     }
 

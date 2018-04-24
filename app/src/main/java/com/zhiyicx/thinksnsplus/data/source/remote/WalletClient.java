@@ -64,7 +64,7 @@ public interface WalletClient {
      * @return
      */
     @GET(APP_PAHT_WALLET_WITHDRAW)
-    Observable<List<WithdrawalsListBean>> getWithdrawList(@Query("limit") int limit, @Query("after") int after);
+    Observable<List<WithdrawalsListBean>> getWithdrawList(@Query("limit") Integer limit, @Query("after") int after);
 
     /**
      * 取回凭据
@@ -82,7 +82,7 @@ public interface WalletClient {
      * @return
      */
     @GET(APP_PAHT_WALLET_RECHARGE_SUCCESS_LIST)
-    Observable<List<RechargeSuccessBean>> getRechargeSuccessList(@Query("limit") int limit, @Query("after") int after, @Query("action") String
+    Observable<List<RechargeSuccessBean>> getRechargeSuccessList(@Query("limit") Integer limit, @Query("after") int after, @Query("action") String
             action);
 
     @GET(APP_PAHT_WALLET_RECHARGE_SUCCESS_CALLBACK)
@@ -146,7 +146,7 @@ public interface WalletClient {
      * @return
      */
     @GET(APP_PAHT_INTEGRATION_ORDERS)
-    Observable<List<RechargeSuccessV2Bean>> integrationOrdersSuccess(@Query("limit") int limit, @Query("after") int after, @Query("action") String
+    Observable<List<RechargeSuccessV2Bean>> integrationOrdersSuccess(@Query("limit") Integer limit, @Query("after") int after, @Query("action") String
             action, @Query("type") Integer type);
 
 

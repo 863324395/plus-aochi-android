@@ -62,7 +62,7 @@ public interface DynamicClient {
      */
     @GET(ApiConfig.APP_PATH_GET_DYNAMIC_LIST_V2)
     Observable<DynamicBeanV2> getDynamicListV2(@Query("type") String type, @Query
-            ("after") Long after, @Query("user") Long user_id, @Query("limit") Long limit,
+            ("after") Long after, @Query("user") Long user_id, @Query("limit") Integer limit,
                                                @Query("screen") String screen);
 
     /**
@@ -75,7 +75,7 @@ public interface DynamicClient {
      */
     @GET(ApiConfig.APP_PATH_GET_COLLECT_DYNAMIC_LIST_V2)
     Observable<List<DynamicDetailBeanV2>> getCollectDynamicListV2(@Query("offset") Long offset, @Query("user") Long
-            user_id, @Query("limit") Long limit);
+            user_id, @Query("limit") Integer limit);
 
     @GET(ApiConfig.APP_PATH_DYNAMIC_DIG_LIST_V2)
     Observable<List<DynamicDigListBean>> getDynamicDigListV2(@Path("feed_id") Long feed_id, @Query("after") Long
@@ -91,7 +91,7 @@ public interface DynamicClient {
      */
     @GET(ApiConfig.APP_PATH_DYNAMIC_COMMENT_LIST_V2)
     Observable<DynamicCommentBeanV2> getDynamicCommentListV2(@Path("feed_id") Long feed_id, @Query("after") Long
-            after, @Query("limit") Long limit);
+            after, @Query("limit") Integer limit);
 
     /**
      * 获取动态详情 V2
@@ -145,7 +145,7 @@ public interface DynamicClient {
      */
     @GET(ApiConfig.APP_PATH_REVIEW_DYNAMIC_COMMENT)
     Observable<List<TopDynamicCommentBean>> getDynamicReviewComment(@Query("after") int after, @Query("limit")
-            int limit);
+            Integer limit);
 
     /**
      * 动态评论置顶审核通过 V2

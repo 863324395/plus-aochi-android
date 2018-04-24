@@ -182,7 +182,7 @@ public interface IBaseCircleRepository {
      * @param type     默认 all, all-全部 join-成员加入 pinned-帖子置顶
      * @return
      */
-    Observable<List<CircleEarningListBean>> getCircleEarningList(Long circleId, Long start, Long end, Long after, Long limit, String type);
+    Observable<List<CircleEarningListBean>> getCircleEarningList(Long circleId, Long start, Long end, Long after, Integer limit, String type);
 
     /**
      * 圈子举报列表

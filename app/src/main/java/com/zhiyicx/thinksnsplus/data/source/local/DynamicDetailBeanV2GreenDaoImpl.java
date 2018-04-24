@@ -165,7 +165,7 @@ public class DynamicDetailBeanV2GreenDaoImpl extends CommonCacheImpl<DynamicDeta
         }
         return mDynamicDetailBeanV2Dao.queryDeep(" where " + " T." + DynamicDetailBeanV2Dao.Properties.IsFollowed.columnName + " = 1 and " // 0 false 1 true
                         + " T." + DynamicDetailBeanV2Dao.Properties.Id.columnName + " < ?   ORDER BY "
-                        + " T." + DynamicDetailBeanV2Dao.Properties.Id.columnName + " DESC LIMIT " + TSListFragment.DEFAULT_PAGE_SIZE// feedId倒序
+                        + " T." + DynamicDetailBeanV2Dao.Properties.Id.columnName + " DESC LIMIT " + TSListFragment.DEFAULT_PAGE_DB_SIZE// feedId倒序
                 , String.valueOf(feed_id));
     }
 
@@ -180,7 +180,7 @@ public class DynamicDetailBeanV2GreenDaoImpl extends CommonCacheImpl<DynamicDeta
         }
         return mDynamicDetailBeanV2Dao.queryDeep(" where "
                         + " T." + DynamicDetailBeanV2Dao.Properties.Id.columnName + " < ?  ORDER BY "
-                        + " T." + DynamicDetailBeanV2Dao.Properties.Id.columnName + " DESC LIMIT " + TSListFragment.DEFAULT_PAGE_SIZE// 创建时间倒序
+                        + " T." + DynamicDetailBeanV2Dao.Properties.Id.columnName + " DESC LIMIT " + TSListFragment.DEFAULT_PAGE_DB_SIZE// 创建时间倒序
                 , String.valueOf(id));
     }
 
@@ -192,7 +192,7 @@ public class DynamicDetailBeanV2GreenDaoImpl extends CommonCacheImpl<DynamicDeta
             feed_id = System.currentTimeMillis();
         }
         return mDynamicDetailBeanV2Dao.queryDeep(" where " + " T." + DynamicDetailBeanV2Dao.Properties.Id.columnName + " < ?  ORDER BY "
-                        + " T." + DynamicDetailBeanV2Dao.Properties.Id.columnName + " DESC LIMIT " + TSListFragment.DEFAULT_PAGE_SIZE// feedId倒序
+                        + " T." + DynamicDetailBeanV2Dao.Properties.Id.columnName + " DESC LIMIT " + TSListFragment.DEFAULT_PAGE_DB_SIZE// feedId倒序
                 , String.valueOf(feed_id));
     }
 
@@ -204,7 +204,7 @@ public class DynamicDetailBeanV2GreenDaoImpl extends CommonCacheImpl<DynamicDeta
     public List<DynamicDetailBeanV2> getMyCollectDynamic() {
         return mDynamicDetailBeanV2Dao.queryDeep(" where "
                         + " T." + DynamicDetailBeanV2Dao.Properties.Has_collect.columnName + " = ? "
-                        + " ORDER BY  T." + DynamicDetailBeanV2Dao.Properties.Id.columnName + " DESC LIMIT " + TSListFragment.DEFAULT_PAGE_SIZE// 按照Feed_id倒序：越新的动态，Feed_id越大
+                        + " ORDER BY  T." + DynamicDetailBeanV2Dao.Properties.Id.columnName + " DESC LIMIT " + TSListFragment.DEFAULT_PAGE_DB_SIZE// 按照Feed_id倒序：越新的动态，Feed_id越大
                 , "1");
     }
 
@@ -227,7 +227,7 @@ public class DynamicDetailBeanV2GreenDaoImpl extends CommonCacheImpl<DynamicDeta
         return mDynamicDetailBeanV2Dao.queryDeep(" where "
                         + " T." + DynamicDetailBeanV2Dao.Properties.User_id.columnName + " = ? "
                         + " ORDER BY  T." + DynamicDetailBeanV2Dao.Properties.Id.columnName + " " +
-                        "DESC LIMIT " + TSListFragment.DEFAULT_PAGE_SIZE// 按照Feed_id倒序：越新的动态，Feed_id越大
+                        "DESC LIMIT " + TSListFragment.DEFAULT_PAGE_DB_SIZE// 按照Feed_id倒序：越新的动态，Feed_id越大
                 , String.valueOf(userId));
     }
 

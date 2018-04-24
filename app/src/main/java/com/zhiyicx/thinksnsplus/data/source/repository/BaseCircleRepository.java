@@ -521,7 +521,7 @@ public class BaseCircleRepository implements IBaseCircleRepository {
 
     @Override
     public Observable<List<CircleEarningListBean>> getCircleEarningList(Long circleId, Long start, Long end,
-                                                                        Long after, Long limit, String type) {
+                                                                        Long after, Integer limit, String type) {
 
         return mCircleClient.getCircleEarningList(circleId, start, end, after, limit, type)
                 .subscribeOn(Schedulers.io())

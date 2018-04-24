@@ -84,7 +84,7 @@ public class MusicPresenter extends AppBasePresenter<MusicContract.View>
 
     @Override
     public void requestNetData(Long maxId, final boolean isLoadMore) {
-        Subscription subscription = (mRootView.isCollection() ? mBaseMusicRepository.getCollectMusicList(maxId, (long) TSListFragment
+        Subscription subscription = (mRootView.isCollection() ? mBaseMusicRepository.getCollectMusicList(maxId, TSListFragment
                 .DEFAULT_PAGE_SIZE) : mBaseMusicRepository
                 .getMusicAblumList(maxId))
                 .compose(mSchedulersTransformer)

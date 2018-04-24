@@ -121,7 +121,7 @@ public class UserInfoBeanGreenDaoImpl extends CommonCacheImpl<UserInfoBean> {
         UserInfoBeanDao userInfoBeanDao = getRDaoSession().getUserInfoBeanDao();
         return userInfoBeanDao.queryBuilder()
                 .where(UserInfoBeanDao.Properties.Follower.eq(true), UserInfoBeanDao.Properties.User_id.lt(maxId))
-                .limit(TSListFragment.DEFAULT_PAGE_SIZE)
+                .limit(TSListFragment.DEFAULT_PAGE_DB_SIZE)
                 .orderDesc(UserInfoBeanDao.Properties.User_id)
                 .list();
     }
@@ -139,7 +139,7 @@ public class UserInfoBeanGreenDaoImpl extends CommonCacheImpl<UserInfoBean> {
         UserInfoBeanDao userInfoBeanDao = getRDaoSession().getUserInfoBeanDao();
         return userInfoBeanDao.queryBuilder()
                 .where(UserInfoBeanDao.Properties.Following.eq(true), UserInfoBeanDao.Properties.User_id.lt(maxId))
-                .limit(TSListFragment.DEFAULT_PAGE_SIZE)
+                .limit(TSListFragment.DEFAULT_PAGE_DB_SIZE)
                 .orderDesc(UserInfoBeanDao.Properties.User_id)
                 .list();
     }
@@ -166,7 +166,7 @@ public class UserInfoBeanGreenDaoImpl extends CommonCacheImpl<UserInfoBean> {
         return userInfoBeanDao.queryBuilder()
                 .where(UserInfoBeanDao.Properties.Follower.eq(true), UserInfoBeanDao.Properties.Following.eq(true), UserInfoBeanDao.Properties
                         .User_id.lt(maxId))
-                .limit(TSListFragment.DEFAULT_PAGE_SIZE)
+                .limit(TSListFragment.DEFAULT_PAGE_DB_SIZE)
                 .orderDesc(UserInfoBeanDao.Properties.User_id)
                 .list();
     }

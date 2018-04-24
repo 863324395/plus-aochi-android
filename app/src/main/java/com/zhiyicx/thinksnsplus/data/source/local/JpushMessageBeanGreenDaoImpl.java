@@ -54,7 +54,7 @@ public class JpushMessageBeanGreenDaoImpl extends CommonCacheImpl<JpushMessageBe
         JpushMessageBeanDao jpushMessageDao = getRDaoSession().getJpushMessageBeanDao();
         return jpushMessageDao.queryBuilder()
                 .orderDesc(JpushMessageBeanDao.Properties.Creat_time)
-                .limit(TSListFragment.DEFAULT_PAGE_SIZE)
+                .limit(TSListFragment.DEFAULT_PAGE_DB_SIZE)
                 .list();
     }
 
