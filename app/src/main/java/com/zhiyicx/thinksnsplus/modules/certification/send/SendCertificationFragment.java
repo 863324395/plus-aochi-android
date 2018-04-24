@@ -2,7 +2,9 @@ package com.zhiyicx.thinksnsplus.modules.certification.send;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -75,15 +77,16 @@ public class SendCertificationFragment extends TSFragment<SendCertificationContr
     protected void initView(View rootView) {
         initPhotoSelector();
         int width = UIUtil.getScreenWidth(getContext()) - getResources().getDimensionPixelSize(R.dimen.spacing_mid) * 2;
-        mFlUploadPicOne.getLayoutParams().height = width / 2;
-        mFlUploadPicTwo.getLayoutParams().height = width / 2;
+        // with : height = 4 ： 3
+        mFlUploadPicOne.getLayoutParams().height = width * 3 / 4;
+        mFlUploadPicTwo.getLayoutParams().height = width * 3 / 4;
         mFlUploadPicTwo.setVisibility(View.GONE);
     }
 
     @Override
     protected void initData() {
         mSendBean = getArguments().getParcelable(BUNDLE_SEND_CERTIFICATION);
-        if (mSendBean != null && mSendBean.getType().equals(SendCertificationBean.ORG)){
+        if (mSendBean != null && mSendBean.getType().equals(SendCertificationBean.ORG)) {
             mTvTypeHint.setText(getString(R.string.send_certification_company));
         }
         setRightClickable();
@@ -170,15 +173,37 @@ public class SendCertificationFragment extends TSFragment<SendCertificationContr
                 .compose(this.bindToLifecycle())
                 .subscribe(aVoid -> {
                     mCurrentPosition = PIC_ONE;
-                    mPhotoSelector.getPhotoListFromSelector(1, null);
+                    mPhotoSelector.getPhotoListFromSelector(1, getSelectedPhotoPath(PIC_ONE), true);
                 });
         RxView.clicks(mFlUploadPicTwo)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .compose(this.bindToLifecycle())
                 .subscribe(aVoid -> {
                     mCurrentPosition = PIC_TWO;
-                    mPhotoSelector.getPhotoListFromSelector(1, null);
+                    mPhotoSelector.getPhotoListFromSelector(1, getSelectedPhotoPath(PIC_TWO), true);
                 });
+    }
+
+    /**
+     * @return 已经选择了图片的地址
+     */
+    @NonNull
+    private ArrayList<String> getSelectedPhotoPath(int position) {
+        ArrayList<String> photos = new ArrayList<>();
+
+        if (position == 0 && !selectedPhotos.isEmpty()) {
+            ImageBean imageBean = selectedPhotos.get(0);
+            if (!TextUtils.isEmpty(imageBean.getImgUrl())) {
+                photos.add(imageBean.getImgUrl());
+            }
+        } else if (position == 1 && selectedPhotos.size() >= 2) {
+            ImageBean imageBean = selectedPhotos.get(1);
+            if (!TextUtils.isEmpty(imageBean.getImgUrl())) {
+                photos.add(imageBean.getImgUrl());
+            }
+        }
+
+        return photos;
     }
 
     /**
@@ -188,21 +213,21 @@ public class SendCertificationFragment extends TSFragment<SendCertificationContr
         mPhotoSelector = DaggerPhotoSelectorImplComponent
                 .builder()
                 .photoSeletorImplModule(new PhotoSeletorImplModule(this, this, PhotoSelectorImpl
-                        .SHAPE_RECTANGLE))
-                .build().photoSelectorImpl();
-        Glide.with(getActivity()).load("");
+                        .NO_CRAFT))
+                .build()
+                .photoSelectorImpl();
     }
 
-    private void setRightClickable(){
+    private void setRightClickable() {
         boolean clickable = false;
         if (mSendBean.getType().equals(SendCertificationBean.USER)
                 && mSendBean.getPicList() != null
-                && mSendBean.getPicList().size() == 2){
+                && mSendBean.getPicList().size() == 2) {
             clickable = true;
         }
         if (mSendBean.getType().equals(SendCertificationBean.ORG)
                 && mSendBean.getPicList() != null
-                && mSendBean.getPicList().size() == 1){
+                && mSendBean.getPicList().size() == 1) {
             clickable = true;
         }
         mToolbarRight.setClickable(clickable);

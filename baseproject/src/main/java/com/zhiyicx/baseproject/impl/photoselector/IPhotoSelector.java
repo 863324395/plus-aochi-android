@@ -19,7 +19,15 @@ public interface IPhotoSelector<T> {
      * @return
      */
     void getPhotoListFromSelector(int maxCount, ArrayList<String> selectedPhotos);
-
+    /**
+     * 从本地相册中获取图片
+     *
+     * @param maxCount       每次能够获取的最大图片数量
+     * @param selectedPhotos 已经选择过的图片
+     * @param isPreviewEnabled 是否可预览
+     * @return
+     */
+     void getPhotoListFromSelector(int maxCount, ArrayList<String> selectedPhotos, boolean isPreviewEnabled);
     /**
      * 通过拍照的方式获取图片
      */

@@ -73,8 +73,9 @@ public class SearchFriendsFragment extends TSListFragment<SearchFriendsContract.
         super.initView(rootView);
        setEmptyViewVisiable(false);
         RxTextView.editorActionEvents(mFragmentInfoSearchEdittext).subscribe(textViewEditorActionEvent -> {
-            if (textViewEditorActionEvent.actionId() == EditorInfo.IME_ACTION_SEARCH) {
-                mKeyWord = mFragmentInfoSearchEdittext.getText().toString();
+            if (textViewEditorActionEvent.actionId() == EditorInfo.IME_ACTION_SEARCH&&!TextUtils.isEmpty(textViewEditorActionEvent.toString().trim()
+            )) {
+                mKeyWord = mFragmentInfoSearchEdittext.getText().toString().trim();
                 mPresenter.requestNetData(0L, false);
                 DeviceUtils.hideSoftKeyboard(getContext(), mFragmentInfoSearchEdittext);
             }

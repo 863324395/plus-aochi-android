@@ -92,7 +92,7 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
     /**
      * 一共可选的图片数量
      */
-    private static final int MAX_PHOTOS = 9;
+    public static final int MAX_PHOTOS = 9;
 
     @BindView(R.id.rv_photo_list)
     RecyclerView mRvPhotoList;

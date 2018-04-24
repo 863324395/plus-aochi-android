@@ -158,6 +158,28 @@ public class PhotoSelectorImpl implements IPhotoSelector<ImageBean> {
                 .start(mContext, mFragment);
     }
 
+    @Override
+    public void getPhotoListFromSelector(int maxCount, ArrayList<String> selectedPhotos, boolean isPreviewEnabled) {
+        this.maxCount = maxCount;
+        // 选择相册
+        PhotoPicker.builder()
+                // 是否可预览
+                .setPreviewEnabled(isPreviewEnabled)
+
+                // 每行的图片数量
+                .setGridColumnCount(PHOTO_CLUMS_SIZE)
+
+                //  每次能够选择的最
+                .setPhotoCount(maxCount)
+
+                // 是否需要展示相机
+                .setShowCamera(true)
+
+                // 已经选择的图片
+                .setSelected(selectedPhotos)
+                .start(mContext, mFragment);
+    }
+
     boolean getCameraPermissonSuccess = false;
 
     @Override

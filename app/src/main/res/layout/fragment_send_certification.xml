@@ -13,6 +13,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_mid"
             android:layout_marginBottom="@dimen/spacing_mid"
+            android:includeFontPadding="false"
             android:text="@string/send_certification_id_card"
             android:textColor="@color/normal_for_assist_text"
             android:textSize="@dimen/size_content_comment"/>
@@ -30,8 +31,9 @@
                 android:drawableTop="@mipmap/ico_identi_camera"
                 android:gravity="center"
                 android:layout_gravity="center"
-                android:drawablePadding="@dimen/spacing_normal"
+                android:drawablePadding="@dimen/spacing_normal_8dp"
                 android:text="@string/send_certification_pic_hint"
+                android:textColor="@color/general_for_hint"
                 android:textSize="@dimen/size_content_comment"/>
         <ImageView
                 android:id="@+id/iv_pic_one"
@@ -55,7 +57,8 @@
                 android:drawableTop="@mipmap/ico_identi_camera"
                 android:gravity="center"
                 android:layout_gravity="center"
-                android:drawablePadding="@dimen/spacing_normal"
+                android:drawablePadding="@dimen/spacing_normal_8dp"
+                android:textColor="@color/general_for_hint"
                 android:text="@string/send_certification_pic_next"
                 android:textSize="@dimen/size_content_comment"/>
 

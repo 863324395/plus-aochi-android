@@ -189,7 +189,8 @@ public class PhotoAlbumDetailsFragment extends TSFragment implements PhotoSelect
         mRvAlbumDetails.setLayoutManager(layoutManager);
         mRvAlbumDetails.setItemAnimator(new DefaultItemAnimator());
         mRvAlbumDetails.setAdapter(photoGridAdapter);
-        mRvAlbumDetails.addItemDecoration(new GridDecoration(getContext(), com.zhiyicx.baseproject.R.drawable.shape_recyclerview_divider_white_small));
+        mRvAlbumDetails.addItemDecoration(new GridDecoration(getContext(), com.zhiyicx.baseproject.R.drawable
+                .shape_recyclerview_divider_white_small));
         photoGridAdapter.setCurrentDirectoryIndex(selected_directory);
         photoGridAdapter.notifyDataSetChanged();
         // 设置图片选择的监听
@@ -199,7 +200,7 @@ public class PhotoAlbumDetailsFragment extends TSFragment implements PhotoSelect
             // 设置预览按钮的状态
             mTvPreview.setEnabled(selectedItemCount > 0);
             // 单张选择
-            if (maxCount <= 1) {
+            if (maxCount <= 1 && !canPreview) {
                 List<String> photos = photoGridAdapter.getSelectedPhotos();
                 // 当前选择的图片，没有被选择过
                 if (!photos.contains(photo.getPath())) {
