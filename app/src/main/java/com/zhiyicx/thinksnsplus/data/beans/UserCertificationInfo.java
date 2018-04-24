@@ -4,7 +4,9 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.zhiyicx.baseproject.base.BaseListBean;
+import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.thinksnsplus.data.source.local.data_convert.BaseConvert;
+import com.zhiyicx.thinksnsplus.data.source.local.data_convert.DynamicImagesBeanConvert;
 
 import org.greenrobot.greendao.annotation.Convert;
 import org.greenrobot.greendao.annotation.Entity;
@@ -80,6 +82,17 @@ public class UserCertificationInfo extends BaseListBean {
     @Convert(converter = CategoryConvert.class, columnType = String.class)
     private CertificationCategory category;
     private String icon;
+    @Convert(converter = DynamicImagesBeanConvert.class, columnType = String.class)
+    private List<DynamicDetailBeanV2.ImagesBean> files;
+
+
+    public List<DynamicDetailBeanV2.ImagesBean> getFiles() {
+        return files;
+    }
+
+    public void setFiles(List<DynamicDetailBeanV2.ImagesBean> files) {
+        this.files = files;
+    }
 
     public long getId() {
         return id;
@@ -387,6 +400,23 @@ public class UserCertificationInfo extends BaseListBean {
     public UserCertificationInfo() {
     }
 
+    @Generated(hash = 2115355868)
+    public UserCertificationInfo(long id, long user_id, String certification_name, UserCertificationData data, long examiner,
+            long status, String created_at, String updated_at, CertificationCategory category, String icon,
+            List<DynamicDetailBeanV2.ImagesBean> files) {
+        this.id = id;
+        this.user_id = user_id;
+        this.certification_name = certification_name;
+        this.data = data;
+        this.examiner = examiner;
+        this.status = status;
+        this.created_at = created_at;
+        this.updated_at = updated_at;
+        this.category = category;
+        this.icon = icon;
+        this.files = files;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -405,6 +435,7 @@ public class UserCertificationInfo extends BaseListBean {
         dest.writeString(this.updated_at);
         dest.writeParcelable(this.category, flags);
         dest.writeString(this.icon);
+        dest.writeTypedList(this.files);
     }
 
     protected UserCertificationInfo(Parcel in) {
@@ -419,22 +450,7 @@ public class UserCertificationInfo extends BaseListBean {
         this.updated_at = in.readString();
         this.category = in.readParcelable(CertificationCategory.class.getClassLoader());
         this.icon = in.readString();
-    }
-
-    @Generated(hash = 22762421)
-    public UserCertificationInfo(long id, long user_id, String certification_name, UserCertificationData data,
-                                 long examiner, long status, String created_at, String updated_at, CertificationCategory category,
-                                 String icon) {
-        this.id = id;
-        this.user_id = user_id;
-        this.certification_name = certification_name;
-        this.data = data;
-        this.examiner = examiner;
-        this.status = status;
-        this.created_at = created_at;
-        this.updated_at = updated_at;
-        this.category = category;
-        this.icon = icon;
+        this.files = in.createTypedArrayList(DynamicDetailBeanV2.ImagesBean.CREATOR);
     }
 
     public static final Creator<UserCertificationInfo> CREATOR = new Creator<UserCertificationInfo>() {

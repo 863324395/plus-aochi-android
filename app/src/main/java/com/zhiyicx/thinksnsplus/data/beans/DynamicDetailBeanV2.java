@@ -812,6 +812,8 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable, Ser
          * amount : 100
          * type : download
          * paid : false
+         *
+         *
          */
         private int propPart;
         private int file;
