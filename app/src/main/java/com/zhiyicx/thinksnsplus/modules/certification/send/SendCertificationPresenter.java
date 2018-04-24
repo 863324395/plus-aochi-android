@@ -59,18 +59,12 @@ public class SendCertificationPresenter extends AppBasePresenter<SendCertificati
                 .compose(mSchedulersTransformer)
                 .subscribe(new BaseSubscribeForV2<BaseJsonV2<Object>>() {
 
-                    @Override
-                    protected void onFailure(String message, int code) {
-                        super.onFailure(message, code);
-                        mRootView.updateSendState(false, false, message);
-                    }
-
 
                     @Override
                     protected void onSuccess(BaseJsonV2<Object> data) {
                         // 组合数据 通知我的页面刷新
                         UserCertificationInfo info = new UserCertificationInfo();
-                        info.setId(new Date().getTime());
+                        info.setId(System.currentTimeMillis());
                         info.setStatus(0);
                         info.setCertification_name(bean.getType());
                         Bundle bundle = new Bundle();
@@ -94,6 +88,18 @@ public class SendCertificationPresenter extends AppBasePresenter<SendCertificati
                             message = data.getMessage().get(0);
                         }
                         mRootView.updateSendState(false, true, message);
+                    }
+
+                    @Override
+                    protected void onFailure(String message, int code) {
+                        super.onFailure(message, code);
+                        mRootView.updateSendState(false, false, message);
+                    }
+
+                    @Override
+                    protected void onException(Throwable throwable) {
+                        super.onException(throwable);
+                        mRootView.updateSendState(false, false, mContext.getString(R.string.err_net_not_work));
                     }
                 });
         addSubscrebe(subscription);

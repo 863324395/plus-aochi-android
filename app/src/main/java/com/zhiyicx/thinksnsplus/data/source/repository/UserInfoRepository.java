@@ -62,6 +62,7 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
+import okhttp3.MediaType;
 import okhttp3.RequestBody;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -364,7 +365,7 @@ public class UserInfoRepository implements IUserInfoRepository {
     /**
      * @param user_ids Get multiple designated users, multiple IDs using , split.
      * @param name     Used to retrieve users whose username contains name.
-     * @param offset    The integer ID of the last User that you've seen.
+     * @param offset   The integer ID of the last User that you've seen.
      * @param order    Sorting. Enum: asc, desc
      * @param limit    List user limit, minimum 1 max 50.
      * @return
