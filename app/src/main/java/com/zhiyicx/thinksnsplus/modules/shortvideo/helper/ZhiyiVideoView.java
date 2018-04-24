@@ -6,6 +6,8 @@ import android.graphics.Color;
 import android.graphics.drawable.AnimationDrawable;
 import android.media.AudioManager;
 import android.util.AttributeSet;
+import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -65,12 +67,6 @@ public class ZhiyiVideoView extends JZVideoPlayerStandard {
 
     public ZhiyiVideoView(Context context, AttributeSet attrs) {
         super(context, attrs);
-    }
-
-
-    @Override
-    public void setUp(String url, int screen, Object... objects) {
-        super.setUp(url, screen, objects);
     }
 
     @Override
@@ -148,7 +144,19 @@ public class ZhiyiVideoView extends JZVideoPlayerStandard {
             JZMediaManager.instance().positionInList = positionInList;
             onStatePreparing();
         } else {
-            super.startVideo();
+            JZVideoPlayerManager.completeAll();
+            Log.d(TAG, "startVideo [" + this.hashCode() + "] ");
+            initTextureView();
+            addTextureView();
+            AudioManager mAudioManager = (AudioManager) getContext().getSystemService(Context.AUDIO_SERVICE);
+            mAudioManager.requestAudioFocus(onAudioFocusChangeListener, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN_TRANSIENT);
+            JZUtils.scanForActivity(getContext()).getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+
+            JZMediaManager.setDataSource(dataSourceObjects);
+            JZMediaManager.setCurrentDataSource(JZUtils.getCurrentFromDataSource(dataSourceObjects, currentUrlMapIndex));
+            JZMediaManager.instance().positionInList = positionInList;
+            onStatePreparing();
+            JZVideoPlayerManager.setFirstFloor(this);
         }
     }
 
@@ -156,6 +164,7 @@ public class ZhiyiVideoView extends JZVideoPlayerStandard {
     public void onInfo(int what, int extra) {
         super.onInfo(what, extra);
         if (what == 10001) {
+            // 在 ijk中 10001 是角度信息，IMediaPlayer.MEDIA_INFO_VIDEO_ROTATION_CHANGED
             JZMediaManager.textureView.setRotation(extra);
         }
     }

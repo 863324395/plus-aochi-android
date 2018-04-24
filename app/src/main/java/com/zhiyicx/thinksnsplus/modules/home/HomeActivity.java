@@ -9,6 +9,7 @@ import android.support.v4.app.Fragment;
 import com.zhiyicx.baseproject.base.TSActivity;
 import com.zhiyicx.baseproject.impl.share.UmengSharePolicyImpl;
 import com.zhiyicx.common.utils.ActivityUtils;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.config.JpushMessageTypeConfig;
 import com.zhiyicx.thinksnsplus.data.beans.JpushMessageBean;
 import com.zhiyicx.thinksnsplus.modules.shortvideo.helper.NetChangeReceiver;
@@ -64,6 +65,26 @@ public class HomeActivity extends TSActivity {
     }
 
     @Override
+    public void onPause() {
+        super.onPause();
+        JZVideoPlayer jzVideoPlayer = JZVideoPlayerManager.getCurrentJzvd();
+        if (jzVideoPlayer != null) {
+            if (JZUtils.scanForActivity(jzVideoPlayer.getContext()) instanceof HomeActivity) {
+                jzVideoPlayer.onStateNormal();
+            }
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        UmengSharePolicyImpl.onDestroy(this);
+        if(mNetChangeReceiver!=null){
+            unregisterReceiver(mNetChangeReceiver);
+        }
+    }
+
+    @Override
     protected void componentInject() {
     }
 
@@ -87,24 +108,6 @@ public class HomeActivity extends TSActivity {
         mContanierFragment.onActivityResult(requestCode, resultCode, data);
     }
 
-    @Override
-    public void onPause() {
-        super.onPause();
-        JZVideoPlayer jzVideoPlayer = JZVideoPlayerManager.getCurrentJzvd();
-        if (jzVideoPlayer != null) {
-            if (JZUtils.scanForActivity(jzVideoPlayer.getContext()) instanceof HomeActivity) {
-                jzVideoPlayer.onStateNormal();
-            }
-        }
-    }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        UmengSharePolicyImpl.onDestroy(this);
-        if(mNetChangeReceiver!=null){
-            unregisterReceiver(mNetChangeReceiver);
-        }
-    }
 
 }
