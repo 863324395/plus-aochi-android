@@ -72,22 +72,59 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
      */
     public static final int DEFAULT_PAGE = 1;
 
+    /**
+     * 列表顶部提示信息停留时间
+     */
     private static final int DEFAULT_TIP_STICKY_TIME = 3000;
+
+    /**
+     * 列表分割线高度
+     */
     public static final float DEFAULT_LIST_ITEM_SPACING = 0.5f;
 
+    /**
+     * 默认是否需要刷新
+     */
     private static final boolean DEFAULT_NEED_REFRESH = false;
 
+    /**
+     * 列表数据
+     */
     protected List<T> mListDatas = new ArrayList<>();
 
+    /**
+     * 数据适配器
+     */
     protected RecyclerView.Adapter mAdapter;
 
+    /**
+     * 列表头和脚适配器
+     */
     protected HeaderAndFooterWrapper mHeaderAndFooterWrapper;
+
+    /**
+     * 列表脚视图
+     */
     private View mFooterView;
 
+    /**
+     * 刷新控件
+     */
     protected SmartRefreshLayout mRefreshlayout;
 
+    /**
+     * 列表控件
+     */
     protected RecyclerView mRvList;
+
+    /**
+     * 列表顶部提示控件
+     */
     protected TextView mTvTopTip;
+
+    /**
+     * 列表布局管理器，之类可根据实际应用创造管理器的子类
+     */
     protected RecyclerView.LayoutManager layoutManager;
 
     /**
@@ -120,82 +157,49 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
      */
     private static boolean sIsScrolling;
 
+
+    /**
+     * @return 页面布局 xml
+     */
     @Override
     protected int getBodyLayoutId() {
         return R.layout.fragment_tslist;
     }
 
+    /**
+     * @return toolbar 背景
+     */
     @Override
     protected int setToolBarBackgroud() {
         return R.color.white;
     }
 
+    /**
+     * 关闭列表上啦刷新和下拉加载
+     */
     @Override
     public void hideLoading() {
         mRefreshlayout.finishLoadmore();
         mRefreshlayout.finishRefresh();
     }
 
+    /**
+     * 显示基本提示信息，不会停留在顶部
+     *
+     * @param message
+     */
     @Override
     public void showMessage(String message) {
         showMessageNotSticky(message);
         hideLoading();
     }
 
+    /**
+     * @return 是否显示 toolbar 下面的分割线
+     */
     @Override
     protected boolean showToolBarDivider() {
         return true;
-    }
-
-    @Override
-    protected void initView(View rootView) {
-        mRefreshlayout = (SmartRefreshLayout) rootView.findViewById(R.id.refreshlayout);
-        mRvList = (RecyclerView) rootView.findViewById(R.id.swipe_target);
-
-        mRefreshlayout.setOnRefreshListener(this);
-        mRefreshlayout.setOnLoadmoreListener(this);
-        if (setListBackColor() != -1) {
-            mRvList.setBackgroundColor(ContextCompat.getColor(getContext(), setListBackColor()));
-        }
-        layoutManager = getLayoutManager();
-        mRvList.setLayoutManager(layoutManager);
-        //设置Item的间隔
-        mRvList.addItemDecoration(getItemDecoration());
-        //如果可以确定每个item的高度是固定的，设置这个选项可以提高性能
-        mRvList.setHasFixedSize(sethasFixedSize());
-        mRvList.setItemViewCacheSize(setItemCacheSize());
-        mRvList.setDrawingCacheEnabled(true);
-        mRvList.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
-        //设置动画
-        mRvList.setItemAnimator(new DefaultItemAnimator());
-        mAdapter = getAdapter();
-        mHeaderAndFooterWrapper = new HeaderAndFooterWrapper(mAdapter);
-        mHeaderAndFooterWrapper.addFootView(getFooterView());
-        mRvList.setAdapter(mHeaderAndFooterWrapper);
-        mRefreshlayout.setEnableAutoLoadmore(false);
-        mRefreshlayout.setEnableRefresh(isRefreshEnable());
-        mRefreshlayout.setEnableLoadmore(isLoadingMoreEnable());
-        mRvList.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                // SCROLL_STATE_FLING; //屏幕处于甩动状态
-                // SCROLL_STATE_IDLE; //停止滑动状态
-                // SCROLL_STATE_TOUCH_SCROLL;// 手指接触状态
-                if (mActivity != null) {
-                    if (newState == RecyclerView.SCROLL_STATE_DRAGGING || newState == RecyclerView.SCROLL_STATE_SETTLING) {
-                        sIsScrolling = true;
-                        Glide.with(mActivity).pauseRequests();
-                    } else if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                        if (sIsScrolling) {
-                            if (AndroidLifecycleUtils.canLoadImage(mActivity)) {
-                                Glide.with(mActivity).resumeRequests();
-                            }
-                        }
-                        sIsScrolling = false;
-                    }
-                }
-            }
-        });
     }
 
     /**
@@ -267,11 +271,72 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
         return mListDatas.size() >= DEFAULT_ONE_PAGE_SHOW_MAX_SIZE;
     }
 
+    /**
+     * @return 空数据占位图
+     */
     protected int setEmptView() {
         return R.mipmap.img_default_nothing;
     }
 
+    /**
+     * 页面 View 初始化
+     *
+     * @param rootView
+     */
+    @Override
+    protected void initView(View rootView) {
+        mRefreshlayout = (SmartRefreshLayout) rootView.findViewById(R.id.refreshlayout);
+        mRvList = (RecyclerView) rootView.findViewById(R.id.swipe_target);
 
+        mRefreshlayout.setOnRefreshListener(this);
+        mRefreshlayout.setOnLoadmoreListener(this);
+        if (setListBackColor() != -1) {
+            mRvList.setBackgroundColor(ContextCompat.getColor(getContext(), setListBackColor()));
+        }
+        layoutManager = getLayoutManager();
+        mRvList.setLayoutManager(layoutManager);
+        //设置Item的间隔
+        mRvList.addItemDecoration(getItemDecoration());
+        //如果可以确定每个item的高度是固定的，设置这个选项可以提高性能
+        mRvList.setHasFixedSize(sethasFixedSize());
+        mRvList.setItemViewCacheSize(setItemCacheSize());
+        mRvList.setDrawingCacheEnabled(true);
+        mRvList.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
+        //设置动画
+        mRvList.setItemAnimator(new DefaultItemAnimator());
+        mAdapter = getAdapter();
+        mHeaderAndFooterWrapper = new HeaderAndFooterWrapper(mAdapter);
+        mHeaderAndFooterWrapper.addFootView(getFooterView());
+        mRvList.setAdapter(mHeaderAndFooterWrapper);
+        mRefreshlayout.setEnableAutoLoadmore(false);
+        mRefreshlayout.setEnableRefresh(isRefreshEnable());
+        mRefreshlayout.setEnableLoadmore(isLoadingMoreEnable());
+        mRvList.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                // SCROLL_STATE_FLING; //屏幕处于甩动状态
+                // SCROLL_STATE_IDLE; //停止滑动状态
+                // SCROLL_STATE_TOUCH_SCROLL;// 手指接触状态
+                if (mActivity != null) {
+                    if (newState == RecyclerView.SCROLL_STATE_DRAGGING || newState == RecyclerView.SCROLL_STATE_SETTLING) {
+                        sIsScrolling = true;
+                        Glide.with(mActivity).pauseRequests();
+                    } else if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                        if (sIsScrolling) {
+                            if (AndroidLifecycleUtils.canLoadImage(mActivity)) {
+                                Glide.with(mActivity).resumeRequests();
+                            }
+                        }
+                        sIsScrolling = false;
+                    }
+                }
+            }
+        });
+    }
+
+    /**
+     * 数据初始化
+     */
     @Override
     protected void initData() {
         if (mPresenter != null) {
@@ -282,24 +347,27 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
         }
     }
 
-    protected void requestCacheData(Long maxId, boolean isLoadMore) {
-        if (mPresenter != null) {
-            mPresenter.requestCacheData(mMaxId, isLoadMore);
-        }
-    }
-
+    /**
+     * Fragment 生命周期
+     */
     @Override
     public void onResume() {
         super.onResume();
         layzLoad();
     }
 
+    /**
+     * @param isVisibleToUser 当前页面是否展示到用户
+     */
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
         layzLoad();
     }
 
+    /**
+     * 数据懒加载
+     */
     private void layzLoad() {
         if (mPresenter != null && getUserVisibleHint() && isLayzLoad() && mListDatas.isEmpty()) {
             getNewDataFromNet();
@@ -399,12 +467,16 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
      *
      * @param text 文本内容
      */
-
     protected void setTopTipText(@NotNull String text) {
         inflateTopView();
         mTvTopTip.setText(text);
     }
 
+    /**
+     * 设置 html 提示文本信息
+     *
+     * @param text
+     */
     protected void setTopTipHtmlText(@NotNull String text) {
         inflateTopView();
         Spanned html = Html.fromHtml(text);
@@ -496,6 +568,24 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
         }, DEFAULT_TIP_STICKY_TIME);
     }
 
+    /**
+     * 请求本地数据
+     *
+     * @param maxId
+     * @param isLoadMore
+     */
+    protected void requestCacheData(Long maxId, boolean isLoadMore) {
+        if (mPresenter != null) {
+            mPresenter.requestCacheData(mMaxId, isLoadMore);
+        }
+    }
+
+    /**
+     * 获取网络数据
+     *
+     * @param maxId
+     * @param isLoadMore
+     */
     protected void requestNetData(Long maxId, boolean isLoadMore) {
         if (mPresenter != null) {
             mPresenter.requestNetData(maxId, isLoadMore);
@@ -514,12 +604,14 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
         }
     }
 
+    /**
+     * 懒加载 emptyView
+     */
     private void layzLoadEmptyView() {
         if (mEmptyView == null) {
             try {
                 ViewStub viewStub = (ViewStub) mRootView.findViewById(R.id.stub_empty_view);
                 mEmptyView = (EmptyView) viewStub.inflate();
-//                mEmptyView = (EmptyView) mRootView.findViewById(R.id.empty_view);
                 mEmptyView.setErrorImag(setEmptView());
                 mEmptyView.setNeedTextTip(false);
                 mEmptyView.setNeedClickLoadState(false);
@@ -572,6 +664,9 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
         mHeaderAndFooterWrapper.notifyItemChanged(position);
     }
 
+    /**
+     * 刷新数据
+     */
     @Override
     public void refreshRangeData(int start, int count) {
         if (mHeaderAndFooterWrapper != null) {
@@ -581,17 +676,25 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
         }
     }
 
+    /**
+     * @return 获取当前 页数
+     */
     @Override
     public int getPage() {
         return mPage;
     }
 
+    /**
+     * @return 列表数据
+     */
     @Override
     public List<T> getListDatas() {
         return mListDatas;
     }
 
-
+    /**
+     * @return 是否开启 游客数据限制
+     */
     protected boolean isUseTouristLoadLimit() {
         return true;
     }
@@ -753,6 +856,10 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
         }
     }
 
+    /**
+     * @param data
+     * @return maxId 用户分页使用
+     */
     protected Long getMaxId(@NotNull List<T> data) {
         if (mListDatas.size() > 0) {
             return mListDatas.get(mListDatas.size() - 1).getMaxId();
