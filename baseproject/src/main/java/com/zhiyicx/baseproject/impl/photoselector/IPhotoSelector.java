@@ -25,9 +25,10 @@ public interface IPhotoSelector<T> {
      * @param maxCount       每次能够获取的最大图片数量
      * @param selectedPhotos 已经选择过的图片
      * @param isPreviewEnabled 是否可预览
+     * @param isShowGif 是否显示gif
      * @return
      */
-     void getPhotoListFromSelector(int maxCount, ArrayList<String> selectedPhotos, boolean isPreviewEnabled);
+     void getPhotoListFromSelector(int maxCount, ArrayList<String> selectedPhotos, boolean isPreviewEnabled,boolean isShowGif);
     /**
      * 通过拍照的方式获取图片
      */

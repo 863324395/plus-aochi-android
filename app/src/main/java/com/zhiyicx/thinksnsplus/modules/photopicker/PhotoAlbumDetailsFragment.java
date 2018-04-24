@@ -262,7 +262,8 @@ public class PhotoAlbumDetailsFragment extends TSFragment implements PhotoSelect
         // 页面没有从上级页面获取相册数据，那么自己重新获取一次
         if (directories.isEmpty()) {
             Bundle mediaStoreArgs = new Bundle();
-            mediaStoreArgs.putBoolean(EXTRA_SHOW_GIF, true);
+            boolean isShowGif = getArguments().getBoolean(EXTRA_SHOW_GIF, true);
+            mediaStoreArgs.putBoolean(EXTRA_SHOW_GIF, isShowGif);
             MediaStoreHelper.getPhotoDirs(getActivity(), mediaStoreArgs,
                     dirs -> {
                         directories.clear();

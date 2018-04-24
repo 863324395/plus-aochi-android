@@ -209,6 +209,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/spacing_large"
                     android:gravity="bottom"
+                    android:includeFontPadding="false"
                     android:text="@string/certification_basic_info_data"
                     android:textColor="@color/normal_for_assist_text"/>
 
@@ -216,7 +217,7 @@
                     android:id="@+id/iv_pic_one"
                     android:layout_width="@dimen/certification_detail_img_width"
                     android:layout_height="@dimen/certification_detail_img_height"
-                    android:layout_marginTop="@dimen/spacing_large"
+                    android:layout_marginTop="22dp"
                     android:scaleType="centerCrop"
                     android:src="@drawable/shape_default_image"/>
 
@@ -225,7 +226,7 @@
                     android:layout_width="@dimen/certification_detail_img_width"
                     android:layout_height="@dimen/certification_detail_img_height"
                     android:layout_marginLeft="@dimen/spacing_small"
-                    android:layout_marginTop="@dimen/spacing_large"
+                    android:layout_marginTop="22dp"
                     android:scaleType="centerCrop"
                     android:src="@drawable/shape_default_image"/>
             </LinearLayout>

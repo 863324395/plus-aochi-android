@@ -174,14 +174,14 @@ public class SendCertificationFragment extends TSFragment<SendCertificationContr
                 .compose(this.bindToLifecycle())
                 .subscribe(aVoid -> {
                     mCurrentPosition = PIC_ONE;
-                    mPhotoSelector.getPhotoListFromSelector(1, getSelectedPhotoPath(PIC_ONE), true);
+                    mPhotoSelector.getPhotoListFromSelector(1, getSelectedPhotoPath(PIC_ONE), true,false);
                 });
         RxView.clicks(mFlUploadPicTwo)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .compose(this.bindToLifecycle())
                 .subscribe(aVoid -> {
                     mCurrentPosition = PIC_TWO;
-                    mPhotoSelector.getPhotoListFromSelector(1, getSelectedPhotoPath(PIC_TWO), true);
+                    mPhotoSelector.getPhotoListFromSelector(1, getSelectedPhotoPath(PIC_TWO), true,false);
                 });
     }
 

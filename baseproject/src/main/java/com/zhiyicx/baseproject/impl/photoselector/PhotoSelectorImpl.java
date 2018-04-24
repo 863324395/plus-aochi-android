@@ -159,7 +159,7 @@ public class PhotoSelectorImpl implements IPhotoSelector<ImageBean> {
     }
 
     @Override
-    public void getPhotoListFromSelector(int maxCount, ArrayList<String> selectedPhotos, boolean isPreviewEnabled) {
+    public void getPhotoListFromSelector(int maxCount, ArrayList<String> selectedPhotos, boolean isPreviewEnabled,boolean isShowGif) {
         this.maxCount = maxCount;
         // 选择相册
         PhotoPicker.builder()
@@ -171,10 +171,9 @@ public class PhotoSelectorImpl implements IPhotoSelector<ImageBean> {
 
                 //  每次能够选择的最
                 .setPhotoCount(maxCount)
-
+                .setShowGif(isShowGif)
                 // 是否需要展示相机
                 .setShowCamera(true)
-
                 // 已经选择的图片
                 .setSelected(selectedPhotos)
                 .start(mContext, mFragment);
