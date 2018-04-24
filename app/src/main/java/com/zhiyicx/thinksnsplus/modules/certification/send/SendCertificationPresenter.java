@@ -59,7 +59,6 @@ public class SendCertificationPresenter extends AppBasePresenter<SendCertificati
                 .compose(mSchedulersTransformer)
                 .subscribe(new BaseSubscribeForV2<BaseJsonV2<Object>>() {
 
-
                     @Override
                     protected void onSuccess(BaseJsonV2<Object> data) {
                         // 组合数据 通知我的页面刷新

@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.jakewharton.rxbinding.view.RxView;
+import com.trycatch.mysnackbar.Prompt;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.impl.photoselector.DaggerPhotoSelectorImplComponent;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
@@ -241,10 +242,21 @@ public class SendCertificationFragment extends TSFragment<SendCertificationContr
             showSnackLoadingMessage(message);
         } else {
             if (isSuccess) {
-                getActivity().finish();
+                mNetTip = message;
+                showSnackSuccessMessage(message);
             } else {
                 showSnackErrorMessage(message);
             }
+        }
+    }
+
+    private String mNetTip;
+
+    @Override
+    protected void snackViewDismissWhenTimeOut(Prompt prompt, String message) {
+        super.snackViewDismissWhenTimeOut(prompt, message);
+        if (getActivity() != null && Prompt.SUCCESS == prompt && message.equals(mNetTip)) {
+            getActivity().finish();
         }
     }
 }

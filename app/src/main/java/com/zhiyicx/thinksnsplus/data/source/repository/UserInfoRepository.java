@@ -929,7 +929,6 @@ public class UserInfoRepository implements IUserInfoRepository {
             }
             return integers;
         }).map(integers -> {
-//            bean.setPicList(null);
             return bean;
         }).flatMap(new Func1<SendCertificationBean, Observable<BaseJsonV2<Object>>>() {
             @Override
