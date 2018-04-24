@@ -27,7 +27,7 @@ public class LogUtils {
 
     public static void init() {
         FormatStrategy formatStrategy = PrettyFormatStrategy.newBuilder()
-//                .showThreadInfo(false)  // (Optional) Whether to show thread info or not. Default true
+                .showThreadInfo(false)  // (Optional) Whether to show thread info or not. Default true
                 .methodCount(LOGGER_METHODCOUNT)         // (Optional) How many method line to show. Default 2
                 .methodOffset(LOGGER_METHODOFFSET)        // (Optional) Hides internal method calls up to offset. Default 5
                 .logStrategy(new LogCatStrategy()) // (Optional) Changes the log strategy to print out. Default LogCat
