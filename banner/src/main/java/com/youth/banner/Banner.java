@@ -43,6 +43,7 @@ public class Banner extends FrameLayout implements OnPageChangeListener {
     private int delayTime = BannerConfig.TIME;
     private int scrollTime = BannerConfig.DURATION;
     private boolean isAutoPlay = BannerConfig.IS_AUTO_PLAY;
+    private boolean isNeedDownStopUpAutoPlay =  BannerConfig.IS_DONW_STOP_UP_AUTO_PLAY;
     private boolean isDownStopAutoPlay = BannerConfig.IS_AUTO_PLAY;
     private boolean isScroll = BannerConfig.IS_SCROLL;
     private boolean isEnableScroll = BannerConfig.IS_ENABLE_SCROLL;
@@ -458,15 +459,17 @@ public class Banner extends FrameLayout implements OnPageChangeListener {
         viewPager.setAdapter(adapter);
         viewPager.setFocusable(true);
         viewPager.setCurrentItem(1);
-        if (gravity != -1)
+        if (gravity != -1) {
             indicator.setGravity(gravity);
+        }
         if (isScroll && count > 1) {
             viewPager.setScrollable(true);
         } else {
             viewPager.setScrollable(false);
         }
-        if (isAutoPlay)
+        if (isAutoPlay) {
             startAutoPlay();
+        }
     }
 
 
@@ -500,7 +503,7 @@ public class Banner extends FrameLayout implements OnPageChangeListener {
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
 //        Log.i(tag, ev.getAction() + "--" + isAutoPlay);
-        if (isAutoPlay) {
+        if (isNeedDownStopUpAutoPlay) {
             int action = ev.getAction();
             if (action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_CANCEL
                     || action == MotionEvent.ACTION_OUTSIDE) {
