@@ -8,7 +8,6 @@ import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
-import com.zhiyicx.thinksnsplus.data.source.local.WalletBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.StickTopRepsotory;
 import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
 import com.zhiyicx.thinksnsplus.modules.wallet.integration.mine.MineIntegrationActivity;
@@ -74,7 +73,7 @@ public class StickTopPresenter extends AppBasePresenter<StickTopContract.View>
                     mUserInfoBeanGreenDao.insertOrReplace(userInfoBean);
                     if (userInfoBean.getCurrency() != null) {
                         if (userInfoBean.getCurrency().getSum() < amount) {
-                            mRootView.goRecharge(MineIntegrationActivity.class);
+                            mRootView.goTargetActivity(MineIntegrationActivity.class);
                             return Observable.error(new RuntimeException(""));
                         }
                     }

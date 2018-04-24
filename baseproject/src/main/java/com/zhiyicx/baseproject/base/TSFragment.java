@@ -53,43 +53,77 @@ import static com.zhiyicx.common.widget.popwindow.CustomPopupWindow.POPUPWINDOW_
  */
 
 public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<P> implements WindowUtils.OnWindowDismisslistener {
+
     /**
      * 默认的toolbar
      */
     private static final int DEFAULT_TOOLBAR = R.layout.toolbar_custom;
+
     /**
      * 默认的toolbar背景色
      */
     private static final int DEFAULT_TOOLBAR_BACKGROUD_COLOR = R.color.white;
+
     /**
      * 默认的toolbar下方分割线颜色
      */
     private static final int DEFAULT_DIVIDER_COLOR = R.color.general_for_line;
+
     /**
      * 默认的toolbar左边的图片，一般是返回键
      */
     private static final int DEFAULT_TOOLBAR_LEFT_IMG = R.mipmap.topbar_back;
 
+    /**
+     * 顶部导航栏左边控件
+     */
     protected TextView mToolbarLeft;
+
+    /**
+     * 导航栏下的分割线
+     */
     protected View mDriver;
+
+    /**
+     * 顶部导航栏最右边控件
+     */
     protected TextView mToolbarRight;
+
+    /**
+     * 顶部导航栏右边相对靠左的控件
+     */
     protected TextView mToolbarRightLeft;
+
+    /**
+     * 顶部导航栏中间控件
+     */
     protected TextView mToolbarCenter;
+
+    /**
+     * 当侵入状态栏时， 状态栏的占位控件
+     */
     protected View mStatusPlaceholderView;
+
     /**
      * 加载
      */
     protected View mCenterLoadingView;
+
     /**
      * 头部左边的刷新控件
      */
     protected ImageView mIvRefresh;
 
+    /**
+     * 用于顶部弹出提示控件的根视图
+     */
     protected ViewGroup mSnackRootView;
+
     /**
      * 缺省图是否需要点击
      */
     private boolean mIsNeedClick = true;
+
     /**
      * 右上角的按钮因为音乐播放悬浮显示，是否已经偏左移动
      */
@@ -103,13 +137,38 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
      * View 树监听订阅器
      */
     private Subscription mStatusbarSupport = null;
+
+    /**
+     * 中心加载弹框
+     */
     private LoadingDialog mCenterLoadingDialog;
+
+    /**
+     * 顶部弹出提示控件
+     */
     private TSnackbar mSnackBar;
+
+    /**
+     * 音乐播放时右上角的控件
+     */
     private View mMusicWindowView;
+
+    /**
+     * 系统消息数据
+     */
     protected SystemConfigBean mSystemConfigBean;
 
-    private ActionPopupWindow mDeleteTipPopupWindow;// 删除二次确认弹框
+    /**
+     * 删除二次确认弹框
+     */
+    private ActionPopupWindow mDeleteTipPopupWindow;
 
+
+    /**
+     * fragment 的布局初始化
+     *
+     * @return
+     */
     @Override
     protected View getContentView() {
         LinearLayout linearLayout = new LinearLayout(getActivity());
@@ -200,6 +259,11 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
         return linearLayout;
     }
 
+    /**
+     * Activity 创建成果后的回调
+     *
+     * @param savedInstanceState
+     */
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -255,21 +319,35 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
         super.onPause();
     }
 
+    /**
+     * Presenter 初始化，在 Presenter Inject 成功后自动调用
+     *
+     * @param presenter
+     */
     @Override
     public void setPresenter(P presenter) {
         this.mPresenter = presenter;
     }
 
+    /**
+     * 显示加载
+     */
     @Override
     public void showLoading() {
 
     }
 
+    /**
+     * 隐藏加载
+     */
     @Override
     public void hideLoading() {
 
     }
 
+    /**
+     * 隐藏顶部弹出的提示控件
+     */
     @Override
     public void dismissSnackBar() {
         if (mSnackBar != null) {
@@ -277,6 +355,12 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
         }
     }
 
+    /**
+     * 弹出顶部弹出提示框，可自定义 弹出框种类
+     *
+     * @param message
+     * @param prompt
+     */
     @Override
     public void showSnackMessage(final String message, final Prompt prompt) {
         if (mSnackBar != null) {
@@ -304,29 +388,59 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
         mSnackBar.show();
     }
 
+    /**
+     * 当弹出框关闭后回调
+     *
+     * @param prompt  弹框类型
+     * @param message 提示内容
+     */
     protected void snackViewDismissWhenTimeOut(Prompt prompt, String message) {
         snackViewDismissWhenTimeOut(prompt);
     }
 
+    /**
+     * 当弹出框关闭后回调
+     *
+     * @param prompt 弹框类型
+     */
     protected void snackViewDismissWhenTimeOut(Prompt prompt) {
     }
 
+    /**
+     * 显示成功提示弹框
+     *
+     * @param message 提示内容
+     */
     @Override
     public void showSnackSuccessMessage(String message) {
         showSnackMessage(message, Prompt.SUCCESS);
     }
 
+    /**
+     * 显示错误提示弹框
+     *
+     * @param message 提示内容
+     */
     @Override
     public void showSnackErrorMessage(String message) {
         showSnackMessage(message, Prompt.ERROR);
     }
 
+    /**
+     * 显示警告提示弹框
+     *
+     * @param message 提示内容
+     */
     @Override
     public void showSnackWarningMessage(String message) {
         showSnackMessage(message, Prompt.WARNING);
     }
 
-
+    /**
+     * 显示加载中的提示弹框
+     *
+     * @param message 提示内容
+     */
     @Override
     public void showSnackLoadingMessage(String message) {
         if (mSnackBar != null) {
@@ -340,11 +454,19 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
         mSnackBar.show();
     }
 
+    /**
+     * 根据类名跳转页面
+     * @param cls 目标类名
+     */
     @Override
-    public void goRecharge(Class<?> cls) {
+    public void goTargetActivity(Class<?> cls) {
         startActivity(new Intent(getActivity(), cls));
     }
 
+    /**
+     * 默认显示提示的方法，具体实现在子类处理
+     * @param message 提示内容
+     */
     @Override
     public void showMessage(String message) {
 
@@ -458,11 +580,18 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
         mIsNeedClick = false;
     }
 
+    /**
+     * 显示加载失败
+     * @param isNeedClick 是否需要回调
+     */
     protected void showLoadViewLoadErrorDisableClick(boolean isNeedClick) {
         showErrorImage();
         mIsNeedClick = isNeedClick;
     }
 
+    /**
+     * 显示错误图片
+     */
     private void showErrorImage() {
         if (mCenterLoadingView == null) {
             return;
@@ -535,6 +664,10 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
         return false;
     }
 
+    /**
+     *
+     * @return 是否需要中心加载动画，对应  hideCenterLoading()
+     */
     protected boolean setUseCenterLoadingAnimation() {
         return true;
     }
@@ -575,6 +708,10 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
         return true;
     }
 
+    /**
+     *
+     * @return 是否需要显示音乐播放图标
+     */
     protected boolean needMusicWindowView() {
         return true;
     }
@@ -586,6 +723,10 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
         return DEFAULT_TOOLBAR;
     }
 
+    /**
+     *
+     * @return toolbar 背景
+     */
     protected int setToolBarBackgroud() {
         return DEFAULT_TOOLBAR_BACKGROUD_COLOR;
     }
@@ -625,10 +766,18 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
         }
     }
 
+    /**
+     *
+     * @return 音乐图标显示需要占位的 View, View 会左移，留出音乐图标的位置
+     */
     protected View getRightViewOfMusicWindow() {
         return mToolbarRight;
     }
 
+    /**
+     * 是否需要中心加载弹窗
+     * @return
+     */
     protected boolean needCenterLoadingDialog() {
         return false;
     }
@@ -758,7 +907,10 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
         ((AnimationDrawable) mIvRefresh.getDrawable()).stop();
     }
 
-
+    /**
+     * 设置 Toolbar 左边控件的文字颜色
+     * @param resId
+     */
     protected void setLeftTextColor(@ColorRes int resId) {
         mToolbarLeft.setTextColor(ContextCompat.getColor(getContext(), resId));
     }
@@ -818,6 +970,9 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
     protected void setRightLeftClick() {
     }
 
+    /**
+     * 中间文本点击事件回调，需要的时候子类实现
+     */
     protected void setCenterClick() {
     }
 
@@ -870,6 +1025,11 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
         changeText(mToolbarCenter, centerText);
     }
 
+    /**
+     * 文本修改方法
+     * @param view 需要修改的文本控件
+     * @param string 文本内容
+     */
     private void changeText(TextView view, String string) {
         if (TextUtils.isEmpty(string)) {
             view.setVisibility(View.GONE);
@@ -917,6 +1077,11 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
         }
     }
 
+    /**
+     * 返回颜色
+     * @param resId
+     * @return
+     */
     protected int getColor(int resId) {
         return getResources().getColor(resId);
     }
@@ -959,6 +1124,9 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
 
     }
 
+    /**
+     * Fragment 销毁时控件销毁周期
+     */
     @Override
     public void onDestroyView() {
         if (mSnackBar != null) {

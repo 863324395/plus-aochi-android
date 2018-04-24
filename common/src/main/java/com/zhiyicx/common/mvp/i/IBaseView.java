@@ -76,6 +76,6 @@ public interface IBaseView<VP> {
     /**
      * 去充值
      */
-    void goRecharge(Class<?> cls);
+    void goTargetActivity(Class<?> cls);
 
 }

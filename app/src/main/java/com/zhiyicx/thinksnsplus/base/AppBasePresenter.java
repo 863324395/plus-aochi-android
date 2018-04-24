@@ -8,7 +8,6 @@ import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.common.mvp.i.IBaseView;
 import com.zhiyicx.baseproject.base.SystemConfigBean;
 import com.zhiyicx.thinksnsplus.R;
-import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.WalletBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
@@ -20,7 +19,6 @@ import com.zhiyicx.thinksnsplus.modules.wallet.integration.recharge.IntegrationR
 import javax.inject.Inject;
 
 import rx.Observable;
-import rx.functions.Func1;
 
 /**
  * @Describe
@@ -81,11 +79,11 @@ public abstract class AppBasePresenter<V extends IBaseView> extends BasePresente
                         if (userInfoBean.getWallet() != null) {
                             mWalletBeanGreenDao.insertOrReplace(userInfoBean.getWallet());
                             if (userInfoBean.getWallet().getBalance() < amount) {
-                                mRootView.goRecharge(WalletActivity.class);
+                                mRootView.goTargetActivity(WalletActivity.class);
                                 return Observable.error(new RuntimeException(DEFAULT_WALLET_EXCEPTION_MESSAGE));
                             }
                         } else {
-                            mRootView.goRecharge(WalletActivity.class);
+                            mRootView.goTargetActivity(WalletActivity.class);
                             return Observable.error(new RuntimeException(DEFAULT_WALLET_EXCEPTION_MESSAGE));
                         }
                     }
@@ -108,7 +106,7 @@ public abstract class AppBasePresenter<V extends IBaseView> extends BasePresente
                             if (userInfoBean.getCurrency().getSum() < amount) {
                                 if (getSystemConfigBean() != null && getSystemConfigBean().getCurrencyRecharge() != null && getSystemConfigBean()
                                         .getCurrencyRecharge().isOpen()) {
-                                    mRootView.goRecharge(IntegrationRechargeActivity.class);
+                                    mRootView.goTargetActivity(IntegrationRechargeActivity.class);
                                 } else {
                                     return Observable.error(new RuntimeException(mContext.getString(R.string.integartion_not_enough)));
                                 }
@@ -117,7 +115,7 @@ public abstract class AppBasePresenter<V extends IBaseView> extends BasePresente
                         } else {
                             if (getSystemConfigBean() != null && getSystemConfigBean().getCurrencyRecharge() != null && getSystemConfigBean()
                                     .getCurrencyRecharge().isOpen()) {
-                                mRootView.goRecharge(IntegrationRechargeActivity.class);
+                                mRootView.goTargetActivity(IntegrationRechargeActivity.class);
                             } else {
                                 return Observable.error(new RuntimeException(mContext.getString(R.string.integartion_not_enough)));
                             }
