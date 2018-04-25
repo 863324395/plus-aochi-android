@@ -41,6 +41,10 @@ import cn.jzvd.JZVideoPlayerStandard;
  */
 public class ZhiyiVideoView extends JZVideoPlayerStandard {
 
+    protected static final int MEDIA_INFO_VIDEO_ROTATION_CHANGED = 10001;
+    protected static final int MEDIA_INFO_BUFFERING_START = 701;
+    protected static final int MEDIA_INFO_BUFFERING_END = 702;
+
     public ImageView mShareImageView;
     public ImageView mDefaultStartImageView;
     public ImageView mVideoLoadingImageView;
@@ -163,9 +167,20 @@ public class ZhiyiVideoView extends JZVideoPlayerStandard {
     @Override
     public void onInfo(int what, int extra) {
         super.onInfo(what, extra);
-        if (what == 10001) {
+
+        if (what == MEDIA_INFO_VIDEO_ROTATION_CHANGED) {
             // 在 ijk中 10001 是角度信息，IMediaPlayer.MEDIA_INFO_VIDEO_ROTATION_CHANGED
             JZMediaManager.textureView.setRotation(extra);
+        }
+        if (what == MEDIA_INFO_BUFFERING_START){
+            // 在 ijk中 701 是开始缓冲，IMediaPlayer.MEDIA_INFO_BUFFERING_START
+            currentState = CURRENT_STATE_PREPARING;
+            changeUiToPreparing();
+        }
+        if (what == MEDIA_INFO_BUFFERING_END){
+            // 在 ijk中 702 是缓冲完成，IMediaPlayer.MEDIA_INFO_BUFFERING_END
+            currentState = CURRENT_STATE_PLAYING;
+            changeUiToPlayingClear();
         }
     }
 
