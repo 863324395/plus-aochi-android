@@ -6,7 +6,6 @@ import android.graphics.drawable.BitmapDrawable;
 import android.text.TextUtils;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
@@ -23,14 +22,11 @@ import com.zhy.adapter.recyclerview.base.ViewHolder;
 import java.util.LinkedHashMap;
 
 import cn.jzvd.JZMediaManager;
-import cn.jzvd.JZUtils;
 import cn.jzvd.JZVideoPlayer;
 import cn.jzvd.JZVideoPlayerManager;
 import cn.jzvd.JZVideoPlayerStandard;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
-import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 import static cn.jzvd.JZVideoPlayer.URL_KEY_DEFAULT;
@@ -119,7 +115,7 @@ public class DynamicListItemForShorVideo extends DynamicListBaseItem {
                             Observable.just(resource)
                                     .subscribeOn(Schedulers.io())
                                     .map(glideDrawable -> {
-                                        Bitmap bitmap = FastBlur.blurBitmapCustom(ConvertUtils.drawable2Bitmap(glideDrawable), glideDrawable
+                                        Bitmap bitmap = FastBlur.blurBitmapForShortVideo(ConvertUtils.drawable2Bitmap(glideDrawable), glideDrawable
                                                 .getIntrinsicWidth(), glideDrawable.getIntrinsicHeight());
                                         return new BitmapDrawable(mContext.getResources(), bitmap);
                                     })

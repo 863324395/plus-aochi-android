@@ -309,7 +309,7 @@ public class FastBlur {
      * @param height
      * @return  Bitmap
      */
-    public static Bitmap blurBitmapCustom(Bitmap bkg, int width, int height) {
+    public static Bitmap blurBitmapForShortVideo(Bitmap bkg, int width, int height) {
         long startMs = System.currentTimeMillis();
         float radius = 5;// 越大模糊效果越大 15
         float scaleFactor = 4; // 8

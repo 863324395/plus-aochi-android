@@ -10,6 +10,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.animation.FastOutSlowInInterpolator;
@@ -119,6 +120,7 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
     private int screenW;
     private boolean hasAnim = false;
     private PayPopWindow mPayPopWindow;
+    private boolean mIsLoaded = false;
 
     @Override
     protected boolean useEventBus() {
@@ -128,6 +130,13 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
     @Override
     protected boolean needCenterLoadingDialog() {
         return true;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        hasAnim = getArguments().getBoolean("animationIn");
+
     }
 
     @Override
@@ -156,12 +165,45 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                 .galleryPresenterModule(new GalleryPresenterModule(this))
                 .build()
                 .inject(this);
-        checkAndLoadImage();
+        boolean firstOpenPage = getArguments().getBoolean("firstOpenPage");
+        if (firstOpenPage) {
+            preLoadData();
+        }
+    }
 
+    /**
+     * 预加载
+     */
+    public void preLoadData() {
+        if (!mIsLoaded) {
+            checkAndLoadImage();
+        }
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (isVisibleToUser) {
+            GalleryFragment galleryFragment = (GalleryFragment) getParentFragment();
+            if (galleryFragment != null) {
+                boolean firstOpenPage = getArguments().getBoolean("firstOpenPage");
+                if (firstOpenPage) {
+                    if (hasAnim) {
+                        ObjectAnimator animator = galleryFragment.showBackgroundAnimate();
+                        animator.start();
+                    } else {
+                        galleryFragment.showBackgroundImmediately();
+                    }
+                    getArguments().putBoolean("firstOpenPage", false);
+                }
+            }
+//            if (mIvOriginPager != null) {
+//                checkAndLoadImage();
+//            }
+        }
     }
 
     private void checkAndLoadImage() {
-        hasAnim = getArguments().getBoolean("animationIn");
         final AnimationRectBean rect = getArguments().getParcelable("rect");
         mImageBean = getArguments() != null ? (ImageBean) getArguments().getParcelable("url") : null;
         assert mImageBean != null;
@@ -172,13 +214,13 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
         if (mImageBean.getWidth() > 0 && mImageBean.getHeight() > 0) {
             ViewGroup.LayoutParams params = mIvOriginPager.getLayoutParams();
             params.width = screenW;
-            params.height = height<DeviceUtils.getScreenHeight(getContext())?DeviceUtils.getScreenHeight(getContext()):height;
+            params.height = height < DeviceUtils.getScreenHeight(getContext()) ? DeviceUtils.getScreenHeight(getContext()) : height;
             mIvOriginPager.setLayoutParams(params);
         }
         if (mImageBean.getWidth() > 0 && mImageBean.getHeight() > 0) {
             ViewGroup.LayoutParams params = mIvPager.getLayoutParams();
             params.width = screenW;
-            params.height = height<DeviceUtils.getScreenHeight(getContext())?DeviceUtils.getScreenHeight(getContext()):height;
+            params.height = height < DeviceUtils.getScreenHeight(getContext()) ? DeviceUtils.getScreenHeight(getContext()) : height;
             mIvPager.setLayoutParams(params);
         }
         if (mImageBean.getImgUrl() != null) {
@@ -190,6 +232,7 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
         }
         // 显示图片
         loadImage(mImageBean, rect);
+        mIsLoaded = true;
     }
 
     @Override
@@ -311,12 +354,13 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
      * @return
      */
     public static GalleryPictureFragment newInstance(ImageBean imageBean, AnimationRectBean rect,
-                                                     boolean animationIn) {
+                                                     boolean animationIn, boolean firstOpenPage) {
         GalleryPictureFragment fragment = new GalleryPictureFragment();
         Bundle bundle = new Bundle();
         bundle.putParcelable("url", imageBean);
         bundle.putParcelable("rect", rect);
         bundle.putBoolean("animationIn", animationIn);
+        bundle.putBoolean("firstOpenPage", firstOpenPage);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -333,7 +377,8 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
         canLook = toll == null || !(toll.getPaid() != null && !toll.getPaid() && toll.getToll_type_string().equals(Toll.LOOK_TOLL_TYPE));
         mLlToll.setVisibility(!canLook ? View.VISIBLE : View.GONE);
         final int w, h;
-        w = screenW;//        w = imageBean.getWidth() > screenW ? screenW : (int) imageBean.getWidth();
+        ///        w = imageBean.getWidth() > screenW ? screenW : (int) imageBean.getWidth();
+        w = screenW;
         h = (int) (w * imageBean.getHeight() / imageBean.getWidth());
         // 本地图片
         if (imageBean.getImgUrl() != null) {

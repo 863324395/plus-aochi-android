@@ -93,15 +93,11 @@ public class GalleryFragment extends TSFragment {
         mVpPhotos.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
             @Override
             public void onPageScrollStateChanged(int state) {
-                LogUtils.i("addOnPageChangeListener  onPageScrollStateChanged" + "state--》" + state);
                 viewPageState = state;
                 // 刚拖动
                 if (viewPageState == ViewPager.SCROLL_STATE_DRAGGING) {
                     // 获取到的是当前要退出的fragment
-                    GalleryPictureContainerFragment fragment = fragmentMap.get(mVpPhotos.getCurrentItem());
-                    GalleryPictureFragment galleryPicturFragment = fragment.getChildFragment();
-                    LogUtils.d("galleryPicturFragment Oldstate::" + viewPageState + " position::" + mVpPhotos.getCurrentItem(),
-                            galleryPicturFragment == null ? " null" : " not null");
+                    GalleryPictureFragment galleryPicturFragment = fragmentMap.get(mVpPhotos.getCurrentItem());
                     if (galleryPicturFragment != null) {
                         galleryPicturFragment.showOrHideOriginBtn(false);
                     }
@@ -109,10 +105,7 @@ public class GalleryFragment extends TSFragment {
                 // 通过手指滑动切换到新的fragment，而不是第一次进入切换到fragment
                 if (viewPageState == ViewPager.SCROLL_STATE_SETTLING || viewPageState == ViewPager.SCROLL_STATE_IDLE) {
                     // 获取到的是当前要进入的fragment
-                    GalleryPictureContainerFragment currentFragment = fragmentMap.get(mVpPhotos.getCurrentItem());
-                    GalleryPictureFragment galleryPicturFragment = currentFragment.getChildFragment();
-                    LogUtils.d("galleryPicturFragment Newstate::" + viewPageState + "  position::" + mVpPhotos.getCurrentItem(),
-                            galleryPicturFragment == null ? " null" : " not null");
+                    GalleryPictureFragment galleryPicturFragment = fragmentMap.get(mVpPhotos.getCurrentItem());
                     if (galleryPicturFragment != null) {
                         galleryPicturFragment.showOrHideOriginBtn(true);
                     }
@@ -140,7 +133,7 @@ public class GalleryFragment extends TSFragment {
              * @param key
              */
             private void handlePreLoadData(int key) {
-                GalleryPictureContainerFragment nextFragment = fragmentMap.get(key);
+                GalleryPictureFragment nextFragment = fragmentMap.get(key);
                 if (nextFragment != null) {
                     nextFragment.preLoadData();
                 }
@@ -150,6 +143,7 @@ public class GalleryFragment extends TSFragment {
     }
 
     private int viewPageState = 0;
+
 
     @Override
     protected void initData() {
@@ -163,7 +157,7 @@ public class GalleryFragment extends TSFragment {
     }
 
     ////////////////////////////////缩放动画//////////////////////////////////
-    private SparseArray<GalleryPictureContainerFragment> fragmentMap
+    private SparseArray<GalleryPictureFragment> fragmentMap
             = new SparseArray<>();
     private boolean alreadyAnimateIn = false;
     private ArrayList<AnimationRectBean> rectList;
@@ -182,14 +176,15 @@ public class GalleryFragment extends TSFragment {
         public Fragment getItem(int position) {
             // getItem is called to instantiate the fragment for the given page.
             // Return a PlaceholderFragment (defined as a static inner class below).
-            GalleryPictureContainerFragment fragment = fragmentMap.get(position);
-
+            GalleryPictureFragment fragment = fragmentMap.get(position);
             if (fragment == null) {
                 boolean animateIn = (currentItem == position) && !alreadyAnimateIn;
                 allImages.get(position).setPosition(position);
-                fragment = GalleryPictureContainerFragment
+
+                boolean isFirstLoadPage = currentItem == position || Math.abs(currentItem - position) == 1;
+                fragment = GalleryPictureFragment
                         .newInstance(allImages.get(position), rectList.get(position), animateIn,
-                                currentItem == position);
+                                isFirstLoadPage);
                 alreadyAnimateIn = true;
                 fragmentMap.put(position, fragment);
             }
@@ -207,7 +202,7 @@ public class GalleryFragment extends TSFragment {
         public void setPrimaryItem(ViewGroup container, int position, Object object) {
             super.setPrimaryItem(container, position, object);
             if (object instanceof Fragment) {
-                fragmentMap.put(position, (GalleryPictureContainerFragment) object);
+                fragmentMap.put(position, (GalleryPictureFragment) object);
             }
         }
 
@@ -245,13 +240,9 @@ public class GalleryFragment extends TSFragment {
     public void onBackPressed() {
         // 退出隐藏圆点指示器，防止显示在透明背景上
         mMiIndicator.setVisibility(View.INVISIBLE);
-        GalleryPictureContainerFragment fragment = fragmentMap.get(mVpPhotos.getCurrentItem());
-        if (fragment != null && fragment.canAnimateCloseActivity()) {
-            ObjectAnimator bgAnim = ObjectAnimator.ofInt(backgroundColor, "alpha", 0);
-            fragment.animationExit(bgAnim);
-        } else {
-            mActivity.finish();
-        }
+        GalleryPictureFragment fragment = fragmentMap.get(mVpPhotos.getCurrentItem());
+        ObjectAnimator bgAnim = ObjectAnimator.ofInt(backgroundColor, "alpha", 0);
+        fragment.animationExit(bgAnim);
     }
 
     private void addCircleNavigator() {

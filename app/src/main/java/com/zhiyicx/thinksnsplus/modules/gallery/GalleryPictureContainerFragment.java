@@ -24,7 +24,6 @@ import java.util.List;
 
 public class GalleryPictureContainerFragment extends TSFragment {
     private boolean mIsLoaded;  // 是否加载过了
-    private boolean mIsViewPrep;// view 是否准备好了
     private boolean mIsVisible; // fragment 是否可见
     private boolean mAnimateIn; // 是否是动画进入
     private ImageBean mImageBean; // 图片资源
@@ -76,7 +75,6 @@ public class GalleryPictureContainerFragment extends TSFragment {
         Bundle bundle = getArguments();
         mImageBean = bundle.getParcelable("url");
         mAnimateIn = bundle.getBoolean("animationIn");
-        mIsViewPrep = true;
         handleData();
     }
 
@@ -87,7 +85,7 @@ public class GalleryPictureContainerFragment extends TSFragment {
     }
 
     private void handleData() {
-        if (mIsViewPrep && mIsVisible) {
+        if (mIsVisible) {
             displayPicture(mImageBean, mAnimateIn);
         }
     }
@@ -119,7 +117,7 @@ public class GalleryPictureContainerFragment extends TSFragment {
             getArguments().putBoolean("firstOpenPage", false);
         }
         if (mContentFragment == null) {
-            mContentFragment = GalleryPictureFragment.newInstance(imageBean, rect, animateIn);
+            mContentFragment = GalleryPictureFragment.newInstance(imageBean, rect, animateIn,firstOpenPage);
             getChildFragmentManager().beginTransaction().replace(R.id.fl_picture_container, mContentFragment)
                     .commitAllowingStateLoss();
         }
