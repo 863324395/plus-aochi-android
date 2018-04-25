@@ -76,8 +76,6 @@ public class RecordFragment extends TSFragment implements SurfaceHolder.Callback
 
     @BindView(R.id.layout_aspect)
     AspectFrameLayout mLayoutAspect;
-    @BindView(R.id.tv_fps)
-    TextView mTvFps;
 
     @BindView(R.id.btn_take)
     ShutterButton mBtnTake;

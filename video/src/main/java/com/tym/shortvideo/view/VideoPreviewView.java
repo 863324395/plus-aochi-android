@@ -87,13 +87,18 @@ public class VideoPreviewView extends GLSurfaceView implements GLSurfaceView.Ren
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        if (CameraUtils.getCurrentRatio() ==
-                CameraUtils.Ratio.RATIO_4_3_2_1_1 || CameraUtils.getCurrentRatio() ==
-                CameraUtils.Ratio.RATIO_16_9_2_1_1){
-            setMeasuredDimension(DeviceUtils.getScreenWidth(getContext()),DeviceUtils.getScreenWidth(getContext()));
+        if (CameraUtils.getCurrentRatio() == CameraUtils.Ratio.RATIO_4_3_2_1_1
+                || CameraUtils.getCurrentRatio() == CameraUtils.Ratio.RATIO_16_9_2_1_1) {
+            int w, h;
+            w = h = DeviceUtils.getScreenWidth(getContext());
+            if (CameraUtils.getCurrentRatio() == CameraUtils.Ratio.RATIO_16_9_2_1_1) {
+                // 不知为何， 16:9 转 1:1 计算得到的值并不好用，相差了 0.02f
+                h = (int) (0.98 * DeviceUtils.getScreenWidth(getContext()));
+            }
+            setMeasuredDimension(w, h);
             return;
         }
-        super.onMeasure(widthMeasureSpec,heightMeasureSpec);
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }
 
     @Override
@@ -202,7 +207,7 @@ public class VideoPreviewView extends GLSurfaceView implements GLSurfaceView.Ren
         return mMediaPlayer.getCurVideoDuration();
     }
 
-    public int getTotalVIdeoDuration(){
+    public int getTotalVIdeoDuration() {
         return mMediaPlayer.getVideoDuration();
     }
 

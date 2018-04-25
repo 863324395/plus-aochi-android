@@ -42,9 +42,13 @@ public class CameraUtils {
     public static Ratio mRatio = Ratio.RATIO_16_9_2_1_1;
 
     public enum Ratio {
+        // 16:9 安卓手机最常见比例
         RATIO_16_9(0.5625f),
+        // 4:3
         RATIO_4_3(0.75f),
+        // 4:3 纹理转换为 1:1
         RATIO_4_3_2_1_1(0.75f),
+        // 16:9 纹理转换为 1:1
         RATIO_16_9_2_1_1(0.75f);
         private float ratio;
 
