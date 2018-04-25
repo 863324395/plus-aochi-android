@@ -11,6 +11,7 @@ import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.SharePreferenceUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.rxerrorhandler.functions.RetryWithInterceptDelay;
+import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.config.SharePreferenceTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.LocationContainerBean;
@@ -72,6 +73,9 @@ public class SystemRepository implements ISystemRepository {
                 .subscribe(new BaseSubscribeForV2<SystemConfigBean>() {
                     @Override
                     protected void onSuccess(SystemConfigBean data) {
+                        if (data != null) {
+                            System.out.println(mContext.getString(R.string.ts_server_version_format,data.getServerVersion()));
+                        }
                         saveComponentStatus(data, mContext);
                     }
                 });
@@ -319,6 +323,7 @@ public class SystemRepository implements ISystemRepository {
 
     /**
      * 检查当前当前用户是否是 imHelper
+     *
      * @param userId
      * @return
      */
