@@ -41,6 +41,7 @@ public class SystemConfigBean implements Serializable {
      * "open": true
      * },
      * server:version
+     * limit :1 列表单页数量
      */
     @SerializedName("wallet:ratio")
     private int wallet_ratio;
@@ -86,6 +87,7 @@ public class SystemConfigBean implements Serializable {
     private OpenConfig currencyCash;
     @SerializedName("currency:recharge")
     private OpenConfig currencyRecharge;
+    private int limit;
 
     /**
      * registerSettings : {"showTerms":false,"registerMode":"all","completeData":true,"accountType":"all","content":"# 服务条款及隐私政策"}
@@ -99,6 +101,15 @@ public class SystemConfigBean implements Serializable {
      */
 
     private SiteBean site;
+
+
+    public int getLimit() {
+        return limit;
+    }
+
+    public void setLimit(int limit) {
+        this.limit = limit;
+    }
 
     public NewsConfig getNewsContribute() {
         return mNewsContribute;

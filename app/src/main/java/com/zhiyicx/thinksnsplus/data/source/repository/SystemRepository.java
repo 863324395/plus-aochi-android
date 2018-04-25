@@ -6,11 +6,13 @@ import android.content.Context;
 import com.google.gson.Gson;
 import com.zhiyicx.appupdate.AppVersionBean;
 import com.zhiyicx.baseproject.base.SystemConfigBean;
+import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.config.SystemConfig;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.SharePreferenceUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.rxerrorhandler.functions.RetryWithInterceptDelay;
+import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.config.SharePreferenceTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.LocationContainerBean;
@@ -72,6 +74,12 @@ public class SystemRepository implements ISystemRepository {
                 .subscribe(new BaseSubscribeForV2<SystemConfigBean>() {
                     @Override
                     protected void onSuccess(SystemConfigBean data) {
+                        if (data != null) {
+                            System.out.println(mContext.getString(R.string.ts_server_version_format, data.getServerVersion()));
+                            if (data.getLimit() > 0) {
+                                TSListFragment.DEFAULT_PAGE_SIZE = data.getLimit();
+                            }
+                        }
                         saveComponentStatus(data, mContext);
                     }
                 });
@@ -319,6 +327,7 @@ public class SystemRepository implements ISystemRepository {
 
     /**
      * 检查当前当前用户是否是 imHelper
+     *
      * @param userId
      * @return
      */
