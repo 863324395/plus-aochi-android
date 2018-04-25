@@ -17,10 +17,10 @@
     <string name="notification">通知</string>
     <string name="system_notification">系统消息</string>
     <string name="system_notification_null">暂无系统消息</string>
-    <string name="critical">评论的</string>
+    <string name="critical">收到的评论</string>
     <string name="comment">评论</string>
     <string name="like">赞</string>
-    <string name="liked">赞过的</string>
+    <string name="liked">收到的赞</string>
     <string name="like_me">赞了我</string>
     <string name="comment_me">评论了我</string>
     <string name="recieved_review">提交评论置顶</string>
