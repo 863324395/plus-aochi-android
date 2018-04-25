@@ -8,8 +8,10 @@ import android.os.Bundle;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.animation.AccelerateDecelerateInterpolator;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 
+import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.DrawableProvider;
 import com.zhiyicx.thinksnsplus.data.beans.AnimationRectBean;
 
@@ -44,7 +46,7 @@ public class TransferImageAnimationUtil {
         // 小图rect属性
         final Rect startBounds = rect.scaledBitmapRect;
         // 大图rect属性
-        final Rect finalBounds = DrawableProvider.getBitmapRectFromImageView(imageView);
+        final Rect finalBounds = DrawableProvider.getBitmapRectCloseImageView(imageView);
         // 没有大图退出动画，直接关闭activity
         if (finalBounds == null || startBounds == null) {
             imageView.animate().alpha(0);
@@ -119,7 +121,7 @@ public class TransferImageAnimationUtil {
 
                         final Rect startBounds = new Rect(rect.scaledBitmapRect);
                         final Rect finalBounds =
-                                DrawableProvider.getBitmapRectFromImageView(imageView);
+                                DrawableProvider.getBitmapRectCloseImageView(imageView);
 
                         if (finalBounds == null) {
                             imageView.getViewTreeObserver().removeOnPreDrawListener(this);
@@ -132,43 +134,96 @@ public class TransferImageAnimationUtil {
                         int deltaTop = startBounds.top - finalBounds.top;
                         int deltaLeft = startBounds.left - finalBounds.left;
                         // 位移+缩小
-                        imageView.setPivotY(
-                                (imageView.getHeight() - finalBounds.height()) / 2);
+                        imageView.setPivotY((imageView.getHeight() - finalBounds.height()) / 2);
                         imageView.setPivotX((imageView.getWidth() - finalBounds.width()) / 2);
-
+                        int translationY = 0;
+                        if (imageView.getHeight() > DeviceUtils.getScreenHeight(imageView.getContext())) {
+                            translationY = (imageView.getHeight() - finalBounds.height()) / 2;
+                        }
+                        System.out.println("translationY = " + translationY);
+                        System.out.println("deltaTop = " + deltaTop);
                         imageView.setScaleX(1 / startScale);
                         imageView.setScaleY(1 / startScale);
                         imageView.setTranslationX(deltaLeft);
                         imageView.setTranslationY(deltaTop);
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
                             imageView.animate()
-                                    .translationY(0)
-                                    .translationX(0)
                                     .scaleY(1)
                                     .scaleX(1)
+                                    .translationX(0)
+                                    .translationY(0)
                                     .setDuration(ANIMATION_DURATION)
-                                    .setInterpolator(
-                                            new AccelerateDecelerateInterpolator())
+                                    .setInterpolator(new AccelerateDecelerateInterpolator())
+                                    .withEndAction(endAction);
+                        }
+                        imageView.getViewTreeObserver().removeOnPreDrawListener(this);
+                        return true;
+                    }
+                });
+    }
+
+    /**
+     * 控件进入时的缩放处理
+     *
+     * @param rect      转场动画初始时，由上一个界面传递过来的图片控件属性
+     * @param imageView 当前界面要进行缩放的图片控件
+     * @param endAction 在监听ViewTree的同时，需要处理一些其他操作，在新的线程中进行
+     */
+    public static void startInAnim(final AnimationRectBean rect, final ImageView imageView, final Runnable endAction, final FrameLayout viewGroup) {
+        if (imageView == null) {
+            return;
+        }
+        imageView.getViewTreeObserver()
+                .addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+                    @Override
+                    public boolean onPreDraw() {
+
+                        if (rect == null) {
+                            imageView.getViewTreeObserver().removeOnPreDrawListener(this);
+                            endAction.run();
+                            return true;
+                        }
+
+                        final Rect startBounds = new Rect(rect.scaledBitmapRect);
+                        final Rect finalBounds =
+                                DrawableProvider.getBitmapRectCloseImageView(imageView);
+
+                        if (finalBounds == null) {
+                            imageView.getViewTreeObserver().removeOnPreDrawListener(this);
+                            endAction.run();
+                            return true;
+                        }
+
+                        float startScale = (float) finalBounds.width() / startBounds.width();
+
+                        int deltaTop = startBounds.top - finalBounds.top;
+                        int deltaLeft = startBounds.left - finalBounds.left;
+                        int translationY = 0;
+                        if (imageView.getHeight() > DeviceUtils.getScreenHeight(imageView.getContext())) {
+                            translationY = (imageView.getHeight() - finalBounds.height()) / 2;
+                            viewGroup.animate().translationY(translationY);
+                        }
+                        // 位移+缩小
+                        imageView.setPivotY((imageView.getHeight() - finalBounds.height()) / 2);
+                        imageView.setPivotX((imageView.getWidth() - finalBounds.width()) / 2);
+                        System.out.println("translationY = " + translationY);
+                        System.out.println("deltaTop = " + deltaTop);
+                        imageView.setScaleX(1 / startScale);
+                        imageView.setScaleY(1 / startScale);
+                        imageView.setTranslationX(deltaLeft);
+                        imageView.setTranslationY(deltaTop);
+
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                            imageView.animate()
+                                    .scaleY(1)
+                                    .scaleX(1)
+                                    .translationX(0)
+                                    .translationY(0)
+                                    .setDuration(ANIMATION_DURATION)
+                                    .setInterpolator(new AccelerateDecelerateInterpolator())
                                     .withEndAction(endAction);
                         }
 
-                        AnimatorSet animationSet = new AnimatorSet();
-                        animationSet.setDuration(ANIMATION_DURATION);
-                        animationSet
-                                .setInterpolator(new AccelerateDecelerateInterpolator());
-
-                        animationSet.playTogether(ObjectAnimator.ofFloat(imageView,
-                                "clipBottom",
-                                AnimationRectBean.getClipBottom(rect, finalBounds), 0));
-                        animationSet.playTogether(ObjectAnimator.ofFloat(imageView,
-                                "clipRight",
-                                AnimationRectBean.getClipRight(rect, finalBounds), 0));
-                        animationSet.playTogether(ObjectAnimator.ofFloat(imageView,
-                                "clipTop", AnimationRectBean.getClipTop(rect, finalBounds), 0));
-                        animationSet.playTogether(ObjectAnimator.ofFloat(imageView,
-                                "clipLeft", AnimationRectBean.getClipLeft(rect, finalBounds), 0));
-
-                        animationSet.start();
 
                         imageView.getViewTreeObserver().removeOnPreDrawListener(this);
                         return true;
