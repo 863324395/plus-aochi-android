@@ -6,6 +6,7 @@ import android.content.Context;
 import com.google.gson.Gson;
 import com.zhiyicx.appupdate.AppVersionBean;
 import com.zhiyicx.baseproject.base.SystemConfigBean;
+import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.config.SystemConfig;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.SharePreferenceUtils;
@@ -74,7 +75,10 @@ public class SystemRepository implements ISystemRepository {
                     @Override
                     protected void onSuccess(SystemConfigBean data) {
                         if (data != null) {
-                            System.out.println(mContext.getString(R.string.ts_server_version_format,data.getServerVersion()));
+                            System.out.println(mContext.getString(R.string.ts_server_version_format, data.getServerVersion()));
+                            if (data.getLimit() > 0) {
+                                TSListFragment.DEFAULT_PAGE_SIZE = data.getLimit();
+                            }
                         }
                         saveComponentStatus(data, mContext);
                     }

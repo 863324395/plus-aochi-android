@@ -51,7 +51,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
     /**
      * 默认每页的数量
      */
-    public static final Integer DEFAULT_PAGE_SIZE = null;
+    public static Integer DEFAULT_PAGE_SIZE = null;
     /**
      * 数据库默认每页数量
      */
