@@ -14,6 +14,7 @@ import com.tym.shortvideo.media.VideoInfo;
 import com.tym.shortvideo.filter.helper.SlideGpuFilterGroup;
 import com.tym.shortvideo.filter.helper.VideoDrawer;
 import com.tym.shortvideo.utils.CameraUtils;
+import com.zhiyicx.common.utils.DeviceUtils;
 
 import java.io.IOException;
 import java.util.List;
@@ -86,9 +87,13 @@ public class VideoPreviewView extends GLSurfaceView implements GLSurfaceView.Ren
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        super.onMeasure(widthMeasureSpec, CameraUtils.getCurrentRatio() ==
+        if (CameraUtils.getCurrentRatio() ==
                 CameraUtils.Ratio.RATIO_4_3_2_1_1 || CameraUtils.getCurrentRatio() ==
-                CameraUtils.Ratio.RATIO_16_9_2_1_1 ? widthMeasureSpec : heightMeasureSpec);
+                CameraUtils.Ratio.RATIO_16_9_2_1_1){
+            setMeasuredDimension(DeviceUtils.getScreenWidth(getContext()),DeviceUtils.getScreenWidth(getContext()));
+            return;
+        }
+        super.onMeasure(widthMeasureSpec,heightMeasureSpec);
     }
 
     @Override
