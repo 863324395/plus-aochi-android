@@ -471,7 +471,7 @@ public class CameraUtils {
      * 设置预览角度，setDisplayOrientation本身只能改变预览的角度
      * previewFrameCallback以及拍摄出来的照片是不会发生改变的，拍摄出来的照片角度依旧不正常的
      * 拍摄的照片需要自行处理
-     * 这里Nexus5X的相机简直没法吐槽，后置摄像头倒置了，切换摄像头之后就出现问题了。
+     * Nexus5X的相机后置摄像头倒置了，切换摄像头之后就出现问题了。
      *
      * @param activity
      */
@@ -494,6 +494,7 @@ public class CameraUtils {
             case Surface.ROTATION_270:
                 degrees = 270;
                 break;
+            default:
         }
 
         int result;
@@ -824,7 +825,7 @@ public class CameraUtils {
                 // 如果bigEnough只有一个元素，使用Collections.max就会因越界报NoSuchElementException
                 // 因此，当只有一个元素时，直接使用该元素
                 if (bigEnough.size() > 1) {
-                    perfectSize =  getSize(bigEnough, Collections.max(bigEnough, new CompareAreaSize()));
+                    perfectSize = getSize(bigEnough, Collections.max(bigEnough, new CompareAreaSize()));
                 } else if (bigEnough.size() == 1) {
                     perfectSize = bigEnough.get(0);
                 }
@@ -920,7 +921,7 @@ public class CameraUtils {
         if (absolutelyMaxSize.height > DeviceUtils.getScreenWidth()) {
             int max = bigEnough.indexOf(absolutelyMaxSize);
             if (max > 0) {
-                max --;
+                max--;
             } else {
                 return absolutelyMaxSize;
             }

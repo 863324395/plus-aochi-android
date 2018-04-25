@@ -112,7 +112,7 @@ public class LogUtils {
 
         private Handler handler;
         private long lastTime = SystemClock.uptimeMillis();
-        private long offset = 5;
+        private long offset = 1;
 
         public LogCatStrategy() {
             HandlerThread thread = new HandlerThread("thread_print");

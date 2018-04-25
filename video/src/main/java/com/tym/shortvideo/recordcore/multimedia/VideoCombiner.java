@@ -129,10 +129,13 @@ public class VideoCombiner {
             e.printStackTrace();
         }
 
-        if (hasVideoFormat && mVideoFormat.containsKey("rotation-degrees")) {
-            int rotation = mVideoFormat.getInteger("rotation-degrees");
-            mMuxer.setOrientationHint(rotation);
+        if (hasVideoFormat) {
             mOutVideoTrackIndex = mMuxer.addTrack(mVideoFormat);
+
+            if (mVideoFormat.containsKey("rotation-degrees")) {
+                int rotation = mVideoFormat.getInteger("rotation-degrees");
+                mMuxer.setOrientationHint(rotation);
+            }
         }
 
         if (hasAudioFormat) {
