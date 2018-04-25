@@ -311,8 +311,8 @@ public class FastBlur {
      */
     public static Bitmap blurBitmapCustom(Bitmap bkg, int width, int height) {
         long startMs = System.currentTimeMillis();
-        float radius = 2;// 越大模糊效果越大 15 :8
-        float scaleFactor = 4;
+        float radius = 5;// 越大模糊效果越大 15
+        float scaleFactor = 4; // 8
         // 放大到整个 view 的大小
         bkg = DrawableProvider.getReSizeBitmap(bkg, width, height);
         Bitmap overlay = Bitmap.createBitmap((int) (width / scaleFactor)
