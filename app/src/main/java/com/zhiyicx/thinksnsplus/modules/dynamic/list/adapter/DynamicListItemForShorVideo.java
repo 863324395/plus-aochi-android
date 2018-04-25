@@ -27,6 +27,11 @@ import cn.jzvd.JZUtils;
 import cn.jzvd.JZVideoPlayer;
 import cn.jzvd.JZVideoPlayerManager;
 import cn.jzvd.JZVideoPlayerStandard;
+import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
 import static cn.jzvd.JZVideoPlayer.URL_KEY_DEFAULT;
 import static com.zhiyicx.thinksnsplus.data.beans.DynamicListAdvert.DEFAULT_ADVERT_FROM_TAG;
@@ -50,10 +55,6 @@ public class DynamicListItemForShorVideo extends DynamicListBaseItem {
     private static final int CURREN_CLOUMS = 1;
 
     private ZhiyiVideoView.ShareInterface mShareInterface;
-
-    public DynamicListItemForShorVideo(Context context) {
-        super(context);
-    }
 
     public DynamicListItemForShorVideo(Context context, ZhiyiVideoView.ShareInterface shareInterface) {
         super(context);
@@ -105,7 +106,6 @@ public class DynamicListItemForShorVideo extends DynamicListBaseItem {
                     .load(video.getGlideUrl())
                     .override(with, height)
                     .placeholder(R.drawable.shape_default_image)
-                    .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .error(R.drawable.shape_default_image)
                     .listener(new RequestListener<GlideUrl, GlideDrawable>() {
                         @Override
@@ -114,15 +114,24 @@ public class DynamicListItemForShorVideo extends DynamicListBaseItem {
                         }
 
                         @Override
-                        public boolean onResourceReady(GlideDrawable resource, GlideUrl model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
-                            Bitmap bitmap = FastBlur.blurBitmap(ConvertUtils.drawable2Bitmap(resource), resource.getIntrinsicWidth(), resource
-                                    .getIntrinsicHeight());
-                            view.setBackground(new BitmapDrawable(mContext.getResources(), bitmap));
+                        public boolean onResourceReady(GlideDrawable resource, GlideUrl model, Target<GlideDrawable> target, boolean
+                                isFromMemoryCache, boolean isFirstResource) {
+                            Observable.just(resource)
+                                    .subscribeOn(Schedulers.io())
+                                    .map(glideDrawable -> {
+                                        Bitmap bitmap = FastBlur.blurBitmapCustom(ConvertUtils.drawable2Bitmap(glideDrawable), glideDrawable
+                                                .getIntrinsicWidth(), glideDrawable.getIntrinsicHeight());
+                                        return new BitmapDrawable(mContext.getResources(), bitmap);
+                                    })
+                                    .observeOn(AndroidSchedulers.mainThread())
+                                    .subscribe(view::setBackground, Throwable::printStackTrace);
                             return false;
                         }
                     })
                     .into(view.thumbImageView);
-        } else {
+        } else
+
+        {
             // 本地
             videoUrl = video.getUrl();
             with = video.getWidth();
@@ -142,7 +151,8 @@ public class DynamicListItemForShorVideo extends DynamicListBaseItem {
                         }
 
                         @Override
-                        public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                        public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean
+                                isFromMemoryCache, boolean isFirstResource) {
 
                             Bitmap bitmap = FastBlur.blurBitmap(ConvertUtils.drawable2Bitmap(resource), resource.getIntrinsicWidth(), resource
                                     .getIntrinsicHeight());
@@ -157,7 +167,11 @@ public class DynamicListItemForShorVideo extends DynamicListBaseItem {
 
         if (JZVideoPlayerManager.getFirstFloor() != null
                 && JZVideoPlayerManager.getFirstFloor().positionInList == positon
-                && !JZVideoPlayerManager.getCurrentJzvd().equals(view)) {
+                && !JZVideoPlayerManager.getCurrentJzvd().
+
+                equals(view))
+
+        {
 
             boolean isDetailBackToList = false;
             LinkedHashMap<String, Object> map = (LinkedHashMap) JZVideoPlayerManager.getFirstFloor().dataSourceObjects[0];
@@ -183,7 +197,9 @@ public class DynamicListItemForShorVideo extends DynamicListBaseItem {
             } else {
                 view.setUp(videoUrl, JZVideoPlayerStandard.SCREEN_WINDOW_LIST);
             }
-        } else {
+        } else
+
+        {
             view.setUp(videoUrl, JZVideoPlayerStandard.SCREEN_WINDOW_LIST);
         }
 

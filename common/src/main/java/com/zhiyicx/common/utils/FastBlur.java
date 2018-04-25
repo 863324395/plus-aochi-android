@@ -301,4 +301,29 @@ public class FastBlur {
         Log.w("test", "cost " + (System.currentTimeMillis() - startMs) + "ms");
         return overlay;
     }
+
+    /**
+     * 模糊 bitmap
+     * @param bkg
+     * @param width
+     * @param height
+     * @return  Bitmap
+     */
+    public static Bitmap blurBitmapCustom(Bitmap bkg, int width, int height) {
+        long startMs = System.currentTimeMillis();
+        float radius = 2;// 越大模糊效果越大 15 :8
+        float scaleFactor = 4;
+        // 放大到整个 view 的大小
+        bkg = DrawableProvider.getReSizeBitmap(bkg, width, height);
+        Bitmap overlay = Bitmap.createBitmap((int) (width / scaleFactor)
+                , (int) (height / scaleFactor), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(overlay);
+        canvas.scale(1 / scaleFactor, 1 / scaleFactor);
+        Paint paint = new Paint();
+        paint.setFlags(Paint.FILTER_BITMAP_FLAG);
+        canvas.drawBitmap(bkg, 0, 0, paint);
+        overlay = FastBlur.doBlur(overlay, (int) radius, true);
+        Log.w("test", "cost " + (System.currentTimeMillis() - startMs) + "ms");
+        return overlay;
+    }
 }
