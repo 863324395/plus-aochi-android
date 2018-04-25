@@ -68,6 +68,7 @@ public class UserInfoPresenter extends AppBasePresenter<UserInfoContract.View> i
                 .subscribe(new BaseSubscribeForV2<Object>() {
                     @Override
                     protected void onSuccess(Object data) {
+                        EventBus.getDefault().post(true, EventBusTagConfig.EVENT_USERINFO_UPDATE);
                         UserInfoBean currentLoginUserInfo = mUserInfoBeanGreenDao.getSingleDataFromCache(AppApplication.getmCurrentLoginAuth()
                                 .getUser_id());
                         currentLoginUserInfo.setAvatar(filePath);
@@ -75,6 +76,7 @@ public class UserInfoPresenter extends AppBasePresenter<UserInfoContract.View> i
                         mUserInfoBeanGreenDao.insertOrReplace(currentLoginUserInfo);
                         ImageUtils.updateCurrentLoginUserHeadPicSignature(mContext);
                         mRootView.setUpLoadHeadIconState(1, "");
+
                     }
 
                     @Override

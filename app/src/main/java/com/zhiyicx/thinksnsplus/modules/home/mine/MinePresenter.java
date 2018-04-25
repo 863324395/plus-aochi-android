@@ -58,6 +58,7 @@ public class MinePresenter extends AppBasePresenter<MineContract.View> implement
     UserCertificationInfoGreenDaoImpl mUserCertificationInfoGreenDao;
     private Subscription mCertificationSub;
     private Subscription mUserinfoSub;
+    private Subscription mNewMessageSub;
 
     @Inject
     public MinePresenter(MineContract.View rootView) {
@@ -86,10 +87,17 @@ public class MinePresenter extends AppBasePresenter<MineContract.View> implement
             mRootView.setUserInfo(userInfoBean);
         }
 
-        /**
-         * 获取最新粉丝数量
-         */
-        Subscription subscribe = mUserInfoRepository.getUserAppendFollowerCount()
+    }
+
+    /**
+     * 获取最新粉丝数量
+     */
+    @Override
+    public void updateUserNewMessage() {
+        if (mNewMessageSub != null && !mNewMessageSub.isUnsubscribed()) {
+            mNewMessageSub.unsubscribe();
+        }
+        mNewMessageSub = mUserInfoRepository.getUserAppendFollowerCount()
                 .subscribe(new BaseSubscribeForV2<UserFollowerCountBean>() {
                     @Override
                     protected void onSuccess(UserFollowerCountBean data) {
@@ -97,7 +105,7 @@ public class MinePresenter extends AppBasePresenter<MineContract.View> implement
 
                     }
                 });
-        addSubscrebe(subscribe);
+        addSubscrebe(mNewMessageSub);
     }
 
     /**
@@ -132,8 +140,8 @@ public class MinePresenter extends AppBasePresenter<MineContract.View> implement
      * 用户信息在后台更新后，在该处进行刷新，这儿获取的是自己的用户信息
      */
     @Subscriber(tag = EventBusTagConfig.EVENT_USERINFO_UPDATE)
-    public void upDataUserInfo(UserInfoBean userInfoBean) {
-        mRootView.setUserInfo(userInfoBean);
+    public void updateUserHeadPic(boolean isShow) {
+        getUserInfoFromDB();
     }
 
     /**
