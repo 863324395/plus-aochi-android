@@ -126,6 +126,7 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
 
     @Override
     protected void initView(View rootView) {
+        mBtCertification.setEnabled(false);
     }
 
     @Override
@@ -289,6 +290,9 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
             case R.id.bt_setting:
                 startActivity(new Intent(mActivity, SettingsActivity.class));
                 break;
+            /**
+             * 认证
+             */
             case R.id.bt_certification:
                 // 弹窗选择个人或者机构，被驳回也只能重新申请哦 (*^__^*)
                 if (mUserCertificationInfo != null
@@ -390,6 +394,7 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
 
     @Override
     public void updateCertification(UserCertificationInfo data) {
+        mBtCertification.setEnabled(true);
         if (data != null && data.getId() != 0) {
             mUserCertificationInfo = data;
             if (data.getStatus() == UserCertificationInfo.CertifyStatusEnum.PASS.value) {

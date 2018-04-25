@@ -72,7 +72,6 @@ public class CertificationDetailFragment extends TSFragment<CertificationDetailC
     @BindView(R.id.iv_pic_two)
     ImageView mIvPicTwo;
 
-    private int mType;
     private UserCertificationInfo mInfo;
     private List<ImageBean> imageBeen;
     ArrayList<AnimationRectBean> mAnimationRectBeanArrayList;
@@ -125,11 +124,11 @@ public class CertificationDetailFragment extends TSFragment<CertificationDetailC
     }
 
     private void initType() {
-        mType = getArguments().getInt(BUNDLE_DETAIL_TYPE);
+        int type = getArguments().getInt(BUNDLE_DETAIL_TYPE);
         mInfo = getArguments().getParcelable(BUNDLE_DETAIL_DATA);
-        mLlPersonage.setVisibility(mType == 0 ? View.VISIBLE : View.GONE);
-        mLlCompany.setVisibility(mType == 1 ? View.VISIBLE : View.GONE);
-        setCenterText(mType == 0 ? getString(R.string.certification_personage) : getString(R.string.certification_company));
+        mLlPersonage.setVisibility(type == 0 ? View.VISIBLE : View.GONE);
+        mLlCompany.setVisibility(type == 1 ? View.VISIBLE : View.GONE);
+        setCenterText(type == 0 ? getString(R.string.certification_personage) : getString(R.string.certification_company));
     }
 
     @Override

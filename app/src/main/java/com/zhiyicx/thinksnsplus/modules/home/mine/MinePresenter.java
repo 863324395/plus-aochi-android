@@ -56,6 +56,8 @@ public class MinePresenter extends AppBasePresenter<MineContract.View> implement
 
     @Inject
     UserCertificationInfoGreenDaoImpl mUserCertificationInfoGreenDao;
+    private Subscription mCertificationSub;
+    private Subscription mUserinfoSub;
 
     @Inject
     public MinePresenter(MineContract.View rootView) {
@@ -156,7 +158,10 @@ public class MinePresenter extends AppBasePresenter<MineContract.View> implement
         if (mUserInfoBeanGreenDao == null) {
             return;
         }
-        Subscription subscribe = mUserInfoRepository.getCurrentLoginUserInfo()
+        if (mUserinfoSub != null && !mUserinfoSub.isUnsubscribed()) {
+            mUserinfoSub.unsubscribe();
+        }
+        mUserinfoSub = mUserInfoRepository.getCurrentLoginUserInfo()
                 .subscribe(new BaseSubscribeForV2<UserInfoBean>() {
                     @Override
                     protected void onSuccess(UserInfoBean data) {
@@ -171,7 +176,7 @@ public class MinePresenter extends AppBasePresenter<MineContract.View> implement
                         mRootView.setUserInfo(data);
                     }
                 });
-        addSubscrebe(subscribe);
+        addSubscrebe(mUserinfoSub);
     }
 
     @Override
@@ -179,7 +184,10 @@ public class MinePresenter extends AppBasePresenter<MineContract.View> implement
         if (mUserInfoBeanGreenDao == null) {
             return;
         }
-        Subscription subscribe = mUserInfoRepository.getCertificationInfo()
+        if (mCertificationSub != null && !mCertificationSub.isUnsubscribed()) {
+            mCertificationSub.unsubscribe();
+        }
+        mCertificationSub = mUserInfoRepository.getCertificationInfo()
                 .compose(mSchedulersTransformer)
                 .subscribe(new BaseSubscribeForV2<UserCertificationInfo>() {
 
@@ -189,23 +197,17 @@ public class MinePresenter extends AppBasePresenter<MineContract.View> implement
                         mRootView.updateCertification(data);
                     }
                 });
-        addSubscrebe(subscribe);
+        addSubscrebe(mCertificationSub);
     }
 
     @Subscriber(tag = EventBusTagConfig.EVENT_UPDATE_CERTIFICATION_SUCCESS)
     public void updateCertification(Bundle bundle) {
-        if (bundle != null) {
-            UserCertificationInfo info = bundle.getParcelable(EventBusTagConfig.EVENT_UPDATE_CERTIFICATION_SUCCESS);
-            mRootView.updateCertification(info);
-        }
+        getCertificationInfo();
     }
 
     @Subscriber(tag = EventBusTagConfig.EVENT_SEND_CERTIFICATION_SUCCESS)
     public void sendSuccess(Bundle bundle) {
-        if (bundle != null) {
-            UserCertificationInfo info = bundle.getParcelable(EventBusTagConfig.EVENT_SEND_CERTIFICATION_SUCCESS);
-            mRootView.updateCertification(info);
-        }
+        getCertificationInfo();
     }
 
 
