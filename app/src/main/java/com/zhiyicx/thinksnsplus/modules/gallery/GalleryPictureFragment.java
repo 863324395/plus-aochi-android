@@ -631,11 +631,17 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
         final Runnable endAction = new Runnable() {
             @Override
             public void run() {
-
+                mIvPager.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        System.out.println("mFlImageContaienr.getTop() = " + mFlImageContaienr.getTop());
+                        System.out.println("mFlImageContaienr.getBottom() = " + mFlImageContaienr.getBottom());
+                    }
+                },1000);
                 LogUtils.i("startInAnim" + "endAction");
             }
         };
-        TransferImageAnimationUtil.startInAnim(rect, mIvPager, endAction,mFlImageContaienr);
+        TransferImageAnimationUtil.startInAnim(rect, mIvPager, endAction, mFlImageContaienr);
     }
 
     /**

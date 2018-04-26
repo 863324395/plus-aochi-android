@@ -116,8 +116,8 @@ public class SelectFriendsFragment extends TSListFragment<SelectFriendsContract.
                 });
         RxView.clicks(mFlSearchResult)
                 .subscribe(aVoid -> {
-                    mEditSearchFriends.clearFocus();
-                    mSearchResultList.clear();
+//                    mEditSearchFriends.clearFocus();
+//                    mSearchResultList.clear();
                 });
     }
 
