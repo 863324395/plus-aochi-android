@@ -112,7 +112,6 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
     private ImageBean mImageBean;
     private ActionPopupWindow mActionPopupWindow;
     private Context context;
-    private TSnackbar mSavingTSnackbar;
     private int screenW;
     private boolean hasAnim = false;
     private PayPopWindow mPayPopWindow;
@@ -398,7 +397,6 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
             DrawableRequestBuilder local = Glide.with(context)
                     .load(imageBean.getImgUrl())
                     .error(R.drawable.shape_default_image)
-                    .diskCacheStrategy(DiskCacheStrategy.NONE)
                     .thumbnail(0.1f);
             local.into(new GallaryGlideDrawableImageViewTarget(rect));
         } else {
@@ -660,11 +658,12 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
         Observable.just(1)// 不能empty否则map无法进行转换
                 .subscribeOn(Schedulers.io())
                 .doOnSubscribe(() -> {// .subscribeOn(Schedulers.io())  Animators may only be run on Looper threads
-                    mSavingTSnackbar = TSnackbar.make(mSnackRootView, getString(R.string.save_pic_ing), TSnackbar.LENGTH_INDEFINITE)
-                            .setPromptThemBackground(Prompt.SUCCESS)
-                            .addIconProgressLoading(0, true, false)
-                            .setMinHeight(0, getResources().getDimensionPixelSize(R.dimen.toolbar_and_statusbar_height));
-                    mSavingTSnackbar.show();
+//                    mSavingTSnackbar = TSnackbar.make(mSnackRootView, , TSnackbar.LENGTH_INDEFINITE)
+//                            .setPromptThemBackground(Prompt.SUCCESS)
+//                            .addIconProgressLoading(0, true, false)
+//                            .setMinHeight(0, getResources().getDimensionPixelSize(R.dimen.toolbar_and_statusbar_height));
+//                    mSavingTSnackbar.show();
+                    showSnackLoadingMessage(getString(R.string.save_pic_ing));
                 })
                 .map(integer -> {
                     String imgName = ConvertUtils.getStringMD5(url) + ".jpg";
@@ -687,12 +686,10 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                             if (file.exists()) {
                                 result = getString(R.string.save_success) + result;
                                 FileUtils.insertPhotoToAlbumAndRefresh(context, file);
+                                result = getString(R.string.save_success);
                             }
                     }
-                    if (mSavingTSnackbar != null) {
-                        mSavingTSnackbar.dismiss();
-                    }
-                    showSnackSuccessMessage(getString(R.string.save_success));
+                    showSnackSuccessMessage(result);
                 });
     }
 

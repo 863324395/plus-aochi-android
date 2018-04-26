@@ -255,8 +255,8 @@ public final class TSnackbar {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             mView.setElevation(DEFALUT_ELEVATION);
         }
-        // 关闭硬件加速，使用自定义的阴影
-        mView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+        // 关闭硬件加速，使用自定义的阴影 给 mView 无效，给 mParent 才可以
+//        mView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
         mAccessibilityManager = (AccessibilityManager)
                 mContext.getSystemService(Context.ACCESSIBILITY_SERVICE);
         if (appearDirection == APPEAR_FROM_TOP_TO_DOWN) {

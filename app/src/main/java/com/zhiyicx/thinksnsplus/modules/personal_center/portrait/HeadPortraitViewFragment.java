@@ -274,9 +274,10 @@ public class HeadPortraitViewFragment extends TSFragment<HeadPortraitViewContrac
                             if (file.exists()) {
                                 result = getString(R.string.save_success) + result;
                                 FileUtils.insertPhotoToAlbumAndRefresh(getContext(), file);
+                                result = getString(R.string.save_success);
                             }
                     }
-                    TSnackbar.make(mSnackRootView, getString(R.string.save_success), TSnackbar.LENGTH_SHORT)
+                    TSnackbar.make(mSnackRootView, result, TSnackbar.LENGTH_SHORT)
                             .setPromptThemBackground(Prompt.SUCCESS)
                             .setMinHeight(0, getResources().getDimensionPixelSize(R.dimen.toolbar_height))
                             .show();
