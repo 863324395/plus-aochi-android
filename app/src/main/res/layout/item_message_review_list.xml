@@ -39,6 +39,7 @@
         android:layout_toRightOf="@id/iv_headpic"
         android:includeFontPadding="false"
         android:paddingBottom="@dimen/spacing_mid_small_8dp"
+        android:paddingRight="@dimen/spacing_normal"
         android:textColor="@color/important_for_content"
         android:textSize="@dimen/size_content_assist"
         tools:text="我送第几个我送第几个我送第几个我送第几个我送第几个我送第几个我送第几个我送第几个我送第几个我送第几个我送第几个 "/>
@@ -49,7 +50,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/tv_content"
         android:layout_marginBottom="@dimen/spacing_mid"
-        android:layout_marginRight="@dimen/spacing_mid_small_8dp"
+        android:layout_marginRight="@dimen/spacing_normal"
         android:layout_toRightOf="@id/iv_headpic"
         android:background="@color/bgColor"
         android:orientation="horizontal"
@@ -118,7 +119,7 @@
         android:maxLines="1"
         android:paddingBottom="@dimen/spacing_mid_small_8dp"
         android:paddingLeft="@dimen/spacing_mid_small_8dp"
-        android:paddingRight="@dimen/spacing_mid_small_8dp"
+        android:paddingRight="@dimen/spacing_normal"
         android:textColor="@color/dyanmic_top_flag"
         android:textSize="@dimen/size_icon_assist"
         tools:text="6分钟前"/>
