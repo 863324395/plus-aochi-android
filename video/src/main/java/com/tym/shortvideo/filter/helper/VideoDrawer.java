@@ -2,9 +2,11 @@ package com.tym.shortvideo.filter.helper;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
 import android.graphics.SurfaceTexture;
 import android.opengl.GLES11Ext;
 import android.opengl.GLES20;
+import android.opengl.GLException;
 import android.opengl.GLSurfaceView;
 import android.view.MotionEvent;
 
@@ -16,8 +18,11 @@ import com.tym.shortvideo.filter.base.avfilter.NoFilter;
 import com.tym.shortvideo.filter.base.avfilter.ProcessFilter;
 import com.tym.shortvideo.filter.base.avfilter.RotationOESFilter;
 import com.tym.shortvideo.filter.helper.type.GlUtil;
+import com.tym.shortvideo.interfaces.SingleCallback;
 import com.tym.shortvideo.media.VideoInfo;
 import com.tym.shortvideo.utils.MatrixUtils;
+
+import java.nio.IntBuffer;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -82,6 +87,9 @@ public class VideoDrawer implements GLSurfaceView.Renderer {
      * 是否开启美颜
      */
     private boolean isBeauty = false;
+
+    private boolean isTakePic = false;
+    private SingleCallback<Bitmap, Integer> mSingleCallback;
 
 
     public VideoDrawer(Context context, Resources res) {
@@ -194,6 +202,11 @@ public class VideoDrawer implements GLSurfaceView.Renderer {
 
         mShow.setTextureId(mProcessFilter.getOutputTexture());
         mShow.draw();
+
+        if (isTakePic) {
+            isTakePic = false;
+            mSingleCallback.onSingleCallback(createBitmapFromGLSurface(0, 0, viewWidth, viewHeight, gl), 1);
+        }
     }
 
     public SurfaceTexture getSurfaceTexture() {
@@ -249,6 +262,36 @@ public class VideoDrawer implements GLSurfaceView.Renderer {
             mGroupFilter.onDisplaySizeChanged(viewWidth, viewWidth);
             mGroupFilter.onInputSizeChanged(viewWidth, viewHeight);
         }
+    }
 
+    public void takePic(SingleCallback<Bitmap, Integer> singleCallback) {
+        mSingleCallback = singleCallback;
+        isTakePic = true;
+    }
+
+    private Bitmap createBitmapFromGLSurface(int x, int y, int w, int h, GL10 gl) {
+        int bitmapBuffer[] = new int[w * h];
+        int bitmapSource[] = new int[w * h];
+        IntBuffer intBuffer = IntBuffer.wrap(bitmapBuffer);
+        intBuffer.position(0);
+        try {
+            gl.glReadPixels(x, y, w, h, GL10.GL_RGBA, GL10.GL_UNSIGNED_BYTE,
+                    intBuffer);
+            int offset1, offset2;
+            for (int i = 0; i < h; i++) {
+                offset1 = i * w;
+                offset2 = (h - i - 1) * w;
+                for (int j = 0; j < w; j++) {
+                    int texturePixel = bitmapBuffer[offset1 + j];
+                    int blue = (texturePixel >> 16) & 0xff;
+                    int red = (texturePixel << 16) & 0x00ff0000;
+                    int pixel = (texturePixel & 0xff00ff00) | red | blue;
+                    bitmapSource[offset2 + j] = pixel;
+                }
+            }
+        } catch (GLException e) {
+            return null;
+        }
+        return Bitmap.createBitmap(bitmapSource, w, h, Bitmap.Config.ARGB_8888);
     }
 }

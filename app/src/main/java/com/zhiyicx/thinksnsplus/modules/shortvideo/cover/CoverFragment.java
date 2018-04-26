@@ -3,17 +3,18 @@ package com.zhiyicx.thinksnsplus.modules.shortvideo.cover;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.RelativeLayout;
-import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding.view.RxView;
 import com.tym.shortvideo.filter.helper.MagicFilterType;
+import com.tym.shortvideo.interfaces.SingleCallback;
 import com.tym.shortvideo.media.MediaPlayerWrapper;
 import com.tym.shortvideo.media.VideoInfo;
 import com.tym.shortvideo.mediacodec.VideoClipper;
@@ -23,10 +24,10 @@ import com.tym.shortvideo.recordcore.multimedia.VideoCombineManager;
 import com.tym.shortvideo.recordcore.multimedia.VideoCombiner;
 import com.tym.shortvideo.utils.FileUtils;
 import com.tym.shortvideo.utils.TrimVideoUtil;
+import com.tym.shortvideo.view.VideoCoverView;
 import com.tym.shortvideo.view.VideoPreviewView;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
-import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
@@ -44,9 +45,6 @@ import java.util.concurrent.TimeUnit;
 import butterknife.BindView;
 import rx.Observable;
 import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
-import rx.functions.Func1;
 
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 
@@ -56,7 +54,7 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
  * @Email Jliuer@aliyun.com
  * @Description 选择封面 && 动态发布页预览
  */
-public class CoverFragment extends TSFragment implements MediaPlayerWrapper.IMediaCallback {
+public class CoverFragment extends TSFragment implements MediaPlayerWrapper.IMediaCallback, VideoCoverView.OnScrollDistanceListener {
     public static final String PATH = "path";
     public static final String PREVIEW = "preview";
     public static final String FILTER = "filter";
@@ -66,8 +64,6 @@ public class CoverFragment extends TSFragment implements MediaPlayerWrapper.IMed
 
     @BindView(R.id.videoView)
     VideoPreviewView mVideoView;
-    @BindView(R.id.sk_cover)
-    SeekBar mSeekBar;
     @BindView(R.id.tv_toolbar_right)
     TextView mToolbarRight;
     @BindView(R.id.tv_toolbar_left)
@@ -76,6 +72,8 @@ public class CoverFragment extends TSFragment implements MediaPlayerWrapper.IMed
     TextView mToolbarCenter;
     @BindView(R.id.rl_toolbar)
     RelativeLayout mToolBar;
+    @BindView(R.id.vc_cover_container)
+    VideoCoverView mVideoCoverView;
 
 
     private ProgressDialog mProgressDialog;
@@ -88,6 +86,7 @@ public class CoverFragment extends TSFragment implements MediaPlayerWrapper.IMed
     private Subscription mSubscription;
 
     private VideoInfo mVideoInfo;
+    private ArrayList<String> mSrcList;
 
     public static CoverFragment newInstance(Bundle bundle) {
         CoverFragment fragment = new CoverFragment();
@@ -157,7 +156,7 @@ public class CoverFragment extends TSFragment implements MediaPlayerWrapper.IMed
                         mActivity.setResult(Activity.RESULT_CANCELED);
                         mActivity.finish();
                     } else if (!hasFilter) {
-                        if (mBack2Record){
+                        if (mBack2Record) {
                             startActivity(new Intent(mActivity, RecordActivity.class));
                         }
                         mActivity.finish();
@@ -170,40 +169,39 @@ public class CoverFragment extends TSFragment implements MediaPlayerWrapper.IMed
     }
 
     private void getVideoCover() {
-        buildDialog(getString(R.string.dealing));
-        TrimVideoUtil.backgroundShootVideoThumb(mActivity, Uri.parse(mPath), (long) mSeekBar
-                .getProgress(), (bitmap, integer) -> {
-            String cover = com.zhiyicx.common.utils.FileUtils.saveBitmapToFile(mActivity,
-                    bitmap,
-                    ParamsManager.VideoCover);
-
-            if (hasFilter) {
-                mProgressDialog.dismiss();
-                Bundle bundle = new Bundle();
-                bundle.putString(PATH, cover);
-                Intent intent = new Intent();
-                intent.putExtras(bundle);
-                mActivity.setResult(Activity.RESULT_OK, intent);
-                mActivity.finish();
-            } else {
-                combineVideo(cover);
-            }
-
-        });
+//        buildDialog(getString(R.string.dealing));
+//        TrimVideoUtil.backgroundShootVideoThumb(mActivity, Uri.parse(mPath), (long) mSeekBar
+//                .getProgress(), (bitmap, integer) -> {
+//            String cover = com.zhiyicx.common.utils.FileUtils.saveBitmapToFile(mActivity,
+//                    bitmap,
+//                    ParamsManager.VideoCover);
+//
+//            if (hasFilter) {
+//                mProgressDialog.dismiss();
+//                Bundle bundle = new Bundle();
+//                bundle.putString(PATH, cover);
+//                Intent intent = new Intent();
+//                intent.putExtras(bundle);
+//                mActivity.setResult(Activity.RESULT_OK, intent);
+//                mActivity.finish();
+//            } else {
+//                combineVideo(cover);
+//            }
+//
+//        });
     }
 
     @Override
     protected void initData() {
-        ArrayList<String> srcList = getArguments().getStringArrayList(PATH);
-        if (srcList == null || srcList.isEmpty()) {
+        mSrcList = getArguments().getStringArrayList(PATH);
+        if (mSrcList == null || mSrcList.isEmpty()) {
             throw new IllegalArgumentException("video path can not be null");
         }
         mVideoInfo = new VideoInfo();
         isPre = getArguments().getBoolean(PREVIEW);
         hasFilter = getArguments().getBoolean(FILTER);
         mBack2Record = getArguments().getBoolean(BACKTORECORD);
-        mVideoView.setVideoPath(srcList);
-        mSeekBar.setVisibility(isPre ? View.GONE : View.VISIBLE);
+        mVideoView.setVideoPath(mSrcList);
 
         if (isPre) {
             mToolbarCenter.setText(R.string.preview);
@@ -244,29 +242,45 @@ public class CoverFragment extends TSFragment implements MediaPlayerWrapper.IMed
     }
 
     @Override
+    public void changeTo(long millisecond) {
+        mVideoView.seekTo((int) millisecond);
+        mVideoView.takePic((bitmap, integer) -> mActivity.runOnUiThread(() -> mVideoCoverView.setImageBitmap(bitmap)));
+    }
+
+    @Override
     public void onVideoPrepare() {
         if (isPre) {
             mVideoView.start();
         } else {
             mVideoView.seekTo(1);
         }
-        mSeekBar.setMax(mVideoView.getTotalVIdeoDuration());
-        mSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                mVideoView.seekTo(progress);
-            }
+        mVideoCoverView.setOnScrollDistanceListener(this);
+        List<Uri> videoUris = new ArrayList<>();
+        for (String url : mSrcList) {
+            videoUris.add(Uri.parse(url));
+        }
+        TrimVideoUtil.backgroundShootVideoThumb(mActivity, videoUris,
+                (bitmaps, integer) ->
+                        mActivity.runOnUiThread(() ->
+                                mVideoCoverView.addImages(bitmaps)));
 
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-
-            }
-        });
+//        mSeekBar.setMax(mVideoView.getTotalVIdeoDuration());
+//        mSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+//            @Override
+//            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+//                mVideoView.seekTo(progress);
+//            }
+//
+//            @Override
+//            public void onStartTrackingTouch(SeekBar seekBar) {
+//
+//            }
+//
+//            @Override
+//            public void onStopTrackingTouch(SeekBar seekBar) {
+//
+//            }
+//        });
     }
 
     @Override
