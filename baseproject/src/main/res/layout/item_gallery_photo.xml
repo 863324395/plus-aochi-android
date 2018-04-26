@@ -14,34 +14,35 @@
         <FrameLayout
             android:id="@+id/fl_image_contaienr"
             android:layout_width="match_parent"
-            android:layout_gravity="center"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_gravity="center">
 
             <ImageView
                 android:id="@+id/iv_orin_pager"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:scaleType="fitStart"
+                android:scaleType="fitXY"
                 android:visibility="invisible"/>
 
             <ImageView
                 android:id="@+id/iv_pager"
                 android:layout_width="match_parent"
-                android:scaleType="fitStart"
                 android:layout_height="wrap_content"
-                 />
+                android:scaleType="fitXY"
+                />
         </FrameLayout>
     </ScrollView>
 
-    <ProgressBar
+
+    <ImageView
         android:id="@+id/pb_progress"
-        style="@style/Widget.AppCompat.ProgressBar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:padding="@dimen/loading_padding"
+        android:layout_width="@dimen/frame_load_round_size"
+        android:layout_height="@dimen/frame_load_round_size"
+        android:background="@drawable/round"
+        android:src="@drawable/frame_loading_white"
         android:layout_gravity="center"
-        android:indeterminateTint="@color/themeColor"
-        android:indeterminateTintMode="src_atop"
-        tools:ignore="UnusedAttribute"/>
+       />
 
     <ImageView
         android:id="@+id/iv_gif_control"

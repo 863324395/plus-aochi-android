@@ -70,29 +70,24 @@ public class TransferImageAnimationUtil {
                     .scaleY(startHScale)
                     .scaleX(startWScale)
                     .setDuration(ANIMATION_DURATION)
-                    .setInterpolator(new AccelerateDecelerateInterpolator())
-                    .withEndAction(new Runnable() {
-                        @Override
-                        public void run() {
-                        }
-                    });
+                    .setInterpolator(new AccelerateDecelerateInterpolator());
         }
         AnimatorSet animationSet = new AnimatorSet();
         animationSet.setDuration(ANIMATION_DURATION);
         animationSet.setInterpolator(new AccelerateDecelerateInterpolator());
 
         animationSet.playTogether(backgroundAnimator);
-
-        animationSet.playTogether(ObjectAnimator.ofFloat(imageView,
-                "clipBottom", 0,
-                AnimationRectBean.getClipBottom(rect, finalBounds)));
-        animationSet.playTogether(ObjectAnimator.ofFloat(imageView,
-                "clipRight", 0,
-                AnimationRectBean.getClipRight(rect, finalBounds)));
-        animationSet.playTogether(ObjectAnimator.ofFloat(imageView,
-                "clipTop", 0, AnimationRectBean.getClipTop(rect, finalBounds)));
-        animationSet.playTogether(ObjectAnimator.ofFloat(imageView,
-                "clipLeft", 0, AnimationRectBean.getClipLeft(rect, finalBounds)));
+//
+//        animationSet.playTogether(ObjectAnimator.ofFloat(imageView,
+//                "clipBottom", 0,
+//                AnimationRectBean.getClipBottom(rect, finalBounds)));
+//        animationSet.playTogether(ObjectAnimator.ofFloat(imageView,
+//                "clipRight", 0,
+//                AnimationRectBean.getClipRight(rect, finalBounds)));
+//        animationSet.playTogether(ObjectAnimator.ofFloat(imageView,
+//                "clipTop", 0, AnimationRectBean.getClipTop(rect, finalBounds)));
+//        animationSet.playTogether(ObjectAnimator.ofFloat(imageView,
+//                "clipLeft", 0, AnimationRectBean.getClipLeft(rect, finalBounds)));
 
         animationSet.start();
     }
@@ -198,16 +193,9 @@ public class TransferImageAnimationUtil {
 
                         int deltaTop = startBounds.top - finalBounds.top;
                         int deltaLeft = startBounds.left - finalBounds.left;
-                        int translationY = 0;
-                        if (imageView.getHeight() > DeviceUtils.getScreenHeight(imageView.getContext())) {
-                            translationY = (imageView.getHeight() - finalBounds.height()) / 2;
-                            viewGroup.animate().translationY(translationY);
-                        }
                         // 位移+缩小
                         imageView.setPivotY((imageView.getHeight() - finalBounds.height()) / 2);
                         imageView.setPivotX((imageView.getWidth() - finalBounds.width()) / 2);
-                        System.out.println("translationY = " + translationY);
-                        System.out.println("deltaTop = " + deltaTop);
                         imageView.setScaleX(1 / startScale);
                         imageView.setScaleY(1 / startScale);
                         imageView.setTranslationX(deltaLeft);

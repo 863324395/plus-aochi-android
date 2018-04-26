@@ -57,7 +57,7 @@ public class PhotoViewAttacher implements IPhotoView, View.OnTouchListener,
     private static final boolean DEBUG = Log.isLoggable(LOG_TAG, Log.DEBUG);
 
     static final Interpolator sInterpolator = new AccelerateDecelerateInterpolator();
-    private static final float DEFAULT_WITH_SCALE_OF_VIEW = 1.5F; // 放大到屏幕的 1.5 倍
+    private static final float DEFAULT_WITH_SCALE_OF_VIEW = 2F; // 放大到屏幕的 2 倍
     private boolean mIsCanScal = true;
     int ZOOM_DURATION = DEFAULT_ZOOM_DURATION;
 

@@ -6,7 +6,7 @@ import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
+import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -20,7 +20,6 @@ import android.view.animation.Interpolator;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.bumptech.glide.DrawableRequestBuilder;
@@ -31,7 +30,6 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.load.model.stream.StreamModelLoader;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
-import com.bumptech.glide.load.resource.gif.GifDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.GlideDrawableImageViewTarget;
@@ -54,7 +52,6 @@ import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.DrawableProvider;
 import com.zhiyicx.common.utils.FileUtils;
-import com.zhiyicx.common.utils.NetUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
@@ -73,7 +70,6 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import me.iwf.photopicker.utils.AndroidLifecycleUtils;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -97,7 +93,7 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
     @BindView(R.id.iv_pager)
     ImageView mIvPager;
     @BindView(R.id.pb_progress)
-    ProgressBar mPbProgress;
+    ImageView mPbProgressImage;
     @BindView(R.id.tv_origin_photo)
     TextView mTvOriginPhoto;
     @BindView(R.id.tv_to_pay)
@@ -116,7 +112,6 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
     private ImageBean mImageBean;
     private ActionPopupWindow mActionPopupWindow;
     private Context context;
-    private TSnackbar mSavingTSnackbar;
     private int screenW;
     private boolean hasAnim = false;
     private PayPopWindow mPayPopWindow;
@@ -197,9 +192,6 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                     getArguments().putBoolean("firstOpenPage", false);
                 }
             }
-//            if (mIvOriginPager != null) {
-//                checkAndLoadImage();
-//            }
         }
     }
 
@@ -216,14 +208,25 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
             params.width = screenW;
             params.height = height < DeviceUtils.getScreenHeight(getContext()) ? DeviceUtils.getScreenHeight(getContext()) : height;
             mIvOriginPager.setLayoutParams(params);
-        }
-        if (mImageBean.getWidth() > 0 && mImageBean.getHeight() > 0) {
-            ViewGroup.LayoutParams params = mIvPager.getLayoutParams();
+
+            ViewGroup.LayoutParams norParams = mIvPager.getLayoutParams();
+            norParams.width = screenW;
+            norParams.height = height < DeviceUtils.getScreenHeight(getContext()) ? DeviceUtils.getScreenHeight(getContext()) : height;
+            mIvPager.setLayoutParams(params);
+        } else {
+            ViewGroup.LayoutParams params = mIvOriginPager.getLayoutParams();
             params.width = screenW;
-            params.height = height < DeviceUtils.getScreenHeight(getContext()) ? DeviceUtils.getScreenHeight(getContext()) : height;
+            params.height = DeviceUtils.getScreenHeight(getContext());
+            mIvOriginPager.setLayoutParams(params);
+
+            ViewGroup.LayoutParams norParams = mIvPager.getLayoutParams();
+            norParams.width = screenW;
+            norParams.height = DeviceUtils.getScreenHeight(getContext());
             mIvPager.setLayoutParams(params);
         }
-        if (mImageBean.getImgUrl() != null) {
+
+
+        if (mImageBean.getImgUrl() != null && FileUtils.isFileExists(mImageBean.getImgUrl())) {
             // 本地图片不需要查看原图
             mTvOriginPhoto.setVisibility(View.GONE);
             // 本地图片不需要保存
@@ -232,7 +235,16 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
         }
         // 显示图片
         loadImage(mImageBean, rect);
+        ((AnimationDrawable) mPbProgressImage.getDrawable()).start();
         mIsLoaded = true;
+        // 兼容查看长图不完整
+        mFlImageContaienr.addOnLayoutChangeListener((v, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom) -> {
+            if (bottom != 0 && v.getBottom() == bottom) {
+                v.setTop(0);
+                v.setBottom(bottom - top);
+                v.invalidate();
+            }
+        });
     }
 
     @Override
@@ -379,13 +391,12 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
         final int w, h;
         ///        w = imageBean.getWidth() > screenW ? screenW : (int) imageBean.getWidth();
         w = screenW;
-        h = (int) (w * imageBean.getHeight() / imageBean.getWidth());
+        h = imageBean.getWidth() == 0 ? 0 : (int) (w * imageBean.getHeight() / imageBean.getWidth());
         // 本地图片
         if (imageBean.getImgUrl() != null) {
             DrawableRequestBuilder local = Glide.with(context)
                     .load(imageBean.getImgUrl())
                     .error(R.drawable.shape_default_image)
-                    .diskCacheStrategy(DiskCacheStrategy.NONE)
                     .thumbnail(0.1f);
             local.into(new GallaryGlideDrawableImageViewTarget(rect));
         } else {
@@ -426,9 +437,7 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                                 if (mTvOriginPhoto != null) {
                                     mTvOriginPhoto.setVisibility(View.GONE);
                                 }
-                                if (mPbProgress != null) {
-                                    mPbProgress.setVisibility(View.GONE);
-                                }
+                                stopCenterLoading();
                                 mPhotoViewAttacherNormal.update();
                                 mLlToll.setVisibility(View.VISIBLE);
                             }
@@ -447,18 +456,7 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                                         public boolean onException(Exception e, GlideUrl model, Target<GlideDrawable> target, boolean
                                                 isFirstResource) {
                                             LogUtils.i(TAG + "加载高清图失败:" + e);
-                                            if (mPbProgress != null) {
-                                                mPbProgress.setVisibility(View.GONE);
-                                            }
-                                            if (mIvPager != null) {
-                                                ViewGroup.LayoutParams params = mIvPager.getLayoutParams();
-                                                params.width = w;
-                                                params.height = h;
-                                                if (params.height * params.width == 0) {
-                                                    params.width = params.height = DEFALT_IMAGE_HEIGHT;
-                                                }
-                                                mIvPager.setLayoutParams(params);
-                                            }
+                                            stopCenterLoading();
                                             mTvOriginPhoto.setText(getString(R.string.see_origin_photos_failure));
                                             mPhotoViewAttacherNormal.update();
                                             return false;
@@ -468,10 +466,8 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                                         public boolean onResourceReady(GlideDrawable resource, GlideUrl model, Target<GlideDrawable> target,
                                                                        boolean isFromMemoryCache, boolean isFirstResource) {
                                             LogUtils.i(TAG + "加载高清图成功");
+                                            stopCenterLoading();
 
-                                            if (mPbProgress != null) {
-                                                mPbProgress.setVisibility(View.GONE);
-                                            }
                                             // mPhotoViewAttacherNormal.update() 必须在图片设置上后才有效果
                                             Observable.timer(40, TimeUnit.MILLISECONDS)
                                                     .observeOn(AndroidSchedulers.mainThread())
@@ -515,11 +511,16 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
         }
     }
 
+    private void stopCenterLoading() {
+        if (mPbProgressImage != null) {
+            ((AnimationDrawable) mPbProgressImage.getDrawable()).stop();
+            mPbProgressImage.setVisibility(View.GONE);
+        }
+    }
+
     // 加载原图:
     private void loadOriginImage(ImageBean imageBean) {
         final int w, h;
-
-//        w = imageBean.getWidth() > screenW ? screenW : (int) imageBean.getWidth();
         w = screenW;
         h = (int) (w * imageBean.getHeight() / imageBean.getWidth());
         // 禁止点击查看原图按钮
@@ -636,11 +637,17 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
         final Runnable endAction = new Runnable() {
             @Override
             public void run() {
-
+                mIvPager.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        System.out.println("mFlImageContaienr.getTop() = " + mFlImageContaienr.getTop());
+                        System.out.println("mFlImageContaienr.getBottom() = " + mFlImageContaienr.getBottom());
+                    }
+                }, 1000);
                 LogUtils.i("startInAnim" + "endAction");
             }
         };
-        TransferImageAnimationUtil.startInAnim(rect, mIvPager, endAction);
+        TransferImageAnimationUtil.startInAnim(rect, mIvPager, endAction, mFlImageContaienr);
     }
 
     /**
@@ -651,11 +658,12 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
         Observable.just(1)// 不能empty否则map无法进行转换
                 .subscribeOn(Schedulers.io())
                 .doOnSubscribe(() -> {// .subscribeOn(Schedulers.io())  Animators may only be run on Looper threads
-                    mSavingTSnackbar = TSnackbar.make(mSnackRootView, getString(R.string.save_pic_ing), TSnackbar.LENGTH_INDEFINITE)
-                            .setPromptThemBackground(Prompt.SUCCESS)
-                            .addIconProgressLoading(0, true, false)
-                            .setMinHeight(0, getResources().getDimensionPixelSize(R.dimen.toolbar_height));
-                    mSavingTSnackbar.show();
+//                    mSavingTSnackbar = TSnackbar.make(mSnackRootView, , TSnackbar.LENGTH_INDEFINITE)
+//                            .setPromptThemBackground(Prompt.SUCCESS)
+//                            .addIconProgressLoading(0, true, false)
+//                            .setMinHeight(0, getResources().getDimensionPixelSize(R.dimen.toolbar_and_statusbar_height));
+//                    mSavingTSnackbar.show();
+                    showSnackLoadingMessage(getString(R.string.save_pic_ing));
                 })
                 .map(integer -> {
                     String imgName = ConvertUtils.getStringMD5(url) + ".jpg";
@@ -678,10 +686,8 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                             if (file.exists()) {
                                 result = getString(R.string.save_success) + result;
                                 FileUtils.insertPhotoToAlbumAndRefresh(context, file);
+                                result = getString(R.string.save_success);
                             }
-                    }
-                    if (mSavingTSnackbar != null) {
-                        mSavingTSnackbar.dismiss();
                     }
                     showSnackSuccessMessage(result);
                 });
@@ -720,9 +726,7 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
         @Override
         public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
             super.onResourceReady(resource, glideAnimation);
-            if (mPbProgress != null) {
-                mPbProgress.setVisibility(View.GONE);
-            }
+            stopCenterLoading();
             mPhotoViewAttacherNormal.update();
             // 获取到模糊图进行放大动画
             if (hasAnim) {
@@ -748,9 +752,8 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
             if (resource == null) {
                 return;
             }
-            if (mPbProgress != null) {
-                mPbProgress.setVisibility(View.GONE);
-            }
+            stopCenterLoading();
+
             if (mIvPager != null) {
                 mIvPager.setImageDrawable(resource);
             }

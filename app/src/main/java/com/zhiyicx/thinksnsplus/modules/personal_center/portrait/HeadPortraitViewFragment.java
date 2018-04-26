@@ -274,6 +274,7 @@ public class HeadPortraitViewFragment extends TSFragment<HeadPortraitViewContrac
                             if (file.exists()) {
                                 result = getString(R.string.save_success) + result;
                                 FileUtils.insertPhotoToAlbumAndRefresh(getContext(), file);
+                                result = getString(R.string.save_success);
                             }
                     }
                     TSnackbar.make(mSnackRootView, result, TSnackbar.LENGTH_SHORT)

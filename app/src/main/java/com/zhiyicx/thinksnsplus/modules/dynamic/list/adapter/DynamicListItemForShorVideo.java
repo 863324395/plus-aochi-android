@@ -120,7 +120,12 @@ public class DynamicListItemForShorVideo extends DynamicListBaseItem {
                                         return new BitmapDrawable(mContext.getResources(), bitmap);
                                     })
                                     .observeOn(AndroidSchedulers.mainThread())
-                                    .subscribe(view::setBackground, Throwable::printStackTrace);
+                                    .subscribe(background -> {
+                                        if (view != null) {
+                                            // 防止被回收
+                                            view.setBackground(background);
+                                        }
+                                    }, Throwable::printStackTrace);
                             return false;
                         }
                     })

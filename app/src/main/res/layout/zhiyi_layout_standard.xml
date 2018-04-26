@@ -174,8 +174,8 @@
 
     <ProgressBar
         android:id="@+id/loading"
-        android:layout_width="@dimen/jz_start_button_w_h_normal"
-        android:layout_height="@dimen/jz_start_button_w_h_normal"
+        android:layout_width="@dimen/frame_load_round_size"
+        android:layout_height="@dimen/frame_load_round_size"
         android:background="@drawable/round"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
@@ -184,9 +184,9 @@
 
     <ImageView
         android:id="@+id/iv_loading"
-        android:padding="@dimen/dp10"
-        android:layout_width="@dimen/jz_start_button_w_h_normal"
-        android:layout_height="@dimen/jz_start_button_w_h_normal"
+        android:padding="@dimen/loading_padding"
+        android:layout_width="@dimen/frame_load_round_size"
+        android:layout_height="@dimen/frame_load_round_size"
         android:background="@drawable/round"
         android:src="@drawable/frame_loading_white"
         android:layout_centerHorizontal="true"
