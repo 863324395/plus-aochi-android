@@ -55,7 +55,7 @@ public class AllCircleContainerPresenter extends AppBasePresenter< AllCircleCont
     }
 
     @Override
-    public void getCategroiesList(int limit, int offet) {
+    public void getCategroiesList(Integer limit, int offet) {
         Subscription subscription = mBaseCircleRepository.getCategroiesList(limit, offet)
                 .subscribe(new BaseSubscribeForV2<List<CircleTypeBean>>() {
 

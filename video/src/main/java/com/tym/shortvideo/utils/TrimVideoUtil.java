@@ -87,8 +87,8 @@ public class TrimVideoUtil {
                                                        continue;
                                                    }
                                                    if (h == 0) {
-                                                       h = (w / (float) bitmap.getWidth()) *
-                                                               bitmap.getHeight();
+                                                       float scale = (float) bitmap.getHeight() / (float) bitmap.getWidth();
+                                                       h = w * scale;
                                                    }
                                                    try {
                                                        bitmap = Bitmap.createScaledBitmap(bitmap,
@@ -206,7 +206,7 @@ public class TrimVideoUtil {
         return retStr;
     }
 
-    public static List<VideoInfo> getAllVideoFiles(final Context mContext){
+    public static List<VideoInfo> getAllVideoFiles(final Context mContext) {
         VideoInfo video;
         ArrayList<VideoInfo> videos = new ArrayList<>();
         ContentResolver contentResolver = mContext
