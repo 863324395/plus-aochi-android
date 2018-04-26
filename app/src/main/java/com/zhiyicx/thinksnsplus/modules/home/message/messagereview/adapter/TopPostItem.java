@@ -38,7 +38,7 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class TopPostItem extends BaseTopItem implements BaseTopItem.TopReviewEvetnInterface{
+public class TopPostItem extends BaseTopItem implements BaseTopItem.TopReviewEvetnInterface {
 
     public TopPostItem(Context context, MessageReviewContract.Presenter presenter) {
         super(context, presenter);
@@ -54,7 +54,26 @@ public class TopPostItem extends BaseTopItem implements BaseTopItem.TopReviewEve
     public void convert(ViewHolder holder, BaseListBean baseListBean, BaseListBean lastT, int position, int itemCounts) {
         TopPostListBean postListBean = (TopPostListBean) baseListBean;
 
-        holder.setVisible(R.id.fl_detial, View.GONE);
+        // 加载内容
+        if (postListBean.getPost().getImages() != null && !postListBean.getPost().getImages().isEmpty()) {
+            holder.setVisible(R.id.fl_image_container, View.VISIBLE);
+            String url;
+            holder.setVisible(R.id.iv_video_icon, View.GONE);
+            url = ImageUtils.imagePathConvertV2(postListBean.getPost().getImages()
+                            .get(0).getFile_id()
+                    , mContext.getResources().getDimensionPixelOffset(R.dimen.headpic_for_user_center)
+                    , mContext.getResources().getDimensionPixelOffset(R.dimen.headpic_for_user_center)
+                    , ImageZipConfig.IMAGE_38_ZIP);
+            Glide.with(holder.getConvertView().getContext())
+                    .load(url)
+                    .error(R.drawable.shape_default_error_image)
+                    .into((ImageView) holder.getView(R.id.iv_detail_image));
+        } else {
+            holder.setVisible(R.id.fl_image_container, View.GONE);
+        }
+        holder.setText(R.id.tv_deatil, postListBean.getPost().getSummary());
+
+
         ImageUtils.loadCircleUserHeadPic(postListBean.getCommentUser(), holder.getView(R
                 .id.iv_headpic));
 
@@ -62,9 +81,10 @@ public class TopPostItem extends BaseTopItem implements BaseTopItem.TopReviewEve
         if (postListBean.getStatus() == TopPostCommentListBean.TOP_REVIEW) {
             review_flag.setTextColor(holder.itemView.getResources().getColor(R.color
                     .dyanmic_top_flag));
-            review_flag.setText(holder.itemView.getResources().getString(R.string.review_ing));
+            review_flag.setText(holder.itemView.getResources().getString(R.string.review));
+            review_flag.setBackgroundResource(R.drawable.shape_bg_circle_box_radus_green);
         } else {
-
+            review_flag.setBackground(null);
             if (postListBean.getStatus() == TopPostCommentListBean.TOP_REFUSE) {
                 review_flag.setTextColor(holder.itemView.getResources().getColor(R.color.message_badge_bg));
                 review_flag.setText(holder.itemView.getResources().getString(R.string.review_refuse));
@@ -72,24 +92,6 @@ public class TopPostItem extends BaseTopItem implements BaseTopItem.TopReviewEve
                 review_flag.setTextColor(holder.itemView.getResources().getColor(R.color.general_for_hint));
                 review_flag.setText(holder.itemView.getResources().getString(R.string.review_approved));
             }
-        }
-
-        if (postListBean.getPost() != null && postListBean.getPost().getImages() !=
-                null
-                && !postListBean.getPost().getImages().isEmpty()) {
-            holder.setVisible(R.id.iv_detail_image, View.VISIBLE);
-            Glide.with(holder.itemView.getContext())
-                    .load(ImageUtils.imagePathConvertV2(postListBean.getPost().getImages()
-                                    .get(0).getFile_id()
-                            , holder.itemView.getContext().getResources().getDimensionPixelOffset
-                                    (R.dimen.headpic_for_user_center)
-                            , holder.itemView.getContext().getResources().getDimensionPixelOffset
-                                    (R.dimen.headpic_for_user_center)
-                            , ImageZipConfig.IMAGE_50_ZIP))
-                    .into((ImageView) holder.getView(R.id.iv_detail_image));
-
-        } else {
-            holder.setVisible(R.id.iv_detail_image, View.GONE);
         }
 
         if (postListBean.getPost() == null || postListBean.getPost() == null) {
@@ -118,8 +120,8 @@ public class TopPostItem extends BaseTopItem implements BaseTopItem.TopReviewEve
 
         holder.setTextColorRes(R.id.tv_name, R.color.important_for_content);
         holder.setText(R.id.tv_name, postListBean.getCommentUser().getName());
-        holder.setText(R.id.tv_time, TimeUtils.getTimeFriendlyNormal(postListBean
-                .getUpdated_at()));
+        holder.setText(R.id.tv_time, TimeUtils.getTimeFriendlyNormal(postListBean.getUpdated_at()) + "    想用" + postListBean.getAmount
+                () + mPresenter.getGoldName() + "置顶" + postListBean.getDay() + "天");
 
 
         // 响应事件
@@ -134,24 +136,35 @@ public class TopPostItem extends BaseTopItem implements BaseTopItem.TopReviewEve
         RxView.clicks(holder.getView(R.id.tv_content))
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .subscribe(aVoid -> holder.itemView.performClick());
-        RxView.clicks(holder.itemView)
+
+
+        RxView.clicks(holder.getView(R.id.fl_detial))
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .subscribe(aVoid -> {
                     if (postListBean.getPost() == null) {
                         initInstructionsPop(R.string.review_content_deleted);
                         return;
                     }
-                    toDetail(postListBean.getPost(),false);
+                    toDetail(postListBean.getPost(), false);
                 });
 
         RxView.clicks(review_flag)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
                 .subscribe(aVoid -> {
-                    if (postListBean.getStatus() == TopPostCommentListBean.TOP_REVIEW
-                            && postListBean.getPost() != null) {
-                        initReviewPopWindow(postListBean, position);
-                    }
+                    handleReview(position, postListBean);
                 });
+        RxView.clicks(holder.itemView)
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
+                .subscribe(aVoid -> {
+                    handleReview(position, postListBean);
+                });
+    }
+
+    private void handleReview(int position, TopPostListBean postListBean) {
+        if (postListBean.getStatus() == TopPostCommentListBean.TOP_REVIEW
+                && postListBean.getPost() != null) {
+            initReviewPopWindow(postListBean, position);
+        }
     }
 
     @Override
@@ -177,7 +190,7 @@ public class TopPostItem extends BaseTopItem implements BaseTopItem.TopReviewEve
         super.toDetail(commentedBean);
     }
 
-    protected void toDetail(CirclePostListBean postListBean,boolean isLookMoreComment) {
-        CirclePostDetailActivity.startActivity(mContext,postListBean,isLookMoreComment,true);
+    protected void toDetail(CirclePostListBean postListBean, boolean isLookMoreComment) {
+        CirclePostDetailActivity.startActivity(mContext, postListBean, isLookMoreComment, true);
     }
 }

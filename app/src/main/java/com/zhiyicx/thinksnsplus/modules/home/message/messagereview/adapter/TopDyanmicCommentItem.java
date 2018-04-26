@@ -11,6 +11,7 @@ import com.jakewharton.rxbinding.view.RxView;
 import com.klinker.android.link_builder.Link;
 import com.zhiyicx.baseproject.base.BaseListBean;
 import com.zhiyicx.baseproject.config.ImageZipConfig;
+import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.thinksnsplus.R;
@@ -52,40 +53,49 @@ public class TopDyanmicCommentItem extends BaseTopItem implements BaseTopItem.To
     @Override
     public void convert(ViewHolder holder, BaseListBean topDynamicCommentBean, BaseListBean lastT, int position, int itemCounts) {
         TopDynamicCommentBean dynamicCommentBean = (TopDynamicCommentBean) topDynamicCommentBean;
-        holder.setVisible(R.id.fl_detial, View.GONE);
+
+        // 加载内容
+        if (dynamicCommentBean.getFeed().getImages() != null || dynamicCommentBean.getFeed().getVideo() != null) {
+            holder.setVisible(R.id.fl_image_container, View.VISIBLE);
+            String url;
+            if (dynamicCommentBean.getFeed().getVideo() != null) {
+                holder.setVisible(R.id.iv_video_icon, View.VISIBLE);
+                url = ImageUtils.imagePathConvertV2(dynamicCommentBean.getFeed().getVideo().getCover_id()
+                        , mContext.getResources().getDimensionPixelOffset(R.dimen.headpic_for_user_center)
+                        , mContext.getResources().getDimensionPixelOffset(R.dimen.headpic_for_user_center)
+                        , ImageZipConfig.IMAGE_38_ZIP);
+                Glide.with(holder.getConvertView().getContext())
+                        .load(url)
+                        .error(R.drawable.shape_default_image_themcolor)
+                        .into((ImageView) holder.getView(R.id.iv_detail_image));
+            } else {
+                holder.setVisible(R.id.iv_video_icon, View.GONE);
+                url = ImageUtils.imagePathConvertV2(dynamicCommentBean.getFeed().getImages().size() > 0 ? dynamicCommentBean.getFeed().getImages()
+                                .get(0).getFile() : 0
+                        , mContext.getResources().getDimensionPixelOffset(R.dimen.headpic_for_user_center)
+                        , mContext.getResources().getDimensionPixelOffset(R.dimen.headpic_for_user_center)
+                        , ImageZipConfig.IMAGE_38_ZIP);
+                Glide.with(holder.getConvertView().getContext())
+                        .load(url)
+                        .error(R.drawable.shape_default_error_image)
+                        .into((ImageView) holder.getView(R.id.iv_detail_image));
+            }
+        } else {
+            holder.setVisible(R.id.fl_image_container, View.GONE);
+        }
+        holder.setText(R.id.tv_deatil, dynamicCommentBean.getFeed().getFeed_content());
+
         ImageUtils.loadCircleUserHeadPic(dynamicCommentBean.getUserInfoBean(), holder.getView(R.id.iv_headpic));
 
         TextView review_flag = holder.getTextView(R.id.tv_review);
         if (dynamicCommentBean.getExpires_at() == null) {
             review_flag.setTextColor(holder.itemView.getResources().getColor(R.color.dyanmic_top_flag));
-            review_flag.setText(holder.itemView.getResources().getString(R.string.review_ing));
+            review_flag.setText(holder.itemView.getResources().getString(R.string.review));
+            review_flag.setBackgroundResource(R.drawable.shape_bg_circle_box_radus_green);
         } else {
-
             review_flag.setTextColor(holder.itemView.getResources().getColor(R.color.general_for_hint));
             review_flag.setText(holder.itemView.getResources().getString(R.string.review_done));
-
-//            long nowTime = System.currentTimeMillis();
-//            long expires_at = TimeUtils.utc2LocalLong(dynamicCommentBean.getExpires_at());
-//            if (nowTime >= expires_at) {
-//                review_flag.setTextColor(holder.itemView.getResources().getColor(R.color.message_badge_bg));
-//                review_flag.setText(holder.itemView.getResources().getString(R.string.review_refuse));
-//            } else {
-//
-//            }
-        }
-
-        if (dynamicCommentBean.getFeed() != null && dynamicCommentBean.getFeed().getImages() != null
-                && !dynamicCommentBean.getFeed().getImages().isEmpty()) {
-            holder.setVisible(R.id.iv_detail_image, View.VISIBLE);
-            Glide.with(holder.itemView.getContext())
-                    .load(ImageUtils.imagePathConvertV2(dynamicCommentBean.getFeed().getImages().get(0).getFile()
-                            , holder.itemView.getContext().getResources().getDimensionPixelOffset(R.dimen.headpic_for_user_center)
-                            , holder.itemView.getContext().getResources().getDimensionPixelOffset(R.dimen.headpic_for_user_center)
-                            , ImageZipConfig.IMAGE_50_ZIP))
-                    .into((ImageView) holder.getView(R.id.iv_detail_image));
-
-        } else {
-            holder.setVisible(R.id.iv_detail_image, View.GONE);
+            review_flag.setBackground(null);
         }
 
         if (dynamicCommentBean.getFeed() == null || dynamicCommentBean.getComment() == null) {
@@ -96,9 +106,9 @@ public class TopDyanmicCommentItem extends BaseTopItem implements BaseTopItem.To
             holder.setText(R.id.tv_content, String.format(Locale.getDefault(),
                     holder.itemView.getContext().getString(R.string.stick_type_dynamic_commnet_message), " "));
         } else {
-            holder.setVisible(R.id.fl_detial, View.GONE);
             holder.setText(R.id.tv_content, String.format(Locale.getDefault(),
-                    holder.itemView.getContext().getString(R.string.stick_type_dynamic_commnet_message), TextUtils.isEmpty(dynamicCommentBean.getComment().getComment_content())
+                    holder.itemView.getContext().getString(R.string.stick_type_dynamic_commnet_message), TextUtils.isEmpty(dynamicCommentBean
+                            .getComment().getComment_content())
                             ? " " : dynamicCommentBean.getComment().getComment_content()));
             List<Link> links = setLinks(holder.itemView.getContext());
             if (!links.isEmpty()) {
@@ -109,8 +119,8 @@ public class TopDyanmicCommentItem extends BaseTopItem implements BaseTopItem.To
 
         holder.setTextColorRes(R.id.tv_name, R.color.important_for_content);
         holder.setText(R.id.tv_name, dynamicCommentBean.getUserInfoBean().getName());
-        holder.setText(R.id.tv_time, TimeUtils.getTimeFriendlyNormal(dynamicCommentBean.getUpdated_at()));
-
+        holder.setText(R.id.tv_time, TimeUtils.getTimeFriendlyNormal(dynamicCommentBean.getUpdated_at()) + "    想用" + dynamicCommentBean.getAmount
+                () + mPresenter.getGoldName() + "置顶" + dynamicCommentBean.getDay() + "天");
 
         // 响应事件
         RxView.clicks(holder.getView(R.id.tv_name))
@@ -120,9 +130,10 @@ public class TopDyanmicCommentItem extends BaseTopItem implements BaseTopItem.To
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
                 .subscribe(aVoid -> toUserCenter(holder.itemView.getContext(), dynamicCommentBean.getUserInfoBean()));
         RxView.clicks(holder.getView(R.id.tv_content))
-                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .subscribe(aVoid -> holder.itemView.performClick());
-        RxView.clicks(holder.itemView)
+
+        RxView.clicks(holder.getView(R.id.fl_detial))
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
                 .subscribe(aVoid -> {
                     if (dynamicCommentBean.getFeed() == null || dynamicCommentBean.getComment() == null) {
@@ -132,14 +143,25 @@ public class TopDyanmicCommentItem extends BaseTopItem implements BaseTopItem.To
                     toDetail(dynamicCommentBean.getComment());
                 });
 
+        RxView.clicks(holder.itemView)
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
+                .subscribe(aVoid -> {
+                    handleReview(position, dynamicCommentBean);
+                });
+
         RxView.clicks(review_flag)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
                 .subscribe(aVoid -> {
-                    if (dynamicCommentBean.getExpires_at() == null
-                            && dynamicCommentBean.getFeed() != null
-                            && dynamicCommentBean.getComment() != null)
-                        initReviewPopWindow(dynamicCommentBean, position);
+                    handleReview(position, dynamicCommentBean);
                 });
+    }
+
+    private void handleReview(int position, TopDynamicCommentBean dynamicCommentBean) {
+        if (dynamicCommentBean.getExpires_at() == null
+                && dynamicCommentBean.getFeed() != null
+                && dynamicCommentBean.getComment() != null) {
+            initReviewPopWindow(dynamicCommentBean, position);
+        }
     }
 
     @Override
@@ -148,7 +170,7 @@ public class TopDyanmicCommentItem extends BaseTopItem implements BaseTopItem.To
         dynamicCommentBean.getFeed().setPinned(PinnedBean.TOP_SUCCESS);
         dynamicCommentBean.setExpires_at(TimeUtils.millis2String(System.currentTimeMillis() + 1000000));
         BaseListBean result = dynamicCommentBean;
-        mPresenter.approvedTopComment((long) dynamicCommentBean.getFeed().getId(),
+        mPresenter.approvedTopComment(dynamicCommentBean.getFeed().getId(),
                 dynamicCommentBean.getComment().getId().intValue(), dynamicCommentBean.getId().intValue(), result, position);
     }
 

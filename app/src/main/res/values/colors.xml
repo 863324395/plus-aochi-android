@@ -8,7 +8,7 @@
     <!--提现明细操作成功-->
     <color name="withdrawals_item_enable">@color/money_gold</color>
     <!--动态置顶标识-->
-    <color name="dyanmic_top_flag">#4bb893</color>
+    <color name="dyanmic_top_flag">@color/info_top</color>
     <!--发布动态-->
     <color name="dyanmic_send">#575757</color>
 

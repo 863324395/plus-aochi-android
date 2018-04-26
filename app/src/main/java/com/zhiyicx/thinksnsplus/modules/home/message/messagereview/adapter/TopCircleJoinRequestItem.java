@@ -56,7 +56,16 @@ public class TopCircleJoinRequestItem extends BaseTopItem implements BaseTopItem
     public void convert(ViewHolder holder, BaseListBean baseListBean, BaseListBean lastT, int position, int itemCounts) {
         TopCircleJoinReQuestBean circleJoinReQuestBean = (TopCircleJoinReQuestBean) baseListBean;
 
-        holder.setVisible(R.id.fl_detial, View.GONE);
+        // 加载内容
+        holder.setVisible(R.id.fl_image_container, View.VISIBLE);
+
+        Glide.with(holder.getConvertView().getContext())
+                .load(circleJoinReQuestBean.getGroup().getAvatar())
+                .error(R.drawable.shape_default_error_image)
+                .into((ImageView) holder.getView(R.id.iv_detail_image));
+
+        holder.setText(R.id.tv_deatil, circleJoinReQuestBean.getGroup().getSummary());
+
         ImageUtils.loadCircleUserHeadPic(circleJoinReQuestBean.getUser(), holder.getView(R
                 .id.iv_headpic));
 
@@ -65,8 +74,11 @@ public class TopCircleJoinRequestItem extends BaseTopItem implements BaseTopItem
             if (circleJoinReQuestBean.getMember_info().getAudit() == TopCircleJoinReQuestBean.TOP_REVIEW) {
                 review_flag.setTextColor(holder.itemView.getResources().getColor(R.color
                         .dyanmic_top_flag));
-                review_flag.setText(holder.itemView.getResources().getString(R.string.review_ing));
+                review_flag.setText(holder.itemView.getResources().getString(R.string.review));
+                review_flag.setBackgroundResource(R.drawable.shape_bg_circle_box_radus_green);
+
             } else {
+                review_flag.setBackground(null);
                 if (circleJoinReQuestBean.getMember_info().getAudit() == TopCircleJoinReQuestBean.TOP_REFUSE) {
                     review_flag.setTextColor(holder.itemView.getResources().getColor(R.color
                             .message_badge_bg));
@@ -84,10 +96,8 @@ public class TopCircleJoinRequestItem extends BaseTopItem implements BaseTopItem
                     .message_badge_bg));
             review_flag.setText(holder.itemView.getResources().getString(R.string
                     .circle_report_disagree));
+            review_flag.setBackground(null);
         }
-
-
-        holder.setVisible(R.id.iv_detail_image, View.GONE);
 
         String commentBody = circleJoinReQuestBean.getGroup().getName();
         holder.setText(R.id.tv_content, String.format(Locale.getDefault(),
@@ -117,7 +127,9 @@ public class TopCircleJoinRequestItem extends BaseTopItem implements BaseTopItem
         RxView.clicks(holder.getView(R.id.tv_content))
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .subscribe(aVoid -> holder.itemView.performClick());
-        RxView.clicks(holder.itemView)
+
+        // 去详情
+        RxView.clicks(holder.getView(R.id.fl_detial))
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .subscribe(aVoid -> {
                     if (circleJoinReQuestBean.getGroup() == null || circleJoinReQuestBean.getMember_info() == null) {
@@ -130,17 +142,28 @@ public class TopCircleJoinRequestItem extends BaseTopItem implements BaseTopItem
         RxView.clicks(review_flag)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .subscribe(aVoid -> {
-                    if (circleJoinReQuestBean.getMember_info() != null && circleJoinReQuestBean.getMember_info().getAudit() == 0) {
-                        initReviewPopWindow(circleJoinReQuestBean, position);
-                    }
+                    handleReview(position, circleJoinReQuestBean);
                 });
+        RxView.clicks(holder.itemView)
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
+                .subscribe(aVoid -> {
+                    handleReview(position, circleJoinReQuestBean);
+                });
+
+    }
+
+    private void handleReview(int position, TopCircleJoinReQuestBean circleJoinReQuestBean) {
+        if (circleJoinReQuestBean.getMember_info() != null && circleJoinReQuestBean.getMember_info().getAudit() == 0) {
+            initReviewPopWindow(circleJoinReQuestBean, position);
+        }
     }
 
     @Override
     public void onReviewApprovedClick(BaseListBean data, int position) {
         TopCircleJoinReQuestBean circleJoinReQuestBean = (TopCircleJoinReQuestBean) data;
         circleJoinReQuestBean.getMember_info().setAudit(TopCircleJoinReQuestBean.TOP_SUCCESS);
-        mPresenter.approvedTopComment(circleJoinReQuestBean.getGroup_id(), circleJoinReQuestBean.getMember_info().getId().intValue(), 0, circleJoinReQuestBean, position);
+        mPresenter.approvedTopComment(circleJoinReQuestBean.getGroup_id(), circleJoinReQuestBean.getMember_info().getId().intValue(), 0,
+                circleJoinReQuestBean, position);
     }
 
     @Override
@@ -155,7 +178,7 @@ public class TopCircleJoinRequestItem extends BaseTopItem implements BaseTopItem
     }
 
     protected void toDetail(CircleInfo circleInfo) {
-        CircleDetailActivity.startCircleDetailActivity(mContext,circleInfo.getId());
+        CircleDetailActivity.startCircleDetailActivity(mContext, circleInfo.getId());
     }
 
     @Override
