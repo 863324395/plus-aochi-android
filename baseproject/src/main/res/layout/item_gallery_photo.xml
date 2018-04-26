@@ -21,14 +21,14 @@
                 android:id="@+id/iv_orin_pager"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:scaleType="fitStart"
+                android:scaleType="fitXY"
                 android:visibility="invisible"/>
 
             <ImageView
                 android:id="@+id/iv_pager"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:scaleType="fitStart"
+                android:scaleType="fitXY"
                 />
         </FrameLayout>
     </ScrollView>

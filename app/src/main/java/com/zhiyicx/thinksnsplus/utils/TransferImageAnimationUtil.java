@@ -201,7 +201,6 @@ public class TransferImageAnimationUtil {
                         int translationY = 0;
                         if (imageView.getHeight() > DeviceUtils.getScreenHeight(imageView.getContext())) {
                             translationY = (imageView.getHeight() - finalBounds.height()) / 2;
-                            viewGroup.animate().translationY(translationY);
                         }
                         // 位移+缩小
                         imageView.setPivotY((imageView.getHeight() - finalBounds.height()) / 2);
@@ -219,6 +218,14 @@ public class TransferImageAnimationUtil {
                                     .scaleX(1)
                                     .translationX(0)
                                     .translationY(0)
+                                    .setDuration(ANIMATION_DURATION)
+                                    .setInterpolator(new AccelerateDecelerateInterpolator())
+                                    .withEndAction(endAction);
+                            viewGroup.animate()
+                                    .scaleY(1)
+                                    .scaleX(1)
+                                    .translationX(0)
+                                    .translationY(translationY)
                                     .setDuration(ANIMATION_DURATION)
                                     .setInterpolator(new AccelerateDecelerateInterpolator())
                                     .withEndAction(endAction);

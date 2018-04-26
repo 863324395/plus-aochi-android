@@ -214,15 +214,15 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
             norParams.width = screenW;
             norParams.height = height < DeviceUtils.getScreenHeight(getContext()) ? DeviceUtils.getScreenHeight(getContext()) : height;
             mIvPager.setLayoutParams(params);
-        }else {
+        } else {
             ViewGroup.LayoutParams params = mIvOriginPager.getLayoutParams();
             params.width = screenW;
-            params.height = DeviceUtils.getScreenHeight(getContext()) ;
+            params.height = DeviceUtils.getScreenHeight(getContext());
             mIvOriginPager.setLayoutParams(params);
 
             ViewGroup.LayoutParams norParams = mIvPager.getLayoutParams();
             norParams.width = screenW;
-            norParams.height = DeviceUtils.getScreenHeight(getContext()) ;
+            norParams.height = DeviceUtils.getScreenHeight(getContext());
             mIvPager.setLayoutParams(params);
         }
 
@@ -384,7 +384,7 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
         final int w, h;
         ///        w = imageBean.getWidth() > screenW ? screenW : (int) imageBean.getWidth();
         w = screenW;
-        h = (int) (w * imageBean.getHeight() / imageBean.getWidth());
+        h = imageBean.getWidth() == 0 ? 0 : (int) (w * imageBean.getHeight() / imageBean.getWidth());
         // 本地图片
         if (imageBean.getImgUrl() != null) {
             DrawableRequestBuilder local = Glide.with(context)
@@ -451,15 +451,6 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                                                 isFirstResource) {
                                             LogUtils.i(TAG + "加载高清图失败:" + e);
                                             stopCenterLoading();
-                                            if (mIvPager != null) {
-                                                ViewGroup.LayoutParams params = mIvPager.getLayoutParams();
-                                                params.width = w;
-                                                params.height = h;
-                                                if (params.height * params.width == 0) {
-                                                    params.width = params.height = DEFALT_IMAGE_HEIGHT;
-                                                }
-                                                mIvPager.setLayoutParams(params);
-                                            }
                                             mTvOriginPhoto.setText(getString(R.string.see_origin_photos_failure));
                                             mPhotoViewAttacherNormal.update();
                                             return false;
@@ -524,8 +515,6 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
     // 加载原图:
     private void loadOriginImage(ImageBean imageBean) {
         final int w, h;
-
-//        w = imageBean.getWidth() > screenW ? screenW : (int) imageBean.getWidth();
         w = screenW;
         h = (int) (w * imageBean.getHeight() / imageBean.getWidth());
         // 禁止点击查看原图按钮
@@ -646,7 +635,7 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                 LogUtils.i("startInAnim" + "endAction");
             }
         };
-        TransferImageAnimationUtil.startInAnim(rect, mIvPager, endAction);
+        TransferImageAnimationUtil.startInAnim(rect, mIvPager, endAction,mFlImageContaienr);
     }
 
     /**
@@ -660,7 +649,7 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                     mSavingTSnackbar = TSnackbar.make(mSnackRootView, getString(R.string.save_pic_ing), TSnackbar.LENGTH_INDEFINITE)
                             .setPromptThemBackground(Prompt.SUCCESS)
                             .addIconProgressLoading(0, true, false)
-                            .setMinHeight(0, getResources().getDimensionPixelSize(R.dimen.toolbar_height));
+                            .setMinHeight(0, getResources().getDimensionPixelSize(R.dimen.toolbar_and_statusbar_height));
                     mSavingTSnackbar.show();
                 })
                 .map(integer -> {
@@ -689,7 +678,7 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                     if (mSavingTSnackbar != null) {
                         mSavingTSnackbar.dismiss();
                     }
-                    showSnackSuccessMessage(result);
+                    showSnackSuccessMessage(getString(R.string.save_success));
                 });
     }
 
