@@ -15,7 +15,6 @@
             android:id="@+id/fl_image_contaienr"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/themeColor"
             android:layout_gravity="center">
 
             <ImageView
@@ -23,15 +22,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:scaleType="fitStart"
-                android:background="@color/red"
-
                 android:visibility="invisible"/>
 
             <ImageView
                 android:id="@+id/iv_pager"
                 android:layout_width="match_parent"
-                android:background="@color/red"
-
                 android:layout_height="wrap_content"
                 android:scaleType="fitStart"
                 />

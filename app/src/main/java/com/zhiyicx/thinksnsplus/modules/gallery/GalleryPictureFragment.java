@@ -214,7 +214,19 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
             norParams.width = screenW;
             norParams.height = height < DeviceUtils.getScreenHeight(getContext()) ? DeviceUtils.getScreenHeight(getContext()) : height;
             mIvPager.setLayoutParams(params);
+        }else {
+            ViewGroup.LayoutParams params = mIvOriginPager.getLayoutParams();
+            params.width = screenW;
+            params.height = DeviceUtils.getScreenHeight(getContext()) ;
+            mIvOriginPager.setLayoutParams(params);
+
+            ViewGroup.LayoutParams norParams = mIvPager.getLayoutParams();
+            norParams.width = screenW;
+            norParams.height = DeviceUtils.getScreenHeight(getContext()) ;
+            mIvPager.setLayoutParams(params);
         }
+
+
         if (mImageBean.getImgUrl() != null && FileUtils.isFileExists(mImageBean.getImgUrl())) {
             // 本地图片不需要查看原图
             mTvOriginPhoto.setVisibility(View.GONE);
