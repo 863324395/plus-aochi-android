@@ -119,7 +119,7 @@ public interface CircleClient {
      * @Description 获取圈子分类
      */
     @GET(APP_PATH_GET_CIRCLE_CATEGROIES)
-    Observable<List<CircleTypeBean>> getCategroiesList(@Query("limit") int limit, @Query("offset") int offset);
+    Observable<List<CircleTypeBean>> getCategroiesList(@Query("limit") Integer limit, @Query("offset") int offset);
 
     /**
      * 获取圈子列表
@@ -130,7 +130,7 @@ public interface CircleClient {
      * @return
      */
     @GET(APP_PATH_GET_CIRCLELIST)
-    Observable<List<CircleInfo>> getCircleList(@Path("category_id") long categoryId, @Query("limit") int limit, @Query("offset") int offset);
+    Observable<List<CircleInfo>> getCircleList(@Path("category_id") long categoryId, @Query("limit") Integer limit, @Query("offset") int offset);
 
     /**
      * 获取推荐的圈子
@@ -141,7 +141,7 @@ public interface CircleClient {
      * @return
      */
     @GET(APP_PATH_GET_RECOMMEND_CIRCLE)
-    Observable<List<CircleInfo>> getRecommendCircle(@Query("limit") int limit, @Query("offset") int offset, @Query("type") String type);
+    Observable<List<CircleInfo>> getRecommendCircle(@Query("limit") Integer limit, @Query("offset") int offset, @Query("type") String type);
 
     /**
      * 获取已经加入的圈子
@@ -266,7 +266,7 @@ public interface CircleClient {
      * @return
      */
     @GET(APP_PATH_GET_POSTLIST)
-    Observable<CirclePostBean> getPostListFromCircle(@Path("circle_id") long circleId, @Query("limit") int limit, @Query("offset") int offset, @Query
+    Observable<CirclePostBean> getPostListFromCircle(@Path("circle_id") long circleId, @Query("limit") Integer limit, @Query("offset") int offset, @Query
             ("type") String type);
 
 
@@ -404,7 +404,7 @@ public interface CircleClient {
      * @return
      */
     @GET(APP_PATH_COMMENT_POST)
-    Observable<CircleCommentZip> getPostComments(@Path("post_id") long postId, @Query("limit") int limit, @Query("after") int after);
+    Observable<CircleCommentZip> getPostComments(@Path("post_id") long postId, @Query("limit") Integer limit, @Query("after") int after);
 
     /**
      * 圈子收入记录
@@ -432,7 +432,7 @@ public interface CircleClient {
      * @return
      */
     @GET(APP_PATH_LIKE_POST)
-    Observable<List<PostDigListBean>> getPostDigList(@Path("post_id") long postId, @Query("limit") int limit, @Query("after") long offset);
+    Observable<List<PostDigListBean>> getPostDigList(@Path("post_id") long postId, @Query("limit") Integer limit, @Query("after") long offset);
 
     /**
      * 置顶帖子
