@@ -31,7 +31,7 @@ import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_ALL_POSTLIST
  */
 public interface IBaseCircleRepository {
 
-    Observable<List<CircleTypeBean>> getCategroiesList(int limit, int offet);
+    Observable<List<CircleTypeBean>> getCategroiesList(Integer limit, int offet);
 
     /**
      * 创建圈子
@@ -99,7 +99,7 @@ public interface IBaseCircleRepository {
      * @param type  默认: join, join 我加入 audit 待审核 allow_post 可以发帖的
      * @return
      */
-    Observable<List<CircleInfo>> getMyJoinedCircle(int limit, int offet, String type);
+    Observable<List<CircleInfo>> getMyJoinedCircle(Integer limit, int offet, String type);
 
     /**
      * 获取全部圈子
@@ -138,7 +138,7 @@ public interface IBaseCircleRepository {
                                                         Integer offset, String order,
                                                         String order_type);
 
-    Observable<List<PostDigListBean>> getPostDigList(long postId, int limit, long offet);
+    Observable<List<PostDigListBean>> getPostDigList(long postId, Integer limit, long offet);
 
     /**
      * 将某个成员踢出圈子
@@ -222,7 +222,7 @@ public interface IBaseCircleRepository {
      * @param name     仅仅用于搜索
      * @return
      */
-    Observable<List<CircleMembers>> getCircleMemberList(long circleId, int after, int limit, String type, String name);
+    Observable<List<CircleMembers>> getCircleMemberList(long circleId, int after, Integer limit, String type, String name);
 
     Observable<CircleMembers> attornCircle(long circleId, long userId);
 
@@ -237,7 +237,7 @@ public interface IBaseCircleRepository {
 
     Observable<CirclePostListBean> getPostDetail(long circleId, long postId);
 
-    Observable<List<CirclePostCommentBean>> getPostComments(long postId, int limit, int after);
+    Observable<List<CirclePostCommentBean>> getPostComments(long postId, Integer limit, int after);
 
     Observable<CircleCommentZip> getPostCommentList(long postId, Long maxId);
 
@@ -249,7 +249,7 @@ public interface IBaseCircleRepository {
      * @param type  random 随机
      * @return
      */
-    Observable<List<CircleInfo>> getRecommendCircle(int limit, int offet, String type);
+    Observable<List<CircleInfo>> getRecommendCircle(Integer limit, int offet, String type);
 
     Observable<List<CircleInfo>> getCircleList(long categoryId, long maxId);
 

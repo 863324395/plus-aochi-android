@@ -98,7 +98,7 @@ public interface IBillRepository {
      * @param type   筛选类型 1 - 收入 -1 - 支出 默认为全部
      * @return 积分流水
      */
-    Observable<List<RechargeSuccessV2Bean>> integrationOrdersSuccess(int limit, int after, String
+    Observable<List<RechargeSuccessV2Bean>> integrationOrdersSuccess(Integer limit, int after, String
             action, Integer type);
 
 

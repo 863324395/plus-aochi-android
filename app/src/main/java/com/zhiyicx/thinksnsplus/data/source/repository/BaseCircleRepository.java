@@ -93,7 +93,7 @@ public class BaseCircleRepository implements IBaseCircleRepository {
     }
 
     @Override
-    public Observable<List<CircleTypeBean>> getCategroiesList(int limit, int offet) {
+    public Observable<List<CircleTypeBean>> getCategroiesList(Integer limit, int offet) {
         return mCircleClient.getCategroiesList(TSListFragment.DEFAULT_PAGE_SIZE, offet)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
@@ -141,7 +141,7 @@ public class BaseCircleRepository implements IBaseCircleRepository {
     }
 
     @Override
-    public Observable<List<CircleInfo>> getMyJoinedCircle(int limit, int offet, String type) {
+    public Observable<List<CircleInfo>> getMyJoinedCircle(Integer limit, int offet, String type) {
         return mCircleClient.getMyJoinedCircle(limit, offet, type)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
@@ -180,7 +180,7 @@ public class BaseCircleRepository implements IBaseCircleRepository {
     }
 
     @Override
-    public Observable<List<PostDigListBean>> getPostDigList(long postId, int limit, long offet) {
+    public Observable<List<PostDigListBean>> getPostDigList(long postId, Integer limit, long offet) {
         return mCircleClient.getPostDigList(postId, TSListFragment.DEFAULT_PAGE_SIZE, offet)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -560,7 +560,7 @@ public class BaseCircleRepository implements IBaseCircleRepository {
      * @return
      */
     @Override
-    public Observable<List<CircleMembers>> getCircleMemberList(long circleId, int after, int limit, String type, String name) {
+    public Observable<List<CircleMembers>> getCircleMemberList(long circleId, int after, Integer limit, String type, String name) {
         if (TextUtils.isEmpty(name)) {
             name = null;
         }
@@ -598,7 +598,7 @@ public class BaseCircleRepository implements IBaseCircleRepository {
     }
 
     @Override
-    public Observable<List<CirclePostCommentBean>> getPostComments(long postId, int limit, int after) {
+    public Observable<List<CirclePostCommentBean>> getPostComments(long postId, Integer limit, int after) {
         return getPostCommentList(postId, (long) after).flatMap(circleCommentZip -> {
             for (CirclePostCommentBean pinned : circleCommentZip.getPinneds()) {
                 pinned.setPinned(true);
@@ -670,7 +670,7 @@ public class BaseCircleRepository implements IBaseCircleRepository {
 
 
     @Override
-    public Observable<List<CircleInfo>> getRecommendCircle(int limit, int offet, String type) {
+    public Observable<List<CircleInfo>> getRecommendCircle(Integer limit, int offet, String type) {
         return mCircleClient.getRecommendCircle(limit, offet, type)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());

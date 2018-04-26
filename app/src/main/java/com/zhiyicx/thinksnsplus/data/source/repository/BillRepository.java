@@ -205,7 +205,7 @@ public class BillRepository implements IBillRepository {
      * @return 积分流水
      */
     @Override
-    public Observable<List<RechargeSuccessV2Bean>> integrationOrdersSuccess(int limit, int after, String action, Integer type) {
+    public Observable<List<RechargeSuccessV2Bean>> integrationOrdersSuccess(Integer limit, int after, String action, Integer type) {
         return mWalletClient.integrationOrdersSuccess(limit, after, action, type)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
