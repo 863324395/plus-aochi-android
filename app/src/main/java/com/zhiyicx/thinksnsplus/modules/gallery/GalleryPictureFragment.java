@@ -238,6 +238,14 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
         loadImage(mImageBean, rect);
         ((AnimationDrawable) mPbProgressImage.getDrawable()).start();
         mIsLoaded = true;
+        // 兼容查看长图不完整
+        mFlImageContaienr.addOnLayoutChangeListener((v, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom) -> {
+            if (bottom != 0 && v.getBottom() == bottom) {
+                v.setTop(0);
+                v.setBottom(bottom - top);
+                v.invalidate();
+            }
+        });
     }
 
     @Override
@@ -637,7 +645,7 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                         System.out.println("mFlImageContaienr.getTop() = " + mFlImageContaienr.getTop());
                         System.out.println("mFlImageContaienr.getBottom() = " + mFlImageContaienr.getBottom());
                     }
-                },1000);
+                }, 1000);
                 LogUtils.i("startInAnim" + "endAction");
             }
         };

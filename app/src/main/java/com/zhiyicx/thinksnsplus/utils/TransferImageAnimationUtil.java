@@ -193,13 +193,6 @@ public class TransferImageAnimationUtil {
 
                         int deltaTop = startBounds.top - finalBounds.top;
                         int deltaLeft = startBounds.left - finalBounds.left;
-                        int translationY = 0;
-                        if (imageView.getHeight() > DeviceUtils.getScreenHeight(imageView.getContext())) {
-                            translationY = (imageView.getHeight() - finalBounds.height()) / 2;
-                            viewGroup.setTop(0);
-                            viewGroup.setBottom(translationY +viewGroup.getBottom());
-                            viewGroup.postInvalidate();
-                        }
                         // 位移+缩小
                         imageView.setPivotY((imageView.getHeight() - finalBounds.height()) / 2);
                         imageView.setPivotX((imageView.getWidth() - finalBounds.width()) / 2);
