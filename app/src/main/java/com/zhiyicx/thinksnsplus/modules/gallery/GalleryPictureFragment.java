@@ -6,7 +6,7 @@ import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
+import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -20,7 +20,6 @@ import android.view.animation.Interpolator;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.bumptech.glide.DrawableRequestBuilder;
@@ -31,7 +30,6 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.load.model.stream.StreamModelLoader;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
-import com.bumptech.glide.load.resource.gif.GifDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.GlideDrawableImageViewTarget;
@@ -54,7 +52,6 @@ import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.DrawableProvider;
 import com.zhiyicx.common.utils.FileUtils;
-import com.zhiyicx.common.utils.NetUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
@@ -73,7 +70,6 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import me.iwf.photopicker.utils.AndroidLifecycleUtils;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -97,7 +93,7 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
     @BindView(R.id.iv_pager)
     ImageView mIvPager;
     @BindView(R.id.pb_progress)
-    ProgressBar mPbProgress;
+    ImageView mPbProgressImage;
     @BindView(R.id.tv_origin_photo)
     TextView mTvOriginPhoto;
     @BindView(R.id.tv_to_pay)
@@ -232,6 +228,7 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
         }
         // 显示图片
         loadImage(mImageBean, rect);
+        ((AnimationDrawable) mPbProgressImage.getDrawable()).start();
         mIsLoaded = true;
     }
 
@@ -426,9 +423,7 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                                 if (mTvOriginPhoto != null) {
                                     mTvOriginPhoto.setVisibility(View.GONE);
                                 }
-                                if (mPbProgress != null) {
-                                    mPbProgress.setVisibility(View.GONE);
-                                }
+                                stopCenterLoading();
                                 mPhotoViewAttacherNormal.update();
                                 mLlToll.setVisibility(View.VISIBLE);
                             }
@@ -447,9 +442,7 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                                         public boolean onException(Exception e, GlideUrl model, Target<GlideDrawable> target, boolean
                                                 isFirstResource) {
                                             LogUtils.i(TAG + "加载高清图失败:" + e);
-                                            if (mPbProgress != null) {
-                                                mPbProgress.setVisibility(View.GONE);
-                                            }
+                                            stopCenterLoading();
                                             if (mIvPager != null) {
                                                 ViewGroup.LayoutParams params = mIvPager.getLayoutParams();
                                                 params.width = w;
@@ -468,10 +461,8 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                                         public boolean onResourceReady(GlideDrawable resource, GlideUrl model, Target<GlideDrawable> target,
                                                                        boolean isFromMemoryCache, boolean isFirstResource) {
                                             LogUtils.i(TAG + "加载高清图成功");
+                                            stopCenterLoading();
 
-                                            if (mPbProgress != null) {
-                                                mPbProgress.setVisibility(View.GONE);
-                                            }
                                             // mPhotoViewAttacherNormal.update() 必须在图片设置上后才有效果
                                             Observable.timer(40, TimeUnit.MILLISECONDS)
                                                     .observeOn(AndroidSchedulers.mainThread())
@@ -512,6 +503,13 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                     ImageUtils.imageIsGif(imageBean.getImgMimeType()) ? new GallaryGlideDrawableImageViewTarget(rect) : new GallarySimpleTarget(rect)
             );
 
+        }
+    }
+
+    private void stopCenterLoading() {
+        if (mPbProgressImage != null) {
+            ((AnimationDrawable) mPbProgressImage.getDrawable()).stop();
+            mPbProgressImage.setVisibility(View.GONE);
         }
     }
 
@@ -720,9 +718,7 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
         @Override
         public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
             super.onResourceReady(resource, glideAnimation);
-            if (mPbProgress != null) {
-                mPbProgress.setVisibility(View.GONE);
-            }
+         stopCenterLoading();
             mPhotoViewAttacherNormal.update();
             // 获取到模糊图进行放大动画
             if (hasAnim) {
@@ -748,9 +744,8 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
             if (resource == null) {
                 return;
             }
-            if (mPbProgress != null) {
-                mPbProgress.setVisibility(View.GONE);
-            }
+            stopCenterLoading();
+
             if (mIvPager != null) {
                 mIvPager.setImageDrawable(resource);
             }

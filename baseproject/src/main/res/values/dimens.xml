@@ -75,4 +75,5 @@
     <dimen name="margin_34">34dp</dimen>
     <dimen name="margin_30">30dp</dimen>
     <dimen name="music_icon_size">24dp</dimen>
+    <dimen name="loading_padding">5dp</dimen>
 </resources>
