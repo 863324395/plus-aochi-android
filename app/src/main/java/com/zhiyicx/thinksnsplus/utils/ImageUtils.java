@@ -569,7 +569,7 @@ public class ImageUtils {
         Glide.with(imageView.getContext())
                 .load(url)
                 .placeholder(R.drawable.shape_default_image)
-                .placeholder(R.drawable.shape_default_error_image)
+                .error(R.drawable.shape_default_error_image)
                 .into(imageView);
 
     }

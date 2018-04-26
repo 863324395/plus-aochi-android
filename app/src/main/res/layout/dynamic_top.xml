@@ -130,6 +130,7 @@
                 android:layout_marginTop="@dimen/button_login_margin_top"
                 android:enabled="false"
                 android:text="@string/to_top"
+                android:textSize="@dimen/size_sub_title"
                 tools:text="@string/to_top"/>
         </LinearLayout>
 

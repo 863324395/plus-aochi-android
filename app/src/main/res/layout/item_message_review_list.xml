@@ -59,8 +59,8 @@
         <FrameLayout
             android:id="@+id/fl_image_container"
             android:layout_width="wrap_content"
-            android:layout_marginRight="@dimen/spacing_small"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/spacing_small">
 
             <com.zhiyicx.baseproject.widget.imageview.FilterImageView
                 android:id="@+id/iv_detail_image"
@@ -74,8 +74,9 @@
                 android:id="@+id/iv_video_icon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center"
                 android:src="@mipmap/ico_notice_video"
-                android:layout_gravity="center"/>
+                android:visibility="gone"/>
 
         </FrameLayout>
 
@@ -116,13 +117,13 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
+        android:layout_marginRight="@dimen/spacing_normal"
+        android:gravity="center"
         android:maxLines="1"
-        android:paddingBottom="@dimen/spacing_mid_small_8dp"
-        android:paddingLeft="@dimen/spacing_mid_small_8dp"
-        android:paddingRight="@dimen/spacing_normal"
+        android:paddingBottom="@dimen/spacing_big_line"
         android:textColor="@color/dyanmic_top_flag"
         android:textSize="@dimen/size_icon_assist"
-        tools:text="6分钟前"/>
+        tools:text="审核"/>
 
     <TextView
         android:id="@+id/tv_reply"

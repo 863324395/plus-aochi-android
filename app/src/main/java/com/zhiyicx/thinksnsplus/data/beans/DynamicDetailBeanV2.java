@@ -136,6 +136,11 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable, Ser
 
     @Convert(converter = VideoConverter.class, columnType = String.class)
     private Video video;
+    /**
+     * 审核操作 PinnedBean
+     */
+    @Transient
+    private int pinned;
 
     @Transient
     private int startPosition;
@@ -147,6 +152,14 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable, Ser
     private String userCenterFriendlyTimeDonw;
     @Transient
     private String friendlyContent;
+
+    public int getPinned() {
+        return pinned;
+    }
+
+    public void setPinned(int pinned) {
+        this.pinned = pinned;
+    }
 
     public String getFriendlyTime() {
         return friendlyTime;
@@ -816,6 +829,7 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable, Ser
          *
          */
         private int propPart;
+        @SerializedName(value = "file" ,alternate = {"file_id"})
         private int file;
         private String size;
         private String imgUrl;
