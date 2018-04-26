@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
+import android.graphics.PixelFormat;
 import android.os.Build;
 import android.os.Handler;
 import android.support.v7.widget.LinearLayoutManager;
@@ -12,6 +13,7 @@ import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.SurfaceHolder;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -70,7 +72,8 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
  * @Email Jliuer@aliyun.com
  * @Description 录制
  */
-public class RecordFragment extends TSFragment implements SurfaceHolder.Callback, RecordSurfaceView.OnClickListener, RecordSurfaceView.OnTouchScroller,
+public class RecordFragment extends TSFragment implements SurfaceHolder.Callback, RecordSurfaceView.OnClickListener, RecordSurfaceView
+        .OnTouchScroller,
         RenderStateChangedListener,
         CaptureFrameCallback, ShutterButton.GestureListener {
 
@@ -173,6 +176,8 @@ public class RecordFragment extends TSFragment implements SurfaceHolder.Callback
         mCameraSurfaceView = new RecordSurfaceView(mActivity);
         mCameraSurfaceView.getHolder().addCallback(this);
         mCameraSurfaceView.addClickListener(this);
+        mCameraSurfaceView.setZOrderOnTop(true);
+        mCameraSurfaceView.getHolder().setFormat(PixelFormat.TRANSPARENT);//设置背景透明
         mLayoutAspect.addView(mCameraSurfaceView);
         mLayoutAspect.requestLayout();
 
@@ -258,9 +263,7 @@ public class RecordFragment extends TSFragment implements SurfaceHolder.Callback
         DrawerManager.getInstance().surfaceDestroyed();
         DrawerManager.getInstance().destoryTrhead();
         CountDownManager.getInstance().cancelTimerWithoutSaving();
-        if (mWarnPopupWindow != null && mWarnPopupWindow.isShowing()) {
-            mWarnPopupWindow.dismiss();
-        }
+        dismissPop(mWarnPopupWindow);
         // 在停止时需要释放上下文，防止内存泄漏
 //        ParamsManager.context = null;
         super.onDestroyView();
@@ -280,6 +283,7 @@ public class RecordFragment extends TSFragment implements SurfaceHolder.Callback
     @Override
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
         DrawerManager.getInstance().surfacrChanged(width, height);
+
     }
 
     @Override
@@ -324,6 +328,7 @@ public class RecordFragment extends TSFragment implements SurfaceHolder.Callback
                 }
             }
         });
+
     }
 
     @Override
@@ -337,6 +342,7 @@ public class RecordFragment extends TSFragment implements SurfaceHolder.Callback
         scrollToCurrentEffect();
         LogUtils.d("changeFilter", "index = " + mColorIndex + ", filter name = "
                 + ColorFilterManager.getInstance().getColorFilterName(mColorIndex));
+
     }
 
     @Override
@@ -352,6 +358,8 @@ public class RecordFragment extends TSFragment implements SurfaceHolder.Callback
         scrollToCurrentEffect();
         LogUtils.d("changeFilter", "index = " + mColorIndex + ", filter name = "
                 + ColorFilterManager.getInstance().getColorFilterName(mColorIndex));
+
+
     }
 
     @Override
@@ -605,7 +613,7 @@ public class RecordFragment extends TSFragment implements SurfaceHolder.Callback
             // 隐藏删除和预览按钮
             ArrayList<String> arrayList = new ArrayList<>(VideoListManager.getInstance()
                     .getSubVideoPathList());
-            CoverActivity.startCoverActivity(mActivity, arrayList, false, false,true);
+            CoverActivity.startCoverActivity(mActivity, arrayList, false, false, true);
 //            PreviewActivity.startPreviewActivity(mActivity, arrayList);
             mActivity.finish();
         }
@@ -728,6 +736,7 @@ public class RecordFragment extends TSFragment implements SurfaceHolder.Callback
                 // 重置
                 mPreparedCount = 0;
             }
+
         }
 
         @Override
@@ -794,9 +803,13 @@ public class RecordFragment extends TSFragment implements SurfaceHolder.Callback
                 }
                 // 重置释放状态
                 mReleaseCount = 0;
+                mActivity.runOnUiThread(() -> {
+                    // 编码器已经完全释放，则快门按钮可用
+                    if (mBtnTake != null) {
+                        mBtnTake.setEnableEncoder(true);
+                    }
+                });
 
-                // 编码器已经完全释放，则快门按钮可用
-                mBtnTake.setEnableEncoder(true);
 
             }
 
