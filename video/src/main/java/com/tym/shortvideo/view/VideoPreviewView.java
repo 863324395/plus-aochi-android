@@ -95,6 +95,7 @@ public class VideoPreviewView extends GLSurfaceView implements GLSurfaceView.Ren
                 // 不知为何， 16:9 转 1:1 计算得到的值并不好用，相差了 0.02f
                 h = (int) (0.98 * DeviceUtils.getScreenWidth(getContext()));
             }
+
             setMeasuredDimension(w, h);
             return;
         }

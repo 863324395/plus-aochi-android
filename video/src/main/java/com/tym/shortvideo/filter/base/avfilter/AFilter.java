@@ -80,9 +80,9 @@ public abstract class AFilter {
     //纹理坐标
     private float[] coord={
         0.0f, 0.0f,
-        0.0f,  1.0f,
-        1.0f,  0.0f,
-        1.0f, 1.0f,
+        0.0f,  0.98f,
+        0.98f,  0.0f,
+        0.98f, 0.98f,
     };
 
     private SparseArray<boolean[]> mBools;
