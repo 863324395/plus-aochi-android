@@ -288,7 +288,6 @@ public class AnswerDetailsFragment extends TSListFragment<AnswerDetailsConstract
 
     private void initHeaderView() {
         mHeaderAndFooterWrapper = new HeaderAndFooterWrapper(mAdapter);
-//        mAnswerDetailHeaderView = new AnswerDetailHeaderView(getContext(), mPresenter.getAdvert());
         mAnswerDetailHeaderView = new AnswerDetailHeaderView(getContext(), null);
         mAnswerDetailHeaderView.setAnswerHeaderEventListener(this);
         mAnswerDetailHeaderView.setWebLoadListener(this);

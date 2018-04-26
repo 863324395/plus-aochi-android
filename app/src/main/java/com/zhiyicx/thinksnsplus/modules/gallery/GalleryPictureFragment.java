@@ -193,9 +193,6 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                     getArguments().putBoolean("firstOpenPage", false);
                 }
             }
-//            if (mIvOriginPager != null) {
-//                checkAndLoadImage();
-//            }
         }
     }
 
@@ -212,14 +209,13 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
             params.width = screenW;
             params.height = height < DeviceUtils.getScreenHeight(getContext()) ? DeviceUtils.getScreenHeight(getContext()) : height;
             mIvOriginPager.setLayoutParams(params);
-        }
-        if (mImageBean.getWidth() > 0 && mImageBean.getHeight() > 0) {
-            ViewGroup.LayoutParams params = mIvPager.getLayoutParams();
-            params.width = screenW;
-            params.height = height < DeviceUtils.getScreenHeight(getContext()) ? DeviceUtils.getScreenHeight(getContext()) : height;
+
+            ViewGroup.LayoutParams norParams = mIvPager.getLayoutParams();
+            norParams.width = screenW;
+            norParams.height = height < DeviceUtils.getScreenHeight(getContext()) ? DeviceUtils.getScreenHeight(getContext()) : height;
             mIvPager.setLayoutParams(params);
         }
-        if (mImageBean.getImgUrl() != null) {
+        if (mImageBean.getImgUrl() != null && FileUtils.isFileExists(mImageBean.getImgUrl())) {
             // 本地图片不需要查看原图
             mTvOriginPhoto.setVisibility(View.GONE);
             // 本地图片不需要保存
@@ -718,7 +714,7 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
         @Override
         public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
             super.onResourceReady(resource, glideAnimation);
-         stopCenterLoading();
+            stopCenterLoading();
             mPhotoViewAttacherNormal.update();
             // 获取到模糊图进行放大动画
             if (hasAnim) {

@@ -505,8 +505,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
             animationRectBeanArrayList.add(rect);
         }
 
-        GalleryActivity.startToGallery(mActivity, position, imageBeanList,
-                animationRectBeanArrayList);
+        GalleryActivity.startToGallery(mActivity, position, imageBeanList, animationRectBeanArrayList);
     }
 
     @Override
