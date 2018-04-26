@@ -199,7 +199,6 @@ public class ZhiyiVideoView extends JZVideoPlayerStandard {
         }
         mDefaultStartImageView.setVisibility(GONE);
         thumbImageView.setBackgroundColor(Color.parseColor("#80000000"));
-//        thumbImageView.setVisibility(View.GONE);
     }
 
     @Override

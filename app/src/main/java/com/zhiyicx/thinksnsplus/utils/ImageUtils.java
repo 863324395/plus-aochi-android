@@ -349,17 +349,17 @@ public class ImageUtils {
             laste_request_time = System.currentTimeMillis();
         }
         int defaultErrorAvatar = getDefaultAvatar(userInfoBean);
+        if (!TextUtils.isEmpty(avatar) && FileUtils.isFile(avatar)) {
 
-        DrawableRequestBuilder drawableRequestBuilder = Glide.with(imageView.getContext())
-                .load(TextUtils.isEmpty(avatar) ? R.drawable.shape_default_image : avatar);
+        }
+        Glide.with(imageView.getContext())
+                .load(TextUtils.isEmpty(avatar) ? R.drawable.shape_default_image : avatar)
 //                .signature(new StringSignature(String.valueOf(mHeadPicSigture)));
-
-        drawableRequestBuilder.placeholder(withBorder ? defaultErrorAvatar : defaultErrorAvatar);
-
-        drawableRequestBuilder.transform(withBorder ?
-                new GlideCircleBorderTransform(imageView.getContext().getApplicationContext(), imageView.getResources()
-                        .getDimensionPixelSize(R.dimen.spacing_tiny), ContextCompat.getColor(imageView.getContext(), R.color.white))
-                : new GlideCircleTransform(imageView.getContext().getApplicationContext()))
+                .placeholder(withBorder ? defaultErrorAvatar : defaultErrorAvatar)
+                .transform(withBorder ?
+                        new GlideCircleBorderTransform(imageView.getContext().getApplicationContext(), imageView.getResources()
+                                .getDimensionPixelSize(R.dimen.spacing_tiny), ContextCompat.getColor(imageView.getContext(), R.color.white))
+                        : new GlideCircleTransform(imageView.getContext().getApplicationContext()))
                 .into(imageView);
     }
 

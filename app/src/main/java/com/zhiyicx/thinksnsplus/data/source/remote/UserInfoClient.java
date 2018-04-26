@@ -146,7 +146,7 @@ public interface UserInfoClient {
      */
     @GET(ApiConfig.APP_PATH_GET_MY_DIGGS)
     Observable<List<DigedBean>> getMyDiggs(@Query("after") int after,
-                                           @Query("limit") int limit);
+                                           @Query("limit") Integer limit);
 
     /**
      * 获取用户收到的评论
@@ -157,7 +157,7 @@ public interface UserInfoClient {
      */
     @GET(ApiConfig.APP_PATH_GET_MY_COMMENTS)
     Observable<List<CommentedBean>> getMyComments(@Query("after") int after,
-                                                  @Query("limit") int limit);
+                                                  @Query("limit") Integer limit);
 
     /**
      * 未读通知数量检查

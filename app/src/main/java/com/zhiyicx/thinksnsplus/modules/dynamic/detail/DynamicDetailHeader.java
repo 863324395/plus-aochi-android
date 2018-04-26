@@ -257,7 +257,7 @@ public class DynamicDetailHeader {
                                                                    isFromMemoryCache, boolean
                                                                    isFirstResource) {
                                 sharBitmap = ConvertUtils.drawable2BitmapWithWhiteBg(mContext, resource, R.mipmap.icon);
-                                Bitmap bitmap = FastBlur.blurBitmap(ConvertUtils.drawable2Bitmap(resource), resource
+                                Bitmap bitmap = FastBlur.blurBitmapForShortVideo(ConvertUtils.drawable2Bitmap(resource), resource
                                         .getIntrinsicWidth(), resource
                                         .getIntrinsicHeight());
                                 videoView.setBackground(new BitmapDrawable(mContext.getResources

@@ -27,12 +27,14 @@ public interface MineContract {
 
         /**
          * 新的关注
+         *
          * @param count
          */
         void setNewFollowTip(int count);
 
         /**
          * 新的好友
+         *
          * @param count
          */
         void setNewFriendsTip(int count);
@@ -42,6 +44,11 @@ public interface MineContract {
          */
         void setNewSystemInfo(boolean isShow);
 
+        /**
+         * 更新认证信息
+         *
+         * @param info
+         */
         void updateCertification(UserCertificationInfo info);
 
     }
@@ -57,8 +64,15 @@ public interface MineContract {
          */
         void updateUserInfo();
 
+        /**
+         * 更新用户认证信息
+         */
         void getCertificationInfo();
 
+        /**
+         * 更新最新消息
+         */
+        void updateUserNewMessage();
     }
 
 }

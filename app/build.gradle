@@ -234,5 +234,6 @@ dependencies {
 //    compile dataDependences.update
     implementation dataDependences.kotlin
     implementation dataDependences.ankoCommon
+    implementation 'com.github.chrisbanes:PhotoView:2.0.0'
 
 }
