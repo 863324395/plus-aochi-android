@@ -158,13 +158,13 @@
                     android:id="@+id/rv_member_list"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/spacing_large"
-                    android:layout_marginLeft="@dimen/spacing_mid"
-                    android:layout_marginRight="@dimen/spacing_mid"
+                    android:layout_marginLeft="@dimen/spacing_normal"
+                    android:layout_marginRight="@dimen/spacing_normal"
                     android:layout_marginTop="@dimen/spacing_large"
                     android:scrollbars="none"/>
 
                 <View
+                    android:id="@+id/v_line_find_member"
                     style="@style/style_divider_horizontal"/>
 
                 <TextView

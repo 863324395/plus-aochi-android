@@ -25,6 +25,7 @@ import com.zhiyicx.baseproject.widget.UserAvatarView;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.recycleviewdecoration.GridDecoration;
+import com.zhiyicx.common.utils.recycleviewdecoration.TGridDecoration;
 import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
@@ -101,6 +102,8 @@ public class ChatInfoFragment extends TSFragment<ChatInfoContract.Presenter> imp
     EmptyView mEmptyView;
     @BindView(R.id.rl_block_message)
     RelativeLayout mRlBlockMessage;
+    @BindView(R.id.v_line_find_member)
+    View mVLineFindMember;
 
     private int mChatType;
     private String mChatId;
@@ -117,7 +120,7 @@ public class ChatInfoFragment extends TSFragment<ChatInfoContract.Presenter> imp
     private ChatGroupBean mChatGroupBean;
 
     private ChatMemberAdapter mChatMemberAdapter;
-    private List<UserInfoBean> mChatMembers=new ArrayList<>();
+    private List<UserInfoBean> mChatMembers = new ArrayList<>();
 
     public ChatInfoFragment instance(Bundle bundle) {
         ChatInfoFragment fragment = new ChatInfoFragment();
@@ -164,11 +167,7 @@ public class ChatInfoFragment extends TSFragment<ChatInfoContract.Presenter> imp
         // 成员列表
         RecyclerView.LayoutManager manager = new GridLayoutManager(getContext(), 5);
         mRvMemberList.setLayoutManager(manager);
-        int leftSpacing = getResources().getDimensionPixelOffset(R.dimen.spacing_mid);
-        int horizenSpacing = (DeviceUtils.getScreenWidth(mActivity) - 2 * leftSpacing - 5 * getResources().getDimensionPixelOffset(R.dimen
-                .chat_info_header_view_width)) / 3;
-        horizenSpacing = 500;
-        mRvMemberList.addItemDecoration(new GridDecoration(horizenSpacing, getResources().getDimensionPixelOffset(R.dimen.spacing_large)));
+        mRvMemberList.addItemDecoration(new TGridDecoration(0, getResources().getDimensionPixelOffset(R.dimen.spacing_large), true));
         dealAddOrDeleteButton();
         mChatMemberAdapter = new ChatMemberAdapter(getContext(), mChatMembers, -1);
         mRvMemberList.setAdapter(mChatMemberAdapter);
@@ -471,15 +470,25 @@ public class ChatInfoFragment extends TSFragment<ChatInfoContract.Presenter> imp
         mChatMembers.clear();
         mChatMembers.addAll(mChatGroupBean.getAffiliations());
         if (mPresenter.isGroupOwner()) {
-            if(mChatMembers.size()>18){
+            if (mChatMembers.size() > 18) {
                 // 是群主 18 + 2
                 mChatMembers = mChatMembers.subList(0, 18);
+                mVLineFindMember.setVisibility(View.VISIBLE);
+                mTvToAllMembers.setVisibility(View.VISIBLE);
+            } else {
+                mVLineFindMember.setVisibility(View.GONE);
+                mTvToAllMembers.setVisibility(View.GONE);
             }
-        }else {
+        } else {
             // 不是群主
-            if(mChatMembers.size()>19){
+            if (mChatMembers.size() > 19) {
                 // 19 +1
                 mChatMembers = mChatMembers.subList(0, 19);
+                mVLineFindMember.setVisibility(View.VISIBLE);
+                mTvToAllMembers.setVisibility(View.VISIBLE);
+            } else {
+                mVLineFindMember.setVisibility(View.GONE);
+                mTvToAllMembers.setVisibility(View.GONE);
             }
         }
         // 添加按钮，都可以拉人
