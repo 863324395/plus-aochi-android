@@ -850,8 +850,6 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                 }
                 imageView.setOnClickListener(v -> {
                     try {
-
-
                         DeviceUtils.hideSoftKeyboard(getContext(), v);
                         if (TextUtils.isEmpty(imageBean.getImgUrl())) {
                             if (dynamicType == SendDynamicDataBean.VIDEO_TEXT_DYNAMIC) {
@@ -1012,7 +1010,10 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                     ImageBean oldImageBean = oldList.get(i);
                     boolean tollIsSame = newImageBean.getToll() != null && !newImageBean.getToll().equals(oldImageBean.getToll
                             ());
-                    if (!oldImageBean.equals(newImageBean) || tollIsSame) {
+                    if (!tollIsSame){
+                        return true;
+                    }
+                    if (!oldImageBean.equals(newImageBean)) {
                         return true;
                     }
                 }
