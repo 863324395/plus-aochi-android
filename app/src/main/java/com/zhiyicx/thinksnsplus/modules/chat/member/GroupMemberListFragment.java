@@ -56,7 +56,7 @@ public class GroupMemberListFragment extends TSFragment<GroupMemberListContract.
     protected void initView(View rootView) {
         GridLayoutManager manager = new GridLayoutManager(getContext(), 5);
         mRvMemberList.setLayoutManager(manager);
-        mRvMemberList.addItemDecoration(new GridDecoration(10, 10));
+        mRvMemberList.addItemDecoration(new GridDecoration(10, getResources().getDimensionPixelOffset(R.dimen.spacing_large)));
     }
 
     @Override
