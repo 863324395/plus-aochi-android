@@ -5,8 +5,6 @@ import android.media.MediaMetadataRetriever;
 import android.media.MediaPlayer;
 import android.view.Surface;
 
-import com.zhiyicx.common.utils.log.LogUtils;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -133,13 +131,10 @@ public class MediaPlayerWrapper implements MediaPlayer.OnCompletionListener, Med
             duration += mInfoList.get(i).duration;
             if (duration > time) {
                 int ti = time - (duration - mInfoList.get(i).duration);
-                if (curIndex == i) {
-                    mCurMediaPlayer.seekTo(ti);
-                    if (mCurMediaPlayer.isPlaying()) {
-                        pause();
-                    }
-                } else {
-                    curIndex = i;
+
+                curIndex = i;
+
+                if (mCurMediaPlayer != mPlayerList.get(i)) {
                     mCurMediaPlayer.setSurface(null);
                     mCurMediaPlayer.seekTo(0);
                     if (mCurMediaPlayer.isPlaying()) {
@@ -152,7 +147,13 @@ public class MediaPlayerWrapper implements MediaPlayer.OnCompletionListener, Med
                     mCurMediaPlayer = mPlayerList.get(i);
                     mCurMediaPlayer.setSurface(surface);
                     mCurMediaPlayer.seekTo(ti);
+                }else{
+                    mCurMediaPlayer.seekTo(ti);
+                    if (mCurMediaPlayer.isPlaying()) {
+                        pause();
+                    }
                 }
+
                 break;
             }
         }

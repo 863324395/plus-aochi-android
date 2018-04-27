@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.media.MediaMetadataRetriever;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
@@ -14,7 +15,6 @@ import android.widget.TextView;
 
 import com.jakewharton.rxbinding.view.RxView;
 import com.tym.shortvideo.filter.helper.MagicFilterType;
-import com.tym.shortvideo.interfaces.SingleCallback;
 import com.tym.shortvideo.media.MediaPlayerWrapper;
 import com.tym.shortvideo.media.VideoInfo;
 import com.tym.shortvideo.mediacodec.VideoClipper;
@@ -23,8 +23,6 @@ import com.tym.shortvideo.recordcore.VideoListManager;
 import com.tym.shortvideo.recordcore.multimedia.VideoCombineManager;
 import com.tym.shortvideo.recordcore.multimedia.VideoCombiner;
 import com.tym.shortvideo.utils.FileUtils;
-import com.tym.shortvideo.utils.TrimVideoUtil;
-import com.tym.shortvideo.view.VideoCoverView;
 import com.tym.shortvideo.view.VideoPreviewView;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
@@ -35,6 +33,7 @@ import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.base.EmptySubscribe;
 import com.zhiyicx.thinksnsplus.data.beans.SendDynamicDataBean;
 import com.zhiyicx.thinksnsplus.modules.dynamic.send.SendDynamicActivity;
+import com.zhiyicx.thinksnsplus.modules.shortvideo.helper.VideoCoverView;
 import com.zhiyicx.thinksnsplus.modules.shortvideo.record.RecordActivity;
 
 import java.io.IOException;
@@ -45,6 +44,9 @@ import java.util.concurrent.TimeUnit;
 import butterknife.BindView;
 import rx.Observable;
 import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 
@@ -77,7 +79,6 @@ public class CoverFragment extends TSFragment implements MediaPlayerWrapper.IMed
 
 
     private ProgressDialog mProgressDialog;
-    private String mPath;
     private boolean isPre;
     private boolean hasFilter;
     private boolean mResumed;
@@ -87,6 +88,7 @@ public class CoverFragment extends TSFragment implements MediaPlayerWrapper.IMed
 
     private VideoInfo mVideoInfo;
     private ArrayList<String> mSrcList;
+    private Bitmap mCoverBitmap;
 
     public static CoverFragment newInstance(Bundle bundle) {
         CoverFragment fragment = new CoverFragment();
@@ -169,26 +171,24 @@ public class CoverFragment extends TSFragment implements MediaPlayerWrapper.IMed
     }
 
     private void getVideoCover() {
-//        buildDialog(getString(R.string.dealing));
-//        TrimVideoUtil.backgroundShootVideoThumb(mActivity, Uri.parse(mPath), (long) mSeekBar
-//                .getProgress(), (bitmap, integer) -> {
-//            String cover = com.zhiyicx.common.utils.FileUtils.saveBitmapToFile(mActivity,
-//                    bitmap,
-//                    ParamsManager.VideoCover);
-//
-//            if (hasFilter) {
-//                mProgressDialog.dismiss();
-//                Bundle bundle = new Bundle();
-//                bundle.putString(PATH, cover);
-//                Intent intent = new Intent();
-//                intent.putExtras(bundle);
-//                mActivity.setResult(Activity.RESULT_OK, intent);
-//                mActivity.finish();
-//            } else {
-//                combineVideo(cover);
-//            }
-//
-//        });
+        buildDialog(getString(R.string.dealing));
+
+        String cover = com.zhiyicx.common.utils.FileUtils.saveBitmapToFile(mActivity,
+                mCoverBitmap,
+                ParamsManager.VideoCover);
+
+        if (hasFilter) {
+            mProgressDialog.dismiss();
+            Bundle bundle = new Bundle();
+            bundle.putString(PATH, cover);
+            Intent intent = new Intent();
+            intent.putExtras(bundle);
+            mActivity.setResult(Activity.RESULT_OK, intent);
+            mActivity.finish();
+        } else {
+            combineVideo(cover);
+        }
+
     }
 
     @Override
@@ -204,6 +204,7 @@ public class CoverFragment extends TSFragment implements MediaPlayerWrapper.IMed
         mVideoView.setVideoPath(mSrcList);
 
         if (isPre) {
+            mVideoCoverView.setVisibility(View.GONE);
             mToolbarCenter.setText(R.string.preview);
             mToolbarLeft.setText("");
             mToolbarLeft.setCompoundDrawables(UIUtils.getCompoundDrawables(getContext(), setLeftImg()), null, null, null);
@@ -244,7 +245,10 @@ public class CoverFragment extends TSFragment implements MediaPlayerWrapper.IMed
     @Override
     public void changeTo(long millisecond) {
         mVideoView.seekTo((int) millisecond);
-        mVideoView.takePic((bitmap, integer) -> mActivity.runOnUiThread(() -> mVideoCoverView.setImageBitmap(bitmap)));
+        mVideoView.takePic((bitmap, integer) -> mActivity.runOnUiThread(() -> {
+            mCoverBitmap = bitmap;
+            mVideoCoverView.setImageBitmap(mCoverBitmap);
+        }));
     }
 
     @Override
@@ -253,34 +257,9 @@ public class CoverFragment extends TSFragment implements MediaPlayerWrapper.IMed
             mVideoView.start();
         } else {
             mVideoView.seekTo(1);
+            getCoverImageList();
+            mVideoCoverView.setOnScrollDistanceListener(this);
         }
-        mVideoCoverView.setOnScrollDistanceListener(this);
-        List<Uri> videoUris = new ArrayList<>();
-        for (String url : mSrcList) {
-            videoUris.add(Uri.parse(url));
-        }
-        TrimVideoUtil.backgroundShootVideoThumb(mActivity, videoUris,
-                (bitmaps, integer) ->
-                        mActivity.runOnUiThread(() ->
-                                mVideoCoverView.addImages(bitmaps)));
-
-//        mSeekBar.setMax(mVideoView.getTotalVIdeoDuration());
-//        mSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-//            @Override
-//            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-//                mVideoView.seekTo(progress);
-//            }
-//
-//            @Override
-//            public void onStartTrackingTouch(SeekBar seekBar) {
-//
-//            }
-//
-//            @Override
-//            public void onStopTrackingTouch(SeekBar seekBar) {
-//
-//            }
-//        });
     }
 
     @Override
@@ -303,7 +282,6 @@ public class CoverFragment extends TSFragment implements MediaPlayerWrapper.IMed
 
     @Override
     public void onVideoChanged(VideoInfo info) {
-        mPath = info.getPath();
     }
 
     private ProgressDialog buildDialog(String msg) {
@@ -441,10 +419,53 @@ public class CoverFragment extends TSFragment implements MediaPlayerWrapper.IMed
                         super.onException(throwable);
                         mProgressDialog.dismiss();
                     }
-
-
                 });
+    }
 
+    private void getCoverImageList() {
+        List<Uri> videoUris = new ArrayList<>();
+        for (String url : mSrcList) {
+            videoUris.add(Uri.parse(url));
+        }
+        List<Observable<ArrayList<VideoCoverView.Video>>> observableList = new ArrayList<>();
+        for (Uri uri : videoUris) {
+            final ArrayList<VideoCoverView.Video> list = new ArrayList<>();
+            Observable<ArrayList<VideoCoverView.Video>> observable = Observable.just(uri)
+                    .subscribeOn(Schedulers.io())
+                    .flatMap((Func1<Uri, Observable<ArrayList<VideoCoverView.Video>>>) uri1 -> {
 
+                        MediaMetadataRetriever mediaMetadataRetriever =
+                                new MediaMetadataRetriever();
+                        mediaMetadataRetriever.setDataSource(mActivity, uri1);
+
+                        long videoLengthInMs = Long.parseLong
+                                (mediaMetadataRetriever.extractMetadata
+                                        (MediaMetadataRetriever
+                                                .METADATA_KEY_DURATION)) * 1000;
+                        long numThumbs = videoLengthInMs < 1000000
+                                ? 1 : (videoLengthInMs / 1000000);
+                        numThumbs += numThumbs;
+                        final long interval = videoLengthInMs / numThumbs;
+
+                        for (long i = 0; i < numThumbs; ++i) {
+                            VideoCoverView.Video video = new VideoCoverView.Video(uri1, i * interval);
+                            list.add(video);
+                        }
+                        return Observable.just(list);
+                    });
+            observableList.add(observable);
+        }
+
+        Observable.combineLatest(observableList, args -> {
+            ArrayList<VideoCoverView.Video> result = new ArrayList<>();
+            for (Object obj : args) {
+                if (obj instanceof ArrayList) {
+                    result.addAll((ArrayList<VideoCoverView.Video>) obj);
+                }
+            }
+            return result;
+        })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(bitmaps -> mVideoCoverView.addImages(bitmaps));
     }
 }

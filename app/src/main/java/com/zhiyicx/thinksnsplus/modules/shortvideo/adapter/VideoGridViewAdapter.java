@@ -9,7 +9,15 @@ import android.text.TextUtils;
 import android.view.View;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DecodeFormat;
+import com.bumptech.glide.load.ResourceDecoder;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.engine.Resource;
+import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool;
+import com.bumptech.glide.load.model.ImageVideoWrapper;
+import com.bumptech.glide.load.resource.bitmap.FileDescriptorBitmapDecoder;
+import com.bumptech.glide.load.resource.bitmap.VideoBitmapDecoder;
+import com.bumptech.glide.load.resource.gifbitmap.GifBitmapWrapper;
 import com.tym.shortvideo.media.VideoInfo;
 import com.tym.shortvideo.utils.DateUtil;
 import com.tym.shortvideo.utils.TrimVideoUtil;
@@ -17,6 +25,7 @@ import com.zhiyicx.thinksnsplus.R;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -50,6 +59,7 @@ public class VideoGridViewAdapter extends CommonAdapter<VideoInfo> {
         } else {
             holder.setVisible(R.id.tv_duration, View.VISIBLE);
             holder.setText(R.id.tv_duration, DateUtil.convertSecondsToTime(video.getDuration() / 1000));
+
             Glide.with(mContext)
                     .load(video.getPath())
                     .placeholder(R.drawable.shape_default_image)

@@ -14,7 +14,6 @@ import com.tym.shortvideo.interfaces.SingleCallback;
 import com.tym.shortvideo.interfaces.TrimVideoListener;
 import com.tym.shortvideo.media.VideoInfo;
 import com.tym.shortvideo.mediacodec.VideoClipper;
-import com.zhiyicx.common.utils.*;
 import com.zhiyicx.common.utils.FileUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 
@@ -95,23 +94,6 @@ public class TrimVideoUtil {
         return thumbnailList;
     }
 
-
-    public static void backgroundShootVideoThumb(final Context context, final List<Uri> videoUris, final
-    SingleCallback<ArrayList<Bitmap>, Integer> callback) {
-        final ArrayList<Bitmap> thumbnailList = new ArrayList<>();
-        BackgroundExecutor.execute(new BackgroundExecutor.Task("", 0L, "") {
-                                       @Override
-                                       public void execute() {
-                                           for (Uri uri : videoUris) {
-                                               test(context, uri, thumbnailList);
-                                           }
-                                           callback.onSingleCallback(thumbnailList,1);
-                                       }
-                                   }
-        );
-
-    }
-
     public static void backgroundShootVideoThumb(final Context context, final Uri videoUri, final
     SingleCallback<ArrayList<Bitmap>, Integer> callback) {
         final ArrayList<Bitmap> thumbnailList = new ArrayList<>();
@@ -131,8 +113,6 @@ public class TrimVideoUtil {
                                                        1000;
                                                long numThumbs = videoLengthInMs < one_frame_time
                                                        ? 1 : (videoLengthInMs / one_frame_time);
-                                               // 1s 两张
-                                               numThumbs += numThumbs;
                                                final long interval = videoLengthInMs / numThumbs;
                                                float w, h;
                                                w = thumb_Width;

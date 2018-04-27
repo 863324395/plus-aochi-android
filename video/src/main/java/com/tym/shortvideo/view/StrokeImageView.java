@@ -41,7 +41,7 @@ public class StrokeImageView extends AppCompatImageView {
 
         canvas.getClipBounds(mStrokeRect);
         mStrokeRect.inset(2, 2);
-        mPaint.setColor(Color.YELLOW);
+        mPaint.setColor(Color.parseColor("#59b6d7"));
         mPaint.setStyle(Paint.Style.STROKE);
         mPaint.setStrokeWidth(5);
         canvas.drawRect(mStrokeRect, mPaint);

@@ -177,7 +177,7 @@ public class RecordFragment extends TSFragment implements SurfaceHolder.Callback
         mCameraSurfaceView.getHolder().addCallback(this);
         mCameraSurfaceView.addClickListener(this);
         mCameraSurfaceView.setZOrderOnTop(true);
-        mCameraSurfaceView.getHolder().setFormat(PixelFormat.TRANSPARENT);//设置背景透明
+        mCameraSurfaceView.setZOrderMediaOverlay(true);
         mLayoutAspect.addView(mCameraSurfaceView);
         mLayoutAspect.requestLayout();
 

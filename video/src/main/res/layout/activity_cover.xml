@@ -8,10 +8,10 @@
     android:orientation="vertical">
 
     <include
+        android:layout_gravity="bottom"
         layout="@layout/video_cover_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:paddingBottom="40dp"/>
+        android:layout_height="match_parent"/>
 
     <include layout="@layout/toolbar_video"/>
 
