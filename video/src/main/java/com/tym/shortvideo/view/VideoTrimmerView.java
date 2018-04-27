@@ -7,7 +7,6 @@ import android.net.Uri;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.IntDef;
-import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -34,7 +33,6 @@ import com.zhiyicx.common.utils.FileUtils;
 import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 
-import java.io.File;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.ref.WeakReference;
@@ -425,7 +423,7 @@ public class VideoTrimmerView extends FrameLayout {
             ToastUtils.showToast(getResources().getString(R.string.video_duration_limit));
         } else {
             mVideoView.pause();
-            TrimVideoUtil.trim(mContext, mSrc, com.tym.shortvideo.utils.FileUtils.getPath(ParamsManager.VideoPath,ParamsManager.CompressVideo),
+            TrimVideoUtil.trim(mContext, mSrc, com.tym.shortvideo.utils.FileUtils.getPath(ParamsManager.VideoPath, ParamsManager.CompressVideo),
                     mStartPosition * 1000, mEndPosition * 1000, mOnTrimVideoListener);
         }
     }

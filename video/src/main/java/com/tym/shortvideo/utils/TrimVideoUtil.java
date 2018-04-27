@@ -27,11 +27,22 @@ public class TrimVideoUtil {
     private static final String TAG = TrimVideoUtil.class.getSimpleName();
     public static final int VIDEO_MAX_DURATION = 15;
     public static final int MIN_TIME_FRAME = 3;
-    private static int thumb_Width = (DeviceUtils.getScreenWidth() - DeviceUtils.dipToPX(20)) /
-            VIDEO_MAX_DURATION;
+
+    // 总宽度 15 s
+    private static int thumb_Width = (DeviceUtils.getScreenWidth() - DeviceUtils.dipToPX(20)) / VIDEO_MAX_DURATION;
     private static final int thumb_Height = DeviceUtils.dipToPX(60);
     private static final long one_frame_time = 1000000;
 
+    /**
+     * 剪辑视频时长
+     *
+     * @param context
+     * @param inputFile
+     * @param outputFile
+     * @param startMs    单位是微妙
+     * @param endMs
+     * @param callback
+     */
     public static void trim(Context context, Uri inputFile, String outputFile, long startMs, long
             endMs, final TrimVideoListener callback) {
         VideoClipper clipper = new VideoClipper();
@@ -54,46 +65,13 @@ public class TrimVideoUtil {
         }
     }
 
-    private static ArrayList<Bitmap> test(Context context, Uri videoUri, ArrayList<Bitmap> thumbnailList) {
-        try {
-            MediaMetadataRetriever mediaMetadataRetriever =
-                    new MediaMetadataRetriever();
-            mediaMetadataRetriever.setDataSource(context,
-                    videoUri);
-            // 微秒
-            long videoLengthInMs = Long.parseLong
-                    (mediaMetadataRetriever.extractMetadata
-                            (MediaMetadataRetriever
-                                    .METADATA_KEY_DURATION)) *
-                    1000;
-            long numThumbs = videoLengthInMs < one_frame_time
-                    ? 1 : (videoLengthInMs / one_frame_time);
-            // 1s 两张
-            numThumbs += numThumbs;
-            final long interval = videoLengthInMs / numThumbs;
-            for (long i = 0; i < numThumbs; ++i) {
-                Bitmap bitmap = mediaMetadataRetriever
-                        .getFrameAtTime(i * interval,
-                                MediaMetadataRetriever
-                                        .OPTION_CLOSEST_SYNC);
-                if (bitmap == null) {
-                    continue;
-                }
-                try {
-                    bitmap = Bitmap.createScaledBitmap(bitmap,
-                            thumb_Height, thumb_Height, false);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                thumbnailList.add(bitmap);
-            }
-            mediaMetadataRetriever.release();
-        } catch (Exception ignore) {
-
-        }
-        return thumbnailList;
-    }
-
+    /**
+     * 取视频图片
+     *
+     * @param context
+     * @param videoUri
+     * @param callback
+     */
     public static void backgroundShootVideoThumb(final Context context, final Uri videoUri, final
     SingleCallback<ArrayList<Bitmap>, Integer> callback) {
         final ArrayList<Bitmap> thumbnailList = new ArrayList<>();
@@ -115,8 +93,8 @@ public class TrimVideoUtil {
                                                        ? 1 : (videoLengthInMs / one_frame_time);
                                                final long interval = videoLengthInMs / numThumbs;
                                                float w, h;
+                                               w = h = 0;
                                                w = thumb_Width;
-                                               h = thumb_Height;
                                                for (long i = 0; i < numThumbs; ++i) {
                                                    Bitmap bitmap = mediaMetadataRetriever
                                                            .getFrameAtTime(i * interval,
@@ -128,10 +106,11 @@ public class TrimVideoUtil {
                                                    if (h == 0) {
                                                        float scale = (float) bitmap.getHeight() / (float) bitmap.getWidth();
                                                        h = w * scale;
+                                                       LogUtils.d(h);
                                                    }
                                                    try {
                                                        bitmap = Bitmap.createScaledBitmap(bitmap,
-                                                               thumb_Width, (int) h, false);
+                                                               (int)w, (int) h, false);
                                                    } catch (Exception e) {
                                                        e.printStackTrace();
                                                    }
@@ -148,42 +127,6 @@ public class TrimVideoUtil {
                                                            thumbnailList.clone(), (int) interval);
                                                    thumbnailList.clear();
                                                }
-                                               mediaMetadataRetriever.release();
-                                           } catch (final Throwable e) {
-                                               Thread.getDefaultUncaughtExceptionHandler()
-                                                       .uncaughtException(Thread.currentThread(),
-                                                               e);
-                                           }
-                                       }
-                                   }
-        );
-
-    }
-
-
-    public static void backgroundShootVideoThumb(final Context context, final Uri videoUri, final
-    long frame_time, final SingleCallback<Bitmap, Integer> callback) {
-        BackgroundExecutor.execute(new BackgroundExecutor.Task("", 0L, "") {
-                                       @Override
-                                       public void execute() {
-                                           try {
-                                               MediaMetadataRetriever mediaMetadataRetriever =
-                                                       new MediaMetadataRetriever();
-                                               mediaMetadataRetriever.setDataSource(context,
-                                                       videoUri);
-                                               // 微秒
-                                               long videoLengthInMs = Long.parseLong
-                                                       (mediaMetadataRetriever.extractMetadata
-                                                               (MediaMetadataRetriever
-                                                                       .METADATA_KEY_DURATION)) *
-                                                       1000;
-                                               Bitmap bitmap = mediaMetadataRetriever
-                                                       .getFrameAtTime(frame_time,
-                                                               MediaMetadataRetriever
-                                                                       .OPTION_CLOSEST_SYNC);
-
-                                               callback.onSingleCallback(bitmap, 1);
-
                                                mediaMetadataRetriever.release();
                                            } catch (final Throwable e) {
                                                Thread.getDefaultUncaughtExceptionHandler()

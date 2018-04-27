@@ -63,7 +63,7 @@
         <com.tym.shortvideo.view.RangeSeekBarView
             android:id="@+id/timeLineBar"
             android:layout_width="match_parent"
-            android:layout_height="120dp"
+            android:layout_height="80dp"
             android:layout_below="@+id/video_shoot_tip" />
 
         <FrameLayout

@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.modules.shortvideo.preview;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
@@ -15,6 +16,7 @@ import android.widget.TextView;
 import com.jakewharton.rxbinding.view.RxView;
 import com.tym.shortvideo.filter.helper.MagicFilterType;
 import com.tym.shortvideo.filter.helper.SlideGpuFilterGroup;
+import com.tym.shortvideo.interfaces.SingleCallback;
 import com.tym.shortvideo.media.MediaPlayerWrapper;
 import com.tym.shortvideo.media.VideoInfo;
 import com.tym.shortvideo.mediacodec.VideoClipper;
@@ -165,13 +167,11 @@ public class PreviewFragment extends TSFragment implements MediaPlayerWrapper.IM
                         mVideoInfo = new VideoInfo();
                     }
                     if (TextUtils.isEmpty(mVideoInfo.getCover())) {
-                        TrimVideoUtil.backgroundShootVideoThumb(mActivity,
-                                Uri.parse(VideoListManager.getInstance().getSubVideoPathList()
-                                        .get(0)), 1, (bitmap, integer) -> {
-                                    mVideoInfo.setCover(com.zhiyicx.common.utils.FileUtils
-                                            .saveBitmapToFile(mActivity, bitmap, ParamsManager.VideoCover));
-                                    combineVideo();
-                                });
+                        mVideoView.takePic((bitmap, integer) -> {
+                            mVideoInfo.setCover(com.zhiyicx.common.utils.FileUtils
+                                    .saveBitmapToFile(mActivity, bitmap, ParamsManager.VideoCover));
+                            combineVideo();
+                        });
                     } else {
                         combineVideo();
                     }
