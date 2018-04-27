@@ -23,6 +23,7 @@ import com.zhiyicx.baseproject.impl.photoselector.PhotoSeletorImplModule;
 import com.zhiyicx.baseproject.widget.EmptyView;
 import com.zhiyicx.baseproject.widget.UserAvatarView;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
+import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.recycleviewdecoration.GridDecoration;
 import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
@@ -163,7 +164,10 @@ public class ChatInfoFragment extends TSFragment<ChatInfoContract.Presenter> imp
         // 成员列表
         RecyclerView.LayoutManager manager = new GridLayoutManager(getContext(), 5);
         mRvMemberList.setLayoutManager(manager);
-        mRvMemberList.addItemDecoration(new GridDecoration(10, 10));
+        int leftSpacing = getResources().getDimensionPixelOffset(R.dimen.spacing_mid);
+        int horizenSpacing = (DeviceUtils.getScreenWidth(mActivity) - 2 * leftSpacing - 5 * getResources().getDimensionPixelOffset(R.dimen
+                .chat_info_header_view_width)) / 4;
+        mRvMemberList.addItemDecoration(new GridDecoration(horizenSpacing, getResources().getDimensionPixelOffset(R.dimen.spacing_large)));
         dealAddOrDeleteButton();
         mChatMemberAdapter = new ChatMemberAdapter(getContext(), mChatMembers, -1);
         mRvMemberList.setAdapter(mChatMemberAdapter);
@@ -477,6 +481,10 @@ public class ChatInfoFragment extends TSFragment<ChatInfoContract.Presenter> imp
             chatUserInfoBean1.setUser_id(-2L);
             mChatMembers.add(chatUserInfoBean1);
         }
+        if(mChatMembers.size()>20){
+
+        }
+
     }
 
     private void showClearAllMsgPopupWindow(String tipStr) {

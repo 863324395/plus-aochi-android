@@ -179,6 +179,7 @@ public class ChatInfoPresenter extends AppBasePresenter<ChatInfoContract.View>
         Subscription subscription = mRepository.getGroupChatInfo(groupId)
                 .doOnSubscribe(() -> mRootView.isShowEmptyView(true, true))
                 .subscribeOn(Schedulers.io())
+                .observeOn(Schedulers.io())
                 .flatMap(chatGroupBeans -> {
                     if (chatGroupBeans.isEmpty()) {
                         return null;

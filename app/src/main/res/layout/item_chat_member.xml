@@ -41,6 +41,7 @@
         android:layout_marginTop="@dimen/spacing_normal"
         android:ellipsize="middle"
         android:singleLine="true"
+        android:includeFontPadding="false"
         android:textColor="@color/normal_for_assist_text"
         android:textSize="@dimen/size_icon_assist"
         tools:text="xxxxxxxxxxxxxx"/>
