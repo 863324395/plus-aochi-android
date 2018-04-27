@@ -30,10 +30,12 @@
     <string name="clip_cover">选择封面</string>
     <string name="storage_no_free">存储空间不足</string>
 
+
     <string name="keepon">继续</string>
     <string name="save">保存</string>
     <string name="drop">丢弃</string>
     <string name="giveup">放弃</string>
+    <string name="remake">重新录制</string>
 
     <string name="click_to_replay">重试</string>
     <string name="direct_upload">快速上传(支持5分钟以内)</string>
