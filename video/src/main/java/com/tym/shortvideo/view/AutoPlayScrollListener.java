@@ -9,6 +9,7 @@ import com.zhiyicx.common.utils.log.LogUtils;
 
 import java.util.concurrent.TimeUnit;
 
+import cn.jzvd.JZVideoPlayer;
 import cn.jzvd.JZVideoPlayerManager;
 import cn.jzvd.JZVideoPlayerStandard;
 import rx.Observable;
@@ -72,10 +73,19 @@ public abstract class AutoPlayScrollListener extends RecyclerView.OnScrollListen
                     }
                 }
             default: // TODO 滑出屏幕暂停
-                if (JZVideoPlayerManager.getCurrentJzvd() != null
-                        && JZVideoPlayerManager.getCurrentJzvd().currentState == JZVideoPlayerStandard.CURRENT_STATE_PLAYING) {
+
+                if (JZVideoPlayerManager.getCurrentJzvd() != null) {
+
+                    boolean isPlay = JZVideoPlayerManager.getCurrentJzvd().currentState == JZVideoPlayerStandard.CURRENT_STATE_PLAYING
+                            || JZVideoPlayerManager.getCurrentJzvd().currentState == JZVideoPlayerStandard.CURRENT_STATE_PREPARING
+                            || JZVideoPlayerManager.getCurrentJzvd().currentState == JZVideoPlayerStandard.CURRENT_STATE_PREPARING_CHANGING_URL;
+
                     if (PART_VISIBLE == checkVisibility(JZVideoPlayerManager.getCurrentJzvd())) {
-                        JZVideoPlayerManager.getCurrentJzvd().startButton.callOnClick();
+                        if (JZVideoPlayerManager.getCurrentJzvd().currentState == JZVideoPlayerStandard.CURRENT_STATE_PLAYING) {
+                            JZVideoPlayerManager.getCurrentJzvd().startButton.callOnClick();
+                        } else {
+                            JZVideoPlayer.releaseAllVideos();
+                        }
                     }
                 }
                 break;
