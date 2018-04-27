@@ -181,9 +181,10 @@ public class ProgressView extends View {
             }
         }
 
+        // 最短时间点
         if (mProgress < mRecordTimeMin) {
             left = (int) ((mRecordTimeMin * 1.0f) / mMaxDuration * width);
-            canvas.drawRect(left, 0.0F, left + mVLineWidth, height, mThreePaint);
+            canvas.drawRect(left, 0.0F, left + mVLineWidth, height, mPausePaint);
         }
 
         if (mActiveState) {
