@@ -117,7 +117,7 @@ public class ChatInfoFragment extends TSFragment<ChatInfoContract.Presenter> imp
     private ChatGroupBean mChatGroupBean;
 
     private ChatMemberAdapter mChatMemberAdapter;
-    private List<UserInfoBean> mChatMembers;
+    private List<UserInfoBean> mChatMembers=new ArrayList<>();
 
     public ChatInfoFragment instance(Bundle bundle) {
         ChatInfoFragment fragment = new ChatInfoFragment();
@@ -166,7 +166,8 @@ public class ChatInfoFragment extends TSFragment<ChatInfoContract.Presenter> imp
         mRvMemberList.setLayoutManager(manager);
         int leftSpacing = getResources().getDimensionPixelOffset(R.dimen.spacing_mid);
         int horizenSpacing = (DeviceUtils.getScreenWidth(mActivity) - 2 * leftSpacing - 5 * getResources().getDimensionPixelOffset(R.dimen
-                .chat_info_header_view_width)) / 4;
+                .chat_info_header_view_width)) / 3;
+        horizenSpacing = 500;
         mRvMemberList.addItemDecoration(new GridDecoration(horizenSpacing, getResources().getDimensionPixelOffset(R.dimen.spacing_large)));
         dealAddOrDeleteButton();
         mChatMemberAdapter = new ChatMemberAdapter(getContext(), mChatMembers, -1);
@@ -463,14 +464,24 @@ public class ChatInfoFragment extends TSFragment<ChatInfoContract.Presenter> imp
     }
 
     private void dealAddOrDeleteButton() {
-        if (mChatMembers == null) {
-            mChatMembers = new ArrayList<>();
-        }
+
         if (mChatGroupBean == null) {
             return;
         }
         mChatMembers.clear();
         mChatMembers.addAll(mChatGroupBean.getAffiliations());
+        if (mPresenter.isGroupOwner()) {
+            if(mChatMembers.size()>18){
+                // 是群主 18 + 2
+                mChatMembers = mChatMembers.subList(0, 18);
+            }
+        }else {
+            // 不是群主
+            if(mChatMembers.size()>19){
+                // 19 +1
+                mChatMembers = mChatMembers.subList(0, 19);
+            }
+        }
         // 添加按钮，都可以拉人
         UserInfoBean chatUserInfoBean = new UserInfoBean();
         chatUserInfoBean.setUser_id(-1L);
@@ -480,9 +491,6 @@ public class ChatInfoFragment extends TSFragment<ChatInfoContract.Presenter> imp
             UserInfoBean chatUserInfoBean1 = new UserInfoBean();
             chatUserInfoBean1.setUser_id(-2L);
             mChatMembers.add(chatUserInfoBean1);
-        }
-        if(mChatMembers.size()>20){
-
         }
 
     }
@@ -555,7 +563,7 @@ public class ChatInfoFragment extends TSFragment<ChatInfoContract.Presenter> imp
             if (mChatMemberAdapter != null && mChatGroupBean != null) {
                 mChatMemberAdapter.setOwnerId(mChatGroupBean.getOwner());
                 dealAddOrDeleteButton();
-                mChatMemberAdapter.notifyDataSetChanged();
+                mChatMemberAdapter.refreshData(mChatMembers);
             }
         }
     }
