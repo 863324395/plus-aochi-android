@@ -134,13 +134,12 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
                 .dynamic_list_image_marginright);
         mDiverwith = context.getResources().getDimensionPixelSize(R.dimen.spacing_small);
         mImageContainerWith = DeviceUtils.getScreenWidth(context) - margin;
+        mImageContainerWith = mImageContainerWith > context.getResources().getDimensionPixelSize(R.dimen
+                .dynamic_one_image_max_with) ? context.getResources().getDimensionPixelSize(R.dimen
+                .dynamic_one_image_max_with) : mImageContainerWith;
         // 最大高度是最大宽度的4/3 保持 宽高比 3：4
         mImageMaxHeight = mImageContainerWith * 4 / 3;
 
-        mImageContainerWith = context.getResources().getDimensionPixelSize(R.dimen
-                .dynamic_one_image_max_with);
-        mImageMaxHeight = context.getResources().getDimensionPixelSize(R.dimen
-                .dynamic_one_image_max_height);
     }
 
     @Override

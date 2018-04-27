@@ -1,37 +1,38 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <com.daimajia.swipe.SwipeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:swipe="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/swipe"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     swipe:leftEdgeSwipeOffset="0dp"
-    swipe:rightEdgeSwipeOffset="0dp">
+    swipe:rightEdgeSwipeOffset="0dp"
+    tools:context="com.zhiyicx.thinksnsplus.modules.home.HomeActivity">
 
     <TextView
         android:id="@+id/tv_right"
         android:layout_width="@dimen/slide_button_with"
-        android:textSize="@dimen/size_content"
-        android:textColor="@color/white"
-        android:text="@string/delete"
-        android:gravity="center"
         android:layout_height="match_parent"
         android:background="@color/important_for_note"
+        android:gravity="center"
+        android:text="@string/delete"
+        android:textColor="@color/white"
+        android:textSize="@dimen/size_content"
         />
 
     <RelativeLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
+
+        android:id="@+id/rl_left"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/white"
-        android:id="@+id/rl_left"
         android:paddingLeft="@dimen/spacing_normal"
         android:paddingRight="@dimen/spacing_normal"
         android:paddingTop="@dimen/spacing_mid"
         android:weightSum="1"
-        tools:context="com.zhiyicx.thinksnsplus.modules.home.HomeActivity">
+        >
 
         <com.zhiyicx.baseproject.widget.UserAvatarView
             android:id="@+id/iv_headpic"
@@ -39,20 +40,21 @@
             android:layout_height="@dimen/headpic_for_list"
             android:layout_marginRight="@dimen/spacing_mid"
             android:src="@mipmap/pic_default_secret"
-            app:ts_avatare_size="@dimen/headpic_for_list"
-            app:pressShape="circle"/>
+            app:pressShape="circle"
+            app:ts_avatare_size="@dimen/headpic_for_list"/>
 
         <TextView
             android:id="@+id/tv_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/iv_headpic"
-            android:layout_toLeftOf="@+id/tv_time"
-            android:singleLine="true"
-            android:ellipsize="middle"
+            android:layout_marginRight="@dimen/spacing_mid"
             android:layout_marginTop="@dimen/textview_spacing_offset_height"
-            android:includeFontPadding="false"
+            android:layout_toLeftOf="@+id/tv_time"
+            android:layout_toRightOf="@id/iv_headpic"
+            android:ellipsize="middle"
             android:gravity="top"
+            android:includeFontPadding="false"
+            android:singleLine="true"
             android:textColor="@color/important_for_content"
             android:textSize="@dimen/size_sub_title"
             tools:text="张三"/>
@@ -68,25 +70,20 @@
             android:textSize="@dimen/size_icon_assist"
             tools:text="2016-05-06"/>
 
-        <FrameLayout
-            android:id="@+id/fl_tip"
-            android:layout_width="@dimen/chat_list_new_msg_tip_with"
+
+        <com.zhiyicx.baseproject.widget.BadgeView
+            android:id="@+id/tv_tip"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/tv_content"
             android:layout_alignParentRight="true"
             android:layout_below="@id/tv_time"
-            android:paddingTop="@dimen/spacing_small"
-            android:paddingRight="@dimen/spacing_small">
-
-            <com.zhiyicx.baseproject.widget.BadgeView
-                android:id="@+id/tv_tip"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="right"
-                android:maxLines="1"
-                android:textColor="@color/white"
-                android:textSize="@dimen/size_icon_assist"
-                tools:text="99"/>
-        </FrameLayout>
+            android:layout_gravity="right"
+            android:layout_marginRight="@dimen/spacing_small"
+            android:maxLines="1"
+            android:textColor="@color/white"
+            android:textSize="@dimen/size_icon_assist"
+            tools:text="99"/>
 
 
         <TextView
@@ -94,13 +91,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/tv_name"
-            android:layout_marginRight="@dimen/spacing_normal"
-            android:layout_toLeftOf="@+id/fl_tip"
+            android:layout_marginBottom="@dimen/spacing_mid"
+            android:layout_marginRight="@dimen/spacing_mid"
+            android:layout_marginTop="@dimen/textview_spacing_offset_height"
+            android:layout_toLeftOf="@+id/tv_tip"
             android:layout_toRightOf="@+id/iv_headpic"
             android:ellipsize="end"
             android:gravity="bottom"
-            android:layout_marginTop="@dimen/textview_spacing_offset_height"
-            android:paddingBottom="@dimen/spacing_mid"
             android:maxLines="1"
             android:paddingTop="@dimen/spacing_normal"
             android:textColor="@color/normal_for_assist_text"

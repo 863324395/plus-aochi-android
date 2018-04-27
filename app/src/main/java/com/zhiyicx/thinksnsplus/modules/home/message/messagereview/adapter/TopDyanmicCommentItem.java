@@ -55,7 +55,9 @@ public class TopDyanmicCommentItem extends BaseTopItem implements BaseTopItem.To
         TopDynamicCommentBean dynamicCommentBean = (TopDynamicCommentBean) topDynamicCommentBean;
 
         // 加载内容
-        if (dynamicCommentBean.getFeed().getImages() != null || dynamicCommentBean.getFeed().getVideo() != null) {
+        if ((dynamicCommentBean.getFeed().getImages() != null && !dynamicCommentBean.getFeed().getImages().isEmpty())
+                || dynamicCommentBean.getFeed
+                ().getVideo() != null) {
             holder.setVisible(R.id.fl_image_container, View.VISIBLE);
             String url;
             if (dynamicCommentBean.getFeed().getVideo() != null) {

@@ -162,7 +162,7 @@ public class MessageConversationPresenter extends AppBasePresenter<MessageConver
                                 name = group.getGroupName();
                             }
                         }
-                        if (name.contains(s)) {
+                        if (name.toLowerCase().contains(s.toLowerCase())) {
                             newList.add(itemBeanV2);
                         }
                     }

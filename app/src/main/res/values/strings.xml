@@ -219,7 +219,7 @@
     <string name="dynamic_send_toll_count">选择图片收费金额</string>
     <string name="dynamic_send_toll_title">设置图片收费</string>
     <string name="dynamic_send_toll_reset">重置</string>
-    <string name="dynamic_send_toll_words_count">选择文字收费金额</string>
+    <string name="dynamic_send_toll_words_count">设置文字收费金额</string>
     <string name="dynamic_send_toll_money">自定义金额</string>
     <string name="dynamic_send_toll_look">查看收费</string>
     <string name="dynamic_send_toll_download">下载收费</string>
@@ -401,7 +401,7 @@
 
     <!--动态置顶-->
     <string name="yuan">元</string>
-    <string name="select_day">%1$dd</string>
+    <string name="select_day">%1$d天</string>
     <string name="select_topday">选择置顶天数</string>
     <string name="totop_money">置顶金额</string>
     <string name="totop_vrify">此动态正在审核置顶中请勿重复提交</string>
@@ -1092,4 +1092,5 @@
     <string name="chat_delete_sure">是否确认删除?</string>
     <string name="ts_delete">删除</string>
     <string name="ts_server_version_format">服务器当前版本号：%s</string>
+    <string name="review_notificaiton">审核通知</string>
 </resources>

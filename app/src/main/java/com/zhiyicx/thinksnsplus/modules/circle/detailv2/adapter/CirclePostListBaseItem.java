@@ -62,8 +62,8 @@ public class CirclePostListBaseItem implements ItemViewDelegate<CirclePostListBe
     private final int mHightPixels;
     private final int mMargin; // 图片容器的边距
     protected final int mDiverwith; // 分割先的宽高
-    protected final int mImageContainerWith; // 图片容器最大宽度
-    protected final int mImageMaxHeight; // 单张图片最大高度
+    protected  int mImageContainerWith; // 图片容器最大宽度
+    protected  int mImageMaxHeight; // 单张图片最大高度
     protected ImageLoader mImageLoader;
     protected Context mContext;
     protected AuthBean mAuthBean;
@@ -138,6 +138,10 @@ public class CirclePostListBaseItem implements ItemViewDelegate<CirclePostListBe
                 .dynamic_list_image_marginright);
         mDiverwith = context.getResources().getDimensionPixelSize(R.dimen.spacing_small);
         mImageContainerWith = mWidthPixels - mMargin;
+
+        mImageContainerWith = mImageContainerWith > context.getResources().getDimensionPixelSize(R.dimen
+                .dynamic_one_image_max_with) ? context.getResources().getDimensionPixelSize(R.dimen
+                .dynamic_one_image_max_with) : mImageContainerWith;
         // 最大高度是最大宽度的4/3 保持 宽高比 3：4
         mImageMaxHeight = mImageContainerWith * 4 / 3;
     }

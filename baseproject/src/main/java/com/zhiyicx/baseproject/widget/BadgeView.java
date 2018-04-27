@@ -1,16 +1,16 @@
 /*
  * BadgeView.java
  * BadgeView
- * 
+ *
  * Copyright (c) 2012 Stefan Jauker.
  * https://github.com/kodex83/BadgeView
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -37,8 +37,10 @@ import android.widget.FrameLayout.LayoutParams;
 import android.widget.TabWidget;
 import android.widget.TextView;
 
+import com.zhiyicx.baseproject.R;
 
-public class BadgeView extends TextView {
+
+public class BadgeView extends android.support.v7.widget.AppCompatTextView {
 
     private boolean mHideOnNull = true;
 
@@ -67,16 +69,13 @@ public class BadgeView extends TextView {
         }
 
         // set default font
+        setIncludeFontPadding(false);
+        setGravity(Gravity.CENTER);
         setTextColor(Color.WHITE);
         setTypeface(Typeface.DEFAULT);
         setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
-        setPadding(dip2Px(5f),0, dip2Px(5f), 0);
-
         // set default background
         setBackground(20, Color.parseColor("#f4504d"));
-
-        setGravity(Gravity.CENTER);
-
         // default values
         setHideOnNull(true);
         setBadgeCount(0);
@@ -114,7 +113,7 @@ public class BadgeView extends TextView {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see android.widget.TextView#setText(java.lang.CharSequence, android.widget.TextView.BufferType)
      */
     @Override
@@ -128,7 +127,13 @@ public class BadgeView extends TextView {
     }
 
     public void setBadgeCount(int count) {
+        if (count > 9) {
+            setPadding(dip2Px(3f), dip2Px(0.5f), dip2Px(4f), dip2Px(0.5f));
+        } else {
+            setPadding(dip2Px(4f), dip2Px(0.5f), dip2Px(4f), dip2Px(0.5f));
+        }
         setText(String.valueOf(count));
+
     }
 
     public Integer getBadgeCount() {
@@ -188,9 +193,9 @@ public class BadgeView extends TextView {
 
     /*
      * Attach the BadgeView to the TabWidget
-     * 
+     *
      * @param target the TabWidget to attach the BadgeView
-     * 
+     *
      * @param tabIndex index of the tab
      */
     public void setTargetView(TabWidget target, int tabIndex) {
@@ -200,7 +205,7 @@ public class BadgeView extends TextView {
 
     /*
      * Attach the BadgeView to the target view
-     * 
+     *
      * @param target the view to attach the BadgeView
      */
     public void setTargetView(View target) {

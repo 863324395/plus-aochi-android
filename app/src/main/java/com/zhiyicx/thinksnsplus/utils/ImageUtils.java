@@ -98,9 +98,17 @@ public class ImageUtils {
     }
 
     public static int getmImageContainerWith() {
-        return getmWidthPixels() - getmMargin();
+        int maxWidth = AppApplication.getContext().getResources().getDimensionPixelOffset(R.dimen.dynamic_image_max_width);
+        int with = getmWidthPixels() - getmMargin();
+        with = with > maxWidth ? maxWidth : with;
+        return with;
     }
 
+    /**
+     * 设计图 4：3
+     *
+     * @return
+     */
     public static int getmImageMaxHeight() {
         return getmImageContainerWith() * 4 / 3;
     }
