@@ -808,13 +808,13 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                     paintView.setVisibility(View.GONE);
                     filterView.setVisibility(View.GONE);
                     // 换成摄像图标
-//                    imageView.setImageResource(dynamicType == SendDynamicDataBean.VIDEO_TEXT_DYNAMIC ?
-//                            R.mipmap.ico_video_recordings : R.mipmap.img_edit_photo_frame);
-
-                    imageView.setImageResource(R.mipmap.img_edit_photo_frame);
+                    imageView.setImageResource(dynamicType == SendDynamicDataBean.VIDEO_TEXT_DYNAMIC ?
+                            R.mipmap.ico_video_remake : R.mipmap.img_edit_photo_frame);
+                    holder.setVisible(R.id.tv_record, dynamicType == SendDynamicDataBean.VIDEO_TEXT_DYNAMIC ? View.VISIBLE : View.GONE);
                 } else {
                     paintView.setVisibility(isToll ? View.VISIBLE : View.GONE);
                     filterView.setVisibility(isToll ? View.VISIBLE : View.GONE);
+                    holder.setVisible(R.id.tv_record, View.GONE);
                     if (!isToll) {
                         imageBean.setToll(null);
                     }

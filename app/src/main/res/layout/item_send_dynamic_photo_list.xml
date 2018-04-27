@@ -28,4 +28,15 @@
         android:scaleType="centerCrop"
         android:src="@mipmap/ico_edit_pen"/>
 
+    <TextView
+        android:text="重新录制"
+        android:layout_marginTop="@dimen/spacing_normal"
+        android:id="@+id/tv_record"
+        android:gravity="center"
+        android:layout_gravity="center"
+        android:textColor="@color/general_for_loading_more"
+        android:textSize="@dimen/size_icon_assist"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
 </FrameLayout>
