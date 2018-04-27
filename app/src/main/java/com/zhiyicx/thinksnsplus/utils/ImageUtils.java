@@ -105,7 +105,7 @@ public class ImageUtils {
     }
 
     /**
-     * 设计图 248、690
+     * 设计图 4：3
      *
      * @return
      */

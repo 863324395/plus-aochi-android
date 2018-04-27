@@ -137,7 +137,7 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
         mImageContainerWith = mImageContainerWith > context.getResources().getDimensionPixelSize(R.dimen
                 .dynamic_one_image_max_with) ? context.getResources().getDimensionPixelSize(R.dimen
                 .dynamic_one_image_max_with) : mImageContainerWith;
-        // 最大高度是最大宽度的16/9 保持 宽高比 9:16
+        // 最大高度是最大宽度的4/3 保持 宽高比 3：4
         mImageMaxHeight = mImageContainerWith * 4 / 3;
 
     }
