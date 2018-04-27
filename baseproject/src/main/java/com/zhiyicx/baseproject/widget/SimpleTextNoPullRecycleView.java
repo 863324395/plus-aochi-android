@@ -47,7 +47,7 @@ public abstract class SimpleTextNoPullRecycleView<T> extends NoPullRecycleView {
     private void init(@Nullable AttributeSet attrs, int defStyle) {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         setLayoutManager(linearLayoutManager);
-        LinearDecoration linearDecoration = new LinearDecoration(0, getResources().getDimensionPixelSize(R.dimen.spacing_mid_small), 0, 0);
+        LinearDecoration linearDecoration = new LinearDecoration(0, getResources().getDimensionPixelSize(R.dimen.spacing_small), 0, 0);
         linearDecoration.setNeedLastDecoration(false);
         addItemDecoration(linearDecoration);
     }
