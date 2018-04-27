@@ -401,7 +401,7 @@
 
     <!--动态置顶-->
     <string name="yuan">元</string>
-    <string name="select_day">%1$dd</string>
+    <string name="select_day">%1$d天</string>
     <string name="select_topday">选择置顶天数</string>
     <string name="totop_money">置顶金额</string>
     <string name="totop_vrify">此动态正在审核置顶中请勿重复提交</string>
