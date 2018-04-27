@@ -46,8 +46,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/spacing_large"
-            android:layout_marginLeft="@dimen/spacing_normal_large"
-            android:layout_marginRight="@dimen/spacing_normal_large"
+            android:layout_marginLeft="@dimen/spacing_large"
+            android:layout_marginRight="@dimen/spacing_large"
             android:layout_marginTop="@dimen/spacing_large"
             app:hintContent="@string/dynamic_content_hint"
             app:limitSize="@integer/dynamic_content_max_size"
@@ -69,10 +69,13 @@
             android:id="@+id/tv_toll"
             android:layout_width="match_parent"
             android:layout_height="@dimen/full_button_height"
-            android:paddingLeft="@dimen/spacing_normal"
+            android:paddingLeft="@dimen/spacing_small"
+            app:showLine="false"
             app:leftText="@string/dynamic_send_toll"
             app:rightImage="@mipmap/btn_close"/>
-
+        <include
+            android:id="@+id/v_line_toll"
+            layout="@layout/include_horizontal_divider_light"/>
         <LinearLayout
             android:id="@+id/send_dynamic_ll_toll"
             android:layout_width="match_parent"

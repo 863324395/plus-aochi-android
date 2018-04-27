@@ -124,6 +124,8 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
     ScrollView mSlSendDynamic;
     @BindView(R.id.v_horizontal_line)
     View mTitleUnderLine;
+    @BindView(R.id.v_line_toll)
+    View mTollLine;
 
     @BindView(R.id.tv_custom_money)
     TextView mCustomMoney;
@@ -251,6 +253,7 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
 
     @Override
     protected void initView(View rootView) {
+        mTvToll.setLeftTextSize(getResources().getInteger(R.integer.dynamic_toll_tip_text_size));
         // 设置右边发布文字监听
         initSendDynamicBtnState();
         // 设置左边取消文字的颜色为主题色
@@ -268,6 +271,8 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
     private void initTollState() {
         boolean canPay = mPresenter.getSystemConfigBean().getFeed().hasPaycontrol();
         mTvToll.setVisibility(canPay && dynamicType != SendDynamicDataBean.VIDEO_TEXT_DYNAMIC ? View.VISIBLE : View.GONE);
+        mTollLine.setVisibility(canPay && dynamicType != SendDynamicDataBean.VIDEO_TEXT_DYNAMIC ? View.GONE : View.VISIBLE);
+
     }
 
     @Override
@@ -640,6 +645,7 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
             }
             isToll = !isToll;
             mTvToll.setRightImage(isToll ? R.mipmap.btn_open : R.mipmap.btn_close);
+            mTollLine.setVisibility(isToll ? View.GONE : View.VISIBLE);
             if (dynamicType == SendDynamicDataBean.TEXT_ONLY_DYNAMIC) {
                 mLLToll.setVisibility(isToll ? View.VISIBLE : View.GONE);
                 if (!isToll) {
@@ -940,6 +946,8 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
 //                mEtDynamicTitle.setVisibility(View.VISIBLE);
 //                mTitleUnderLine.setVisibility(View.VISIBLE);
                 mTvToll.setVisibility(View.GONE);
+                mTollLine.setVisibility(View.GONE);
+
             }
         }
         switch (dynamicType) {
