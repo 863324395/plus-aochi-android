@@ -607,7 +607,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
     /**
      * 懒加载 emptyView
      */
-    private void layzLoadEmptyView() {
+    protected void layzLoadEmptyView() {
         if (mEmptyView == null) {
             try {
                 ViewStub viewStub = (ViewStub) mRootView.findViewById(R.id.stub_empty_view);
