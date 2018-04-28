@@ -95,6 +95,8 @@ public class SelectFriendsFragment extends TSListFragment<SelectFriendsContract.
     @Override
     protected void initView(View rootView) {
         super.initView(rootView);
+        setLoadMorNodataTipText(getString(R.string.no_more_firends));
+
         mSelectedList = new ArrayList<>();
         mSearchResultList = new ArrayList<>();
         getIntentData();
@@ -107,7 +109,7 @@ public class SelectFriendsFragment extends TSListFragment<SelectFriendsContract.
         RxTextView.textChanges(mEditSearchFriends)
                 .subscribe(charSequence -> {
                     // 搜索
-                    mPresenter.requestCacheData((long) mListDatas.size(), false);
+                    mPresenter.requestNetData(DEFAULT_PAGE_MAX_ID, false);
                 });
     }
 
@@ -307,11 +309,10 @@ public class SelectFriendsFragment extends TSListFragment<SelectFriendsContract.
         // 当好友没有时隐藏搜索
         mLinearLayout.setVisibility(TextUtils.isEmpty(mEditSearchFriends.getText().toString().trim()) && data.isEmpty() ? View.GONE : View.VISIBLE);
         layzLoadEmptyView();
-        mEmptyView.setErrorImag(TextUtils.isEmpty(mEditSearchFriends.getText().toString().trim()) && data.isEmpty()?R.mipmap.img_default_nobody:R
+        mEmptyView.setErrorImag(TextUtils.isEmpty(mEditSearchFriends.getText().toString().trim()) && data.isEmpty() ? R.mipmap.img_default_nobody : R
                 .mipmap.img_default_search);
         checkUserIsSelected(data);
         super.onNetResponseSuccess(data, isLoadMore);
-
 
 
     }
@@ -357,4 +358,5 @@ public class SelectFriendsFragment extends TSListFragment<SelectFriendsContract.
             }
         }
     }
+
 }

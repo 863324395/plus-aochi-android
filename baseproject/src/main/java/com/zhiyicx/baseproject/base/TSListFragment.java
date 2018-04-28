@@ -9,6 +9,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.text.Spanned;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -150,7 +151,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
     /**
      * 没有更多数据
      */
-    private View mTvNoMoredataText;
+    private TextView mTvNoMoredataText;
 
     /**
      * 避免 Glide.resume.重复设置增加开销
@@ -248,7 +249,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
     protected View getFooterView() {
         // 添加加载更多没有了的提示
         mFooterView = LayoutInflater.from(getContext()).inflate(R.layout.view_refresh_footer, null);
-        mTvNoMoredataText = mFooterView.findViewById(R.id.tv_no_moredata_text);
+        mTvNoMoredataText = (TextView) mFooterView.findViewById(R.id.tv_no_moredata_text);
         mFooterView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         return mFooterView;
     }
@@ -891,4 +892,15 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
     }
 
 
+    /**
+     * 没有更多数据了的提示
+     */
+    protected void setLoadMorNodataTipText(String text) {
+        if (TextUtils.isEmpty(text)) {
+            mTvNoMoredataText.setVisibility(View.GONE);
+        } else {
+            mTvNoMoredataText.setVisibility(View.VISIBLE);
+            mTvNoMoredataText.setText(text);
+        }
+    }
 }
