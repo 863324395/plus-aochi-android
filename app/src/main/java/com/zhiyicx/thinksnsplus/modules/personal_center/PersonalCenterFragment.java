@@ -19,7 +19,7 @@ import android.widget.TextView;
 
 import com.hyphenate.easeui.EaseConstant;
 import com.jakewharton.rxbinding.view.RxView;
-import com.trycatch.mysnackbar.Prompt;
+import com.umeng.socialize.bean.SHARE_MEDIA;
 import com.zhiyicx.baseproject.base.TSActivity;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.base.TSListFragment;
@@ -59,13 +59,14 @@ import com.zhiyicx.thinksnsplus.modules.personal_center.adapter.PersonalCenterDy
 import com.zhiyicx.thinksnsplus.modules.personal_center.adapter.PersonalCenterDynamicListItemForNineImage;
 import com.zhiyicx.thinksnsplus.modules.personal_center.adapter.PersonalCenterDynamicListItemForOneImage;
 import com.zhiyicx.thinksnsplus.modules.personal_center.adapter.PersonalCenterDynamicListItemForSevenImage;
+import com.zhiyicx.thinksnsplus.modules.personal_center.adapter.PersonalCenterDynamicListItemForShortVideo;
 import com.zhiyicx.thinksnsplus.modules.personal_center.adapter.PersonalCenterDynamicListItemForSixImage;
 import com.zhiyicx.thinksnsplus.modules.personal_center.adapter.PersonalCenterDynamicListItemForThreeImage;
 import com.zhiyicx.thinksnsplus.modules.personal_center.adapter.PersonalCenterDynamicListItemForTwoImage;
 import com.zhiyicx.thinksnsplus.modules.personal_center.adapter.PersonalCenterHeaderViewItem;
 import com.zhiyicx.thinksnsplus.modules.report.ReportActivity;
 import com.zhiyicx.thinksnsplus.modules.report.ReportType;
-import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBActivity;
+import com.zhiyicx.thinksnsplus.modules.shortvideo.helper.ZhiyiVideoView;
 import com.zhiyicx.thinksnsplus.modules.wallet.reward.RewardFragment;
 import com.zhiyicx.thinksnsplus.modules.wallet.reward.RewardType;
 import com.zhiyicx.thinksnsplus.modules.wallet.sticktop.StickTopFragment;
@@ -84,13 +85,16 @@ import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import cn.jzvd.JZMediaManager;
+import cn.jzvd.JZVideoPlayerManager;
 import rx.android.schedulers.AndroidSchedulers;
 
 import static com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.POPUPWINDOW_ALPHA;
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
-import static com.zhiyicx.thinksnsplus.data.source.repository.SystemRepository.checkHelperUrl;
 import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment.DYNAMIC_DETAIL_DATA;
 import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment.DYNAMIC_DETAIL_DATA_POSITION;
+import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment.DYNAMIC_DETAIL_DATA_TYPE;
+import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment.DYNAMIC_VIDEO_STATE;
 import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment.LOOK_COMMENT_MORE;
 import static com.zhiyicx.thinksnsplus.modules.personal_center.adapter.PersonalCenterHeaderViewItem.STATUS_RGB;
 import static com.zhiyicx.thinksnsplus.modules.personal_center.adapter.PersonalCenterHeaderViewItem.TOOLBAR_BLACK_ICON;
@@ -110,9 +114,10 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
         DynamicListCommentView.OnCommentClickListener, DynamicListBaseItem.OnMenuItemClickLisitener,
         DynamicListBaseItem.OnImageClickListener, OnUserInfoClickListener, DynamicListCommentView.OnMoreCommentClickListener,
         InputLimitView.OnSendClickListener, MultiItemTypeAdapter.OnItemClickListener,
-        PhotoSelectorImpl.IPhotoBackListener, TextViewUtils.OnSpanTextClickListener {
+        PhotoSelectorImpl.IPhotoBackListener, TextViewUtils.OnSpanTextClickListener, ZhiyiVideoView.ShareInterface {
 
     public static final String PERSONAL_CENTER_DATA = "personal_center_data";
+    public static final String VIDEO_FROME = "personal";
 
     @BindView(R.id.iv_back)
     ImageView mIvBack;
@@ -349,6 +354,12 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
         setAdapter(adapter, new PersonalCenterDynamicListItemForSevenImage(getContext()));
         setAdapter(adapter, new PersonalCenterDynamicListItemForEightImage(getContext()));
         setAdapter(adapter, new PersonalCenterDynamicListItemForNineImage(getContext()));
+        setAdapter(adapter, new PersonalCenterDynamicListItemForShortVideo(getContext(), this) {
+            @Override
+            protected String videoFrom() {
+                return VIDEO_FROME;
+            }
+        });
         DynamicEmptyItem emptyItem = new DynamicEmptyItem();
         adapter.addItemViewDelegate(emptyItem);
         adapter.setOnItemClickListener(this);
@@ -421,6 +432,24 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
     }
 
     @Override
+    public void share(int position) {
+        position -= mHeaderAndFooterWrapper.getHeadersCount();
+        if (mListDatas.get(position).getId() > 0) {
+            Bitmap shareBitMap = getShareBitmap(position, R.id.thumb);
+            mPresenter.shareDynamic(mListDatas.get(position), shareBitMap);
+        }
+    }
+
+    @Override
+    public void shareWihtType(int position, SHARE_MEDIA type) {
+        position -= mHeaderAndFooterWrapper.getHeadersCount();
+        if (mListDatas.get(position).getId() > 0) {
+            mPresenter.shareDynamic(mListDatas.get(position), getShareBitmap(position, R.id.thumb),
+                    type);
+        }
+    }
+
+    @Override
     public void onMenuItemClick(View view, int dataPosition, int viewPosition) {
         dataPosition -= mHeaderAndFooterWrapper.getHeadersCount();// 减去 header
         mCurrentPostion = dataPosition;
@@ -431,8 +460,11 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
             shareBitMap = ConvertUtils.drawable2BitmapWithWhiteBg(getContext(), imageView.getDrawable(), R.mipmap.icon);
         } catch (Exception e) {
         }
-        switch (viewPosition) { // 0 1 2 3 代表 view item 位置
-            case 0: // 喜欢
+        // 0 1 2 3 代表 view item 位置
+        switch (viewPosition) {
+
+            case 0:
+                // 喜欢
                 // 还未发送成功的动态列表不查看详情
                 if (mListDatas.get(dataPosition).getId() == null || mListDatas.get(dataPosition).getId() == 0) {
                     return;
@@ -440,7 +472,8 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
                 handleLike(dataPosition);
                 break;
 
-            case 1: // 评论
+            case 1:
+                // 评论
                 // 还未发送成功的动态列表不查看详情
                 if (mListDatas.get(dataPosition).getId() == null || mListDatas.get(dataPosition).getId() == 0) {
                     return;
@@ -448,19 +481,24 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
                 showCommentView();
                 mIlvComment.setEtContentHint(getString(R.string.default_input_hint));
                 mCurrentPostion = dataPosition;
-                mReplyToUserId = 0;// 0 代表评论动态
+                // 0 代表评论动态
+                mReplyToUserId = 0;
                 break;
 
-            case 2: // 浏览
-                onItemClick(null, null, (dataPosition + mHeaderAndFooterWrapper.getHeadersCount())); // 加上 header
+            case 2:
+                // 浏览
+                // 加上 header
+                onItemClick(null, null, (dataPosition + mHeaderAndFooterWrapper.getHeadersCount()));
                 break;
 
-            case 3: // 更多
+            case 3:
+                // 更多
                 initDeletDynamicPopupWindow(mListDatas.get(dataPosition), dataPosition, shareBitMap);
                 mDeletDynamicPopWindow.show();
                 break;
             default:
-                onItemClick(null, null, (dataPosition + mHeaderAndFooterWrapper.getHeadersCount())); // 加上 header
+                // 加上 header
+                onItemClick(null, null, (dataPosition + mHeaderAndFooterWrapper.getHeadersCount()));
         }
     }
 
@@ -500,17 +538,19 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
 
     @Override
     public void onReSendClick(int position) {
-        position = position - 1;// 去掉 header
+        // 去掉 header
+        position = position - mHeaderAndFooterWrapper.getHeadersCount();
         initReSendDynamicPopupWindow(position);
         mReSendDynamicPopWindow.show();
     }
 
 
     @Override
-    public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
+    public void onItemClick(View view,final RecyclerView.ViewHolder holder, int position) {
         position = position - mHeaderAndFooterWrapper.getHeadersCount();
         mCurrentPostion = position;
-        if (!TouristConfig.DYNAMIC_DETAIL_CAN_LOOK && mPresenter.handleTouristControl()) { // 游客处理
+        // 游客处理
+        if (!TouristConfig.DYNAMIC_DETAIL_CAN_LOOK && mPresenter.handleTouristControl()) {
             return;
         }
         DynamicDetailBeanV2 detailBeanV2 = mListDatas.get(position);
@@ -522,7 +562,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
             return;
         }
 
-        goDynamicDetail(position, false);
+        goDynamicDetail(position, false,(ViewHolder)holder);
     }
 
     @Override
@@ -773,7 +813,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
     }
 
 
-    private void goDynamicDetail(int position, boolean isLookMoreComment) {
+    private void goDynamicDetail(int position, boolean isLookMoreComment, ViewHolder holder) {
         // 还未发送成功的动态列表不查看详情
         if (mListDatas.get(position).getId() == null || mListDatas.get(position).getId() == 0) {
             return;
@@ -784,9 +824,26 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
         bundle.putParcelable(DYNAMIC_DETAIL_DATA, mListDatas.get(position));
         bundle.putInt(DYNAMIC_DETAIL_DATA_POSITION, position);
         bundle.putBoolean(LOOK_COMMENT_MORE, isLookMoreComment);
+
+        ZhiyiVideoView playView = null;
+        try {
+            playView = holder.getView(R.id.videoplayer);
+        } catch (Exception ignore) {
+
+        }
+
+        if (playView != null && JZVideoPlayerManager.getFirstFloor() != null) {
+            playView.mVideoFrom = VIDEO_FROME;
+            if (playView.currentState == ZhiyiVideoView.CURRENT_STATE_PLAYING) {
+                playView.startButton.callOnClick();
+            }
+            bundle.putInt(DYNAMIC_VIDEO_STATE, playView.currentState);
+            playView.textureViewContainer.removeView(JZMediaManager.textureView);
+            playView.onStateNormal();
+        }
+
         intent.putExtras(bundle);
         startActivity(intent);
-
     }
 
     @Override
@@ -992,7 +1049,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
     @Override
     public void onMoreCommentClick(View view, DynamicDetailBeanV2 dynamicBean) {
         int position = mPresenter.getCurrenPosiotnInDataList(dynamicBean.getFeed_mark());
-        goDynamicDetail(position, true);
+        goDynamicDetail(position, true,(ViewHolder) mRvList.getChildViewHolder(view));
     }
 
     @Override
@@ -1062,6 +1119,18 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
         mIlvComment.clearFocus();
         DeviceUtils.hideSoftKeyboard(getActivity(), mIlvComment.getEtContent());
         mVShadow.setVisibility(View.GONE);
+    }
+
+    private Bitmap getShareBitmap(int position, int id) {
+        Bitmap shareBitMap = null;
+        try {
+            ImageView imageView = (ImageView) layoutManager.findViewByPosition
+                    (position + mHeaderAndFooterWrapper.getHeadersCount()).findViewById(id);
+            shareBitMap = ConvertUtils.drawable2BitmapWithWhiteBg(getContext(), imageView
+                    .getDrawable(), R.mipmap.icon);
+        } catch (Exception e) {
+        }
+        return shareBitMap;
     }
 
 

@@ -25,7 +25,7 @@ public class PersonalCenterDynamicListForZeroImage extends PersonalCenterDynamic
 
     @Override
     public boolean isForViewType(DynamicDetailBeanV2 item, int position) {
-        return position == 0 || (item.getFeed_mark() != null && (item.getImages() == null||item.getImages().isEmpty()));
+        return position == 0 || (item.getFeed_mark() != null && (item.getImages() == null||item.getImages().isEmpty())) && item.getVideo() == null;
     }
 
 

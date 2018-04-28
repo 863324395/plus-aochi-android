@@ -1191,7 +1191,6 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
             bundle.putInt(DYNAMIC_VIDEO_STATE, playView.currentState);
             playView.textureViewContainer.removeView(JZMediaManager.textureView);
             playView.onStateNormal();
-            playView.CLICK_QUIT_FULLSCREEN_TIME = System.currentTimeMillis();
         }
 
         intent.putExtras(bundle);
