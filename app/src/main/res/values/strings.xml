@@ -144,7 +144,7 @@
 
     <!--资讯-->
     <string name="info_title">完善文章信息</string>
-    <string name="post_editor_default_content">编辑文章正文</string>
+    <string name="info_editor_default_content">编辑文章正文</string>
     <string name="info_title_necessary">请填写正确的标题或者内容</string>
     <string name="info_published">已发布</string>
     <string name="info_publishing">投稿中</string>
@@ -302,6 +302,8 @@
     <string name="set_post_apply_top_days">设置帖子置顶天数</string>
     <string name="delete_post">删除帖子</string>
     <string name="post_publishing">发贴中</string>
+    <string name="post_editor_default_title">输入标题，20字以内</string>
+    <string name="post_editor_default_content">输入要说的话，图文结合更精彩哦</string>
     <string name="post_publish_select_circle">请选择一个圈子</string>
     <string name="post_publish_select_title">标题还是要的!</string>
     <string name="post_publish_select_content">你的内容呢..</string>

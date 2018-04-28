@@ -68,6 +68,12 @@ public class EditeInfoDetailFragment extends MarkdownFragment<PostDraftBean, Edi
     }
 
     @Override
+    public void onAfterInitialLoad(boolean ready) {
+        super.onAfterInitialLoad(ready);
+        setDefalutContentPlaceHolder(getString(R.string.info_editor_default_content));
+    }
+
+    @Override
     protected boolean preHandlePublish() {
         if (mInfoPublishBean == null) {
             mInfoPublishBean = new InfoPublishBean();
