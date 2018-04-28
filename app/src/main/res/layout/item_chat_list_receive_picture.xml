@@ -68,8 +68,8 @@
                 <skin.support.widget.SkinCompatProgressBar
                     android:id="@+id/progress_bar"
                     style="@style/style_loading"
-                    android:layout_width="@dimen/margin_20"
-                    android:layout_height="@dimen/margin_20"
+                    android:layout_width="@dimen/chat_laoding_size"
+                    android:layout_height="@dimen/chat_laoding_size"
                     android:visibility="invisible"/>
             </FrameLayout>
 
