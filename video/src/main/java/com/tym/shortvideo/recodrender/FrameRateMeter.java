@@ -1,10 +1,11 @@
 package com.tym.shortvideo.recodrender;
 
 /**
- * FPS计算类
- * Created by cain.huang on 2017/12/19.
+ * @author Jliuer
+ * @Date 18/04/28 9:32
+ * @Email Jliuer@aliyun.com
+ * @Description 录制实时FPS计算类
  */
-
 public class FrameRateMeter {
 
     // 获取消息

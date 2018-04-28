@@ -12,7 +12,10 @@ import com.tym.shortvideo.utils.FileUtils;
 import java.io.Serializable;
 
 /**
- * 分段视频信息
+ * @author Jliuer
+ * @Date 18/04/28 9:36
+ * @Email Jliuer@aliyun.com
+ * @Description 录制分段视频信息
  */
 public class SubVideo implements Serializable {
     // 视频路径

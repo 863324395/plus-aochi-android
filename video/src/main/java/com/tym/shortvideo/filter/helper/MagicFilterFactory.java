@@ -56,9 +56,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 滤镜简单工厂
- *
- * @author Created by jz on 2017/5/2 16:56
+ * @author Jliuer
+ * @Date 18/04/28 9:57
+ * @Email Jliuer@aliyun.com
+ * @Description 滤镜简单工厂
  */
 public class MagicFilterFactory {
 

@@ -17,10 +17,11 @@ import java.io.File;
 import java.io.IOException;
 
 /**
- * 录制编码管理器
- * Created by cain.huang on 2017/12/7.
+ * @author Jliuer
+ * @Date 18/04/28 9:33
+ * @Email Jliuer@aliyun.com
+ * @Description 录制编码管理器
  */
-
 public class EncoderManager {
 
     private static final String TAG = "EncoderManager";

@@ -36,6 +36,12 @@ import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.nio.ByteBuffer;
 
+/**
+ * @author Jliuer
+ * @Date 18/04/28 9:33
+ * @Email Jliuer@aliyun.com
+ * @Description 音频编码
+ */
 public class MediaAudioEncoder extends MediaEncoder {
 	private static final boolean DEBUG = false;	// TODO set false on release
 	private static final String TAG = "MediaAudioEncoder";

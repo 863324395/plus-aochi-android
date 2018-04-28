@@ -18,7 +18,12 @@ import com.tym.video.R;
 import java.util.ArrayList;
 import java.util.List;
 
-
+/**
+ * @author Jliuer
+ * @Date 18/04/28 9:48
+ * @Email Jliuer@aliyun.com
+ * @Description 视频截取拖动框
+ */
 public class RangeSeekBarView extends View {
 
     private static final String TAG = RangeSeekBarView.class.getSimpleName();

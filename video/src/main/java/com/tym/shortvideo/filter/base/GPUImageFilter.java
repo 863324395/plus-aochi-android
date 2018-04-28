@@ -32,6 +32,12 @@ import java.nio.FloatBuffer;
 import java.util.Arrays;
 import java.util.LinkedList;
 
+/**
+ * @author Jliuer
+ * @Date 18/04/28 9:27
+ * @Email Jliuer@aliyun.com
+ * @Description 基类滤镜
+ */
 public class GPUImageFilter {
     public static final String NO_FILTER_VERTEX_SHADER =
             "uniform mat4 uMVPMatrix;                                   \n" +

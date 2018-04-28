@@ -23,10 +23,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 文件操作
- * Created by cain on 2017/10/4.
+ * @author Jliuer
+ * @Date 18/04/28 9:45
+ * @Email Jliuer@aliyun.com
+ * @Description 文件操作
  */
-
 public class FileUtils {
 
     private static final String TAG = "FileUtils";

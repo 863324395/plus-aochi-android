@@ -23,10 +23,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 /**
- * Created by cj on 2017/11/5.
- * 音频相关的操作类
+ * @author Jliuer
+ * @Date 18/04/28 9:26
+ * @Email Jliuer@aliyun.com
+ * @Description 音频相关的操作类
  */
-
 public class AudioCodec {
     final static int TIMEOUT_USEC = 0;
     private static Handler handler = new Handler(Looper.getMainLooper());

@@ -27,9 +27,11 @@ import java.io.InputStream;
 import java.nio.ByteBuffer;
 
 /**
- * Created by cain on 2017/7/9.
+ * @author Jliuer
+ * @Date 18/04/28 9:44
+ * @Email Jliuer@aliyun.com
+ * @Description 图片工具
  */
-
 public class BitmapUtils {
 
     public static final String[] EXIF_TAGS = {

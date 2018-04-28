@@ -13,10 +13,11 @@ import java.util.Arrays;
 import java.util.LinkedList;
 
 /**
- * 基类滤镜
- * Created by cain on 2017/7/9.
+ * @author Jliuer
+ * @Date 18/04/28 9:27
+ * @Email Jliuer@aliyun.com
+ * @Description 基类滤镜
  */
-
 public class GLImageFilter extends GPUImageFilter {
 
     protected static final String VERTEX_SHADER =

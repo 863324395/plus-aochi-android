@@ -1,8 +1,5 @@
 package com.tym.shortvideo.filter.helper.type;
 
-/**
- * Created by cain on 17-7-25.
- */
 
 public enum GLFilterType {
     NONE, // 没有滤镜

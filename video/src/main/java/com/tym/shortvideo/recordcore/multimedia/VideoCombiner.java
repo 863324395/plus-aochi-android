@@ -14,7 +14,12 @@ import java.nio.ByteBuffer;
 import java.util.Iterator;
 import java.util.List;
 
-@TargetApi(18)
+/**
+ * @author Jliuer
+ * @Date 18/04/28 9:35
+ * @Email Jliuer@aliyun.com
+ * @Description 视频合成器
+ */
 public class VideoCombiner {
 
     private static final String TAG = "VideoCombiner";

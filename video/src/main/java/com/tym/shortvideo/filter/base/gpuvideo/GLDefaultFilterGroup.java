@@ -13,8 +13,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 默认实时美颜滤镜组
- * Created by cain on 2017/7/30.
+ * @author Jliuer
+ * @Date 18/04/28 9:28
+ * @Email Jliuer@aliyun.com
+ * @Description 默认实时美颜滤镜组
  */
 public class GLDefaultFilterGroup extends GLImageFilterGroup {
     // 实时美颜层
@@ -58,6 +60,7 @@ public class GLDefaultFilterGroup extends GLImageFilterGroup {
         return beauty;
     }
 
+    // TODO 更改滤镜代码还没有更新，现在用 MagicFilter系列，2018-4-28 09:58:47 --- by tym
     @Override
     public void changeFilter(GLFilterType type) {
         GLFilterIndex index = FilterManager.getIndex(type);

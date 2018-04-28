@@ -10,6 +10,12 @@ import com.tym.video.R;
 import java.util.List;
 import java.util.Vector;
 
+/**
+ * @author Jliuer
+ * @Date 18/04/28 9:50
+ * @Email Jliuer@aliyun.com
+ * @Description 视频截取信息
+ */
 public class Thumb {
 
     public static final int LEFT = 0;

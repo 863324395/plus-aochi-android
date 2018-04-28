@@ -20,7 +20,7 @@ import java.util.List;
  * @author Jliuer
  * @Date 18/04/09 14:20
  * @Email Jliuer@aliyun.com
- * @Description
+ * @Description 录制计时进度条
  */
 public class ProgressView extends View {
 

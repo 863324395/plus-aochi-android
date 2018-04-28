@@ -9,7 +9,7 @@ import java.io.Serializable;
  * @author Jliuer
  * @Date 18/04/08 14:03
  * @Email Jliuer@aliyun.com
- * @Description
+ * @Description 视频信息类
  */
 public class VideoInfo implements Parcelable,Serializable{
     private static final long serialVersionUID = 1333866610918025407L;

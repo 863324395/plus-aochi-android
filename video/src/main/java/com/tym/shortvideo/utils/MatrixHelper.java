@@ -1,8 +1,5 @@
 package com.tym.shortvideo.utils;
 
-/**
- * Created by cain.huang on 2017/8/24.
- */
 
 public class MatrixHelper {
 

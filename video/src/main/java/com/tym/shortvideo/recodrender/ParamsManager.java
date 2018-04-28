@@ -7,8 +7,10 @@ import com.tym.shortvideo.filter.helper.type.GLType;
 
 
 /**
- * 管理全局参数和上下文
- * Created by cain.huang on 2017/8/8.
+ * @author Jliuer
+ * @Date 18/04/28 9:32
+ * @Email Jliuer@aliyun.com
+ * @Description 管理全局参数和上下文
  */
 public class ParamsManager {
 

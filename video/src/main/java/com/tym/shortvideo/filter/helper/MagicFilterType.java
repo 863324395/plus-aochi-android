@@ -1,9 +1,10 @@
 package com.tym.shortvideo.filter.helper;
 
 /**
- * 滤镜类型枚举
- *
- * @author Created by jz on 2017/5/2 16:57
+ * @author Jliuer
+ * @Date 18/04/28 9:57
+ * @Email Jliuer@aliyun.com
+ * @Description 滤镜类型枚举
  */
 public enum MagicFilterType {
     NONE,

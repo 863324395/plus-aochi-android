@@ -16,6 +16,13 @@
 
 package com.tym.shortvideo.filter.helper;
 
+/**
+ * @author Jliuer
+ * @Date 18/04/28 9:59
+ * @Email Jliuer@aliyun.com
+ * @Description 纹理工具，
+ * TODO 待整合到 com.tym.shortvideo.filter.helper.type.TextureRotationUtils 2018-4-28 10:00:39 -- by tym
+ */
 public class TextureRotationUtil {
 
     public static final float TEXTURE_NO_ROTATION[] = {

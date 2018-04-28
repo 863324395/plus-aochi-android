@@ -28,10 +28,11 @@ import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
 /**
- * Created by cj on 2017/10/16.
- * desc：添加水印和美白效果
+ * @author Jliuer
+ * @Date 18/04/28 9:59
+ * @Email Jliuer@aliyun.com
+ * @Description 绘制到屏幕
  */
-
 public class VideoDrawer implements GLSurfaceView.Renderer {
     /**
      * 用于后台绘制的变换矩阵

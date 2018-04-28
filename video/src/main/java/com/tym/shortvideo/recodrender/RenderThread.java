@@ -10,6 +10,9 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.support.annotation.RequiresApi;
 import android.util.Log;
+
+import com.tym.shortvideo.interfaces.CaptureFrameCallback;
+import com.tym.shortvideo.interfaces.RenderStateChangedListener;
 import com.tym.shortvideo.utils.Size;
 import android.view.SurfaceHolder;
 

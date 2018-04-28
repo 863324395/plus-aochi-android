@@ -12,8 +12,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 滤镜组基类
- * Created by cain on 17-7-17.
+ * @author Jliuer
+ * @Date 18/04/28 9:28
+ * @Email Jliuer@aliyun.com
+ * @Description 滤镜组基类
  */
 public abstract class GLImageFilterGroup extends GLImageFilter {
 

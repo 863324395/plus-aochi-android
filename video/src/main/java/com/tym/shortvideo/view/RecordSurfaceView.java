@@ -17,9 +17,11 @@ import com.tym.shortvideo.utils.CameraUtils;
 import java.util.List;
 
 /**
- * Created by cain on 2017/7/9.
+ * @author Jliuer
+ * @Date 18/04/28 9:49
+ * @Email Jliuer@aliyun.com
+ * @Description 视频录制预览 SurfaceView
  */
-
 public class RecordSurfaceView extends SurfaceView {
 
     private static final String TAG = "RecordSurfaceView";

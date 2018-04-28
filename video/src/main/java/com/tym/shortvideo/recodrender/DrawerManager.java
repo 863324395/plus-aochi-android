@@ -7,13 +7,16 @@ import android.view.SurfaceHolder;
 
 import com.tym.shortvideo.filter.helper.type.GLFilterGroupType;
 import com.tym.shortvideo.filter.helper.type.GLFilterType;
+import com.tym.shortvideo.interfaces.CaptureFrameCallback;
+import com.tym.shortvideo.interfaces.RenderStateChangedListener;
 
 
 /**
- * 绘制管理器
- * Created by cain on 2017/7/9.
+ * @author Jliuer
+ * @Date 18/04/28 9:32
+ * @Email Jliuer@aliyun.com
+ * @Description 绘制管理器
  */
-
 public class DrawerManager {
 
     private static final String TAG = "DrawerManager";

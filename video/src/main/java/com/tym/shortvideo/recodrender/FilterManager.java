@@ -11,10 +11,11 @@ import com.tym.shortvideo.filter.helper.type.GLFilterType;
 import java.util.HashMap;
 
 /**
- * Filter管理类
- * Created by cain on 17-7-25.
+ * @author Jliuer
+ * @Date 18/04/28 9:32
+ * @Email Jliuer@aliyun.com
+ * @Description Filter管理类
  */
-
 public final class FilterManager {
 
     private static HashMap<GLFilterType, GLFilterIndex> mIndexMap = new HashMap<>();

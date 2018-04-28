@@ -7,11 +7,13 @@ import com.tym.shortvideo.filter.helper.type.GLFilterType;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * 色彩滤镜管理器
- * Created by cain on 2017/11/15.
- */
 
+/**
+ * @author Jliuer
+ * @Date 18/04/28 9:32
+ * @Email Jliuer@aliyun.com
+ * @Description 色彩滤镜管理器
+ */
 public final class ColorFilterManager {
 
     private static ColorFilterManager mInstance;

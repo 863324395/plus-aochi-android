@@ -2,9 +2,7 @@ package com.tym.shortvideo.filter.helper.type;
 
 /**
  * 贴纸类型
- * Created by cain.huang on 2017/11/24.
  */
-
 public enum StickerType {
     NONE,   // 没有
     HEAD,   // 头部

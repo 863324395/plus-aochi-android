@@ -18,8 +18,10 @@ import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 
 /**
- * 渲染管理器
- * Created by cain.huang on 2017/11/1.
+ * @author Jliuer
+ * @Date 18/04/28 9:33
+ * @Email Jliuer@aliyun.com
+ * @Description 渲染管理器
  */
 public final class RenderManager {
 

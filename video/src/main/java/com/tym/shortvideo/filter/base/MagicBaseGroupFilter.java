@@ -9,7 +9,6 @@ import com.tym.shortvideo.filter.helper.OpenGlUtils;
 import java.nio.FloatBuffer;
 import java.util.List;
 
-
 public class MagicBaseGroupFilter extends GPUImageFilter {
     protected static int[] frameBuffers = null;
     protected static int[] frameBufferTextures = null;

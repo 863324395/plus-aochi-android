@@ -15,10 +15,11 @@ import java.nio.ByteBuffer;
 import java.util.Arrays;
 
 /**
- * Created by cj on 2017/11/19.
- * pcm转音频的编码线程
+ * @author Jliuer
+ * @Date 18/04/28 9:27
+ * @Email Jliuer@aliyun.com
+ * @Description pcm转音频的编码线程
  */
-
 public class AudioEncodeRunnable implements Runnable {
     private String pcmPath;
     private String audioPath;

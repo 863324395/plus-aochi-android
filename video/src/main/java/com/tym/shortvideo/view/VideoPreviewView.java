@@ -25,10 +25,11 @@ import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
 /**
- * Created by cj on 2017/10/16.
- * desc: 播放视频的view 单个视频循环播放
+ * @author Jliuer
+ * @Date 18/04/28 9:50
+ * @Email Jliuer@aliyun.com
+ * @Description 播放视频的view 单个视频循环播放
  */
-
 public class VideoPreviewView extends GLSurfaceView implements GLSurfaceView.Renderer, MediaPlayerWrapper.IMediaCallback {
     private MediaPlayerWrapper mMediaPlayer;
     private VideoDrawer mDrawer;

@@ -18,8 +18,10 @@ import java.io.FileReader;
 import java.io.IOException;
 
 /**
- * 系统版本信息类
- *
+ * @author Jliuer
+ * @Date 18/04/28 9:45
+ * @Email Jliuer@aliyun.com
+ * @Description 系统版本信息类
  */
 public class DeviceUtils {
 

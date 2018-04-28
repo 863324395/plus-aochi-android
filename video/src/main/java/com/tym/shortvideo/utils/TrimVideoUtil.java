@@ -21,7 +21,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-
+/**
+ * @author Jliuer
+ * @Date 18/04/28 9:46
+ * @Email Jliuer@aliyun.com
+ * @Description
+ */
 public class TrimVideoUtil {
 
     private static final String TAG = TrimVideoUtil.class.getSimpleName();
@@ -103,17 +108,7 @@ public class TrimVideoUtil {
                                                    if (bitmap == null) {
                                                        continue;
                                                    }
-                                                   if (h == 0) {
-                                                       float scale = (float) bitmap.getHeight() / (float) bitmap.getWidth();
-                                                       h = w * scale;
-                                                       LogUtils.d(h);
-                                                   }
-                                                   try {
-                                                       bitmap = Bitmap.createScaledBitmap(bitmap,
-                                                               (int)w, (int) h, false);
-                                                   } catch (Exception e) {
-                                                       e.printStackTrace();
-                                                   }
+                                                   bitmap = BitmapUtils.zoomBitmap(bitmap, thumb_Width, thumb_Height, false);
                                                    thumbnailList.add(bitmap);
                                                    if (thumbnailList.size() == 3) {
                                                        callback.onSingleCallback(
@@ -250,6 +245,11 @@ public class TrimVideoUtil {
         return videos;
     }
 
+    /**
+     * 读取媒体库视频
+     * @param mContext
+     * @param callback
+     */
     public static void getAllVideoFiles(final Context mContext, final
     SingleCallback<ArrayList<VideoInfo>, Integer> callback) {
         BackgroundExecutor.execute(new BackgroundExecutor.Task("", 0L, "") {

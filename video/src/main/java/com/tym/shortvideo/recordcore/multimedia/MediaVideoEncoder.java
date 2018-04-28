@@ -32,6 +32,12 @@ import com.zhiyicx.common.utils.log.LogUtils;
 
 import java.io.IOException;
 
+/**
+ * @author Jliuer
+ * @Date 18/04/28 9:34
+ * @Email Jliuer@aliyun.com
+ * @Description 视频编码
+ */
 public class MediaVideoEncoder extends MediaEncoder {
     private static final boolean DEBUG = false;
     private static final String TAG = "MediaVideoEncoder";

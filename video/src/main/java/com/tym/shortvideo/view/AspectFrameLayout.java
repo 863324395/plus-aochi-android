@@ -9,10 +9,13 @@ import android.widget.FrameLayout;
 
 import com.tym.shortvideo.utils.CameraUtils;
 
-/**
- * Created by cain.huang on 2017/7/20.
- */
 
+/**
+ * @author Jliuer
+ * @Date 18/04/28 9:47
+ * @Email Jliuer@aliyun.com
+ * @Description 录制预览 surfaceview container，重写了onMeasure
+ */
 public class AspectFrameLayout extends FrameLayout {
 
     // 宽高比

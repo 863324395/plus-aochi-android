@@ -9,12 +9,12 @@ import com.tym.shortvideo.utils.StringUtils;
 import java.util.ArrayList;
 import java.util.List;
 
-
 /**
- * 倒计时管理器
- * Created by cain.huang on 2017/12/29.
+ * @author Jliuer
+ * @Date 18/04/28 9:36
+ * @Email Jliuer@aliyun.com
+ * @Description 视频录制计时管理器
  */
-
 public final class CountDownManager {
 
     private static CountDownManager mInstance;

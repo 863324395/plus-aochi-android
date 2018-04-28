@@ -3,7 +3,10 @@ package com.tym.shortvideo.utils;
 import android.opengl.Matrix;
 
 /**
- * Description:
+ * @author Jliuer
+ * @Date 18/04/28 9:48
+ * @Email Jliuer@aliyun.com
+ * @Description
  */
 public enum MatrixUtils {
     ;

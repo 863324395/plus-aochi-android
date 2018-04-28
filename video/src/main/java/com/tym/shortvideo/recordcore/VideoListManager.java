@@ -14,10 +14,11 @@ import static com.tym.shortvideo.utils.TrimVideoUtil.MIN_TIME_FRAME;
 import static com.tym.shortvideo.utils.TrimVideoUtil.VIDEO_MAX_DURATION;
 
 /**
- * 视频文件管理器
- * Created by cain.huang on 2017/12/29.
+ * @author Jliuer
+ * @Date 18/04/28 9:36
+ * @Email Jliuer@aliyun.com
+ * @Description 分段视频文件管理器
  */
-
 public class VideoListManager {
 
     // 十秒时长

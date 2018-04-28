@@ -9,9 +9,6 @@ import android.util.Log;
 import java.io.FileOutputStream;
 import java.nio.ByteBuffer;
 
-/**
- * Created by qqche_000 on 2017/11/19.
- */
 
 public class AudioDecodeRunnable implements Runnable {
     final static int TIMEOUT_USEC = 0;

@@ -5,10 +5,11 @@ import android.os.Message;
 import android.os.SystemClock;
 
 /**
- * 精确倒计时类，这里没有处理退到后台更改系统时间的情况
- * Created by cain.huang on 2018/1/2.
+ * @author Jliuer
+ * @Date 18/04/28 9:40
+ * @Email Jliuer@aliyun.com
+ * @Description 精确倒计时类，这里没有处理退到后台更改系统时间的情况
  */
-
 public abstract class AccurateCountDownTimer {
 
     //  倒计时(毫秒)

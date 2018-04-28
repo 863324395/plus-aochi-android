@@ -8,10 +8,7 @@ import android.os.SystemClock;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * This class provide operations for
- * UiThread tasks.
- */
+
 public final class UiThreadExecutor {
 
     private static final Handler HANDLER = new Handler(Looper.getMainLooper()) {

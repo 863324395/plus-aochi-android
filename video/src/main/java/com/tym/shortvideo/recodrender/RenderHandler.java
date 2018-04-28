@@ -9,14 +9,17 @@ import android.view.SurfaceHolder;
 
 import com.tym.shortvideo.filter.helper.type.GLFilterGroupType;
 import com.tym.shortvideo.filter.helper.type.GLFilterType;
+import com.tym.shortvideo.interfaces.CaptureFrameCallback;
+import com.tym.shortvideo.interfaces.RenderStateChangedListener;
 
 import java.lang.ref.WeakReference;
 
 /**
- * 渲染Handler
- * Created by cain.huang on 2017/11/3.
+ * @author Jliuer
+ * @Date 18/04/28 9:33
+ * @Email Jliuer@aliyun.com
+ * @Description 渲染Handler
  */
-
 public class RenderHandler extends Handler {
 
     static final int MSG_SURFACE_CREATED = 0x001;

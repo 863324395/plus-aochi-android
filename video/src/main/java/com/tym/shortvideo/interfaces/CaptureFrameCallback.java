@@ -1,12 +1,13 @@
-package com.tym.shortvideo.recodrender;
+package com.tym.shortvideo.interfaces;
 
 import java.nio.ByteBuffer;
 
 /**
- * 拍照回调
- * Created by cain.huang on 2017/12/27.
+ * @author Jliuer
+ * @Date 18/04/28 9:31
+ * @Email Jliuer@aliyun.com
+ * @Description 拍照回调
  */
-
 public interface CaptureFrameCallback {
     void onFrameCallback(ByteBuffer buffer, int width, int height);
 }

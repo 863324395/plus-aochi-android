@@ -38,7 +38,12 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
-
+/**
+ * @author Jliuer
+ * @Date 18/04/28 9:50
+ * @Email Jliuer@aliyun.com
+ * @Description 视频剪辑 view
+ */
 public class VideoTrimmerView extends FrameLayout {
 
     /**

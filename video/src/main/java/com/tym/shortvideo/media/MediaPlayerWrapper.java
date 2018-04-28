@@ -10,10 +10,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by Administrator on 2017/6/29 0029.
- * desc：MediaPlayer的代理类 支持循环播放多个视频
+ * @author Jliuer
+ * @Date 18/04/28 9:30
+ * @Email Jliuer@aliyun.com
+ * @Description MediaPlayer的代理类 支持循环播放多个视频
  */
-
 public class MediaPlayerWrapper implements MediaPlayer.OnCompletionListener, MediaPlayer.OnErrorListener, MediaPlayer.OnPreparedListener {
     private MediaPlayer mCurMediaPlayer;    //current player
     private List<MediaPlayer> mPlayerList;  //player list

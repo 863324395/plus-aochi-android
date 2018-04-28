@@ -8,10 +8,13 @@ import com.tym.shortvideo.utils.Size;
 
 import java.nio.FloatBuffer;
 
-/**
- * Created by cain on 17-7-26.
- */
 
+/**
+ * @author Jliuer
+ * @Date 18/04/28 9:56
+ * @Email Jliuer@aliyun.com
+ * @Description 纹理工具
+ */
 public class TextureRotationUtils {
 
     // 摄像头是否倒置，主要是应对Nexus 5X (bullhead) 的后置摄像头图像倒置的问题

@@ -26,10 +26,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 录制控件
- * Created by cain.huang on 2017/12/28.
+ * @author Jliuer
+ * @Date 18/04/28 9:49
+ * @Email Jliuer@aliyun.com
+ * @Description 视频录制控制按钮，支持时间显示
  */
-
 public class ShutterButton extends AppCompatImageView {
 
     // 按钮做缩放动画

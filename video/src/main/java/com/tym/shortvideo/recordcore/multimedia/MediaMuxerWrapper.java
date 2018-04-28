@@ -35,6 +35,12 @@ import java.text.SimpleDateFormat;
 import java.util.GregorianCalendar;
 import java.util.Locale;
 
+/**
+ * @author Jliuer
+ * @Date 18/04/28 9:34
+ * @Email Jliuer@aliyun.com
+ * @Description 录制器
+ */
 public class MediaMuxerWrapper {
     private static final boolean DEBUG = false;    // TODO set false on release
     private static final String TAG = "MediaMuxerWrapper";

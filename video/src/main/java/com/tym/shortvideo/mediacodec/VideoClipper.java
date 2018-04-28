@@ -25,8 +25,10 @@ import java.util.concurrent.Executors;
 import static android.media.MediaExtractor.SEEK_TO_PREVIOUS_SYNC;
 
 /**
- * Created by Administrator on 2017/6/19 0019.
- * desc：用于视频裁剪的类
+ * @author Jliuer
+ * @Date 18/04/28 9:27
+ * @Email Jliuer@aliyun.com
+ * @Description 用于视频裁剪的类
  */
 @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
 public class VideoClipper {

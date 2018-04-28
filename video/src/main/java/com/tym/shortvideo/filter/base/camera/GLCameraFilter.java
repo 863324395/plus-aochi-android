@@ -11,6 +11,12 @@ import com.tym.shortvideo.filter.helper.type.TextureRotationUtils;
 
 import java.nio.FloatBuffer;
 
+/**
+ * @author Jliuer
+ * @Date 18/04/28 9:29
+ * @Email Jliuer@aliyun.com
+ * @Description 相机输入
+ */
 public class GLCameraFilter extends GLImageFilter {
     private static final String VERTEX_SHADER =
             "uniform mat4 uMVPMatrix;                               \n" +

@@ -4,6 +4,12 @@ import android.annotation.SuppressLint;
 
 import static com.jakewharton.rxbinding.internal.Preconditions.checkNotNull;
 
+/**
+ * @author Jliuer
+ * @Date 18/04/28 9:46
+ * @Email Jliuer@aliyun.com
+ * @Description 相机分辨率大小
+ */
 public final class Size {
     /**
      * Create a new immutable Size instance.

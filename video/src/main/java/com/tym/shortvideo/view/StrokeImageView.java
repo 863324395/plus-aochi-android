@@ -14,7 +14,7 @@ import android.widget.ImageView;
  * @Author Jliuer
  * @Date 2018/04/26/18:51
  * @Email Jliuer@aliyun.com
- * @Description
+ * @Description 简单的描边
  */
 public class StrokeImageView extends AppCompatImageView {
 

@@ -12,7 +12,7 @@ import cn.jzvd.JZVideoPlayer;
  * @Author Jliuer
  * @Date 2018/04/20/16:59
  * @Email Jliuer@aliyun.com
- * @Description
+ * @Description TextureView,重写旋转逻辑
  */
 public class ZhiyiResizeTextureView extends JZResizeTextureView {
 

@@ -1,10 +1,11 @@
 package com.tym.shortvideo.mediacodec.jni;
 
 /**
- * Created by cj on 2017/10/11.
- * desc
+ * @author Jliuer
+ * @Date 18/04/28 9:26
+ * @Email Jliuer@aliyun.com
+ * @Description 混合音频
  */
-
 public class AudioJniUtils {
 
 

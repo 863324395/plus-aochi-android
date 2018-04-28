@@ -14,10 +14,11 @@ import com.tym.shortvideo.utils.DeviceUtils;
 import java.lang.ref.WeakReference;
 
 /**
- * 录制管理器
- * Created by cain.huang on 2017/12/7.
+ * @author Jliuer
+ * @Date 18/04/28 9:33
+ * @Email Jliuer@aliyun.com
+ * @Description 录制管理器
  */
-
 public final class RecordManager {
 
     private static final String TAG = "RecordManager";

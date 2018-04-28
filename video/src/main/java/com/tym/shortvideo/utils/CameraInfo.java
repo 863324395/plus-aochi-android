@@ -1,8 +1,10 @@
 package com.tym.shortvideo.utils;
 
 /**
- * 相机信息
- * Created by cain.huang on 2017/7/27.
+ * @author Jliuer
+ * @Date 18/04/28 9:44
+ * @Email Jliuer@aliyun.com
+ * @Description 相机信息
  */
 public class CameraInfo {
     int facing;

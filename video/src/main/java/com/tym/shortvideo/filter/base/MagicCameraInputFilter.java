@@ -5,9 +5,10 @@ import com.tym.video.R;
 import com.tym.shortvideo.filter.helper.OpenGlUtils;
 
 /**
- * 绘制纹理到屏幕
- *
- * @author Created by jz on 2017/5/2 17:53
+ * @author Jliuer
+ * @Date 18/04/28 9:28
+ * @Email Jliuer@aliyun.com
+ * @Description 绘制纹理到屏幕
  */
 public class MagicCameraInputFilter extends GPUImageFilter {
 

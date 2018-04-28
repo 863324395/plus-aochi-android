@@ -3,10 +3,11 @@ package com.tym.shortvideo.recordcore.multimedia;
 import java.util.List;
 
 /**
- * 多段视频合并管理器
- * Created by cain.huang on 2017/12/15.
+ * @author Jliuer
+ * @Date 18/04/28 9:35
+ * @Email Jliuer@aliyun.com
+ * @Description 多段视频合并管理器
  */
-
 public final class VideoCombineManager {
 
     private static final String TAG = "VideoCombineManage";

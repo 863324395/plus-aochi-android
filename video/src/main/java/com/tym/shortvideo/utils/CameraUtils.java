@@ -18,10 +18,13 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-/**
- * Created by cain on 2017/7/9.
- */
 
+/**
+ * @author Jliuer
+ * @Date 18/04/28 9:44
+ * @Email Jliuer@aliyun.com
+ * @Description 录制相机工具
+ */
 public class CameraUtils {
 
     // 默认宽高不存在则重新计算比这个值稍微大一点的宽高

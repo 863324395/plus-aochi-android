@@ -11,8 +11,10 @@ import java.util.Iterator;
 import java.util.TimeZone;
 
 /**
- * 字符串工具类
- * 
+ * @author Jliuer
+ * @Date 18/04/28 9:46
+ * @Email Jliuer@aliyun.com
+ * @Description 字符串工具类
  */
 public class StringUtils {
 
