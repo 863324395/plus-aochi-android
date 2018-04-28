@@ -63,8 +63,9 @@ public class EditeAnswerDetailFragment extends EditeQuestionDetailFragment {
     }
 
     @Override
-    protected String setInputInitText() {
-        return getString(R.string.qa_answer_content_hint);
+    public void onAfterInitialLoad(boolean ready) {
+        super.onAfterInitialLoad(ready);
+        setDefalutContentPlaceHolder(getString(R.string.qa_answer_content_hint));
     }
 
     @Override
