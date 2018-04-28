@@ -264,16 +264,6 @@ public class MarkdownFragment<Draft extends BaseDraftBean, P extends MarkdownCon
     }
 
     /**
-     * 设置内容的默认文字，仅支持问答部分修改，待完善中
-     *
-     * @return
-     */
-    protected String setInputInitText() {
-        return getString(R.string.circle_post_default_title);
-    }
-
-
-    /**
      * 点击 来自 xxx ，可以跳转到相应圈子
      *
      * @return
@@ -890,8 +880,7 @@ public class MarkdownFragment<Draft extends BaseDraftBean, P extends MarkdownCon
                 "id=\"txtCount\"></span>/20</span>\n" +
                 "        </header>\n" +
                 "        <div class=\"line\"></div>\n" +
-                "        <div id=\"editor\" contenteditable=\"true\" editor-placeholder=\"" +
-                setInputInitText() + "\">" + content + "</div>\n" +
+                "        <div id=\"editor\" contenteditable=\"true\" editor-placeholder=\"" + "请输入正文" + "\">" + content + "</div>\n" +
                 "    </div>\n" +
                 "    <script src=\"./richeditor.js\" id=\"script\"></script>\n" +
                 "</body>\n" +

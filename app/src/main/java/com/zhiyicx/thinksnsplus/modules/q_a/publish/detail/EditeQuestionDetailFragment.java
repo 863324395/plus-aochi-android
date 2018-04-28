@@ -75,6 +75,8 @@ public class EditeQuestionDetailFragment extends MarkdownFragment<PostDraftBean,
         return mDraftBean;
     }
 
+
+
     @Override
     protected boolean openDraft() {
         return false;
@@ -104,7 +106,9 @@ public class EditeQuestionDetailFragment extends MarkdownFragment<PostDraftBean,
         if (ready) {
             mRichTextView.hideTitle();
             mRichTextView.focusEditor();
+            setDefalutContentPlaceHolder(getString(R.string.circle_post_default_title));
         }
+
     }
 
     @Override
