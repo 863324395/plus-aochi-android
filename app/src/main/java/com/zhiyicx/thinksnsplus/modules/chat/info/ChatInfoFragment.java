@@ -35,6 +35,7 @@ import com.zhiyicx.thinksnsplus.modules.chat.ChatActivity;
 import com.zhiyicx.thinksnsplus.modules.chat.adapter.ChatMemberAdapter;
 import com.zhiyicx.thinksnsplus.modules.chat.edit.manager.GroupManagerActivity;
 import com.zhiyicx.thinksnsplus.modules.chat.edit.name.EditGroupNameActivity;
+import com.zhiyicx.thinksnsplus.modules.chat.edit.owner.EditGroupOwnerActivity;
 import com.zhiyicx.thinksnsplus.modules.chat.item.ChatConfig;
 import com.zhiyicx.thinksnsplus.modules.chat.member.GroupMemberListActivity;
 import com.zhiyicx.thinksnsplus.modules.chat.select.SelectFriendsActivity;
@@ -104,6 +105,11 @@ public class ChatInfoFragment extends TSFragment<ChatInfoContract.Presenter> imp
     RelativeLayout mRlBlockMessage;
     @BindView(R.id.v_line_find_member)
     View mVLineFindMember;
+
+    @BindView(R.id.iv_grop_icon_arrow)
+    View mIvGropIconArrow;
+    @BindView(R.id.iv_grop_name_arrow)
+    View mIvGropNameArrow;
 
     private int mChatType;
     private String mChatId;
@@ -232,7 +238,13 @@ public class ChatInfoFragment extends TSFragment<ChatInfoContract.Presenter> imp
                 break;
             case R.id.ll_manager:
                 // 跳转群管理
-                Intent intent = new Intent(getContext(), GroupManagerActivity.class);
+//                Intent intent = new Intent(getContext(), GroupManagerActivity.class);
+//                Bundle bundle = new Bundle();
+//                bundle.putParcelable(BUNDLE_GROUP_DATA, mChatGroupBean);
+//                intent.putExtras(bundle);
+//                startActivity(intent);
+                // 转让群主
+                Intent intent = new Intent(getContext(), EditGroupOwnerActivity.class);
                 Bundle bundle = new Bundle();
                 bundle.putParcelable(BUNDLE_GROUP_DATA, mChatGroupBean);
                 intent.putExtras(bundle);
@@ -546,12 +558,16 @@ public class ChatInfoFragment extends TSFragment<ChatInfoContract.Presenter> imp
                 mTvGroupHeader.setText(R.string.chat_group_portrait);
                 mTvDeleteGroup.setText(getString(R.string.chat_quit_group));
                 mScBlockMessage.setEnabled(true);
+                mIvGropIconArrow.setVisibility(View.GONE);
+                mIvGropNameArrow.setVisibility(View.GONE);
             } else {
                 // 群主无法屏蔽消息
                 mTvGroupHeader.setText(R.string.chat_set_group_portrait);
                 mTvDeleteGroup.setText(getString(R.string.chat_delete_group));
                 mRlBlockMessage.setVisibility(View.GONE);
                 mScBlockMessage.setEnabled(false);
+                mIvGropIconArrow.setVisibility(View.VISIBLE);
+                mIvGropNameArrow.setVisibility(View.VISIBLE);
             }
             // 群聊的信息展示
             EMGroup group = EMClient.getInstance().groupManager().getGroup(mChatId);

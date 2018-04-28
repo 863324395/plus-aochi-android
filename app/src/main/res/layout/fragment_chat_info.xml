@@ -19,7 +19,6 @@
             android:id="@+id/ll_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/general_for_line_light"
             android:orientation="vertical"
             android:visibility="visible">
 
@@ -29,6 +28,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/white"
+                android:layout_marginBottom="@dimen/spacing_normal"
                 android:padding="@dimen/spacing_large">
 
                 <LinearLayout
@@ -69,7 +69,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/spacing_normal"
-                android:layout_marginTop="@dimen/spacing_normal"
                 android:background="@color/white"
                 android:orientation="vertical">
 
@@ -80,8 +79,8 @@
                     android:layout_height="wrap_content"
                     android:gravity="center_vertical"
                     android:paddingBottom="@dimen/spacing_mid"
-                    android:paddingLeft="@dimen/spacing_large"
-                    android:paddingRight="@dimen/spacing_large"
+                    android:paddingLeft="@dimen/spacing_mid"
+                    android:paddingRight="@dimen/spacing_mid"
                     android:paddingTop="@dimen/spacing_mid">
 
                     <TextView
@@ -97,12 +96,15 @@
                         android:id="@+id/iv_group_portrait"
                         android:layout_width="@dimen/margin_25"
                         android:layout_height="@dimen/margin_25"
-                        android:layout_marginRight="@dimen/spacing_normal"
                         android:scaleType="centerCrop"
                         android:src="@mipmap/ico_ts_assistant"/>
 
                     <ImageView
+                        android:id="@+id/iv_grop_icon_arrow"
                         android:layout_width="wrap_content"
+                        android:visibility="gone"
+
+                        android:layout_marginLeft="@dimen/spacing_normal"
                         android:layout_height="wrap_content"
                         android:src="@mipmap/ic_arrow_smallgrey"/>
                 </LinearLayout>
@@ -117,8 +119,8 @@
                     android:layout_height="wrap_content"
                     android:gravity="center_vertical"
                     android:paddingBottom="@dimen/spacing_mid"
-                    android:paddingLeft="@dimen/spacing_large"
-                    android:paddingRight="@dimen/spacing_large"
+                    android:paddingLeft="@dimen/spacing_mid"
+                    android:paddingRight="@dimen/spacing_mid"
                     android:paddingTop="@dimen/spacing_mid">
 
                     <TextView
@@ -135,7 +137,6 @@
                         android:layout_width="0dp"
                         android:layout_weight="1"
                         android:layout_height="wrap_content"
-                        android:layout_marginRight="@dimen/spacing_normal"
                         android:ellipsize="end"
                         android:singleLine="true"
                         android:maxLines="1"
@@ -145,8 +146,11 @@
                         tools:text="xxxx"/>
 
                     <ImageView
+                        android:id="@+id/iv_grop_name_arrow"
                         android:layout_width="wrap_content"
+                        android:layout_marginLeft="@dimen/spacing_normal"
                         android:layout_height="wrap_content"
+                        android:visibility="gone"
                         android:src="@mipmap/ic_arrow_smallgrey"/>
                 </LinearLayout>
 
@@ -158,8 +162,8 @@
                     android:id="@+id/rv_member_list"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/spacing_normal"
-                    android:layout_marginRight="@dimen/spacing_normal"
+                    android:layout_marginLeft="@dimen/spacing_small"
+                    android:layout_marginRight="@dimen/spacing_small"
                     android:layout_marginTop="@dimen/spacing_large"
                     android:scrollbars="none"/>
 
@@ -188,15 +192,15 @@
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
                 android:paddingBottom="@dimen/spacing_mid"
-                android:paddingLeft="@dimen/spacing_large"
-                android:paddingRight="@dimen/spacing_large"
+                android:paddingLeft="@dimen/spacing_mid"
+                android:paddingRight="@dimen/spacing_mid"
                 android:paddingTop="@dimen/spacing_mid">
 
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/chat_group_manager"
+                    android:text="@string/chat_edit_group_owner_manage"
                     android:textColor="@color/important_for_content"
                     android:textSize="@dimen/size_content"/>
 
@@ -214,8 +218,8 @@
                 android:layout_marginTop="@dimen/divider_line"
                 android:background="@color/white"
                 android:paddingBottom="@dimen/spacing_mid"
-                android:paddingLeft="@dimen/spacing_large"
-                android:paddingRight="@dimen/spacing_large"
+                android:paddingLeft="@dimen/spacing_mid"
+                android:paddingRight="@dimen/spacing_mid"
                 android:paddingTop="@dimen/spacing_mid">
 
                 <TextView
@@ -252,7 +256,7 @@
                 android:layout_marginTop="@dimen/spacing_normal"
                 android:background="@color/white"
                 android:gravity="center_vertical"
-                android:paddingLeft="@dimen/spacing_large"
+                android:paddingLeft="@dimen/spacing_mid"
                 android:text="@string/chat_info_clear_message"
                 android:textColor="@color/important_for_content"
                 android:textSize="@dimen/size_content"/>
@@ -263,6 +267,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/chat_info_header_view_width"
                 android:layout_marginTop="@dimen/spacing_normal"
+                android:layout_marginBottom="@dimen/spacing_normal"
                 android:background="@color/white"
                 android:gravity="center"
                 android:text="@string/chat_delete_group"
