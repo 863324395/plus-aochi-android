@@ -5,7 +5,13 @@ import android.content.Intent;
 import com.zhiyicx.baseproject.base.TSActivity;
 import com.zhiyicx.baseproject.impl.share.ShareModule;
 import com.zhiyicx.baseproject.impl.share.UmengSharePolicyImpl;
+import com.zhiyicx.common.utils.ActivityUtils;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.modules.home.HomeActivity;
+
+import cn.jzvd.JZUtils;
+import cn.jzvd.JZVideoPlayer;
+import cn.jzvd.JZVideoPlayerManager;
 
 public class PersonalCenterActivity extends TSActivity<PersonalCenterPresenter, PersonalCenterFragment> {
 
@@ -32,6 +38,9 @@ public class PersonalCenterActivity extends TSActivity<PersonalCenterPresenter, 
 
     @Override
     public void onBackPressed() {
+        if (JZVideoPlayer.backPress()) {
+            return;
+        }
         mContanierFragment.onBackPressed();
     }
 
@@ -39,5 +48,16 @@ public class PersonalCenterActivity extends TSActivity<PersonalCenterPresenter, 
     protected void onDestroy() {
         super.onDestroy();
         UmengSharePolicyImpl.onDestroy(this);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        JZVideoPlayer jzVideoPlayer = JZVideoPlayerManager.getCurrentJzvd();
+        if (jzVideoPlayer != null) {
+            if (JZUtils.scanForActivity(jzVideoPlayer.getContext()) instanceof HomeActivity) {
+                jzVideoPlayer.onStateNormal();
+            }
+        }
     }
 }

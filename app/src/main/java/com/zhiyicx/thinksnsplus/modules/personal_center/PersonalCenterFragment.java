@@ -19,6 +19,7 @@ import android.widget.TextView;
 
 import com.hyphenate.easeui.EaseConstant;
 import com.jakewharton.rxbinding.view.RxView;
+import com.tym.shortvideo.view.AutoPlayScrollListener;
 import com.umeng.socialize.bean.SHARE_MEDIA;
 import com.zhiyicx.baseproject.base.TSActivity;
 import com.zhiyicx.baseproject.base.TSFragment;
@@ -311,6 +312,21 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
                 .subscribe(aVoid -> hideCommentView());
 
         mIlvComment.setOnSendClickListener(this);
+
+        // 自动播放 - 滑出屏幕暂停也在这里面
+        mRvList.addOnScrollListener(new AutoPlayScrollListener() {
+            @Override
+            public int getPlayerViewId() {
+                return R.id.videoplayer;
+            }
+
+            @Override
+            public boolean canAutoPlay() {
+                // NetUtils.isWifiConnected(getContext().getApplicationContext())
+                // 暂时关闭滑动自动播放
+                return false;
+            }
+        });
     }
 
     @Override
