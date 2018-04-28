@@ -825,6 +825,13 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
         bundle.putInt(DYNAMIC_DETAIL_DATA_POSITION, position);
         bundle.putBoolean(LOOK_COMMENT_MORE, isLookMoreComment);
 
+        if (isLookMoreComment){
+            ZhiyiVideoView.releaseAllVideos();
+            intent.putExtras(bundle);
+            startActivity(intent);
+            return;
+        }
+
         ZhiyiVideoView playView = null;
         try {
             playView = holder.getView(R.id.videoplayer);
@@ -1049,7 +1056,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
     @Override
     public void onMoreCommentClick(View view, DynamicDetailBeanV2 dynamicBean) {
         int position = mPresenter.getCurrenPosiotnInDataList(dynamicBean.getFeed_mark());
-        goDynamicDetail(position, true,(ViewHolder) mRvList.getChildViewHolder(view));
+        goDynamicDetail(position, true,(ViewHolder) mRvList.getChildViewHolder(mRvList.getLayoutManager().findViewByPosition(position)));
     }
 
     @Override

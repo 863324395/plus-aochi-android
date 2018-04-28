@@ -819,7 +819,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
             return;
         }
         int position = mPresenter.getCurrenPosiotnInDataList(dynamicBean.getFeed_mark());
-        goDynamicDetail(position, true, (ViewHolder) mRvList.getChildViewHolder(view));
+        goDynamicDetail(position, true, (ViewHolder) mRvList.getChildViewHolder(mRvList.getLayoutManager().findViewByPosition(position)));
     }
 
     @Override
@@ -1174,8 +1174,14 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
         bundle.putInt(DYNAMIC_DETAIL_DATA_POSITION, position);
 
         bundle.putBoolean(LOOK_COMMENT_MORE, isLookMoreComment);
+        mPresenter.handleViewCount(mListDatas.get(position).getId(), position);
 
-
+        if (isLookMoreComment){
+            ZhiyiVideoView.releaseAllVideos();
+            intent.putExtras(bundle);
+            startActivity(intent);
+            return;
+        }
         ZhiyiVideoView playView = null;
         try {
             playView = holder.getView(R.id.videoplayer);
@@ -1195,7 +1201,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
 
         intent.putExtras(bundle);
         startActivity(intent);
-        mPresenter.handleViewCount(mListDatas.get(position).getId(), position);
+
     }
 
 
