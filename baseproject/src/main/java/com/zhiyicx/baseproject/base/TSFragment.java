@@ -656,7 +656,7 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
     }
 
     /**
-     * 是否开启中心加载布局
+     * 是否开启中心加载布局 对应 closeLoadingView
      *
      * @return
      */

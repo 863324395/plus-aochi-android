@@ -420,6 +420,16 @@ public class ChatInfoFragment extends TSFragment<ChatInfoContract.Presenter> imp
     }
 
     @Override
+    protected boolean setUseCenterLoading() {
+        return true;
+    }
+
+    @Override
+    protected boolean setUseCenterLoadingAnimation() {
+        return super.setUseCenterLoadingAnimation();
+    }
+
+    @Override
     public ChatGroupBean getGroupBean() {
         return mChatGroupBean;
     }
@@ -428,6 +438,9 @@ public class ChatInfoFragment extends TSFragment<ChatInfoContract.Presenter> imp
     public void isShowEmptyView(boolean isShow, boolean isSuccess) {
         mLlContainer.setVisibility(isShow ? View.GONE : View.VISIBLE);
         mEmptyView.setErrorType(isShow ? EmptyView.STATE_NETWORK_LOADING : EmptyView.STATE_HIDE_LAYOUT);
+        if (!isShow) {
+            closeLoadingView();
+        }
         if (!isSuccess) {
             mEmptyView.setErrorType(EmptyView.STATE_NETWORK_ERROR);
         }
