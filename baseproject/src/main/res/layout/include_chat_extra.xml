@@ -5,13 +5,16 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="center"
-    android:orientation="vertical">
-
+    android:orientation="vertical"
+    android:paddingEnd="29dp"
+    android:paddingStart="29dp">
+    <!--间距为头像一半到边缘距离-->
     <TextView
         android:id="@+id/tv_chat_content"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
+
         android:layout_marginTop="@dimen/spacing_normal"
         android:background="@drawable/shape_bg_radus_deepgrey"
         android:paddingBottom="@dimen/spacing_tiny"
