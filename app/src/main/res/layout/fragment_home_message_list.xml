@@ -24,7 +24,7 @@
             android:layout_marginBottom="@dimen/spacing_normal"
             android:layout_marginLeft="@dimen/spacing_mid"
             android:layout_marginRight="@dimen/spacing_mid"
-            android:textSize="@dimen/size_content_assist"
+            android:textSize="@dimen/size_icon_assist"
             android:paddingLeft="@dimen/spacing_normal"
             android:paddingRight="@dimen/spacing_normal"
             android:drawablePadding="@dimen/spacing_mid_small_8dp"

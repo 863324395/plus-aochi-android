@@ -3,6 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/ll_container"
     android:orientation="vertical">
 
@@ -44,6 +45,7 @@
             android:paddingStart="@dimen/spacing_mid"
             android:textColor="@color/normal_for_assist_text"
             android:textColorHint="@color/normal_for_assist_text"
+            tools:text="张三丰"
             
             android:textSize="@dimen/size_icon_assist"/>
 
