@@ -898,6 +898,10 @@ public class MarkdownFragment<Draft extends BaseDraftBean, P extends MarkdownCon
                 "</html>";
     }
 
+    protected void setDefaultTitle(String title){
+        mRichTextView.hideTitle();
+    }
+
     @Override
     public void onPause() {
         mRichTextView.onPause();

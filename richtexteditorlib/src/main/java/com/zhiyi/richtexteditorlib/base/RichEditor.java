@@ -339,10 +339,6 @@ public abstract class RichEditor extends WebView {
         destroy();
     }
 
-    public void setPlaceholder(String placeholder) {
-        exec("javascript:RE.setPlaceholder('" + placeholder + "');");
-    }
-
     public void loadCSS(String cssFile, String jsFile) {
         String jsCSSImport = "(function() {" +
                 "    var head  = document.getElementsByTagName(\"head\")[0];" +
@@ -424,6 +420,14 @@ public abstract class RichEditor extends WebView {
 
     public void hideTitle() {
         exec("javascript:RE.hideTitle();");
+    }
+
+    public void setDefalutTitlePlaceHolder(String str) {
+        exec("javascript:RE.changeTitlePlaceholder('" + str + "');");
+    }
+
+    public void setDefalutContentPlaceHolder(String str) {
+        exec("javascript:RE.changeContentPlaceholder('" + str + "');");
     }
 
     public void addImageClickListener(String ids) {

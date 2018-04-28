@@ -128,6 +128,8 @@ var RE = {
 		_self.initLimit();
 		_self.bind();
 		_self.focus();
+
+		return this;
         console.log("init:::" + document.documentElement.outerHTML);
 	},
 
@@ -176,6 +178,7 @@ var RE = {
 			AndroidInterface.setHtmlContent(_self.cache.title.innerHTML.length , content.length);
 		}, false);
 	},
+
 	initCache: function initCache() {
 		var _self = this;
 		_self.cache.editor = document.getElementById('editor');
@@ -220,6 +223,15 @@ var RE = {
         AndroidInterface.markdownWords(content);
         return content;
     },
+
+    changeTitlePlaceholder: function changeTitlePlaceholder(name){
+        this.cache.title.setAttribute("title-placeholder", value);
+    },
+
+    changeContentPlaceholder: function changeContentPlaceholder(name){
+        this.cache.editor.setAttribute("editor-placeholder", value);
+    },
+
     getTitle: function getTitle() {
         var _self = this;
         var title = _self.cache.title.innerHTML.replace(/<br>/g,'');
@@ -542,5 +554,5 @@ var RE = {
         }
      },
 };
-
 RE.init();
+
