@@ -65,9 +65,13 @@ public class SelectFriendsPresenter extends AppBasePresenter<SelectFriendsContra
 
     @Override
     public void requestNetData(Long maxId, boolean isLoadMore) {
+        if (mSearchSub != null && !mSearchSub.isUnsubscribed()) {
+            mSearchSub.unsubscribe();
+        }
+        String keyWord = mRootView.getSearchKeyWord();
         // 删除用户不需要获取网络数据
         if (!mRootView.getIsDeleteMember()) {
-            Subscription subscription = mRepository.getUserFriendsList(maxId, "")
+            mSearchSub = mRepository.getUserFriendsList(maxId, keyWord)
                     .subscribe(new BaseSubscribeForV2<List<UserInfoBean>>() {
                         @Override
                         protected void onSuccess(List<UserInfoBean> data) {
@@ -91,9 +95,9 @@ public class SelectFriendsPresenter extends AppBasePresenter<SelectFriendsContra
                             mRootView.onResponseError(throwable, isLoadMore);
                         }
                     });
-            addSubscrebe(subscription);
+            addSubscrebe(mSearchSub);
         } else {
-            getLocalUser("");
+            getLocalUser(keyWord);
         }
 
     }
@@ -101,10 +105,7 @@ public class SelectFriendsPresenter extends AppBasePresenter<SelectFriendsContra
     @Override
     public void requestCacheData(Long maxId, boolean isLoadMore) {
         if (!mRootView.getIsDeleteMember()) {
-//            List<UserInfoBean> followFansBeanList = mUserInfoBeanGreenDao.getUserFriendsList(maxId);
-//            for (UserInfoBean userInfoBean : followFansBeanList) {
-//                userInfoBean.setIsSelected(0);
-//            }
+
             mRootView.onCacheResponseSuccess(new ArrayList<>(), isLoadMore);
         } else {
             getLocalUser("");
@@ -114,41 +115,6 @@ public class SelectFriendsPresenter extends AppBasePresenter<SelectFriendsContra
     @Override
     public boolean insertOrUpdateData(@NotNull List<UserInfoBean> data, boolean isLoadMore) {
         return false;
-    }
-
-    @Override
-    public void getFriendsListByKey(Long maxId, String key) {
-        if (!mRootView.getIsDeleteMember()) {
-            // 过滤重复请求
-            if (mSearchSub != null && !mSearchSub.isUnsubscribed()) {
-                mSearchSub.unsubscribe();
-            }
-            mSearchSub = mRepository.getUserFriendsList(maxId, key)
-                    .subscribe(new BaseSubscribeForV2<List<UserInfoBean>>() {
-                        @Override
-                        protected void onSuccess(List<UserInfoBean> data) {
-                            for (UserInfoBean userInfoBean : data) {
-                                userInfoBean.setIsSelected(0);
-                            }
-                            mRootView.getFriendsListByKeyResult(data);
-                        }
-
-                        @Override
-                        protected void onFailure(String message, int code) {
-                            mRootView.showSnackErrorMessage(message);
-                        }
-
-                        @Override
-                        protected void onException(Throwable throwable) {
-                            LogUtils.e(throwable, throwable.getMessage());
-                            mRootView.showSnackErrorMessage(throwable.getMessage());
-                        }
-                    });
-            addSubscrebe(mSearchSub);
-        } else {
-            getLocalUser(key);
-        }
-
     }
 
     @Override

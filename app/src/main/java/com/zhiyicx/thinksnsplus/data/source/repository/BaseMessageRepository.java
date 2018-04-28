@@ -142,10 +142,10 @@ public class BaseMessageRepository implements IBaseMessageRepository {
 //                                    }
 
                                 }
-                                if (tmps.size() > 1) {
-                                    // 数据大于一个才排序
-                                    Collections.sort(tmps, new EmTimeSortClass());
-                                }
+//                                if (tmps.size() > 1) {
+//                                    // 数据大于一个才排序
+//                                    Collections.sort(tmps, new EmTimeSortClass());
+//                                }
                                 return tmps;
                             });
                 })

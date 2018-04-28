@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.chat.select;
 
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -17,6 +18,7 @@ import com.hyphenate.easeui.bean.ChatUserInfoBean;
 import com.jakewharton.rxbinding.view.RxView;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.zhiyicx.baseproject.base.TSListFragment;
+import com.zhiyicx.common.utils.recycleviewdecoration.CustomLinearDecoration;
 import com.zhiyicx.common.utils.recycleviewdecoration.LinearDecoration;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.ChatGroupBean;
@@ -52,16 +54,11 @@ public class SelectFriendsFragment extends TSListFragment<SelectFriendsContract.
     RecyclerView mRvSelectResult;
     @BindView(R.id.edit_search_friends)
     AppCompatEditText mEditSearchFriends;
-    @BindView(R.id.fl_search_result)
-    FrameLayout mFlSearchResult;
-    @BindView(R.id.rv_search_result)
-    RecyclerView mRvSearchResult;
     @BindView(R.id.ll_search)
     LinearLayout mLinearLayout;
 
     private List<UserInfoBean> mSelectedList;
     private List<UserInfoBean> mSearchResultList;
-    private SelectFriendsAllAdapter mSearchResultAdapter;
     private SelectedFriendsAdapter mSelectedFriendsAdapter;
 
     /**
@@ -106,18 +103,11 @@ public class SelectFriendsFragment extends TSListFragment<SelectFriendsContract.
     }
 
     private void initListener() {
-        RxView.focusChanges(mEditSearchFriends)
-                .filter(aVoid -> mEditSearchFriends != null)
-                .subscribe(aBoolean -> mFlSearchResult.setVisibility(aBoolean ? View.VISIBLE : View.GONE));
+
         RxTextView.textChanges(mEditSearchFriends)
                 .subscribe(charSequence -> {
                     // 搜索
-                    mPresenter.getFriendsListByKey((long) mSearchResultList.size(), charSequence.toString());
-                });
-        RxView.clicks(mFlSearchResult)
-                .subscribe(aVoid -> {
-//                    mEditSearchFriends.clearFocus();
-//                    mSearchResultList.clear();
+                    mPresenter.requestCacheData((long) mListDatas.size(), false);
                 });
     }
 
@@ -144,12 +134,12 @@ public class SelectFriendsFragment extends TSListFragment<SelectFriendsContract.
         mRvSelectResult.setAdapter(mSelectedFriendsAdapter);
         mRvSelectResult.addItemDecoration(new LinearDecoration(0, 0, 5, 5));
 
-        // 搜索结果
-        LinearLayoutManager searchManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
-        mRvSearchResult.setLayoutManager(searchManager);
-        mSearchResultAdapter = new SelectFriendsAllAdapter(getContext(), mSearchResultList, this);
-        mRvSearchResult.setAdapter(mSearchResultAdapter);
         checkData();
+    }
+
+    @Override
+    public String getSearchKeyWord() {
+        return mEditSearchFriends.getText().toString().trim();
     }
 
     @Override
@@ -160,6 +150,13 @@ public class SelectFriendsFragment extends TSListFragment<SelectFriendsContract.
     @Override
     protected String setCenterTitle() {
         return getString(R.string.select_friends_center_title);
+    }
+
+    @Override
+    protected RecyclerView.ItemDecoration getItemDecoration() {
+        return new CustomLinearDecoration(0, getResources().getDimensionPixelSize(R.dimen
+                .divider_line), 0, 0, ContextCompat.getDrawable(getContext(), R.drawable
+                .shape_recyclerview_grey_divider));
     }
 
     @Override
@@ -268,7 +265,6 @@ public class SelectFriendsFragment extends TSListFragment<SelectFriendsContract.
         checkUserIsSelected(userInfoBeans);
         mSearchResultList.clear();
         mSearchResultList.addAll(userInfoBeans);
-        mSearchResultAdapter.notifyDataSetChanged();
     }
 
     @Override

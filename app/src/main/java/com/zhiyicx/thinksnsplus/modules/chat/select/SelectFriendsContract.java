@@ -36,16 +36,15 @@ public interface SelectFriendsContract {
         ChatGroupBean getGroupData();
 
         void dealGroupMemberResult();
+
+        /**
+         * 获取搜索输入的数据
+         * @return
+         */
+        String getSearchKeyWord();
     }
 
     interface Presenter extends ITSListPresenter<UserInfoBean> {
-        /**
-         * 根据关键字获取用户列表
-         *
-         * @param maxId 0
-         * @param key   关键字
-         */
-        void getFriendsListByKey(Long maxId, String key);
 
         /**
          * 创建会话
