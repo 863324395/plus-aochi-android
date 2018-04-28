@@ -53,11 +53,13 @@ public class TopDyanmicCommentItem extends BaseTopItem implements BaseTopItem.To
     @Override
     public void convert(ViewHolder holder, BaseListBean topDynamicCommentBean, BaseListBean lastT, int position, int itemCounts) {
         TopDynamicCommentBean dynamicCommentBean = (TopDynamicCommentBean) topDynamicCommentBean;
-
+        boolean dynamicHadDeleted = dynamicCommentBean.getFeed() == null;
+        boolean commentHadDeleted = dynamicCommentBean.getComment() == null;
+        boolean hasImage = !dynamicHadDeleted && (dynamicCommentBean.getFeed().getImages() != null && !dynamicCommentBean.getFeed().getImages()
+                .isEmpty());
+        boolean hasVideo = !dynamicHadDeleted && dynamicCommentBean.getFeed().getVideo() != null;
         // 加载内容
-        if ((dynamicCommentBean.getFeed().getImages() != null && !dynamicCommentBean.getFeed().getImages().isEmpty())
-                || dynamicCommentBean.getFeed
-                ().getVideo() != null) {
+        if (hasImage || hasVideo) {
             holder.setVisible(R.id.fl_image_container, View.VISIBLE);
             String url;
             if (dynamicCommentBean.getFeed().getVideo() != null) {
@@ -85,26 +87,28 @@ public class TopDyanmicCommentItem extends BaseTopItem implements BaseTopItem.To
         } else {
             holder.setVisible(R.id.fl_image_container, View.GONE);
         }
-        holder.setText(R.id.tv_deatil, dynamicCommentBean.getFeed().getFeed_content());
 
         ImageUtils.loadCircleUserHeadPic(dynamicCommentBean.getUserInfoBean(), holder.getView(R.id.iv_headpic));
 
-        TextView review_flag = holder.getTextView(R.id.tv_review);
+        TextView reviewFlag = holder.getTextView(R.id.tv_review);
         if (dynamicCommentBean.getExpires_at() == null) {
-            review_flag.setTextColor(holder.itemView.getResources().getColor(R.color.dyanmic_top_flag));
-            review_flag.setText(holder.itemView.getResources().getString(R.string.review));
-            review_flag.setBackgroundResource(R.drawable.shape_bg_circle_box_radus_green);
+            reviewFlag.setTextColor(holder.itemView.getResources().getColor(R.color.dyanmic_top_flag));
+            reviewFlag.setText(holder.itemView.getResources().getString(R.string.review));
+            reviewFlag.setBackgroundResource(R.drawable.shape_bg_circle_box_radus_green);
         } else {
-            review_flag.setTextColor(holder.itemView.getResources().getColor(R.color.general_for_hint));
-            review_flag.setText(holder.itemView.getResources().getString(R.string.review_done));
-            review_flag.setBackground(null);
+            reviewFlag.setTextColor(holder.itemView.getResources().getColor(R.color.general_for_hint));
+            reviewFlag.setText(holder.itemView.getResources().getString(R.string.review_done));
+            reviewFlag.setBackground(null);
         }
-
-        if (dynamicCommentBean.getFeed() == null || dynamicCommentBean.getComment() == null) {
+        if (dynamicHadDeleted) {
             holder.setText(R.id.tv_deatil, holder.getConvertView().getResources().getString(R.string.review_content_deleted));
-            review_flag.setTextColor(holder.itemView.getResources().getColor(R.color.message_badge_bg));
-            review_flag.setText(holder.itemView.getResources().getString(dynamicCommentBean.getFeed() == null ?
-                    R.string.review_dynamic_deleted : R.string.review_comment_deleted));
+
+        } else {
+            holder.setText(R.id.tv_deatil, dynamicCommentBean.getFeed().getFeed_content());
+        }
+        if (commentHadDeleted) {
+            reviewFlag.setTextColor(holder.itemView.getResources().getColor(R.color.message_badge_bg));
+            reviewFlag.setText(holder.itemView.getResources().getString(R.string.review_comment_deleted));
             holder.setText(R.id.tv_content, String.format(Locale.getDefault(),
                     holder.itemView.getContext().getString(R.string.stick_type_dynamic_commnet_message), " "));
         } else {
@@ -116,7 +120,9 @@ public class TopDyanmicCommentItem extends BaseTopItem implements BaseTopItem.To
             if (!links.isEmpty()) {
                 ConvertUtils.stringLinkConvert(holder.getView(R.id.tv_content), links);
             }
-            holder.setText(R.id.tv_deatil, dynamicCommentBean.getFeed().getFeed_content());
+            if (dynamicHadDeleted) {
+                reviewFlag.setText(holder.itemView.getResources().getString(R.string.review_dynamic_deleted));
+            }
         }
 
         holder.setTextColorRes(R.id.tv_name, R.color.important_for_content);
@@ -138,7 +144,7 @@ public class TopDyanmicCommentItem extends BaseTopItem implements BaseTopItem.To
         RxView.clicks(holder.getView(R.id.fl_detial))
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
                 .subscribe(aVoid -> {
-                    if (dynamicCommentBean.getFeed() == null || dynamicCommentBean.getComment() == null) {
+                    if (dynamicHadDeleted) {
                         initInstructionsPop(R.string.review_content_deleted);
                         return;
                     }
@@ -151,7 +157,7 @@ public class TopDyanmicCommentItem extends BaseTopItem implements BaseTopItem.To
                     handleReview(position, dynamicCommentBean);
                 });
 
-        RxView.clicks(review_flag)
+        RxView.clicks(reviewFlag)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
                 .subscribe(aVoid -> {
                     handleReview(position, dynamicCommentBean);
