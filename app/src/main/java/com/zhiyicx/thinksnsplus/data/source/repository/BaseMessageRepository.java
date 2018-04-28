@@ -131,15 +131,15 @@ public class BaseMessageRepository implements IBaseMessageRepository {
                                         continue;
                                     }
                                     emKeys.add(messageItemBeanV2.getEmKey());
-                                    boolean ischatAndImHelper = EMConversation.EMConversationType.Chat == messageItemBeanV2.getConversation()
-                                            .getType() && messageItemBeanV2.getUserInfo() != null && mSystemRepository.checkUserIsImHelper
-                                            (messageItemBeanV2.getUserInfo().getUser_id());
-                                    boolean isHasMessage = messageItemBeanV2.getConversation() != null && messageItemBeanV2.getConversation()
-                                            .getLastMessage()
-                                            != null;
-                                    if (ischatAndImHelper || isHasMessage) {
+//                                    boolean ischatAndImHelper = EMConversation.EMConversationType.Chat == messageItemBeanV2.getConversation()
+//                                            .getType() && messageItemBeanV2.getUserInfo() != null && mSystemRepository.checkUserIsImHelper
+//                                            (messageItemBeanV2.getUserInfo().getUser_id());
+//                                    boolean isHasMessage = messageItemBeanV2.getConversation() != null && messageItemBeanV2.getConversation()
+//                                            .getLastMessage()
+//                                            != null;
+//                                    if (ischatAndImHelper || isHasMessage) {
                                         tmps.add(messageItemBeanV2);
-                                    }
+//                                    }
 
                                 }
                                 if (tmps.size() > 1) {
