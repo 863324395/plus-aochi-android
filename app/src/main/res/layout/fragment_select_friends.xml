@@ -21,12 +21,12 @@
             android:layout_height="@dimen/select_icon_width"
             android:layout_gravity="center_vertical"
             android:layout_marginLeft="@dimen/spacing_mid"
-            android:layout_marginRight="@dimen/spacing_normal"
             android:src="@mipmap/search_icon_search"/>
 
         <com.zhiyicx.baseproject.widget.recycleview.MaxWidthRecyclerView
             android:id="@+id/rv_select_result"
             android:layout_width="wrap_content"
+            android:layout_marginRight="@dimen/spacing_normal_8dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"/>
 
@@ -39,7 +39,6 @@
             android:ellipsize="middle"
             android:hint="@string/search"
             android:minWidth="@dimen/select_edit_min_width"
-            android:paddingLeft="@dimen/spacing_normal"
             android:paddingRight="@dimen/spacing_normal"
             android:singleLine="true"
             android:textColor="@color/normal_for_assist_text"
