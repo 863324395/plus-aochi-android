@@ -114,10 +114,9 @@
         android:id="@+id/tv_review"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
-        android:layout_marginRight="@dimen/spacing_normal"
+        android:layout_alignParentRight="true"
+        android:layout_marginEnd="@dimen/spacing_normal"
         android:gravity="center"
         android:maxLines="1"
         android:paddingBottom="@dimen/spacing_big_line"
@@ -137,10 +136,10 @@
         android:gravity="center"
         android:paddingBottom="@dimen/spacing_small_4dp"
         android:paddingEnd="@dimen/spacing_mid_small"
+        android:visibility="gone"
         android:paddingStart="@dimen/spacing_mid_small"
         android:paddingTop="@dimen/spacing_small_4dp"
         android:text="@string/reply_str"
         android:textColor="@color/normal_for_assist_text"
-        android:textSize="@dimen/size_icon_assist"
-        android:visibility="gone"/>
+        android:textSize="@dimen/size_icon_assist"/>
 </RelativeLayout>

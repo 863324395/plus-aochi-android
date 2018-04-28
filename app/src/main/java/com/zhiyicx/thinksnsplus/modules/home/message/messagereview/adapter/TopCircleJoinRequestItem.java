@@ -39,7 +39,7 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
  * @Author Jliuer
  * @Date 2017/12/13/9:59
  * @Email Jliuer@aliyun.com
- * @Description
+ * @Description 圈子加入的审核
  */
 public class TopCircleJoinRequestItem extends BaseTopItem implements BaseTopItem.TopReviewEvetnInterface {
 
@@ -68,35 +68,34 @@ public class TopCircleJoinRequestItem extends BaseTopItem implements BaseTopItem
 
         ImageUtils.loadCircleUserHeadPic(circleJoinReQuestBean.getUser(), holder.getView(R
                 .id.iv_headpic));
-
-        TextView review_flag = holder.getTextView(R.id.tv_review);
+        TextView reviewFlag = holder.getTextView(R.id.tv_review);
         if (circleJoinReQuestBean.getMember_info() != null) {
             if (circleJoinReQuestBean.getMember_info().getAudit() == TopCircleJoinReQuestBean.TOP_REVIEW) {
-                review_flag.setTextColor(holder.itemView.getResources().getColor(R.color
+                reviewFlag.setTextColor(holder.itemView.getResources().getColor(R.color
                         .dyanmic_top_flag));
-                review_flag.setText(holder.itemView.getResources().getString(R.string.review));
-                review_flag.setBackgroundResource(R.drawable.shape_bg_circle_box_radus_green);
+                reviewFlag.setText(holder.itemView.getResources().getString(R.string.review));
+                reviewFlag.setBackgroundResource(R.drawable.shape_bg_circle_box_radus_green);
 
             } else {
-                review_flag.setBackground(null);
+                reviewFlag.setBackground(null);
                 if (circleJoinReQuestBean.getMember_info().getAudit() == TopCircleJoinReQuestBean.TOP_REFUSE) {
-                    review_flag.setTextColor(holder.itemView.getResources().getColor(R.color
+                    reviewFlag.setTextColor(holder.itemView.getResources().getColor(R.color
                             .message_badge_bg));
-                    review_flag.setText(holder.itemView.getResources().getString(R.string
+                    reviewFlag.setText(holder.itemView.getResources().getString(R.string
                             .circle_report_disagree));
                 } else {
-                    review_flag.setTextColor(holder.itemView.getResources().getColor(R.color
+                    reviewFlag.setTextColor(holder.itemView.getResources().getColor(R.color
                             .general_for_hint));
-                    review_flag.setText(holder.itemView.getResources().getString(R.string
+                    reviewFlag.setText(holder.itemView.getResources().getString(R.string
                             .circle_report_agree));
                 }
             }
         } else {
-            review_flag.setTextColor(holder.itemView.getResources().getColor(R.color
+            reviewFlag.setTextColor(holder.itemView.getResources().getColor(R.color
                     .message_badge_bg));
-            review_flag.setText(holder.itemView.getResources().getString(R.string
+            reviewFlag.setText(holder.itemView.getResources().getString(R.string
                     .circle_report_disagree));
-            review_flag.setBackground(null);
+            reviewFlag.setBackground(null);
         }
 
         String commentBody = circleJoinReQuestBean.getGroup().getName();
@@ -139,16 +138,12 @@ public class TopCircleJoinRequestItem extends BaseTopItem implements BaseTopItem
                     toDetail(circleJoinReQuestBean.getGroup());
                 });
 
-        RxView.clicks(review_flag)
+        RxView.clicks(reviewFlag)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
-                .subscribe(aVoid -> {
-                    handleReview(position, circleJoinReQuestBean);
-                });
+                .subscribe(aVoid -> handleReview(position, circleJoinReQuestBean));
         RxView.clicks(holder.itemView)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
-                .subscribe(aVoid -> {
-                    handleReview(position, circleJoinReQuestBean);
-                });
+                .subscribe(aVoid -> handleReview(position, circleJoinReQuestBean));
 
     }
 

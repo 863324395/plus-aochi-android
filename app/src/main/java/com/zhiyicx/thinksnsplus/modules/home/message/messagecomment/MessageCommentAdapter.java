@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
@@ -83,7 +84,7 @@ public class MessageCommentAdapter extends CommonAdapter<CommentedBean> {
 
         ImageUtils.loadCircleUserHeadPic(commentedBean.getCommentUserInfo(), holder.getView(R.id.iv_headpic));
 
-        holder.setVisible(R.id.tv_reply, View.VISIBLE);
+        holder.setVisible(R.id.tv_reply, commentedBean.getIsDelete() ? View.GONE : View.VISIBLE);
         if (commentedBean.getTarget_image() != null && commentedBean.getTarget_image() > 0) {
             holder.setVisible(R.id.fl_image_container, View.VISIBLE);
             if (commentedBean.isHasVideo()) {
@@ -112,8 +113,8 @@ public class MessageCommentAdapter extends CommonAdapter<CommentedBean> {
 
         if (commentedBean.getIsDelete()) {
             holder.getView(R.id.fl_detial).setVisibility(View.GONE);
-            TextView review_flag = holder.getTextView(R.id.tv_review);
-            review_flag.setTextColor(ContextCompat.getColor(holder.itemView.getContext(), R.color.message_badge_bg));
+            TextView reviewFlag = holder.getTextView(R.id.tv_review);
+            reviewFlag.setTextColor(ContextCompat.getColor(holder.itemView.getContext(), R.color.message_badge_bg));
             // 评论
             int resourceRes = 0;
             switch (commentedBean.getChannel()) {
@@ -144,7 +145,7 @@ public class MessageCommentAdapter extends CommonAdapter<CommentedBean> {
                 default:
             }
             if (resourceRes != 0) {
-                review_flag.setText(holder.itemView.getResources().getString(R.string.resource_deleted_format,
+                reviewFlag.setText(holder.itemView.getResources().getString(R.string.resource_deleted_format,
                         holder.itemView.getResources().getString(resourceRes)));
             }
         } else {

@@ -5,7 +5,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
+import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 import com.klinker.android.link_builder.Link;
 import com.zhiyicx.baseproject.base.BaseListBean;
@@ -185,6 +187,13 @@ public abstract class BaseTopItem implements ItemViewDelegate<BaseListBean> {
                 .bottomClickListener(() -> mReviewPopWindow.hide())
                 .build();
         mReviewPopWindow.show();
+    }
+
+    protected void loadImage(Context context, String url, ImageView view) {
+        Glide.with(context)
+                .load(url)
+                .error(R.drawable.shape_default_image_themcolor)
+                .into(view);
     }
 
     public void setTopReviewEvetnInterface(TopReviewEvetnInterface topReviewEvetnInterface) {

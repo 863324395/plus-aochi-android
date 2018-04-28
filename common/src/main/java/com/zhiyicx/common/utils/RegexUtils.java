@@ -291,6 +291,15 @@ public class RegexUtils {
         }
     }
 
+    public static String replaceImageIdAndNeedSpaceString(String regex, String input) {
+        try {
+            Matcher matcher = Pattern.compile(regex).matcher(input);
+            return matcher.replaceAll("[图片]");
+        } catch (Exception e) {
+            return TextUtils.isEmpty(input) ? " " : input;
+        }
+    }
+
     /**
      * 内容分段
      *

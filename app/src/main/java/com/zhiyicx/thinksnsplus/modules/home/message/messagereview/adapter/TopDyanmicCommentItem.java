@@ -31,7 +31,7 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
  * @Author Jliuer
  * @Date 2017/09/11/10:50
  * @Email Jliuer@aliyun.com
- * @Description
+ * @Description 动态评论置顶审核
  */
 public class TopDyanmicCommentItem extends BaseTopItem implements BaseTopItem.TopReviewEvetnInterface {
 
@@ -53,42 +53,15 @@ public class TopDyanmicCommentItem extends BaseTopItem implements BaseTopItem.To
     @Override
     public void convert(ViewHolder holder, BaseListBean topDynamicCommentBean, BaseListBean lastT, int position, int itemCounts) {
         TopDynamicCommentBean dynamicCommentBean = (TopDynamicCommentBean) topDynamicCommentBean;
-        boolean dynamicHadDeleted = dynamicCommentBean.getFeed() == null;
-        boolean commentHadDeleted = dynamicCommentBean.getComment() == null;
-        boolean hasImage = !dynamicHadDeleted && (dynamicCommentBean.getFeed().getImages() != null && !dynamicCommentBean.getFeed().getImages()
-                .isEmpty());
-        boolean hasVideo = !dynamicHadDeleted && dynamicCommentBean.getFeed().getVideo() != null;
-        // 加载内容
-        if (hasImage || hasVideo) {
-            holder.setVisible(R.id.fl_image_container, View.VISIBLE);
-            String url;
-            if (dynamicCommentBean.getFeed().getVideo() != null) {
-                holder.setVisible(R.id.iv_video_icon, View.VISIBLE);
-                url = ImageUtils.imagePathConvertV2(dynamicCommentBean.getFeed().getVideo().getCover_id()
-                        , mContext.getResources().getDimensionPixelOffset(R.dimen.headpic_for_user_center)
-                        , mContext.getResources().getDimensionPixelOffset(R.dimen.headpic_for_user_center)
-                        , ImageZipConfig.IMAGE_38_ZIP);
-                Glide.with(holder.getConvertView().getContext())
-                        .load(url)
-                        .error(R.drawable.shape_default_image_themcolor)
-                        .into((ImageView) holder.getView(R.id.iv_detail_image));
-            } else {
-                holder.setVisible(R.id.iv_video_icon, View.GONE);
-                url = ImageUtils.imagePathConvertV2(dynamicCommentBean.getFeed().getImages().size() > 0 ? dynamicCommentBean.getFeed().getImages()
-                                .get(0).getFile() : 0
-                        , mContext.getResources().getDimensionPixelOffset(R.dimen.headpic_for_user_center)
-                        , mContext.getResources().getDimensionPixelOffset(R.dimen.headpic_for_user_center)
-                        , ImageZipConfig.IMAGE_38_ZIP);
-                Glide.with(holder.getConvertView().getContext())
-                        .load(url)
-                        .error(R.drawable.shape_default_error_image)
-                        .into((ImageView) holder.getView(R.id.iv_detail_image));
-            }
-        } else {
-            holder.setVisible(R.id.fl_image_container, View.GONE);
-        }
-
         ImageUtils.loadCircleUserHeadPic(dynamicCommentBean.getUserInfoBean(), holder.getView(R.id.iv_headpic));
+
+        boolean dynamicIsDeleted = dynamicCommentBean.getFeed() == null;
+        boolean commentIsDeleted = dynamicCommentBean.getComment() == null;
+
+        boolean hasImage = !dynamicIsDeleted && dynamicCommentBean.getFeed().getImages() != null && !dynamicCommentBean.getFeed().getImages().isEmpty();
+        boolean hasVideo = !dynamicIsDeleted && dynamicCommentBean.getFeed().getVideo() != null;
+
+        boolean hasConentImage = hasImage || hasVideo;
 
         TextView reviewFlag = holder.getTextView(R.id.tv_review);
         if (dynamicCommentBean.getExpires_at() == null) {
@@ -100,29 +73,49 @@ public class TopDyanmicCommentItem extends BaseTopItem implements BaseTopItem.To
             reviewFlag.setText(holder.itemView.getResources().getString(R.string.review_done));
             reviewFlag.setBackground(null);
         }
-        if (dynamicHadDeleted) {
-            holder.setText(R.id.tv_deatil, holder.getConvertView().getResources().getString(R.string.review_content_deleted));
 
-        } else {
-            holder.setText(R.id.tv_deatil, dynamicCommentBean.getFeed().getFeed_content());
+        holder.setVisible(R.id.fl_image_container, hasConentImage ? View.VISIBLE : View.GONE);
+        if (hasVideo) {
+            holder.setVisible(R.id.iv_video_icon, View.VISIBLE);
+            String url = ImageUtils.imagePathConvertV2(dynamicCommentBean.getFeed().getVideo().getCover_id()
+                    , mContext.getResources().getDimensionPixelOffset(R.dimen.headpic_for_user_center)
+                    , mContext.getResources().getDimensionPixelOffset(R.dimen.headpic_for_user_center)
+                    , ImageZipConfig.IMAGE_38_ZIP);
+            Glide.with(holder.getConvertView().getContext())
+                    .load(url)
+                    .error(R.drawable.shape_default_image_themcolor)
+                    .into((ImageView) holder.getView(R.id.iv_detail_image));
+        } else if (hasImage) {
+            holder.setVisible(R.id.iv_video_icon, View.GONE);
+            String url = ImageUtils.imagePathConvertV2(dynamicCommentBean.getFeed().getImages().size() > 0 ? dynamicCommentBean.getFeed().getImages()
+                            .get(0).getFile() : 0
+                    , mContext.getResources().getDimensionPixelOffset(R.dimen.headpic_for_user_center)
+                    , mContext.getResources().getDimensionPixelOffset(R.dimen.headpic_for_user_center)
+                    , ImageZipConfig.IMAGE_38_ZIP);
+            Glide.with(holder.getConvertView().getContext())
+                    .load(url)
+                    .error(R.drawable.shape_default_error_image)
+                    .into((ImageView) holder.getView(R.id.iv_detail_image));
         }
-        if (commentHadDeleted) {
+
+        holder.setText(R.id.tv_deatil, dynamicIsDeleted ?
+                holder.getConvertView().getResources().getString(R.string.review_content_deleted)
+                : dynamicCommentBean.getFeed().getFeed_content());
+
+        holder.setText(R.id.tv_content, commentIsDeleted ?
+                String.format(Locale.getDefault(), holder.itemView.getContext().getString(R.string.stick_type_dynamic_commnet_message), " ")
+                : dynamicCommentBean.getComment().getComment_content());
+
+        if (dynamicIsDeleted || commentIsDeleted) {
             reviewFlag.setTextColor(holder.itemView.getResources().getColor(R.color.message_badge_bg));
-            reviewFlag.setText(holder.itemView.getResources().getString(R.string.review_comment_deleted));
-            holder.setText(R.id.tv_content, String.format(Locale.getDefault(),
-                    holder.itemView.getContext().getString(R.string.stick_type_dynamic_commnet_message), " "));
-        } else {
-            holder.setText(R.id.tv_content, String.format(Locale.getDefault(),
-                    holder.itemView.getContext().getString(R.string.stick_type_dynamic_commnet_message), TextUtils.isEmpty(dynamicCommentBean
-                            .getComment().getComment_content())
-                            ? " " : dynamicCommentBean.getComment().getComment_content()));
-            List<Link> links = setLinks(holder.itemView.getContext());
-            if (!links.isEmpty()) {
-                ConvertUtils.stringLinkConvert(holder.getView(R.id.tv_content), links);
-            }
-            if (dynamicHadDeleted) {
-                reviewFlag.setText(holder.itemView.getResources().getString(R.string.review_dynamic_deleted));
-            }
+            reviewFlag.setText(holder.itemView.getResources().getString(dynamicIsDeleted ?
+                    R.string.review_dynamic_deleted : R.string.review_comment_deleted));
+            reviewFlag.setBackground(null);
+        }
+
+        List<Link> links = setLinks(holder.itemView.getContext());
+        if (!links.isEmpty()) {
+            ConvertUtils.stringLinkConvert(holder.getView(R.id.tv_content), links);
         }
 
         holder.setTextColorRes(R.id.tv_name, R.color.important_for_content);
@@ -132,19 +125,19 @@ public class TopDyanmicCommentItem extends BaseTopItem implements BaseTopItem.To
 
         // 响应事件
         RxView.clicks(holder.getView(R.id.tv_name))
-                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .subscribe(aVoid -> toUserCenter(holder.itemView.getContext(), dynamicCommentBean.getUserInfoBean()));
         RxView.clicks(holder.getView(R.id.iv_headpic))
-                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .subscribe(aVoid -> toUserCenter(holder.itemView.getContext(), dynamicCommentBean.getUserInfoBean()));
         RxView.clicks(holder.getView(R.id.tv_content))
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .subscribe(aVoid -> holder.itemView.performClick());
 
         RxView.clicks(holder.getView(R.id.fl_detial))
-                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .subscribe(aVoid -> {
-                    if (dynamicHadDeleted) {
+                    if (dynamicCommentBean.getFeed() == null || dynamicCommentBean.getComment() == null) {
                         initInstructionsPop(R.string.review_content_deleted);
                         return;
                     }
@@ -152,16 +145,12 @@ public class TopDyanmicCommentItem extends BaseTopItem implements BaseTopItem.To
                 });
 
         RxView.clicks(holder.itemView)
-                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
-                .subscribe(aVoid -> {
-                    handleReview(position, dynamicCommentBean);
-                });
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
+                .subscribe(aVoid -> handleReview(position, dynamicCommentBean));
 
         RxView.clicks(reviewFlag)
-                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
-                .subscribe(aVoid -> {
-                    handleReview(position, dynamicCommentBean);
-                });
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
+                .subscribe(aVoid -> handleReview(position, dynamicCommentBean));
     }
 
     private void handleReview(int position, TopDynamicCommentBean dynamicCommentBean) {

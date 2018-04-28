@@ -31,7 +31,7 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
  * @Author Jliuer
  * @Date 2017/09/11/16:16
  * @Email Jliuer@aliyun.com
- * @Description
+ * @Description 资讯评论置顶审核
  */
 public class TopNewsCommentItem extends BaseTopItem implements BaseTopItem.TopReviewEvetnInterface {
 
@@ -48,26 +48,12 @@ public class TopNewsCommentItem extends BaseTopItem implements BaseTopItem.TopRe
     @Override
     public void convert(ViewHolder holder, BaseListBean baseListBean, BaseListBean lastT, int position, int itemCounts) {
         TopNewsCommentListBean dynamicCommentBean = (TopNewsCommentListBean) baseListBean;
-        boolean newHadDeleted = dynamicCommentBean.getNews() == null;
-        boolean commenHadDeleted = dynamicCommentBean.getComment() == null;
-        boolean hasImage = !newHadDeleted && dynamicCommentBean.getNews().getImage() != null;
-        // 加载内容
-        if (hasImage) {
-            holder.setVisible(R.id.fl_image_container, View.VISIBLE);
-            holder.setVisible(R.id.iv_video_icon, View.GONE);
-            String url = ImageUtils.imagePathConvertV2(dynamicCommentBean.getNews().getImage().getId()
-                    , mContext.getResources().getDimensionPixelOffset(R.dimen.headpic_for_user_center)
-                    , mContext.getResources().getDimensionPixelOffset(R.dimen.headpic_for_user_center)
-                    , ImageZipConfig.IMAGE_38_ZIP);
-            Glide.with(holder.getConvertView().getContext())
-                    .load(url)
-                    .error(R.drawable.shape_default_error_image)
-                    .into((ImageView) holder.getView(R.id.iv_detail_image));
-        } else {
-            holder.setVisible(R.id.fl_image_container, View.GONE);
-        }
         ImageUtils.loadCircleUserHeadPic(dynamicCommentBean.getCommentUser(), holder.getView(R.id.iv_headpic));
 
+        boolean newsIsDeleted = dynamicCommentBean.getNews() == null;
+        boolean commentIsDeleted = dynamicCommentBean.getComment() == null;
+
+        boolean hasImage = !newsIsDeleted && dynamicCommentBean.getNews().getImage() != null;
 
         TextView reviewFlag = holder.getTextView(R.id.tv_review);
         if (dynamicCommentBean.getState() == TopNewsCommentListBean.TOP_REVIEW) {
@@ -84,30 +70,43 @@ public class TopNewsCommentItem extends BaseTopItem implements BaseTopItem.TopRe
                 reviewFlag.setText(holder.itemView.getResources().getString(R.string.review_approved));
             }
         }
-        if (newHadDeleted) {
-            holder.setText(R.id.tv_deatil, holder.getConvertView().getResources().getString(R.string.review_content_deleted));
-        } else {
-            holder.setText(R.id.tv_deatil, dynamicCommentBean.getNews().getSubject());
 
+        holder.setVisible(R.id.fl_image_container, hasImage ? View.VISIBLE : View.GONE);
+
+        if (hasImage) {
+            holder.setVisible(R.id.fl_image_container, View.VISIBLE);
+            String url;
+
+            holder.setVisible(R.id.iv_video_icon, View.GONE);
+            url = ImageUtils.imagePathConvertV2(dynamicCommentBean.getNews().getImage().getId()
+                    , mContext.getResources().getDimensionPixelOffset(R.dimen.headpic_for_user_center)
+                    , mContext.getResources().getDimensionPixelOffset(R.dimen.headpic_for_user_center)
+                    , ImageZipConfig.IMAGE_38_ZIP);
+            Glide.with(holder.getConvertView().getContext())
+                    .load(url)
+                    .error(R.drawable.shape_default_error_image)
+                    .into((ImageView) holder.getView(R.id.iv_detail_image));
         }
 
-        if (commenHadDeleted) {
-            holder.setText(R.id.tv_content, holder.itemView.getContext().getString(R.string.stick_type_dynamic_commnet_message, " "));
+        holder.setText(R.id.tv_deatil, newsIsDeleted  ?
+                holder.getConvertView().getResources().getString(R.string.review_content_deleted)
+                : dynamicCommentBean.getNews().getContent());
+
+        holder.setText(R.id.tv_content, commentIsDeleted ?
+                String.format(Locale.getDefault(),holder.itemView.getContext().getString(R.string.stick_type_dynamic_commnet_message), " ")
+                :RegexUtils.replaceImageIdAndNeedSpaceString(MarkdownConfig.IMAGE_FORMAT,
+                dynamicCommentBean.getComment().getComment_content()));
+
+        if (newsIsDeleted || commentIsDeleted) {
             reviewFlag.setTextColor(holder.itemView.getResources().getColor(R.color.message_badge_bg));
-            reviewFlag.setText(holder.itemView.getResources().getString( R.string.review_comment_deleted));
-        } else {
-            String commentBody = RegexUtils.replaceImageId(MarkdownConfig.IMAGE_FORMAT,
-                    dynamicCommentBean.getComment().getComment_content());
-            holder.setText(R.id.tv_content,
-                    holder.itemView.getContext().getString(R.string.stick_type_news_commnet_message, TextUtils.isEmpty(commentBody) ? " " :
-                            commentBody));
-            List<Link> links = setLinks(holder.itemView.getContext());
-            if (!links.isEmpty()) {
-                ConvertUtils.stringLinkConvert(holder.getView(R.id.tv_content), links);
-            }
-            if(newHadDeleted){
-                reviewFlag.setText(holder.itemView.getResources().getString( R.string.review_content_deleted));
-            }
+            reviewFlag.setText(holder.itemView.getResources().getString(newsIsDeleted ?
+                    R.string.review_dynamic_deleted : R.string.review_comment_deleted));
+            reviewFlag.setBackground(null);
+        }
+
+        List<Link> links = setLinks(holder.itemView.getContext());
+        if (!links.isEmpty()) {
+            ConvertUtils.stringLinkConvert(holder.getView(R.id.tv_content), links);
         }
 
         holder.setTextColorRes(R.id.tv_name, R.color.important_for_content);
@@ -118,19 +117,19 @@ public class TopNewsCommentItem extends BaseTopItem implements BaseTopItem.TopRe
 
         // 响应事件
         RxView.clicks(holder.getView(R.id.tv_name))
-                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .subscribe(aVoid -> toUserCenter(holder.itemView.getContext(), dynamicCommentBean.getCommentUser()));
         RxView.clicks(holder.getView(R.id.iv_headpic))
-                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .subscribe(aVoid -> toUserCenter(holder.itemView.getContext(), dynamicCommentBean.getCommentUser()));
         RxView.clicks(holder.getView(R.id.tv_content))
-                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .subscribe(aVoid -> holder.itemView.performClick());
         // 去详情
         RxView.clicks(holder.getView(R.id.fl_detial))
-                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .subscribe(aVoid -> {
-                    if (newHadDeleted ) {
+                    if (dynamicCommentBean.getNews() == null || dynamicCommentBean.getComment() == null) {
                         initInstructionsPop(R.string.review_content_deleted);
                         return;
                     }
@@ -138,12 +137,12 @@ public class TopNewsCommentItem extends BaseTopItem implements BaseTopItem.TopRe
                 });
 
         RxView.clicks(reviewFlag)
-                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .subscribe(aVoid -> {
                     handleReView(position, dynamicCommentBean);
                 });
         RxView.clicks(holder.itemView)
-                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .subscribe(aVoid -> {
                     handleReView(position, dynamicCommentBean);
                 });

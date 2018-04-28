@@ -35,7 +35,7 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
  * @author Jliuer
  * @Date 2017/12/08/17:02
  * @Email Jliuer@aliyun.com
- * @Description
+ * @Description 帖子评论置顶审核
  */
 public class TopPostCommentItem extends BaseTopItem implements BaseTopItem.TopReviewEvetnInterface {
 
@@ -53,9 +53,33 @@ public class TopPostCommentItem extends BaseTopItem implements BaseTopItem.TopRe
     public void convert(ViewHolder holder, BaseListBean baseListBean, BaseListBean lastT, int
             position, int itemCounts) {
         TopPostCommentListBean postCommentListBean = (TopPostCommentListBean) baseListBean;
+        ImageUtils.loadCircleUserHeadPic(postCommentListBean.getCommentUser(), holder.getView(R
+                .id.iv_headpic));
 
-        // 加载内容
-        if (postCommentListBean.getPost().getImages() != null && !postCommentListBean.getPost().getImages().isEmpty()) {
+        boolean postIsDeleted = postCommentListBean.getPost() == null;
+        boolean commentIsDeleted = postCommentListBean.getComment() == null;
+
+        boolean hasImage = !postIsDeleted && postCommentListBean.getPost().getImages() != null && !postCommentListBean.getPost().getImages().isEmpty();
+
+        TextView reviewFlag = holder.getTextView(R.id.tv_review);
+        if (postCommentListBean.getStatus() == TopPostCommentListBean.TOP_REVIEW) {
+            reviewFlag.setTextColor(holder.itemView.getResources().getColor(R.color
+                    .dyanmic_top_flag));
+            reviewFlag.setText(holder.itemView.getResources().getString(R.string.review));
+            reviewFlag.setBackgroundResource(R.drawable.shape_bg_circle_box_radus_green);
+        } else {
+            reviewFlag.setBackground(null);
+            if (postCommentListBean.getStatus() == TopPostCommentListBean.TOP_REFUSE) {
+                reviewFlag.setTextColor(holder.itemView.getResources().getColor(R.color.message_badge_bg));
+                reviewFlag.setText(holder.itemView.getResources().getString(R.string.review_refuse));
+            } else {
+                reviewFlag.setTextColor(holder.itemView.getResources().getColor(R.color.general_for_hint));
+                reviewFlag.setText(holder.itemView.getResources().getString(R.string.review_approved));
+            }
+        }
+
+        holder.setVisible(R.id.fl_image_container, hasImage ? View.VISIBLE : View.GONE);
+        if (hasImage) {
             holder.setVisible(R.id.fl_image_container, View.VISIBLE);
             String url;
             holder.setVisible(R.id.iv_video_icon, View.GONE);
@@ -68,55 +92,28 @@ public class TopPostCommentItem extends BaseTopItem implements BaseTopItem.TopRe
                     .load(url)
                     .error(R.drawable.shape_default_error_image)
                     .into((ImageView) holder.getView(R.id.iv_detail_image));
-        } else {
-            holder.setVisible(R.id.fl_image_container, View.GONE);
-        }
-        holder.setText(R.id.tv_deatil, postCommentListBean.getPost().getSummary());
-
-        ImageUtils.loadCircleUserHeadPic(postCommentListBean.getCommentUser(), holder.getView(R
-                .id.iv_headpic));
-
-        TextView review_flag = holder.getTextView(R.id.tv_review);
-        if (postCommentListBean.getStatus() == TopPostCommentListBean.TOP_REVIEW) {
-            review_flag.setTextColor(holder.itemView.getResources().getColor(R.color
-                    .dyanmic_top_flag));
-            review_flag.setText(holder.itemView.getResources().getString(R.string.review));
-            review_flag.setBackgroundResource(R.drawable.shape_bg_circle_box_radus_green);
-
-        } else {
-            review_flag.setBackground(null);
-            if (postCommentListBean.getStatus() == TopPostCommentListBean.TOP_REFUSE) {
-                review_flag.setTextColor(holder.itemView.getResources().getColor(R.color.message_badge_bg));
-                review_flag.setText(holder.itemView.getResources().getString(R.string.review_refuse));
-            } else {
-                review_flag.setTextColor(holder.itemView.getResources().getColor(R.color.general_for_hint));
-                review_flag.setText(holder.itemView.getResources().getString(R.string.review_approved));
-            }
         }
 
-        if (postCommentListBean.getPost() == null || postCommentListBean.getComment() == null) {
-            holder.setText(R.id.tv_deatil, holder.getConvertView().getResources().getString(R
-                    .string.review_content_deleted));
-            holder.setText(R.id.tv_content, String.format(Locale.getDefault(),
-                    holder.itemView.getContext().getString(R.string
-                            .stick_type_group_commnet_message), " "));
-            review_flag.setTextColor(holder.itemView.getResources().getColor(R.color
+        holder.setText(R.id.tv_deatil, postIsDeleted  ?
+                holder.getConvertView().getResources().getString(R.string.review_content_deleted)
+                : postCommentListBean.getPost().getSummary());
+
+        holder.setText(R.id.tv_content, commentIsDeleted ?
+                String.format(Locale.getDefault(),holder.itemView.getContext().getString(R.string.stick_type_dynamic_commnet_message), " ")
+                :RegexUtils.replaceImageIdAndNeedSpaceString(MarkdownConfig.IMAGE_FORMAT,
+                postCommentListBean.getComment().getComment_content()));
+
+        if (postIsDeleted || commentIsDeleted) {
+            reviewFlag.setTextColor(holder.itemView.getResources().getColor(R.color
                     .message_badge_bg));
-            review_flag.setText(holder.itemView.getResources().getString(postCommentListBean
-                    .getPost() == null ?
+            reviewFlag.setText(holder.itemView.getResources().getString(postIsDeleted ?
                     R.string.review_dynamic_deleted : R.string.review_comment_deleted));
-        } else {
-            String commentBody = RegexUtils.replaceImageId(MarkdownConfig.IMAGE_FORMAT,
-                    postCommentListBean.getComment().getComment_content());
-            holder.setText(R.id.tv_content, String.format(Locale.getDefault(),
-                    holder.itemView.getContext().getString(R.string
-                            .stick_type_news_commnet_message), TextUtils.isEmpty(commentBody) ? "" +
-                            " " : commentBody));
-            List<Link> links = setLinks(holder.itemView.getContext());
-            if (!links.isEmpty()) {
-                ConvertUtils.stringLinkConvert(holder.getView(R.id.tv_content), links);
-            }
-            holder.setText(R.id.tv_deatil, postCommentListBean.getPost().getSummary());
+            reviewFlag.setBackground(null);
+        }
+
+        List<Link> links = setLinks(holder.itemView.getContext());
+        if (!links.isEmpty()) {
+            ConvertUtils.stringLinkConvert(holder.getView(R.id.tv_content), links);
         }
 
         holder.setTextColorRes(R.id.tv_name, R.color.important_for_content);
@@ -149,16 +146,12 @@ public class TopPostCommentItem extends BaseTopItem implements BaseTopItem.TopRe
                     toDetail(postCommentListBean.getPost(), true);
                 });
 
-        RxView.clicks(review_flag)
-                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
-                .subscribe(aVoid -> {
-                    handleReview(position, postCommentListBean);
-                });
+        RxView.clicks(reviewFlag)
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
+                .subscribe(aVoid -> handleReview(position, postCommentListBean));
         RxView.clicks(holder.itemView)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
-                .subscribe(aVoid -> {
-                    handleReview(position, postCommentListBean);
-                });
+                .subscribe(aVoid -> handleReview(position, postCommentListBean));
     }
 
     private void handleReview(int position, TopPostCommentListBean postCommentListBean) {
