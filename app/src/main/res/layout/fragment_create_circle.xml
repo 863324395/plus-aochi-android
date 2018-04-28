@@ -52,7 +52,7 @@
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:layout_toRightOf="@id/ll_head_icon_container"
-                    android:text="@string/change_circle_head_icon"
+                    android:text="@string/upload_circle_head_icon"
                     android:textColor="@color/important_for_content"
                     android:textSize="@dimen/size_content"/>
 
@@ -176,7 +176,7 @@
                         android:id="@+id/tv_tag_hint"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="@string/select_tag"
+                        android:hint="@string/edit_circle_select_tag"
                         android:text=""
                         android:textColor="@color/general_for_hint"
                         android:textColorHint="@color/general_for_hint"

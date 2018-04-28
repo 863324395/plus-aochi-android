@@ -333,15 +333,17 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string name="change_circle_head_icon">更改圈子头像</string>
+    <string name="upload_circle_head_icon">上传圈子头像</string>
     <string name="circle_head_icon">圈子头像</string>
     <string name="circle_name">圈名</string>
     <string name="circle_owner">圈主</string>
     <string name="circle_manager">管理员</string>
     <string name="circle_type">分类</string>
     <string name="circle_chat">私聊</string>
-    <string name="edit_circle_name">设置圈名</string>
-    <string name="edit_circle_type">设置圈子类别</string>
-    <string name="edit_circle_location">设置圈子位置</string>
+    <string name="edit_circle_name">输入圈名，20字以内</string>
+    <string name="edit_circle_type">选择圈子类别</string>
+    <string name="edit_circle_select_tag">最多可选择5个标签</string>
+    <string name="edit_circle_location">设置圈子的地理位置</string>
     <string name="circle_location">位置</string>
     <string name="edit_circle_synchronization">帖子同步至动态</string>
     <string name="edit_circle_block">设置为封闭圈子</string>
