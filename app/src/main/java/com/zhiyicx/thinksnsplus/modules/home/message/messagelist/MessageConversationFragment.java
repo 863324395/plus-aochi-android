@@ -120,17 +120,15 @@ public class MessageConversationFragment extends TSListFragment<MessageConversat
     }
 
     @Override
-    protected boolean isLayzLoad() {
-        return true;
-    }
-
-    @Override
     public void onResume() {
         super.onResume();
         // 刷新信息内容
         if (mPresenter != null) {
             mPresenter.requestNetData(DEFAULT_PAGE_MAX_ID, false);
             mPresenter.refreshConversationReadMessage();
+        }
+        if (getUserVisibleHint() && !TextUtils.isEmpty(mSearchView.getText())) {
+            mSearchView.setText("");
         }
     }
 
@@ -140,6 +138,7 @@ public class MessageConversationFragment extends TSListFragment<MessageConversat
         if (isVisibleToUser && mAdapter != null && ((MessageAdapterV2) mAdapter).hasItemOpend()) {
             ((MessageAdapterV2) mAdapter).closeAllItems();
         }
+
     }
 
     @Override
@@ -284,12 +283,15 @@ public class MessageConversationFragment extends TSListFragment<MessageConversat
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (TextUtils.isEmpty(s)) {
+                if (mPresenter == null) {
+                    return;
+                }
+                if (TextUtils.isEmpty(s.toString().trim())) {
                     // 展示原数据
                     mPresenter.requestNetData(0L, false);
                 } else {
                     // 显示搜索结果
-                    mPresenter.searchList(s.toString());
+                    mPresenter.searchList(s.toString().trim());
                 }
             }
         });

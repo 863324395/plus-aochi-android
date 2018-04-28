@@ -74,6 +74,8 @@ public class MessageConversationPresenter extends AppBasePresenter<MessageConver
      * 是否是第一次连接 im
      */
     private boolean mIsFristConnectedIm = true;
+    private Subscription mAllConversaiotnSub;
+    private Subscription mSearchSub;
 
 
     @Inject
@@ -145,7 +147,10 @@ public class MessageConversationPresenter extends AppBasePresenter<MessageConver
 
     @Override
     public void searchList(String key) {
-        Observable.just(key)
+        if (mSearchSub != null && !mSearchSub.isUnsubscribed()) {
+            mSearchSub.unsubscribe();
+        }
+        mSearchSub = Observable.just(key)
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
                 .map(s -> {
@@ -174,6 +179,7 @@ public class MessageConversationPresenter extends AppBasePresenter<MessageConver
                 })
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(list -> mRootView.onNetResponseSuccess(list, false));
+        addSubscrebe(mSearchSub);
     }
 
     private ChatUserInfoBean getChatUser(UserInfoBean userInfoBean) {
@@ -201,7 +207,11 @@ public class MessageConversationPresenter extends AppBasePresenter<MessageConver
     private void getAllConversationV2(boolean isLoadMore) {
         // 已连接才去获取
         if (EMClient.getInstance().isLoggedInBefore() && EMClient.getInstance().isConnected()) {
-            Subscription subscribe = mRepository.getConversationList((int) AppApplication.getMyUserIdWithdefault())
+            if (mAllConversaiotnSub != null && !mAllConversaiotnSub.isUnsubscribed()) {
+                mAllConversaiotnSub.unsubscribe();
+            }
+
+            mAllConversaiotnSub = mRepository.getConversationList((int) AppApplication.getMyUserIdWithdefault())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new BaseSubscribeForV2<List<MessageItemBeanV2>>() {
                         @Override
@@ -231,7 +241,7 @@ public class MessageConversationPresenter extends AppBasePresenter<MessageConver
 
                         }
                     });
-            addSubscrebe(subscribe);
+            addSubscrebe(mAllConversaiotnSub);
         } else {
             if (!mIsFristConnectedIm) {
                 mRootView.showStickyMessage(mContext.getString(R.string.chat_unconnected));
@@ -254,7 +264,7 @@ public class MessageConversationPresenter extends AppBasePresenter<MessageConver
                     // 是否显示底部红点
                     boolean isShowMessageTip = false;
                     for (MessageItemBeanV2 messageItemBean : mRootView.getListDatas()) {
-                        if (messageItemBean.getConversation()!=null&&messageItemBean.getConversation().getUnreadMsgCount() > 0) {
+                        if (messageItemBean.getConversation() != null && messageItemBean.getConversation().getUnreadMsgCount() > 0) {
                             isShowMessageTip = true;
                             break;
                         } else {
