@@ -19,8 +19,17 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+-keepclasseswithmembernames class * { # 保持native方法不被混淆
+    native <methods>;
+}
+-keepclassmembers enum * {
+    public static **[] values();
+    public static ** valueOf(java.lang.String);
+}
+-keep class * implements Android.os.Parcelable { # 保持Parcelable不被混淆
+    public static final Android.os.Parcelable$Creator *;
+}
 -keep class tv.danmaku.ijk.media.player.** { *; }
 -keep class tv.danmaku.ijk.media.player.IjkMediaPlayer{ *; }
 -keep class tv.danmaku.ijk.media.player.ffmpeg.FFmpegApi{ *; }
--keep class com.tym.shortvideo.** { *; }
--keep interface  com.tym.shortvideo.** { *; }
+

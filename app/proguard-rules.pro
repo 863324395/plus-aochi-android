@@ -148,6 +148,12 @@ public static final int *;
 ################baseadapter-recyclerview###############
 -keep class com.zhy.adapter.recyclerview.** { *; }
 -keep interface  com.zhy.adapter.recyclerview.** { *; }
+
+################short-video###############
+-keep class tv.danmaku.ijk.media.player.** { *; }
+-keep class tv.danmaku.ijk.media.player.IjkMediaPlayer{ *; }
+-keep class tv.danmaku.ijk.media.player.ffmpeg.FFmpegApi{ *; }
+
 ################support###############
 -keep class android.support.** { *; }
 -keep interface android.support.** { *; }
@@ -418,6 +424,8 @@ public static java.lang.String TABLENAME;
 #---------------------------------3.与js互相调用的类------------------------
 
 -keep class com.zhiyicx.baseproject.base.TSWebFragment{ *; }
+## markdown 编辑器的js交互 ##
+-keep class com.zhiyi.richtexteditorlib.base.* {*;}
 
 #-------------------------------------------------------------------------
 
