@@ -54,6 +54,12 @@ public class PublishPostFragment extends MarkdownFragment<PostDraftBean, Publish
     }
 
     @Override
+    public void onAfterInitialLoad(boolean ready) {
+        super.onAfterInitialLoad(ready);
+        setDefalutContentPlaceHolder(getString(R.string.post_editor_default_content));
+    }
+
+    @Override
     protected void restoreImageData() {
         if (mDraftBean != null) {
             if (mDraftBean.getInsertedImages() != null) {

@@ -128,8 +128,6 @@ var RE = {
 		_self.initLimit();
 		_self.bind();
 		_self.focus();
-
-		return this;
         console.log("init:::" + document.documentElement.outerHTML);
 	},
 
@@ -224,11 +222,11 @@ var RE = {
         return content;
     },
 
-    changeTitlePlaceholder: function changeTitlePlaceholder(name){
+    changeTitlePlaceholder: function changeTitlePlaceholder(value){
         this.cache.title.setAttribute("title-placeholder", value);
     },
 
-    changeContentPlaceholder: function changeContentPlaceholder(name){
+    changeContentPlaceholder: function changeContentPlaceholder(value){
         this.cache.editor.setAttribute("editor-placeholder", value);
     },
 

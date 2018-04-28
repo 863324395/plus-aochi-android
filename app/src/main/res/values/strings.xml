@@ -144,6 +144,7 @@
 
     <!--资讯-->
     <string name="info_title">完善文章信息</string>
+    <string name="post_editor_default_content">编辑文章正文</string>
     <string name="info_title_necessary">请填写正确的标题或者内容</string>
     <string name="info_published">已发布</string>
     <string name="info_publishing">投稿中</string>

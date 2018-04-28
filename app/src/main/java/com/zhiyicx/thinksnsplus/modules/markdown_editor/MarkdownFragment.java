@@ -898,8 +898,20 @@ public class MarkdownFragment<Draft extends BaseDraftBean, P extends MarkdownCon
                 "</html>";
     }
 
-    protected void setDefaultTitle(String title){
-        mRichTextView.hideTitle();
+    /**
+     * 设置默认的标题文字
+     * @param title
+     */
+    protected void setDefalutTitlePlaceHolder(String title){
+        mRichTextView.setDefalutTitlePlaceHolder(title);
+    }
+
+    /**
+     * 设置默认的正文文字
+     * @param content
+     */
+    protected void setDefalutContentPlaceHolder(String content){
+        mRichTextView.setDefalutContentPlaceHolder(content);
     }
 
     @Override
