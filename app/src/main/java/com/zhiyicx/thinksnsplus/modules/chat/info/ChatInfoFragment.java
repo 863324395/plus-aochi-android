@@ -545,22 +545,7 @@ public class ChatInfoFragment extends TSFragment<ChatInfoContract.Presenter> imp
                     .with(getActivity())
                     .item2ClickListener(() -> {
                         EMConversation conversation = EMClient.getInstance().chatManager().getConversation(mChatId);
-                        EMMessage lastMsg = conversation.getLastMessage();
-
-                        // 给这个会话插入一条自定义的消息 文本类型的
-                        EMMessage welcomeMsg = EMMessage.createReceiveMessage(EMMessage.Type.TXT);
-                        welcomeMsg.setMsgId(lastMsg.getMsgId());
-                        // 消息体
-                        EMTextMessageBody textBody = new EMTextMessageBody("");
-                        welcomeMsg.addBody(textBody);
-                        // 来自 用户名
-                        welcomeMsg.setFrom(lastMsg.getFrom());
-                        // 当前时间
-                        welcomeMsg.setMsgTime(lastMsg.getMsgTime());
-
                         conversation.clearAllMessages();
-
-                        conversation.insertMessage(welcomeMsg);
                         if (mPresenter != null && mPresenter.checkImhelper(mChatId)) {
                             TSImHelperUtils.saveDeletedHistoryMessageHelper(
                                     getContext().getApplicationContext()
