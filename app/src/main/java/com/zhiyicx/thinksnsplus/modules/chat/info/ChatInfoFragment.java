@@ -13,7 +13,10 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.hyphenate.chat.EMClient;
+import com.hyphenate.chat.EMConversation;
 import com.hyphenate.chat.EMGroup;
+import com.hyphenate.chat.EMMessage;
+import com.hyphenate.chat.EMTextMessageBody;
 import com.hyphenate.easeui.EaseConstant;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.impl.photoselector.DaggerPhotoSelectorImplComponent;
@@ -528,7 +531,23 @@ public class ChatInfoFragment extends TSFragment<ChatInfoContract.Presenter> imp
                     .backgroundAlpha(CustomPopupWindow.POPUPWINDOW_ALPHA)
                     .with(getActivity())
                     .item2ClickListener(() -> {
-                        EMClient.getInstance().chatManager().getConversation(mChatId).clearAllMessages();
+                        EMConversation conversation = EMClient.getInstance().chatManager().getConversation(mChatId);
+                        EMMessage lastMsg = conversation.getLastMessage();
+
+                        // 给这个会话插入一条自定义的消息 文本类型的
+                        EMMessage welcomeMsg = EMMessage.createReceiveMessage(EMMessage.Type.TXT);
+                        welcomeMsg.setMsgId(lastMsg.getMsgId());
+                        // 消息体
+                        EMTextMessageBody textBody = new EMTextMessageBody("");
+                        welcomeMsg.addBody(textBody);
+                        // 来自 用户名
+                        welcomeMsg.setFrom(lastMsg.getFrom());
+                        // 当前时间
+                        welcomeMsg.setMsgTime(lastMsg.getMsgTime());
+
+                        conversation.clearAllMessages();
+
+                        conversation.insertMessage(welcomeMsg);
                         if (mPresenter != null && mPresenter.checkImhelper(mChatId)) {
                             TSImHelperUtils.saveDeletedHistoryMessageHelper(
                                     getContext().getApplicationContext()
