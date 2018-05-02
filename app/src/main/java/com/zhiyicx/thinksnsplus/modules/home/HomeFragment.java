@@ -69,6 +69,7 @@ import static com.zhiyicx.thinksnsplus.modules.home.HomeActivity.BUNDLE_JPUSH_ME
  */
 public class HomeFragment extends TSFragment<HomeContract.Presenter> implements DynamicFragment.OnCommentClickListener, HomeContract.View,
         PhotoSelectorImpl.IPhotoBackListener {
+    private static final int BOTTOM_MENU_SHOW_DELAY_TIME = 100;
     /**
      * 页数
      */
@@ -322,7 +323,7 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
     public void onButtonMenuShow(boolean isShow) {
         if (isShow) {
             //
-            Observable.timer(100, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread
+            Observable.timer(BOTTOM_MENU_SHOW_DELAY_TIME, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread
                     ()).map(aLong -> {
                 if (mLlBottomContainer != null) {
                     mLlBottomContainer.setVisibility(View.VISIBLE);
@@ -387,9 +388,8 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
         // 设置 IM 监听
         mPresenter.initIM();
         RxView.globalLayouts(mActivity.getWindow().getDecorView())
-                .subscribe(new Action1<Void>() {
-                    @Override
-                    public void call(Void aVoid) {
+                .subscribe(aVoid -> {
+                    if (mActivity != null) {
                         boolean isKeyboardShown = isKeyboardShown(mActivity.getWindow().getDecorView());
                         if (isFirst == isKeyboardShown) {
                             return;

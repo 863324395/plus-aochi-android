@@ -125,7 +125,6 @@ public class GalleryFragment extends TSFragment {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-
             }
 
             /**

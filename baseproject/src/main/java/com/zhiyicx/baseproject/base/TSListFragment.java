@@ -896,11 +896,6 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
      * 没有更多数据了的提示
      */
     protected void setLoadMorNodataTipText(String text) {
-        if (TextUtils.isEmpty(text)) {
-            mTvNoMoredataText.setVisibility(View.GONE);
-        } else {
-            mTvNoMoredataText.setVisibility(View.VISIBLE);
-            mTvNoMoredataText.setText(text);
-        }
+        mTvNoMoredataText.setText(text);
     }
 }
