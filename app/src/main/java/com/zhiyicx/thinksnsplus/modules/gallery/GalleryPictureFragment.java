@@ -36,8 +36,6 @@ import com.bumptech.glide.request.target.GlideDrawableImageViewTarget;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.target.Target;
 import com.jakewharton.rxbinding.view.RxView;
-import com.trycatch.mysnackbar.Prompt;
-import com.trycatch.mysnackbar.TSnackbar;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.config.ImageZipConfig;
 import com.zhiyicx.baseproject.config.PathConfig;
@@ -71,11 +69,11 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.OnClick;
 import rx.Observable;
+import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
-import static com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListBaseItem.DEFALT_IMAGE_HEIGHT;
 
 
 /**
@@ -154,16 +152,38 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
 
     @Override
     protected void initData() {
-        DaggerGalleryComponent
-                .builder()
-                .appComponent(AppApplication.AppComponentHolder.getAppComponent())
-                .galleryPresenterModule(new GalleryPresenterModule(this))
-                .build()
-                .inject(this);
         boolean firstOpenPage = getArguments().getBoolean("firstOpenPage");
         if (firstOpenPage) {
-            preLoadData();
+            ((AnimationDrawable) mPbProgressImage.getDrawable()).start();
         }
+        Observable.create(subscriber -> {
+            DaggerGalleryComponent
+                    .builder()
+                    .appComponent(AppApplication.AppComponentHolder.getAppComponent())
+                    .galleryPresenterModule(new GalleryPresenterModule(GalleryPictureFragment.this))
+                    .build()
+                    .inject(GalleryPictureFragment.this);
+            subscriber.onCompleted();
+        })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<Object>() {
+                    @Override
+                    public void onCompleted() {
+                        if (firstOpenPage) {
+                            preLoadData();
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onNext(Object o) {
+                    }
+                });
     }
 
     /**
@@ -235,7 +255,6 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
         }
         // 显示图片
         loadImage(mImageBean, rect);
-        ((AnimationDrawable) mPbProgressImage.getDrawable()).start();
         mIsLoaded = true;
         // 兼容查看长图不完整
         mFlImageContaienr.addOnLayoutChangeListener((v, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom) -> {
@@ -800,6 +819,9 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
     }
 
     private void initCenterPopWindow(int resId) {
+        if (mPresenter == null) {
+            return;
+        }
         if (mPayPopWindow != null) {
             mPayPopWindow.show();
             return;

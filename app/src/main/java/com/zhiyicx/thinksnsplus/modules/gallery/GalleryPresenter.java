@@ -30,7 +30,6 @@ import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragm
  */
 public class GalleryPresenter extends AppBasePresenter<GalleryConstract.View> implements GalleryConstract.Presenter {
 
-
     @Inject
     DynamicDetailBeanV2GreenDaoImpl mDynamicDetailBeanV2GreenDao;
 
@@ -59,7 +58,7 @@ public class GalleryPresenter extends AppBasePresenter<GalleryConstract.View> im
                 .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R
                         .string.ts_pay_check_handle_doing)))
                 .flatMap(o -> mCommentRepository.paykNote(note))
-                .flatMap(stringBaseJsonV2 -> Observable.just(stringBaseJsonV2))
+                .flatMap(Observable::just)
                 .subscribe(new BaseSubscribeForV2<BaseJsonV2<String>>() {
                     @Override
                     protected void onSuccess(BaseJsonV2 data) {
