@@ -50,14 +50,17 @@ public class EditGroupNameFragment extends TSFragment<EditGroupNameContract.Pres
 
     @Override
     protected void initData() {
-        mOldName = getArguments().getString(GROUP_ORIGINAL_NAME);
-        mEditInput.setHint(mOldName);
         mEditInput.setFilters(new InputFilter[]{RegexUtils.getEmojiFilter(),
                 new InputFilter.LengthFilter(GROUP_NAME_MAX_LENGTH)});
+        mOldName = getArguments().getString(GROUP_ORIGINAL_NAME);
+        if (!TextUtils.isEmpty(mOldName)) {
+            mEditInput.setText(mOldName);
+            mEditInput.setSelection(mEditInput.getText().length());
+        }
         RxTextView.textChanges(mEditInput)
                 .compose(this.bindToLifecycle())
                 .subscribe(charSequence -> {
-                    mNewName = charSequence.toString();
+                    mNewName = charSequence.toString().trim();
                     checkButtonClickable();
                 });
     }

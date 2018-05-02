@@ -18,6 +18,7 @@
         android:layout_marginTop="@dimen/spacing_normal"
         android:background="@drawable/shape_bg_radus_deepgrey"
         android:paddingBottom="@dimen/spacing_tiny"
+        android:paddingTop="@dimen/spacing_tiny"
         android:paddingLeft="@dimen/spacing_normal"
         android:paddingRight="@dimen/spacing_normal"
         android:textColor="@color/white"

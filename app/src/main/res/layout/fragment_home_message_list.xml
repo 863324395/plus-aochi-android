@@ -19,7 +19,7 @@
             android:imeOptions="actionSearch"
             android:drawableLeft="@mipmap/search_icon_search"
             android:textColorHint="@color/normal_for_assist_text"
-            android:textColor="@color/normal_for_assist_text"
+            android:textColor="@color/important_for_content"
             android:layout_marginTop="@dimen/spacing_normal"
             android:layout_marginBottom="@dimen/spacing_normal"
             android:layout_marginLeft="@dimen/spacing_mid"
