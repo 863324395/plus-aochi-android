@@ -11,13 +11,11 @@ import com.hyphenate.chat.EMMessage;
 import com.hyphenate.chat.EMTextMessageBody;
 import com.hyphenate.easeui.bean.ChatUserInfoBean;
 import com.hyphenate.easeui.bean.ChatVerifiedBean;
-import com.zhiyicx.baseproject.base.SystemConfigBean;
 import com.zhiyicx.baseproject.em.manager.eventbus.TSEMMultipleMessagesEvent;
 import com.zhiyicx.baseproject.em.manager.eventbus.TSEMRefreshEvent;
 import com.zhiyicx.baseproject.em.manager.util.TSEMConstants;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.utils.log.LogUtils;
-import com.zhiyicx.rxerrorhandler.functions.RetryWithDelay;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
@@ -43,11 +41,7 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Func1;
 import rx.schedulers.Schedulers;
-
-import static com.zhiyicx.thinksnsplus.data.source.repository.MessageRepository.MAX_RETRY_COUNTS;
-import static com.zhiyicx.thinksnsplus.data.source.repository.MessageRepository.RETRY_DELAY_TIME;
 
 /**
  * @author Catherine
@@ -419,9 +413,15 @@ public class MessageConversationPresenter extends AppBasePresenter<MessageConver
                         } else {
                             // 居然不存在 exm？？？
                             // 那还能怎么办呢，当然新来一条的，不过这种情况目前没有遇到过的样子呢(*╹▽╹*)
+                            // 之前在这里也许重复创建了会话 ，fix by tym on 2018-5-2 20:24:06
+                            EMConversation.EMConversationType type = EMConversation.EMConversationType.Chat;
+                            if (emMessage.getChatType() == EMMessage.ChatType.Chat) {
+                                type = EMConversation.EMConversationType.Chat;
+                            } else if (emMessage.getChatType() == EMMessage.ChatType.GroupChat) {
+                                type = EMConversation.EMConversationType.GroupChat;
+                            }
                             EMConversation conversation =
-                                    EMClient.getInstance().chatManager().getConversation(emMessage.getFrom(), EMConversation.EMConversationType
-                                            .Chat, true);
+                                    EMClient.getInstance().chatManager().getConversation(emMessage.getFrom(), type, true);
                             conversation.insertMessage(emMessage);
                             MessageItemBeanV2 itemBeanV2 = new MessageItemBeanV2();
                             itemBeanV2.setConversation(conversation);
