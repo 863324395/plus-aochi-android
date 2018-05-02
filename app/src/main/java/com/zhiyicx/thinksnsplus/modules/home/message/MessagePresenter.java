@@ -25,7 +25,9 @@ import com.zhiyicx.thinksnsplus.data.beans.MessageItemBean;
 import com.zhiyicx.thinksnsplus.data.beans.MessageItemBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.UnReadNotificaitonBean;
 import com.zhiyicx.thinksnsplus.data.beans.UnreadCountBean;
+import com.zhiyicx.thinksnsplus.data.beans.UserFollowerCountBean;
 import com.zhiyicx.thinksnsplus.data.source.repository.MessageRepository;
+import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
 import com.zhiyicx.thinksnsplus.modules.chat.call.TSEMHyphenate;
 import com.zhiyicx.thinksnsplus.modules.home.HomeActivity;
 import com.zhiyicx.thinksnsplus.modules.home.message.container.MessageContainerFragment;
@@ -44,6 +46,7 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 /**
@@ -59,6 +62,9 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.View> imp
 
     @Inject
     MessageRepository mMessageRepository;
+
+    @Inject
+    UserInfoRepository mUserInfoRepository;
 
     /**
      * 系统消息
@@ -373,27 +379,44 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.View> imp
 
         mUnreadNotiSub = mMessageRepository.getUnreadNotificationData()
                 .observeOn(Schedulers.io())
+                .flatMap(new Func1<UnReadNotificaitonBean, Observable<UnReadNotificaitonBean>>() {
+                    @Override
+                    public Observable<UnReadNotificaitonBean> call(UnReadNotificaitonBean unReadNotificaitonBean) {
+
+
+                        return mUserInfoRepository.getUserAppendFollowerCount()
+                                .map(new Func1<UserFollowerCountBean, UnReadNotificaitonBean>() {
+                                    @Override
+                                    public UnReadNotificaitonBean call(UserFollowerCountBean userFollowerCountBean) {
+                                        if (userFollowerCountBean != null && userFollowerCountBean.getUser() != null) {
+                                            /**
+                                             * 设置未读数
+                                             */
+                                            mItemBeanComment.setUnReadMessageNums(userFollowerCountBean.getUser().getCommented());
+                                            mItemBeanDigg.setUnReadMessageNums(userFollowerCountBean.getUser().getLiked());
+                                            mItemBeanSystemMessage.setUnReadMessageNums(userFollowerCountBean.getUser().getSystem());
+                                            EventBus.getDefault().post(userFollowerCountBean, EventBusTagConfig.EVENT_IM_SET_MINE_FANS_TIP_VISABLE);
+
+
+                                            int pinnedNums = 0;
+                                            pinnedNums = userFollowerCountBean.getUser().getFeedCommentPinned()
+                                                    + userFollowerCountBean.getUser().getNewsCommentPinned()
+                                                    + userFollowerCountBean.getUser().getGroupJoinPinned()
+                                                    + userFollowerCountBean.getUser().getPostCommentPinned()
+                                                    + userFollowerCountBean.getUser().getPostPinned()
+                                            ;
+                                            mItemBeanReview.setUnReadMessageNums(pinnedNums);
+
+                                        }
+                                        return unReadNotificaitonBean;
+                                    }
+                                });
+                    }
+                })
                 .map(data -> {
                     mUnReadNotificaitonBean = data;
                     if (data.getCounts() == null) {
                         return false;
-                    }
-                    /**
-                     * 设置未读数
-                     */
-                    mItemBeanComment.setUnReadMessageNums(data.getCounts().getUnread_comments_count());
-                    mItemBeanDigg.setUnReadMessageNums(data.getCounts().getUnread_likes_count());
-                    mItemBeanSystemMessage.setUnReadMessageNums(data.getCounts().getSystem());
-                    int pinnedNums = 0;
-                    if (data.getPinneds() != null) {
-                        pinnedNums = (data.getPinneds().getFeeds() == null ? 0 : data.getPinneds().getFeeds().getCount())
-                                + (data.getPinneds().getNews() == null ? 0 : data.getPinneds().getNews().getCount())
-                                + (data.getPinneds().getGroupPosts() == null ? 0 : data.getPinneds().getGroupPosts().getCount())
-                                + data.getCounts().getUnread_group_join_count()
-                                + (data.getPinneds().getGroupComments() == null ? 0 : data.getPinneds().getGroupComments().getCount());
-                        mItemBeanReview.setUnReadMessageNums(pinnedNums);
-                    } else {
-                        mItemBeanReview.setUnReadMessageNums(0);
                     }
 
                     /**
@@ -427,7 +450,11 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.View> imp
                      */
                     String commentTip = getItemTipStr(data.getComments(), MAX_USER_NUMS_COMMENT);
                     if (!TextUtils.isEmpty(commentTip)) {
-                        commentTip += mContext.getString(R.string.comment_me);
+                        if (data.getComments() != null && data.getComments().size() > MAX_USER_NUMS_COMMENT) {
+                            commentTip += mContext.getString(R.string.comment_me_more);
+                        }else {
+                            commentTip += mContext.getString(R.string.comment_me);
+                        }
                     } else {
                         commentTip = mContext.getString(R.string.has_no_body)
                                 + mContext.getString(R.string.comment_me);
@@ -437,7 +464,11 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.View> imp
 
                     String diggTip = getItemTipStr(data.getLikes(), MAX_USER_NUMS_DIGG);
                     if (!TextUtils.isEmpty(diggTip)) {
-                        diggTip += mContext.getString(R.string.like_me);
+                        if (data.getLikes() != null && data.getLikes().size() > MAX_USER_NUMS_DIGG) {
+                            diggTip += mContext.getString(R.string.like_me_more);
+                        }else {
+                            diggTip += mContext.getString(R.string.like_me);
+                        }
                     } else {
                         diggTip = mContext.getString(R.string.has_no_body)
                                 + mContext.getString(R.string.like_me);
@@ -446,7 +477,7 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.View> imp
                             diggTip);
 
                     String reviewTip;
-                    if (data.getPinneds() != null && pinnedNums > 0) {
+                    if (mItemBeanReview.getUnReadMessageNums() > 0) {
                         reviewTip = mContext.getString(R.string.new_apply_data);
                     } else {
                         reviewTip = mContext.getString(R.string.no_apply_data);
@@ -455,14 +486,14 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.View> imp
                     }
                     mItemBeanReview.getConversation().getLast_message().setTxt(
                             reviewTip);
-                    if(data.getSystem()!=null&&data.getSystem().getData()!=null&&!TextUtils.isEmpty(data.getSystem().getData().getContent())){
+                    if (data.getSystem() != null && data.getSystem().getData() != null && !TextUtils.isEmpty(data.getSystem().getData().getContent
+                            ())) {
                         mItemBeanSystemMessage.getConversation().getLast_message().setTxt(data.getSystem().getData().getContent());
-                        mItemBeanSystemMessage.getConversation().getLast_message().setCreate_time(TimeUtils.utc2LocalLong(data.getSystem().getCreated_at()));
+                        mItemBeanSystemMessage.getConversation().getLast_message().setCreate_time(TimeUtils.utc2LocalLong(data.getSystem()
+                                .getCreated_at()));
                         mItemBeanSystemMessage.getConversation().setLast_message_time(TimeUtils.utc2LocalLong(data.getSystem().getCreated_at()));
-
                     }
                     // 更新我的消息提示
-//                    EventBus.getDefault().post(true, EventBusTagConfig.EVENT_IM_SET_MINE_FANS_TIP_VISABLE);
                     checkBottomMessageTip();
                     return true;
                 })
@@ -489,7 +520,7 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.View> imp
      * 获取用户文字显示  张三、李四评论了我
      */
     private String getItemTipStr(List<UnreadCountBean> commentsNoti, int maxNum) {
-        if(commentsNoti==null){
+        if (commentsNoti == null) {
             return null;
         }
         StringBuilder stringBuilder = new StringBuilder();

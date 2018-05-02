@@ -17,7 +17,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
-import android.util.SparseArray;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -26,6 +26,7 @@ import android.widget.ListView;
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMConversation;
 import com.hyphenate.chat.EMMessage;
+import com.hyphenate.chat.EMTextMessageBody;
 import com.hyphenate.easeui.EaseConstant;
 import com.hyphenate.easeui.bean.ChatUserInfoBean;
 import com.hyphenate.easeui.model.styles.EaseMessageListItemStyle;
@@ -42,7 +43,14 @@ import com.hyphenate.easeui.widget.presenter.EaseChatTextPresenter;
 import com.hyphenate.easeui.widget.presenter.EaseChatVideoPresenter;
 import com.hyphenate.easeui.widget.presenter.EaseChatVoicePresenter;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
 public class EaseMessageAdapter extends BaseAdapter {
 
@@ -75,7 +83,9 @@ public class EaseMessageAdapter extends BaseAdapter {
     // reference to conversation object in chatsdk
     private EMConversation conversation;
     EMMessage[] messages = null;
-    /**当前聊天的用户列表*/
+    /**
+     * 当前聊天的用户列表
+     */
 
     private String toChatUsername;
 
@@ -91,7 +101,8 @@ public class EaseMessageAdapter extends BaseAdapter {
     private ListView listView;
     private EaseMessageListItemStyle itemStyle;
 
-    public EaseMessageAdapter(Context context, String username, int chatType, ListView listView, EaseChatRow.OnTipMsgClickListener onTipMsgClickListener) {
+    public EaseMessageAdapter(Context context, String username, int chatType, ListView listView, EaseChatRow.OnTipMsgClickListener
+            onTipMsgClickListener) {
         this.context = context;
         this.listView = listView;
         toChatUsername = username;
@@ -99,23 +110,45 @@ public class EaseMessageAdapter extends BaseAdapter {
         this.conversation = EMClient.getInstance().chatManager().getConversation(username, EaseCommonUtils.getConversationType(chatType), true);
     }
 
-    /**
-     * 更新用户信息
-     */
-    public void refreshUserList(List<ChatUserInfoBean> userInfoBeans) {
-//		for (ChatUserInfoBean chatUserInfoBean : userInfoBeans){
-//			mUserInfoBeanSparseArray.put(chatUserInfoBean.getUser_id().intValue(), chatUserInfoBean);
-//		}
-    }
 
     Handler handler = new Handler() {
         private void refreshList() {
             // you should not call getAllMessages() in UI thread
             // otherwise there is problem when refreshing UI and there is new message arrive
-            java.util.List<EMMessage> var = conversation.getAllMessages();
-            messages = var.toArray(new EMMessage[var.size()]);
-            conversation.markAllMessagesAsRead();
-            notifyDataSetChanged();
+            Observable.just("")
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(Schedulers.io())
+                    .map(new Func1<String, Boolean>() {
+                        @Override
+                        public Boolean call(String s) {
+                            List<EMMessage> var = conversation.getAllMessages();
+                            List<EMMessage> data = new ArrayList<>();
+                            for (EMMessage emMessage : var) {
+                                boolean isstanceofEText = emMessage.getBody() instanceof EMTextMessageBody;
+                                boolean isNullMessage = isstanceofEText && TextUtils.isEmpty(((EMTextMessageBody) emMessage.getBody())
+                                        .getMessage());
+                                if (!isNullMessage) {
+                                    data.add(emMessage);
+                                }
+                            }
+                            messages = var.toArray(new EMMessage[var.size()]);
+                            conversation.markAllMessagesAsRead();
+                            return true;
+                        }
+                    })
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Action1<Boolean>() {
+                        @Override
+                        public void call(Boolean aBoolean) {
+                            notifyDataSetChanged();
+                        }
+                    }, new Action1<Throwable>() {
+                        @Override
+                        public void call(Throwable throwable) {
+                            throwable.printStackTrace();
+                        }
+                    });
+
         }
 
         @Override
@@ -285,7 +318,6 @@ public class EaseMessageAdapter extends BaseAdapter {
 //		ChatUserInfoBean chatUserInfoBean = mUserInfoBeanSparseArray.get(Integer.parseInt(message.getFrom()));
         ChatUserInfoBean chatUserInfoBean = new ChatUserInfoBean();
         EaseChatRowPresenter presenter = null;
-
 
 
         if (convertView == null) {

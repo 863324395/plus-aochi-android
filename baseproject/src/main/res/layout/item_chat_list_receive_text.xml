@@ -66,8 +66,8 @@
                         android:id="@+id/progress_bar"
                         android:visibility="invisible"
                         style="@style/style_loading"
-                        android:layout_width="@dimen/margin_20"
-                        android:layout_height="@dimen/margin_20"/>
+                        android:layout_width="@dimen/chat_laoding_size"
+                        android:layout_height="@dimen/chat_laoding_size"/>
             </FrameLayout>
 
             <!--消息已送达，已读等回执-->

@@ -13,7 +13,10 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.hyphenate.chat.EMClient;
+import com.hyphenate.chat.EMConversation;
 import com.hyphenate.chat.EMGroup;
+import com.hyphenate.chat.EMMessage;
+import com.hyphenate.chat.EMTextMessageBody;
 import com.hyphenate.easeui.EaseConstant;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.impl.photoselector.DaggerPhotoSelectorImplComponent;
@@ -417,6 +420,16 @@ public class ChatInfoFragment extends TSFragment<ChatInfoContract.Presenter> imp
     }
 
     @Override
+    protected boolean setUseCenterLoading() {
+        return true;
+    }
+
+    @Override
+    protected boolean setUseCenterLoadingAnimation() {
+        return super.setUseCenterLoadingAnimation();
+    }
+
+    @Override
     public ChatGroupBean getGroupBean() {
         return mChatGroupBean;
     }
@@ -425,6 +438,9 @@ public class ChatInfoFragment extends TSFragment<ChatInfoContract.Presenter> imp
     public void isShowEmptyView(boolean isShow, boolean isSuccess) {
         mLlContainer.setVisibility(isShow ? View.GONE : View.VISIBLE);
         mEmptyView.setErrorType(isShow ? EmptyView.STATE_NETWORK_LOADING : EmptyView.STATE_HIDE_LAYOUT);
+        if (!isShow) {
+            closeLoadingView();
+        }
         if (!isSuccess) {
             mEmptyView.setErrorType(EmptyView.STATE_NETWORK_ERROR);
         }
@@ -528,7 +544,8 @@ public class ChatInfoFragment extends TSFragment<ChatInfoContract.Presenter> imp
                     .backgroundAlpha(CustomPopupWindow.POPUPWINDOW_ALPHA)
                     .with(getActivity())
                     .item2ClickListener(() -> {
-                        EMClient.getInstance().chatManager().getConversation(mChatId).clearAllMessages();
+                        EMConversation conversation = EMClient.getInstance().chatManager().getConversation(mChatId);
+                        conversation.clearAllMessages();
                         if (mPresenter != null && mPresenter.checkImhelper(mChatId)) {
                             TSImHelperUtils.saveDeletedHistoryMessageHelper(
                                     getContext().getApplicationContext()

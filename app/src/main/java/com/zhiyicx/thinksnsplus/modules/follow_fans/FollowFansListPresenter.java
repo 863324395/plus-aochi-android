@@ -145,7 +145,7 @@ public class FollowFansListPresenter extends AppBasePresenter<
                 .subscribe(new BaseSubscribeForV2<Object>() {
                     @Override
                     protected void onSuccess(Object data) {
-                        EventBus.getDefault().post(0, EventBusTagConfig.EVENT_IM_SET_MINE_FANS_TIP_VISABLE);
+                        EventBus.getDefault().post(new UserFollowerCountBean(), EventBusTagConfig.EVENT_IM_SET_MINE_FANS_TIP_VISABLE);
                     }
                 });
     }

@@ -22,7 +22,9 @@
     <string name="like">赞</string>
     <string name="liked">收到的赞</string>
     <string name="like_me">赞了我</string>
+    <string name="like_me_more">等人赞了我</string>
     <string name="comment_me">评论了我</string>
+    <string name="comment_me_more">等人评论了我</string>
     <string name="recieved_review">提交评论置顶</string>
     <string name="comment_success">评论成功</string>
     <string name="comment_digg_much_hint">等人</string>
@@ -860,7 +862,7 @@
     <string name="comment_format_news">%s 评论了你的文章</string>
     <string name="comment_format_questions">%s 评论了你的问题</string>
     <string name="comment_format_questions_answer">%s 评论了你的回答</string>
-    <string name="new_apply_data">您有未审核的信息请及时处理</string>
+    <string name="new_apply_data">未审核的信息请及时处理</string>
     <string name="no_apply_data">暂无未审核的申请</string>
     <string-array name="personal_dynamic_typpe">
         <item>全部动态</item>
