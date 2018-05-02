@@ -1,4 +1,4 @@
-﻿2018-4-13 11:38:00
+﻿2018-5-2 13:53:18 update by Jliuer@aliyun.com
 # 项目中的短视频一条龙文档
 
 ##  1.概述
@@ -7,27 +7,23 @@
 
 
 
-## 2.定义
-- 地址 com.zhiyicx.thinksnsplus.modules.markdown_editor
-- 继承`MarkdownFragment`,诸多方法详见注释，可参考 PublishPostFragment。
-- 一定要看注释！！！
-
+## 2.关键包结构说明 （module video）
+- filter 滤镜相关
+- mediacodec 视频时长剪辑
+- recodrender 视频录制预览界面绘制与渲染，
+- recordcore 视频录制核心功能，包含编解码与合并
 
 ## 3.使用
-- 重点方法如下，具体使用请见 MarkdownFragment 中注释
-```java
-    initBundleDataWhenOnCreate(); 在这里获取 getArguments();
-    editorPreLoad(); 编辑器初始化加载
-    onAfterInitialLoad(boolean ready); ready 编辑器加载完成与否，
-    preHandlePublish();
-    handlePublish();
-    onActivityResultForChooseCircle();
-    onVisibleChange();
-    openDraft();
-    loadDraft();
-    getDraftData();
-    onMarkdownWordResult();
-    canSaveDraft();
-```
-ps:
-editor.getResultWords(boolean isPublish) 会触发编辑器内容回调 onMarkdownWordResult();
+- 视频录制参考 com.zhiyicx.thinksnsplus.modules.shortvideo.record.RecordFragment
+- 视频预览参考 com.zhiyicx.thinksnsplus.modules.shortvideo.preview.PreviewFragment
+- 视频时长剪辑参考 com.zhiyicx.thinksnsplus.modules.shortvideo.clipe.TrimmerFragment
+- 视频滤镜与滤镜组参考 见视频录制与视频预览
+
+## 4.关键点补充
+- com.tym.shortvideo.utils.CameraUtils 这里配置录制分辨率
+- com.tym.shortvideo.filter.helper.type.TextureRotationUtils 这里配置录制顶点坐标与纹理坐标
+- com.tym.shortvideo.filter.helper.type.TextureRotationUtils 这里配置录制顶点坐标与纹理坐标
+- com.tym.shortvideo.filter.base.gpuvideo.GLDefaultFilterGroup 这里配置录制滤镜组
+
+ps:视频录制所参考的开源项目 https://github.com/CainKernel/CainCamera
+由于触犯某些隐私条款，被原作者删除了
