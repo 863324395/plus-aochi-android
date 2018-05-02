@@ -71,9 +71,12 @@ import butterknife.OnClick;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
+import static com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListBaseItem.DEFALT_IMAGE_HEIGHT;
+import static com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListBaseItem.DEFALT_IMAGE_WITH;
 
 
 /**
@@ -362,18 +365,25 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
      * 保存图片
      */
     public void saveImage() {
+        int with = (int) mImageBean.getWidth();
+        int height = (int) mImageBean.getHeight();
+        if (with * height == 0) {
+            with = DEFALT_IMAGE_WITH;
+            height = DEFALT_IMAGE_HEIGHT;
+        }
         // 通过GLide获取bitmap,有缓存读缓存
-        GlideUrl glideUrl = ImageUtils.imagePathConvertV2(mImageBean.getStorage_id(), (int) mImageBean.getWidth(), (int) mImageBean.getHeight()
+        GlideUrl glideUrl = ImageUtils.imagePathConvertV2(mImageBean.getStorage_id(), with, height
                 , ImageZipConfig.IMAGE_100_ZIP, AppApplication.getTOKEN());
-        Glide.with(getActivity())
-                .load(glideUrl)
-                .asBitmap()
-                .into(new SimpleTarget<Bitmap>() {
-                    @Override
-                    public void onResourceReady(final Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-                        getSaveBitmapResultObservable(resource, glideUrl.toStringUrl());
-                    }
-                });
+
+        Bitmap bitmap;
+
+        if (mIvPager.getVisibility() == View.VISIBLE) {
+            bitmap = ConvertUtils.drawable2Bitmap(mIvPager.getDrawable());
+        } else {
+            bitmap = ConvertUtils.drawable2Bitmap(mIvOriginPager.getDrawable());
+
+        }
+        getSaveBitmapResultObservable(bitmap, glideUrl.toStringUrl());
     }
 
     /**
@@ -668,12 +678,7 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
 
         Observable.just(1)// 不能empty否则map无法进行转换
                 .subscribeOn(Schedulers.io())
-                .doOnSubscribe(() -> {// .subscribeOn(Schedulers.io())  Animators may only be run on Looper threads
-//                    mSavingTSnackbar = TSnackbar.make(mSnackRootView, , TSnackbar.LENGTH_INDEFINITE)
-//                            .setPromptThemBackground(Prompt.SUCCESS)
-//                            .addIconProgressLoading(0, true, false)
-//                            .setMinHeight(0, getResources().getDimensionPixelSize(R.dimen.toolbar_and_statusbar_height));
-//                    mSavingTSnackbar.show();
+                .doOnSubscribe(() -> {
                     showSnackLoadingMessage(getString(R.string.save_pic_ing));
                 })
                 .map(integer -> {
@@ -701,7 +706,7 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                             }
                     }
                     showSnackSuccessMessage(result);
-                });
+                }, Throwable::printStackTrace);
     }
 
     @OnClick({R.id.tv_to_pay, R.id.tv_to_vip, R.id.iv_gif_control})
