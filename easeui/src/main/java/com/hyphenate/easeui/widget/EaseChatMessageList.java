@@ -7,6 +7,7 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 
@@ -71,22 +72,14 @@ public class EaseChatMessageList extends RelativeLayout{
         messageAdapter = new EaseMessageAdapter(context, toChatUsername, chatType, listView, onTipMsgClickListener);
         messageAdapter.setItemStyle(itemStyle);
         messageAdapter.setCustomChatRowProvider(customChatRowProvider);
-        // set message adapter
+        // set message adapter AbsListView
         listView.setAdapter(messageAdapter);
         View view=new View(getContext());
-        view.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,getResources().getDimensionPixelOffset(R.dimen.chat_bottom_footer_height)));
+        view.setLayoutParams(new AbsListView.LayoutParams(AbsListView.LayoutParams.MATCH_PARENT,getResources().getDimensionPixelOffset(R.dimen.chat_bottom_footer_height)));
         listView.addFooterView(view);
         refreshSelectLast();
     }
 
-    /**
-     * 更新用户信息
-     */
-    public void refreshUserList(List<ChatUserInfoBean> userInfoBeans){
-//        mUserInfoBeans = userInfoBeans;
-//        messageAdapter.refreshUserList(mUserInfoBeans);
-    }
-    
     protected void parseStyle(Context context, AttributeSet attrs) {
         TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.EaseChatMessageList);
         EaseMessageListItemStyle.Builder builder = new EaseMessageListItemStyle.Builder();

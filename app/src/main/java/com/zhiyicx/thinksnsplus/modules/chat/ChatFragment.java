@@ -685,7 +685,7 @@ public class ChatFragment extends TSEaseChatFragment<ChatContract.Presenter>
 
     @Override
     public void onDestroyView() {
-        super.onDestroyView();
         dismissPop(mActionPopupWindow);
+        super.onDestroyView();
     }
 }

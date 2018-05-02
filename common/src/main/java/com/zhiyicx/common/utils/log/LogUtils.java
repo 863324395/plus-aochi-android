@@ -22,7 +22,7 @@ import com.orhanobut.logger.PrettyFormatStrategy;
 
 public class LogUtils {
     private static final String APPLICATION_TAG = "LogUtils";
-    private static final int LOGGER_METHODCOUNT = 5;
+    private static final int LOGGER_METHODCOUNT = 8;
     private static final int LOGGER_METHODOFFSET = 2;
 
     public static void init() {
