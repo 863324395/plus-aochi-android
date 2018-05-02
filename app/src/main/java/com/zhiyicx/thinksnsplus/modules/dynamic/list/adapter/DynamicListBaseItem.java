@@ -25,6 +25,7 @@ import com.zhiyicx.common.utils.DrawableProvider;
 import com.zhiyicx.common.utils.SkinUtils;
 import com.zhiyicx.common.utils.TextViewUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
+import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
@@ -177,11 +178,11 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
             try {
                 ImageUtils.loadCircleUserHeadPic(dynamicBean.getUserInfoBean(), holder.getView(R.id.iv_headpic));
                 setUserInfoClick(holder.getView(R.id.iv_headpic), dynamicBean);
-
             } catch (Exception ignored) {
-
             }
             holder.setText(R.id.tv_name, dynamicBean.getUserInfoBean().getName());
+            setUserInfoClick(holder.getView(R.id.tv_name), dynamicBean);
+
             holder.setText(R.id.tv_time, dynamicBean.getFriendlyTime());
             holder.setVisible(R.id.tv_title, View.GONE);
             TextView contentView = holder.getView(R.id.tv_content);
@@ -199,20 +200,19 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
             }
 
             String content = dynamicBean.getFriendlyContent();
-            contentView.setVisibility(TextUtils.isEmpty(content) ? View.GONE : View.VISIBLE);
+            boolean hasContent = !TextUtils.isEmpty(content);
+            contentView.setVisibility(hasContent ? View.VISIBLE : View.GONE);
             try {
                 View iamgeContainer = holder.getView(R.id.nrv_image);
                 RelativeLayout.LayoutParams iamgeParam = (RelativeLayout.LayoutParams) iamgeContainer.getLayoutParams();
-                int marginTop = TextUtils.isEmpty(content) ? mContext.getResources().getDimensionPixelOffset(R.dimen.spacing_mid_small) : 0;
+                int marginTop = hasContent ? 0 : mContext.getResources().getDimensionPixelOffset(R.dimen.spacing_mid_small);
                 int margingLeft = mContext.getResources().getDimensionPixelOffset(R.dimen.spacing_normal);
                 int margingRight = mContext.getResources().getDimensionPixelOffset(R.dimen.dynamic_list_image_marginright);
                 iamgeParam.setMargins(margingLeft, marginTop, margingRight, 0);
             } catch (Exception ignore) {
-
             }
 
-            if (!TextUtils.isEmpty(content)) {
-
+            if (hasContent) {
                 boolean canLookWords = dynamicBean.getPaid_node() == null || dynamicBean
                         .getPaid_node().isPaid();
 
@@ -250,8 +250,8 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
                 contentView.setVisibility(View.VISIBLE);
             }
 
-            setUserInfoClick(holder.getView(R.id.tv_name), dynamicBean);
             contentView.setOnClickListener(v -> holder.getConvertView().performClick());
+
             holder.setVisible(R.id.dlmv_menu, showToolMenu ? View.VISIBLE : View.GONE);
             // 分割线跟随工具栏显示隐藏
             holder.setVisible(R.id.v_line, showToolMenu ? View.VISIBLE : View.GONE);
@@ -300,32 +300,28 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
                         });
             }
 
-            if (showCommentList) {
-                holder.setVisible(R.id.dcv_comment, View.VISIBLE);
-
-                // 设置评论内容
-                DynamicListCommentView comment = holder.getView(R.id.dcv_comment);
-                if (dynamicBean.getComments() == null || dynamicBean.getComments().isEmpty()) {
-                    comment.setVisibility(View.GONE);
-                } else {
-                    comment.setVisibility(View.VISIBLE);
-                }
-
+            // 设置评论内容
+            DynamicListCommentView comment = holder.getView(R.id.dcv_comment);
+            if (!showCommentList || dynamicBean.getComments() == null || dynamicBean.getComments().isEmpty()) {
+                comment.setVisibility(View.GONE);
+            } else {
+                comment.setVisibility(View.VISIBLE);
                 comment.setData(dynamicBean);
                 comment.setOnCommentClickListener(mOnCommentClickListener);
                 comment.setOnMoreCommentClickListener(mOnMoreCommentClickListener);
                 comment.setOnCommentStateClickListener(mOnCommentStateClickListener);
-
-            } else {
-                holder.setVisible(R.id.dcv_comment, View.GONE);
-
             }
-
         } catch (NullPointerException e) {
             e.printStackTrace();
         }
     }
 
+    /**
+     * 用户信息被点击
+     *
+     * @param view
+     * @param dynamicBean
+     */
     private void setUserInfoClick(View view, final DynamicDetailBeanV2 dynamicBean) {
         RxView.clicks(view)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
@@ -465,6 +461,11 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
         return null;
     }
 
+    /**
+     * 工具栏第几个是否显示
+     *
+     * @return
+     */
     protected int getVisibleOne() {
         return View.VISIBLE;
     }
@@ -481,6 +482,13 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
         return View.VISIBLE;
     }
 
+    /**
+     * 网页链接
+     *
+     * @param dynamicDetailBeanV2
+     * @param content
+     * @return
+     */
     protected List<Link> setLiknks(final DynamicDetailBeanV2 dynamicDetailBeanV2, String content) {
         List<Link> links = new ArrayList<>();
         if (content.contains(Link.DEFAULT_NET_SITE)) {
@@ -493,13 +501,13 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
                             .build())
                     .setTextColorOfHighlightedLink(ContextCompat.getColor(mContext, R.color
                             .general_for_hint))
-                    .setHighlightAlpha(.8f)
+                    .setHighlightAlpha(CustomPopupWindow.POPUPWINDOW_ALPHA)
                     .setOnClickListener((clickedText, linkMetadata) -> {
                         LogUtils.d(clickedText);
                         Intent intent = new Intent();
                         intent.setAction("android.intent.action.VIEW");
-                        Uri content_url = Uri.parse(clickedText);
-                        intent.setData(content_url);
+                        Uri contentUrl = Uri.parse(clickedText);
+                        intent.setData(contentUrl);
                         mContext.startActivity(intent);
                     })
                     .setOnLongClickListener((clickedText, linkMetadata) -> {

@@ -288,8 +288,7 @@ public class TextViewUtils {
         Paint paint = new Paint();
         paint.setTextSize(textSize);
         paint.getTextBounds(text, 0, text.length(), bounds);
-        int width = (int) Math.ceil(bounds.width());
-        return width;
+        return (int) Math.ceil(bounds.width());
     }
 
     public interface OnSpanTextClickListener {
