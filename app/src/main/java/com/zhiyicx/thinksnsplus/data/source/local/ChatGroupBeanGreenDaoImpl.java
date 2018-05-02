@@ -96,7 +96,7 @@ public class ChatGroupBeanGreenDaoImpl extends CommonCacheImpl<ChatGroupBean> {
         if (chatGroupBean == null) {
             return AppApplication.getContext().getResources().getString(R.string.default_delete_user_name);
         }
-        return chatGroupBean.getName() ;// + "(" + chatGroupBean.getAffiliations_count() + ")";
+        return chatGroupBean.getName();// + "(" + chatGroupBean.getAffiliations_count() + ")";
     }
 
     public boolean updateChatGroupMemberCount(String id, int count, boolean add) {
@@ -138,9 +138,12 @@ public class ChatGroupBeanGreenDaoImpl extends CommonCacheImpl<ChatGroupBean> {
 
     public boolean updateGroupInfo(String id, String groupName, String groupIntro, int isPublic,
                                    int maxUser, boolean isMemberOnly, int isAllowInvites, String newOwner) {
+        boolean isOldDataChanged;
         ChatGroupBean chatGroupBean = getChatGroupBeanById(id);
-        if (chatGroupBean == null) {
-            return false;
+        isOldDataChanged = chatGroupBean == null;
+        if (isOldDataChanged) {
+            chatGroupBean = new ChatGroupBean();
+            chatGroupBean.setId(id);
         }
         chatGroupBean.setName(groupName);
         try {
@@ -153,7 +156,7 @@ public class ChatGroupBeanGreenDaoImpl extends CommonCacheImpl<ChatGroupBean> {
         chatGroupBean.setMaxusers(maxUser);
         chatGroupBean.setMembersonly(isMemberOnly);
         saveSingleData(chatGroupBean);
-        return true;
+        return isOldDataChanged;
     }
 
     public List<ChatGroupBean> getChatGroupBeanByIds(List<String> ids) {
