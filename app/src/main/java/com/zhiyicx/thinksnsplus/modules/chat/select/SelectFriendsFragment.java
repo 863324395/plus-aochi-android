@@ -134,7 +134,7 @@ public class SelectFriendsFragment extends TSListFragment<SelectFriendsContract.
         mRvSelectResult.setLayoutManager(selectManager);
         mSelectedFriendsAdapter = new SelectedFriendsAdapter(getContext(), mSelectedList);
         mRvSelectResult.setAdapter(mSelectedFriendsAdapter);
-        mRvSelectResult.addItemDecoration(new LinearDecoration(0, 0, 5, 5));
+        mRvSelectResult.addItemDecoration(new LinearDecoration(0, 0, getResources().getDimensionPixelOffset(R.dimen.spacing_small), 0));
 
         checkData();
     }
@@ -225,6 +225,9 @@ public class SelectFriendsFragment extends TSListFragment<SelectFriendsContract.
             mToolbarRight.setTextColor(getColor(R.color.normal_for_disable_button_text));
         }
         mSelectedFriendsAdapter.notifyDataSetChanged();
+        if (!mSelectedList.isEmpty()) {
+            mRvSelectResult.smoothScrollToPosition(mSelectedFriendsAdapter.getItemCount() - 1);
+        }
     }
 
     @Override
