@@ -286,13 +286,8 @@ public class MessageConversationFragment extends TSListFragment<MessageConversat
                 if (mPresenter == null) {
                     return;
                 }
-                if (TextUtils.isEmpty(s.toString().trim())) {
-                    // 展示原数据
-                    mPresenter.requestNetData(0L, false);
-                } else {
-                    // 显示搜索结果
-                    mPresenter.searchList(s.toString().trim());
-                }
+                // 显示搜索结果
+                mPresenter.searchList(s.toString().trim());
             }
         });
     }

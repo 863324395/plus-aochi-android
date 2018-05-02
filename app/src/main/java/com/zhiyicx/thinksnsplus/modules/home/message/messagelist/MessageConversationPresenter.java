@@ -150,6 +150,11 @@ public class MessageConversationPresenter extends AppBasePresenter<MessageConver
         if (mSearchSub != null && !mSearchSub.isUnsubscribed()) {
             mSearchSub.unsubscribe();
         }
+        if (TextUtils.isEmpty(key)) {
+            mRootView.onNetResponseSuccess(mCopyConversationList, false);
+            return;
+        }
+
         mSearchSub = Observable.just(key)
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())

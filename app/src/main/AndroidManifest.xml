@@ -175,6 +175,7 @@
             android:name=".modules.gallery.GalleryActivity"
             android:hardwareAccelerated="false"
             android:screenOrientation="portrait"
+            android:launchMode="singleTop"
             android:theme="@style/GalleryTheme">
         </activity>
         <activity
