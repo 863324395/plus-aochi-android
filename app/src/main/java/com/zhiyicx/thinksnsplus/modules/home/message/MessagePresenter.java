@@ -452,8 +452,9 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.View> imp
                     if (!TextUtils.isEmpty(commentTip)) {
                         if (data.getComments() != null && data.getComments().size() > MAX_USER_NUMS_COMMENT) {
                             commentTip += mContext.getString(R.string.comment_me_more);
+                        }else {
+                            commentTip += mContext.getString(R.string.comment_me);
                         }
-                        commentTip += mContext.getString(R.string.comment_me);
                     } else {
                         commentTip = mContext.getString(R.string.has_no_body)
                                 + mContext.getString(R.string.comment_me);
@@ -465,8 +466,9 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.View> imp
                     if (!TextUtils.isEmpty(diggTip)) {
                         if (data.getLikes() != null && data.getLikes().size() > MAX_USER_NUMS_DIGG) {
                             diggTip += mContext.getString(R.string.like_me_more);
+                        }else {
+                            diggTip += mContext.getString(R.string.like_me);
                         }
-                        diggTip += mContext.getString(R.string.like_me);
                     } else {
                         diggTip = mContext.getString(R.string.has_no_body)
                                 + mContext.getString(R.string.like_me);
