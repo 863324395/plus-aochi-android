@@ -595,12 +595,7 @@ public class ChatInfoFragment extends TSFragment<ChatInfoContract.Presenter> imp
             // + "(" + mChatGroupBean.getAffiliations_count() + ")";
             mTvGroupName.setText(groupName);
             // 群头像
-            Glide.with(getContext())
-                    .load(mChatGroupBean.getGroup_face() + "")
-                    .override(25, 25)
-                    .error(R.mipmap.ico_ts_assistant)
-                    .placeholder(R.mipmap.ico_ts_assistant)
-                    .into(mIvGroupPortrait);
+            ImageUtils.loadCircleImageDefault(mIvGroupPortrait, mChatGroupBean.getGroup_face(), R.mipmap.ico_ts_assistant, R.mipmap.ico_ts_assistant);
 
             if (mChatMemberAdapter != null && mChatGroupBean != null) {
                 mChatMemberAdapter.setOwnerId(mChatGroupBean.getOwner());

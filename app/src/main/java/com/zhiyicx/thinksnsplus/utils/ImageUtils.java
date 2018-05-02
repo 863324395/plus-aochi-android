@@ -17,6 +17,7 @@ import com.bumptech.glide.load.model.LazyHeaders;
 import com.bumptech.glide.signature.StringSignature;
 import com.hyphenate.easeui.bean.ChatUserInfoBean;
 import com.zhiyicx.baseproject.config.ApiConfig;
+import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleBorderTransform;
 import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleTransform;
 import com.zhiyicx.baseproject.widget.UserAvatarView;
@@ -597,6 +598,32 @@ public class ImageUtils {
                 .error(R.drawable.shape_default_error_image)
                 .into(imageView);
 
+    }
+
+    /**
+     * 加载圆图
+     *
+     * @param imageView
+     * @param url
+     */
+    public static void loadCircleImageDefault(ImageView imageView, String url) {
+        loadCircleImageDefault(imageView, url, R.drawable.shape_default_error_image, R.drawable.shape_default_image);
+    }
+
+    /**
+     * 加载圆图
+     *
+     * @param imageView
+     * @param url
+     */
+    public static void loadCircleImageDefault(ImageView imageView, String url, int errorResId, int placeResId) {
+
+        Glide.with(imageView.getContext())
+                .load(url)
+                .placeholder(placeResId)
+                .error(errorResId)
+                .bitmapTransform(new GlideCircleTransform(imageView.getContext()))
+                .into(imageView);
     }
 
     /**
