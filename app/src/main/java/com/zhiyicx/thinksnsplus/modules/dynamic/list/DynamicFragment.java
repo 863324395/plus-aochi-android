@@ -456,6 +456,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
      */
     @Override
     public void onImageClick(ViewHolder holder, DynamicDetailBeanV2 dynamicBean, int position) {
+        long start=System.currentTimeMillis();
         if (!TouristConfig.DYNAMIC_BIG_PHOTO_CAN_LOOK && mPresenter.handleTouristControl()) {
             return;
         }
@@ -506,6 +507,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
         }
 
         GalleryActivity.startToGallery(mActivity, position, imageBeanList, animationRectBeanArrayList);
+        System.out.println("----spend time = " +( System.currentTimeMillis() - start));
     }
 
     @Override
@@ -1063,10 +1065,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
     private void initImageCenterPopWindow(final int dynamicPosition, final int imagePosition,
                                           long amout,
                                           final int note, int strRes, final boolean isImage) {
-//        if (mPayImagePopWindow != null) {
-//            mPayImagePopWindow.show();
-//            return;
-//        }
+
         mPayImagePopWindow = PayPopWindow.builder()
                 .with(getActivity())
                 .isWrap(true)

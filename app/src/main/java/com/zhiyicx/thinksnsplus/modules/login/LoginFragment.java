@@ -149,13 +149,13 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
         RxTextView.textChanges(mEtLoginPhone)
                 .compose(this.bindToLifecycle())
                 .subscribe(charSequence -> {
-                    mIsPhoneEdited = !TextUtils.isEmpty(charSequence.toString());
+                    mIsPhoneEdited = !TextUtils.isEmpty(charSequence.toString().trim());
                     setConfirmEnable();
                 });
         RxTextView.textChanges(mEtCompleteInput)
                 .compose(this.bindToLifecycle())
                 .subscribe(charSequence -> {
-                    mIsPhoneEdited = !TextUtils.isEmpty(charSequence.toString());
+                    mIsPhoneEdited = !TextUtils.isEmpty(charSequence.toString().trim());
                     setConfirmEnable();
                     mIvClear.setVisibility(TextUtils.isEmpty(charSequence.toString()) ? View.GONE : View.VISIBLE);
                 });
@@ -163,7 +163,7 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
         RxTextView.textChanges(mEtLoginPassword)
                 .compose(this.bindToLifecycle())
                 .subscribe(charSequence -> {
-                    mIsPasswordEdited = !TextUtils.isEmpty(charSequence.toString());
+                    mIsPasswordEdited = !TextUtils.isEmpty(charSequence.toString().trim());
                     setConfirmEnable();
                 });
         // 点击登录按钮
@@ -226,6 +226,10 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
                 });
     }
 
+    /**
+     * 三方登录
+     * @param type 三方标识
+     */
     public void thridLogin(SHARE_MEDIA type) {
         UMShareAPI mShareAPI = UMShareAPI.get(getActivity());
         mShareAPI.getPlatformInfo(getActivity(), type, authListener);
