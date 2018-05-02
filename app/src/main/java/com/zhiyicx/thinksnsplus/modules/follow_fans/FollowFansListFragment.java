@@ -91,7 +91,7 @@ public class FollowFansListFragment extends TSListFragment<FollowFansListContrac
      * 清空新粉丝数量
      */
     private void clearNewFansCount() {
-        if (mIsVisibleToUser && pageType == FANS_FRAGMENT_PAGE && mPresenter != null) {
+        if (mIsVisibleToUser && pageType == FANS_FRAGMENT_PAGE && mPresenter != null && AppApplication.getMyUserIdWithdefault() == userId) {
             //清除粉丝未读数
             mPresenter.cleanNewFans();
         }

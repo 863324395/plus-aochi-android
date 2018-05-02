@@ -54,6 +54,7 @@ import com.hyphenate.easeui.widget.chatrow.EaseCustomChatRowProvider;
 import com.hyphenate.exceptions.HyphenateException;
 import com.hyphenate.util.EMLog;
 import com.hyphenate.util.PathUtil;
+import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.em.manager.util.TSEMConstants;
 import com.zhiyicx.baseproject.em.manager.util.TSEMessageUtils;
 import com.zhiyicx.common.mvp.i.IBasePresenter;
@@ -99,7 +100,7 @@ public class TSEaseChatFragment<P extends IBasePresenter> extends TSEaseBaseFrag
 
     protected boolean isloading;
     protected boolean haveMoreData = true;
-    protected int pagesize = 20;
+    protected int pagesize = TSListFragment.DEFAULT_PAGE_DB_SIZE;
     protected GroupListener groupListener;
     protected ChatRoomListener chatRoomListener;
     protected EMMessage contextMenuMessage;
@@ -363,7 +364,7 @@ public class TSEaseChatFragment<P extends IBasePresenter> extends TSEaseBaseFrag
             } else {
                 loadMoreRoamingMessages();
             }
-        }, 600));
+        }, 500));
     }
 
     private void loadMoreLocalMessage() {
@@ -458,6 +459,9 @@ public class TSEaseChatFragment<P extends IBasePresenter> extends TSEaseBaseFrag
     @Override
     public void onResume() {
         super.onResume();
+        if (messageList.getChildCount() > 0) {
+            resumeRefreshMessageList();
+        }
         toChatUsername = fragmentArgs.getString(EaseConstant.EXTRA_USER_ID);
         resumeRefreshMessageList();
         EaseUI.getInstance().pushActivity(getActivity());
@@ -472,7 +476,7 @@ public class TSEaseChatFragment<P extends IBasePresenter> extends TSEaseBaseFrag
 
     protected void resumeRefreshMessageList() {
         if (isMessageListInited) {
-            messageList.refresh();
+            messageList.refreshSelectLast();
         }
     }
 
