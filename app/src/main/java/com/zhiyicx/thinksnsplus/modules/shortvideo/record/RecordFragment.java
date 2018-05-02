@@ -834,6 +834,7 @@ public class RecordFragment extends TSFragment implements SurfaceHolder.Callback
         if (VideoListManager.getInstance().getSubVideoList() == null
                 || VideoListManager.getInstance().getSubVideoList().isEmpty()) {
             mActivity.finish();
+            return;
         }
         if (mWarnPopupWindow == null) {
             mWarnPopupWindow = ActionPopupWindow.builder()
