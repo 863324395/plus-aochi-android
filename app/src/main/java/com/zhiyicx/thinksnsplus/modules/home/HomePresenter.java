@@ -27,6 +27,7 @@ import com.zhiyicx.thinksnsplus.data.source.local.ChatGroupBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.WalletConfigBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.BaseMessageRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
+import com.zhiyicx.thinksnsplus.modules.chat.ChatFragment;
 import com.zhiyicx.thinksnsplus.modules.chat.call.TSEMHyphenate;
 import com.zhiyicx.thinksnsplus.utils.NotificationUtil;
 
@@ -221,72 +222,76 @@ class HomePresenter extends AppBasePresenter<HomeContract.View> implements HomeC
     @Subscriber(mode = ThreadMode.MAIN)
     public void onMessageReceived(TSEMMultipleMessagesEvent messagesEvent) {
         List<EMMessage> list = messagesEvent.getMessages();
+        if (list == null || list.isEmpty()) {
+            return;
+        }
         setMessageTipVisable(true);
         // 应用在后台，则推送通知
-        if (!BackgroundUtil.getAppIsForegroundStatus()) {
-            // 手动创建聊天item，从数据库取出用户信息
-            List<ChatItemBean> chatItemBeans = new ArrayList<>();
-            for (EMMessage message : list) {
-                ChatItemBean chatItemBean = new ChatItemBean();
-                chatItemBean.setMessage(message);
+        // 手动创建聊天item，从数据库取出用户信息
+        List<ChatItemBean> chatItemBeans = new ArrayList<>();
+        for (EMMessage message : list) {
+            ChatItemBean chatItemBean = new ChatItemBean();
+            chatItemBean.setMessage(message);
 
-                boolean isUserJoin, isUserExit;
+            boolean isUserJoin, isUserExit;
 
-                isUserJoin = TSEMConstants.TS_ATTR_JOIN.equals(message.ext().get("type"));
-                isUserExit = TSEMConstants.TS_ATTR_EIXT.equals(message.ext().get("type"));
+            isUserJoin = TSEMConstants.TS_ATTR_JOIN.equals(message.ext().get("type"));
+            isUserExit = TSEMConstants.TS_ATTR_EIXT.equals(message.ext().get("type"));
 
-                if (isUserExit || isUserJoin) {
-                    // 只有群聊中才会有 成员 加入or退出的消息
-                    updateChatGroupMemberCount(message.conversationId(), 1, isUserJoin);
-                }
+            if (isUserExit || isUserJoin) {
+                // 只有群聊中才会有 成员 加入or退出的消息
+                updateChatGroupMemberCount(message.conversationId(), 1, isUserJoin);
+            }
 
-                // admin  消息 ，我们后台的发，显示的时候不要名字，只要内容，所以 new UserInfoBean("");搞了个名字是""的用户信息。
-                if ("admin".equals(message.getFrom())) {
+            // admin  消息 ，我们后台的发，显示的时候不要名字，只要内容，所以 new UserInfoBean("");搞了个名字是""的用户信息。
+            if ("admin".equals(message.getFrom())) {
+                chatItemBean.setUserInfo(new UserInfoBean(""));
+            } else {
+                try {
+                    chatItemBean.setUserInfo(mUserInfoBeanGreenDao.getSingleDataFromCache
+                            (Long.parseLong(message.getFrom())));
+                } catch (NumberFormatException ignore) {
                     chatItemBean.setUserInfo(new UserInfoBean(""));
-                } else {
-                    try {
-                        chatItemBean.setUserInfo(mUserInfoBeanGreenDao.getSingleDataFromCache
-                                (Long.parseLong(message.getFrom())));
-                    } catch (NumberFormatException ignore) {
-                        chatItemBean.setUserInfo(new UserInfoBean(""));
-                    }
                 }
-                chatItemBeans.add(chatItemBean);
             }
-            // 遍历返回的信息，如果有用户信息为空的 证明数据库中没有此用户，从服务器取用户信息
-            for (ChatItemBean chatItemBean : chatItemBeans) {
-                Observable.just(chatItemBean)
-                        .flatMap(chatItemBean1 -> {
-                            if (chatItemBean1.getUserInfo() == null) {
-                                List<ChatItemBean> chatItemBeanList = new ArrayList<>();
-                                chatItemBeanList.add(chatItemBean1);
-                                return mBaseMessageRepository.completeUserInfo(chatItemBeanList)
-                                        .map(list1 -> list1.get(0));
-                            }
-                            return Observable.just(chatItemBean1);
-                        })
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(chatItemBean12 -> {
-                            JpushMessageBean jpushMessageBean = new JpushMessageBean();
-                            jpushMessageBean.setType(JpushMessageTypeConfig.JPUSH_MESSAGE_TYPE_IM);
-                            jpushMessageBean.setExtras(chatItemBean12.getMessage().getChatType().name());
-                            String content = chatItemBean12.getMessage().getBody().toString();
-                            // 目前只有单聊，别的还没定
-                            if (chatItemBean12.getMessage().getBody() instanceof EMTextMessageBody) {
-                                content = ((EMTextMessageBody) chatItemBean12.getMessage().getBody()).getMessage();
-                            }
+            if (message.conversationId().equals(ChatFragment.toChatUsername)) {
+                continue;
+            }
+            chatItemBeans.add(chatItemBean);
+        }
+        // 遍历返回的信息，如果有用户信息为空的 证明数据库中没有此用户，从服务器取用户信息
 
-                            if (TextUtils.isEmpty(chatItemBean12.getUserInfo().getName())) {
-                                content = chatItemBean12.getUserInfo().getName() + content;
-                            } else {
-                                content = chatItemBean12.getUserInfo().getName() + ":" + content;
-                            }
-                            jpushMessageBean.setMessage(content);
-                            jpushMessageBean.setNofity(false);
-                            NotificationUtil.showChatNotifyMessage(mContext, jpushMessageBean, chatItemBean12.getMessage().conversationId());
-                        });
-            }
+        for (ChatItemBean chatItemBean : chatItemBeans) {
+            Observable.just(chatItemBean)
+                    .flatMap(chatItemBean1 -> {
+                        if (chatItemBean1.getUserInfo() == null) {
+                            List<ChatItemBean> chatItemBeanList = new ArrayList<>();
+                            chatItemBeanList.add(chatItemBean1);
+                            return mBaseMessageRepository.completeUserInfo(chatItemBeanList)
+                                    .map(list1 -> list1.get(0));
+                        }
+                        return Observable.just(chatItemBean1);
+                    })
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(chatItemBean12 -> {
+                        JpushMessageBean jpushMessageBean = new JpushMessageBean();
+                        jpushMessageBean.setType(JpushMessageTypeConfig.JPUSH_MESSAGE_TYPE_IM);
+                        jpushMessageBean.setExtras(chatItemBean12.getMessage().getChatType().name());
+                        String content = chatItemBean12.getMessage().getBody().toString();
+                        // 目前只有单聊，别的还没定
+                        if (chatItemBean12.getMessage().getBody() instanceof EMTextMessageBody) {
+                            content = ((EMTextMessageBody) chatItemBean12.getMessage().getBody()).getMessage();
+                        }
+
+                        if (TextUtils.isEmpty(chatItemBean12.getUserInfo().getName())) {
+                            content = chatItemBean12.getUserInfo().getName() + content;
+                        } else {
+                            content = chatItemBean12.getUserInfo().getName() + ":" + content;
+                        }
+                        jpushMessageBean.setMessage(content);
+                        NotificationUtil.showChatNotifyMessageExceptCurrentConversation(mContext, jpushMessageBean, chatItemBean12.getMessage().conversationId());
+                    });
         }
     }
 

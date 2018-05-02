@@ -70,6 +70,11 @@ public class NotificationUtil {
         }
     }
 
+    public static void showChatNotifyMessageExceptCurrentConversation(Context context, JpushMessageBean jpushMessageBean, String chatId) {
+        NotificationUtil notiUtil = new NotificationUtil(context);
+        notiUtil.postChatNotification(jpushMessageBean, chatId);
+    }
+
     /**
      * 普通的Notification
      */
@@ -99,7 +104,6 @@ public class NotificationUtil {
      */
     public void postChatNotification(JpushMessageBean jpushMessageBean, String chatId) {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
-
         if (TextUtils.isEmpty(chatId)) {
 
         } else {
@@ -134,7 +138,13 @@ public class NotificationUtil {
         builder.setNumber(1);
         Notification notification = builder.build();
         notification.flags = Notification.FLAG_AUTO_CANCEL;
-        notificationManager.notify((int) System.currentTimeMillis(), notification);
+        try {
+            int id = Integer.parseInt(chatId);
+            notificationManager.notify(id, notification);
+        } catch (Exception e) {
+            LogUtils.e("chat id is invalid");
+        }
+
     }
 
     /**

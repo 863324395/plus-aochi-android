@@ -41,22 +41,22 @@ public abstract class TSApplication extends BaseApplication {
     public void onCreate() {
         super.onCreate();
         /// 处理app崩溃异常
-        CrashClient.init(new CrashClient.CrashListener() {
-            @SuppressLint("MyToastHelper")
-            @Override
-            public void uncaughtException(Thread t, Throwable e) {
-                e.printStackTrace();
-                Toast.makeText(BaseApplication.getContext(), R.string.app_crash_tip, Toast.LENGTH_SHORT).show();
-                rx.Observable.timer(DEFAULT_TOAST_SHORT_DISPLAY_TIME, TimeUnit.MILLISECONDS)
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(new Action1<Long>() {
-                            @Override
-                            public void call(Long aLong) {
-                                ActivityHandler.getInstance().AppExit();
-                            }
-                        });
-            }
-        });
+//        CrashClient.init(new CrashClient.CrashListener() {
+//            @SuppressLint("MyToastHelper")
+//            @Override
+//            public void uncaughtException(Thread t, Throwable e) {
+//                e.printStackTrace();
+//                Toast.makeText(BaseApplication.getContext(), R.string.app_crash_tip, Toast.LENGTH_SHORT).show();
+//                rx.Observable.timer(DEFAULT_TOAST_SHORT_DISPLAY_TIME, TimeUnit.MILLISECONDS)
+//                        .observeOn(AndroidSchedulers.mainThread())
+//                        .subscribe(new Action1<Long>() {
+//                            @Override
+//                            public void call(Long aLong) {
+//                                ActivityHandler.getInstance().AppExit();
+//                            }
+//                        });
+//            }
+//        });
         // 友盟
         UMShareConfig config = new UMShareConfig();
         config.isNeedAuthOnGetUserInfo(true);

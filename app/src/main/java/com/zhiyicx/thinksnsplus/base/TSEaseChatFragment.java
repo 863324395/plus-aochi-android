@@ -83,7 +83,7 @@ public class TSEaseChatFragment<P extends IBasePresenter> extends TSEaseBaseFrag
      */
     protected Bundle fragmentArgs;
     protected int chatType;
-    protected String toChatUsername;
+    public static String toChatUsername;
     protected EaseChatMessageList messageList;
     protected EaseChatInputMenu inputMenu;
 
@@ -138,6 +138,12 @@ public class TSEaseChatFragment<P extends IBasePresenter> extends TSEaseBaseFrag
         chatType = fragmentArgs.getInt(EaseConstant.EXTRA_CHAT_TYPE, EaseConstant.CHATTYPE_SINGLE);
         // userId you are chat with or group id
         toChatUsername = fragmentArgs.getString(EaseConstant.EXTRA_USER_ID);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        toChatUsername = null;
     }
 
     @Override
@@ -452,6 +458,7 @@ public class TSEaseChatFragment<P extends IBasePresenter> extends TSEaseBaseFrag
     @Override
     public void onResume() {
         super.onResume();
+        toChatUsername = fragmentArgs.getString(EaseConstant.EXTRA_USER_ID);
         resumeRefreshMessageList();
         EaseUI.getInstance().pushActivity(getActivity());
         // register the event listener when enter the foreground
