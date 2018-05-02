@@ -21,7 +21,7 @@
         android:paddingLeft="@dimen/spacing_normal"
         android:paddingRight="@dimen/spacing_normal"
         android:textColor="@color/white"
-        android:textSize="@dimen/size_content_assist"
+        android:textSize="@dimen/size_note_assist"
         tools:text="一分钟前"/>
 
     <include
