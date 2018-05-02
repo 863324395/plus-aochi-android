@@ -20,6 +20,7 @@ import android.view.ViewGroup;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.baseproject.widget.indicator_expand.ScaleCircleNavigator;
+import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.AnimationRectBean;
@@ -263,5 +264,11 @@ public class GalleryFragment extends TSFragment {
 
     public void setIndiactorVisible(boolean visible) {
         mMiIndicator.setVisibility(visible ? View.VISIBLE : View.GONE);
+    }
+
+    @Override
+    public void onDestroy() {
+        DeviceUtils.gc();
+        super.onDestroy();
     }
 }
