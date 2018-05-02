@@ -3,29 +3,18 @@ package com.zhiyicx.thinksnsplus.modules.shortvideo.adapter;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.net.Uri;
-import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.view.View;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.DecodeFormat;
-import com.bumptech.glide.load.ResourceDecoder;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.load.engine.Resource;
-import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool;
-import com.bumptech.glide.load.model.ImageVideoWrapper;
-import com.bumptech.glide.load.resource.bitmap.FileDescriptorBitmapDecoder;
-import com.bumptech.glide.load.resource.bitmap.VideoBitmapDecoder;
-import com.bumptech.glide.load.resource.gifbitmap.GifBitmapWrapper;
+import com.bumptech.glide.signature.StringSignature;
 import com.tym.shortvideo.media.VideoInfo;
 import com.tym.shortvideo.utils.DateUtil;
-import com.tym.shortvideo.utils.TrimVideoUtil;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
-import java.io.IOException;
 import java.util.List;
 
 /**
@@ -62,9 +51,10 @@ public class VideoGridViewAdapter extends CommonAdapter<VideoInfo> {
 
             Glide.with(mContext)
                     .load(video.getPath())
+                    .signature(new StringSignature(System.currentTimeMillis() + ""))
                     .placeholder(R.drawable.shape_default_image)
                     .error(R.drawable.shape_default_image)
-                    .diskCacheStrategy(DiskCacheStrategy.RESULT)
+                    .diskCacheStrategy(DiskCacheStrategy.NONE)
                     .into(holder.getImageViwe(R.id.iv_cover));
         }
 
