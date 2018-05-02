@@ -102,7 +102,13 @@ public class CollectListFragment extends TSViewPagerFragment<CollectListPresente
             @Override
             public void onPageSelected(int position) {
                 // 停掉当前播放
-                ZhiyiVideoView.releaseAllVideos();
+                if (JZVideoPlayerManager.getCurrentJzvd() != null) {
+                    if (JZVideoPlayerManager.getCurrentJzvd().currentState == ZhiyiVideoView.CURRENT_STATE_PREPARING
+                            || JZVideoPlayerManager.getCurrentJzvd().currentState == ZhiyiVideoView.CURRENT_STATE_PREPARING_CHANGING_URL) {
+                        ZhiyiVideoView.releaseAllVideos();
+                    }
+                }
+                ZhiyiVideoView.goOnPlayOnPause();
             }
 
             @Override

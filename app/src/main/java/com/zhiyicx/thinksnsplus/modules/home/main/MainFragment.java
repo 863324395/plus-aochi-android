@@ -119,7 +119,15 @@ public class MainFragment extends TSViewPagerFragment implements DynamicFragment
             @Override
             public void onPageSelected(int position) {
                 // 停掉当前播放
-                ZhiyiVideoView.releaseAllVideos();
+                if (JZVideoPlayerManager.getCurrentJzvd() != null) {
+                    if (JZVideoPlayerManager.getCurrentJzvd().currentState == ZhiyiVideoView.CURRENT_STATE_PREPARING
+                            || JZVideoPlayerManager.getCurrentJzvd().currentState == ZhiyiVideoView.CURRENT_STATE_PREPARING_CHANGING_URL) {
+                        ZhiyiVideoView.releaseAllVideos();
+                    }
+                }
+                ZhiyiVideoView.goOnPlayOnPause();
+
+
                 // 游客处理
                 if (!TouristConfig.FOLLOW_CAN_LOOK && position == mVpFragment.getChildCount() - 1 && !mIAuthRepository.isLogin()) {
                     showLoginPop();
