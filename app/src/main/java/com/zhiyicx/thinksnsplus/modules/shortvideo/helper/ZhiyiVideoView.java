@@ -491,6 +491,12 @@ public class ZhiyiVideoView extends JZVideoPlayerStandard {
 
     }
 
+    @Override
+    public void setBufferProgress(int bufferProgress) {
+        super.setBufferProgress(bufferProgress);
+        LogUtils.d("setBufferProgress::"+bufferProgress);
+    }
+
     protected ShareInterface mShareInterface;
 
     public void setShareInterface(ShareInterface shareInterface) {

@@ -38,6 +38,7 @@
     <string name="remake">重新录制</string>
 
     <string name="click_to_replay">重试</string>
+    <string name="loading_faild">网络状况不佳，视频加载失败</string>
     <string name="direct_upload">快速上传(支持5分钟以内)</string>
     <string name="edite_upload">编辑后上传</string>
     <string name="video_duration_limit">视频长不足3秒,无法上传</string>
