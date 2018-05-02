@@ -2,9 +2,11 @@ package com.zhiyicx.thinksnsplus.modules.collect;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewPager;
 import android.view.View;
 
 import com.zhiyicx.baseproject.base.TSViewPagerFragment;
+import com.zhiyicx.baseproject.config.TouristConfig;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.source.repository.BaseCircleRepository;
 import com.zhiyicx.thinksnsplus.modules.collect.album.CollectAlbumListFragment;
@@ -12,10 +14,17 @@ import com.zhiyicx.thinksnsplus.modules.collect.dynamic.CollectDynamicListFragme
 import com.zhiyicx.thinksnsplus.modules.collect.group_posts.CollectCirclePostListFragment;
 import com.zhiyicx.thinksnsplus.modules.collect.info.CollectInformationListFragment;
 import com.zhiyicx.thinksnsplus.modules.collect.qa.CollectAnswerListFragment;
+import com.zhiyicx.thinksnsplus.modules.dynamic.list.DynamicContract;
+import com.zhiyicx.thinksnsplus.modules.home.HomeActivity;
 import com.zhiyicx.thinksnsplus.modules.q_a.mine.container.MyAnswerContainerFragment;
+import com.zhiyicx.thinksnsplus.modules.shortvideo.helper.ZhiyiVideoView;
 
 import java.util.Arrays;
 import java.util.List;
+
+import cn.jzvd.JZUtils;
+import cn.jzvd.JZVideoPlayer;
+import cn.jzvd.JZVideoPlayerManager;
 
 /**
  * @author LiuChao
@@ -84,7 +93,22 @@ public class CollectListFragment extends TSViewPagerFragment<CollectListPresente
 
     @Override
     protected void initData() {
+        mVpFragment.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                // 停掉当前播放
+                ZhiyiVideoView.releaseAllVideos();
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+            }
+        });
     }
 
     public static CollectListFragment newInstance(Bundle bundle) {

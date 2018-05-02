@@ -67,17 +67,6 @@ public class MainFragment extends TSViewPagerFragment implements DynamicFragment
     }
 
     @Override
-    public void setUserVisibleHint(boolean isVisibleToUser) {
-        super.setUserVisibleHint(isVisibleToUser);
-        JZVideoPlayer jzVideoPlayer = JZVideoPlayerManager.getCurrentJzvd();
-        if (jzVideoPlayer != null) {
-            if (JZUtils.scanForActivity(jzVideoPlayer.getContext()) instanceof HomeActivity) {
-                ZhiyiVideoView.goOnPlayOnPause();
-            }
-        }
-    }
-
-    @Override
     protected int getBodyLayoutId() {
         return R.layout.fragment_main_viewpager;
     }
@@ -129,13 +118,13 @@ public class MainFragment extends TSViewPagerFragment implements DynamicFragment
 
             @Override
             public void onPageSelected(int position) {
+                // 停掉当前播放
+                ZhiyiVideoView.releaseAllVideos();
                 // 游客处理
                 if (!TouristConfig.FOLLOW_CAN_LOOK && position == mVpFragment.getChildCount() - 1 && !mIAuthRepository.isLogin()) {
                     showLoginPop();
                     // 转回热门
                     mVpFragment.setCurrentItem(1);
-                } else {
-                    ZhiyiVideoView.goOnPlayOnPause();
                 }
             }
 

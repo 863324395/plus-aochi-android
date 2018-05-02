@@ -2,6 +2,12 @@ package com.zhiyicx.thinksnsplus.modules.collect;
 
 import com.zhiyicx.baseproject.base.TSActivity;
 import com.zhiyicx.baseproject.base.TSListFragment;
+import com.zhiyicx.common.utils.ActivityUtils;
+import com.zhiyicx.thinksnsplus.modules.home.HomeActivity;
+
+import cn.jzvd.JZUtils;
+import cn.jzvd.JZVideoPlayer;
+import cn.jzvd.JZVideoPlayerManager;
 
 /**
  * @author LiuChao
@@ -19,6 +25,26 @@ public class CollectListActivity extends TSActivity<CollectListPresenter, Collec
     @Override
     protected void componentInject() {
         // 如果CollectListFragment需要Presenter逻辑，就创建dagger
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        JZVideoPlayer jzVideoPlayer = JZVideoPlayerManager.getCurrentJzvd();
+        if (jzVideoPlayer != null) {
+            if (JZUtils.scanForActivity(jzVideoPlayer.getContext()) instanceof HomeActivity) {
+                jzVideoPlayer.onStateNormal();
+            }
+        }
+    }
+
+
+    @Override
+    public void onBackPressed() {
+        if (JZVideoPlayer.backPress()) {
+            return;
+        }
+        ActivityUtils.goHome(this);
     }
 
 }

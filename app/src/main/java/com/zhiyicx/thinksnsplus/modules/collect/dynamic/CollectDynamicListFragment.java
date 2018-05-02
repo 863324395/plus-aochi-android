@@ -43,6 +43,7 @@ import rx.functions.Func1;
  */
 
 public class CollectDynamicListFragment extends DynamicFragment {
+
     @Override
     protected boolean showToolbar() {
         return false;
