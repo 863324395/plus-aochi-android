@@ -345,6 +345,14 @@ public class ZhiyiVideoView extends JZVideoPlayerStandard {
     }
 
     @Override
+    public void onStatePrepared() {
+        if (seekToInAdvance != 0) {
+            JZMediaManager.seekTo(seekToInAdvance);
+            seekToInAdvance = 0;
+        }
+    }
+
+    @Override
     public void onVideoSizeChanged() {
         LogUtils.i(TAG, "onVideoSizeChanged " + " [" + this.hashCode() + "] ");
         if (JZMediaManager.textureView != null) {
