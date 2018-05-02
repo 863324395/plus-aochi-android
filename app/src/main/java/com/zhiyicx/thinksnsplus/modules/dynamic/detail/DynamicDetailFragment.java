@@ -427,7 +427,7 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
         initBottomToolData(mDynamicBean);// 初始化底部工具栏数据
 //        设置动态详情列表数据
         mDynamicDetailHeader.setDynamicDetial(mDynamicBean, getArgumentsBundle().getInt
-                (DYNAMIC_VIDEO_STATE, -1),this);
+                (DYNAMIC_VIDEO_STATE, -1), this);
         updateReward();
         updateCommentCountAndDig();
         onNetResponseSuccess(mDynamicBean.getComments(), false);
@@ -839,9 +839,11 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
         super.onDestroyView();
     }
 
-    public void replaceVideoIfNeed(){
+    public void replaceVideoIfNeed() {
         if (!mDynamicDetailHeader.isListToDetail()) {
             JZVideoPlayer.releaseAllVideos();
+        } else {
+            JZVideoPlayer.goOnPlayOnPause();
         }
     }
 }
