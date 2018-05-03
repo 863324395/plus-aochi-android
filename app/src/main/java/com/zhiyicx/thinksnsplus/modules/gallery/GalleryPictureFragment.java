@@ -808,10 +808,12 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
     };
 
     @Override
-    public void onDestroy() {
+    public void onDestroyView() {
         dismissPop(mPayPopWindow);
         dismissPop(mActionPopupWindow);
-        super.onDestroy();
+        Glide.clear(mIvPager);
+        Glide.clear(mIvOriginPager);
+        super.onDestroyView();
     }
 
     private void initCenterPopWindow(int resId) {

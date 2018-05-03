@@ -461,6 +461,7 @@ public class TSEaseChatFragment<P extends IBasePresenter> extends TSEaseBaseFrag
     @Override
     public void onResume() {
         super.onResume();
+        TSEMHyphenate.getInstance().setToChatUsername(toChatUsername);
         if (messageList.getChildCount() > 0) {
             resumeRefreshMessageList();
         }
