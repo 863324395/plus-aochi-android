@@ -1,34 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v4.widget.NestedScrollView
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+    <com.zhiyicx.baseproject.widget.EmptyView
+        android:id="@+id/emptyView"
+        android:layout_width="wrap_content"
+        android:layout_gravity="center"
+        android:layout_height="wrap_content"/>
 
-        <com.zhiyicx.baseproject.widget.EmptyView
-            android:id="@+id/emptyView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+    <android.support.v4.widget.NestedScrollView
+        android:id="@+id/ll_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="invisible">
 
         <LinearLayout
-            android:id="@+id/ll_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            android:visibility="visible">
+            >
 
             <!--单聊的模块-->
             <LinearLayout
                 android:id="@+id/ll_single"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/white"
                 android:layout_marginBottom="@dimen/spacing_normal"
+                android:background="@color/white"
                 android:padding="@dimen/spacing_large">
 
                 <LinearLayout
@@ -102,11 +104,11 @@
                     <ImageView
                         android:id="@+id/iv_grop_icon_arrow"
                         android:layout_width="wrap_content"
-                        android:visibility="gone"
+                        android:layout_height="wrap_content"
 
                         android:layout_marginLeft="@dimen/spacing_normal"
-                        android:layout_height="wrap_content"
-                        android:src="@mipmap/ic_arrow_smallgrey"/>
+                        android:src="@mipmap/ic_arrow_smallgrey"
+                        android:visibility="gone"/>
                 </LinearLayout>
 
                 <View
@@ -126,21 +128,21 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/chat_set_group_name"
-                        android:paddingRight="@dimen/spacing_normal"
                         android:paddingEnd="@dimen/spacing_normal"
+                        android:paddingRight="@dimen/spacing_normal"
+                        android:text="@string/chat_set_group_name"
                         android:textColor="@color/important_for_content"
                         android:textSize="@dimen/size_content"/>
 
                     <TextView
                         android:id="@+id/tv_group_name"
                         android:layout_width="0dp"
-                        android:layout_weight="1"
                         android:layout_height="wrap_content"
+                        android:layout_weight="1"
                         android:ellipsize="end"
-                        android:singleLine="true"
-                        android:maxLines="1"
                         android:gravity="right"
+                        android:maxLines="1"
+                        android:singleLine="true"
                         android:textColor="@color/normal_for_assist_text"
                         android:textSize="@dimen/size_content_comment"
                         tools:text="xxxx"/>
@@ -148,10 +150,10 @@
                     <ImageView
                         android:id="@+id/iv_grop_name_arrow"
                         android:layout_width="wrap_content"
-                        android:layout_marginLeft="@dimen/spacing_normal"
                         android:layout_height="wrap_content"
-                        android:visibility="gone"
-                        android:src="@mipmap/ic_arrow_smallgrey"/>
+                        android:layout_marginLeft="@dimen/spacing_normal"
+                        android:src="@mipmap/ic_arrow_smallgrey"
+                        android:visibility="gone"/>
                 </LinearLayout>
 
                 <View
@@ -266,15 +268,13 @@
                 android:id="@+id/tv_delete_group"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/chat_info_header_view_width"
-                android:layout_marginTop="@dimen/spacing_normal"
                 android:layout_marginBottom="@dimen/spacing_normal"
+                android:layout_marginTop="@dimen/spacing_normal"
                 android:background="@color/white"
                 android:gravity="center"
                 android:text="@string/chat_delete_group"
                 android:textColor="@color/important_for_note"
                 android:textSize="@dimen/size_content"/>
         </LinearLayout>
-
-    </FrameLayout>
-
-</android.support.v4.widget.NestedScrollView>
+    </android.support.v4.widget.NestedScrollView>
+</FrameLayout>

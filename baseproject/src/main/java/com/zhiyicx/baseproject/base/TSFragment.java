@@ -546,6 +546,7 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
                     .iv_center_load).setVisibility(View.VISIBLE);
             ((AnimationDrawable) ((ImageView) mCenterLoadingView.findViewById(R.id
                     .iv_center_load)).getDrawable()).start();
+            mCenterLoadingView.setAlpha(1);
             mCenterLoadingView.setVisibility(View.VISIBLE);
         }
     }

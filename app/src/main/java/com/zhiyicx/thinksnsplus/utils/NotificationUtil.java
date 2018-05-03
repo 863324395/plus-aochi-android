@@ -142,7 +142,7 @@ public class NotificationUtil {
             int id = Integer.parseInt(chatId);
             notificationManager.notify(id, notification);
         } catch (Exception e) {
-            LogUtils.e("chat id is invalid");
+            LogUtils.e("chat id is invalid id:"+chatId);
         }
 
     }
