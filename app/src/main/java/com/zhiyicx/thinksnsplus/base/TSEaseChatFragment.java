@@ -60,6 +60,7 @@ import com.zhiyicx.baseproject.em.manager.util.TSEMessageUtils;
 import com.zhiyicx.common.mvp.i.IBasePresenter;
 import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
+import com.zhiyicx.thinksnsplus.modules.chat.call.TSEMHyphenate;
 import com.zhiyicx.thinksnsplus.utils.DealPhotoUtils;
 
 import java.io.File;
@@ -84,7 +85,7 @@ public class TSEaseChatFragment<P extends IBasePresenter> extends TSEaseBaseFrag
      */
     protected Bundle fragmentArgs;
     protected int chatType;
-    public static String toChatUsername;
+    public String toChatUsername;
     protected EaseChatMessageList messageList;
     protected EaseChatInputMenu inputMenu;
 
@@ -139,12 +140,13 @@ public class TSEaseChatFragment<P extends IBasePresenter> extends TSEaseBaseFrag
         chatType = fragmentArgs.getInt(EaseConstant.EXTRA_CHAT_TYPE, EaseConstant.CHATTYPE_SINGLE);
         // userId you are chat with or group id
         toChatUsername = fragmentArgs.getString(EaseConstant.EXTRA_USER_ID);
+        TSEMHyphenate.getInstance().setToChatUsername(toChatUsername);
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        toChatUsername = null;
+        TSEMHyphenate.getInstance().setToChatUsername(null);
     }
 
     @Override
@@ -462,7 +464,6 @@ public class TSEaseChatFragment<P extends IBasePresenter> extends TSEaseBaseFrag
         if (messageList.getChildCount() > 0) {
             resumeRefreshMessageList();
         }
-        toChatUsername = fragmentArgs.getString(EaseConstant.EXTRA_USER_ID);
         resumeRefreshMessageList();
         EaseUI.getInstance().pushActivity(getActivity());
         // register the event listener when enter the foreground

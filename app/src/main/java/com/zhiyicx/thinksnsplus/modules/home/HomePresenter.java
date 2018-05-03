@@ -254,7 +254,7 @@ class HomePresenter extends AppBasePresenter<HomeContract.View> implements HomeC
                     chatItemBean.setUserInfo(new UserInfoBean(""));
                 }
             }
-            if (message.conversationId().equals(ChatFragment.toChatUsername)) {
+            if (message.conversationId().equals(TSEMHyphenate.getInstance().getToChatUsername())) {
                 continue;
             }
             chatItemBeans.add(chatItemBean);

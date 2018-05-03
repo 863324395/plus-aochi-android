@@ -71,6 +71,8 @@ public class TSEMHyphenate {
      */
     private static TSEMHyphenate instance;
 
+    private String toChatUsername;
+
     /**
      * 记录sdk是否初始化
      */
@@ -1120,6 +1122,14 @@ public class TSEMHyphenate {
             count += entry.getValue().getUnreadMsgCount();
         }
         return count;
+    }
+
+    public String getToChatUsername() {
+        return toChatUsername;
+    }
+
+    public void setToChatUsername(String toChatUsername) {
+        this.toChatUsername = toChatUsername;
     }
 
     public void replease() {
