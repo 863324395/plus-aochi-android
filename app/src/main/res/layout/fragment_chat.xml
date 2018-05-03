@@ -6,10 +6,6 @@
     android:animateLayoutChanges="true"
     android:background="@color/white">
 
-    <View
-        android:id="@+id/view_diver"
-        style="@style/style_divider_horizontal_light"
-        android:layout_below="@id/title_bar"/>
 
     <RelativeLayout
         android:layout_width="match_parent"

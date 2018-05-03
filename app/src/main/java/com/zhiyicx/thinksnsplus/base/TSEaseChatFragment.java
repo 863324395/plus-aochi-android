@@ -128,11 +128,6 @@ public class TSEaseChatFragment<P extends IBasePresenter> extends TSEaseBaseFrag
     }
 
     @Override
-    protected boolean showToolbar() {
-        return super.showToolbar();
-    }
-
-    @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         fragmentArgs = getArguments();
