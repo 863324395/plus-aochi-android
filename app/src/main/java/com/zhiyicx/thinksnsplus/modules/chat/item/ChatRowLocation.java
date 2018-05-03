@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.chat.item;
 
 import android.content.Context;
+import android.graphics.Paint;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
@@ -40,6 +41,7 @@ public class ChatRowLocation extends ChatBaseRow{
     protected void onSetUpView() {
         super.onSetUpView();
         EMLocationMessageBody locBody = (EMLocationMessageBody) message.getBody();
+        System.out.println("locBody.getAddress() = " + locBody.getAddress());
         mTvLocation.setText(locBody.getAddress());
     }
 
@@ -47,4 +49,5 @@ public class ChatRowLocation extends ChatBaseRow{
     protected void onViewUpdate(EMMessage msg) {
         super.onViewUpdate(msg);
     }
+
 }
