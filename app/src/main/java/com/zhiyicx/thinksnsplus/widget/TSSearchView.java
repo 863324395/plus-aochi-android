@@ -3,6 +3,7 @@ package com.zhiyicx.thinksnsplus.widget;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.AppCompatEditText;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -152,7 +153,7 @@ public class TSSearchView extends AppCompatEditText implements View.OnKeyListene
         if (this.length() < 1) {
             drawableDel = null;
         } else {
-            drawableDel = this.getResources().getDrawable(R.mipmap.topic_icon_delete);
+            drawableDel = ContextCompat.getDrawable(getContext(), R.mipmap.login_inputbox_clean);
         }
     }
 

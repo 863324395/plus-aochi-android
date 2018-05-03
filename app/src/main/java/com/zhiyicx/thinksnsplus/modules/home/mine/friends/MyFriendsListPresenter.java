@@ -65,12 +65,15 @@ public class MyFriendsListPresenter extends AppBasePresenter<MyFriendsListContra
                     }
                 });
         addSubscrebe(subscription);
-        mUserInfoRepository.clearUserMessageCount(UserFollowerCountBean.UserBean.MESSAGE_TYPE_MUTUAL)
-                .subscribe(new BaseSubscribeForV2<Object>() {
-                    @Override
-                    protected void onSuccess(Object data) {
-                    }
-                });
+
+        if (!isLoadMore) {
+            mUserInfoRepository.clearUserMessageCount(UserFollowerCountBean.UserBean.MESSAGE_TYPE_MUTUAL)
+                    .subscribe(new BaseSubscribeForV2<Object>() {
+                        @Override
+                        protected void onSuccess(Object data) {
+                        }
+                    });
+        }
     }
 
 

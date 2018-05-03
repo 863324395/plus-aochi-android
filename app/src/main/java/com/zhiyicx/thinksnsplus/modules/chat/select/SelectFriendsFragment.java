@@ -134,7 +134,7 @@ public class SelectFriendsFragment extends TSListFragment<SelectFriendsContract.
         mRvSelectResult.setLayoutManager(selectManager);
         mSelectedFriendsAdapter = new SelectedFriendsAdapter(getContext(), mSelectedList);
         mRvSelectResult.setAdapter(mSelectedFriendsAdapter);
-        mRvSelectResult.addItemDecoration(new LinearDecoration(0, 0, 5, 5));
+        mRvSelectResult.addItemDecoration(new LinearDecoration(0, 0, getResources().getDimensionPixelOffset(R.dimen.spacing_small), 0));
 
         checkData();
     }
@@ -225,6 +225,9 @@ public class SelectFriendsFragment extends TSListFragment<SelectFriendsContract.
             mToolbarRight.setTextColor(getColor(R.color.normal_for_disable_button_text));
         }
         mSelectedFriendsAdapter.notifyDataSetChanged();
+        if (!mSelectedList.isEmpty()) {
+            mRvSelectResult.smoothScrollToPosition(mSelectedFriendsAdapter.getItemCount() - 1);
+        }
     }
 
     @Override
@@ -308,19 +311,21 @@ public class SelectFriendsFragment extends TSListFragment<SelectFriendsContract.
     public void onNetResponseSuccess(@NotNull List<UserInfoBean> data, boolean isLoadMore) {
         // 当好友没有时隐藏搜索
         mLinearLayout.setVisibility(TextUtils.isEmpty(mEditSearchFriends.getText().toString().trim()) && data.isEmpty() ? View.GONE : View.VISIBLE);
-        layzLoadEmptyView();
-        mEmptyView.setErrorImag(TextUtils.isEmpty(mEditSearchFriends.getText().toString().trim()) && data.isEmpty() ? R.mipmap.img_default_nobody : R
-                .mipmap.img_default_search);
         checkUserIsSelected(data);
         super.onNetResponseSuccess(data, isLoadMore);
-
-
+        if (!TextUtils.isEmpty(mEditSearchFriends.getText().toString().trim()) && mListDatas.isEmpty()) {
+            setEmptyViewVisiable(false);
+        }
     }
 
     @Override
     public void onCacheResponseSuccess(List<UserInfoBean> data, boolean isLoadMore) {
+        mLinearLayout.setVisibility(TextUtils.isEmpty(mEditSearchFriends.getText().toString().trim()) && data.isEmpty() ? View.GONE : View.VISIBLE);
         checkUserIsSelected(data);
         super.onCacheResponseSuccess(data, isLoadMore);
+        if (!TextUtils.isEmpty(mEditSearchFriends.getText().toString().trim()) && mListDatas.isEmpty()) {
+            setEmptyViewVisiable(false);
+        }
     }
 
     @Override

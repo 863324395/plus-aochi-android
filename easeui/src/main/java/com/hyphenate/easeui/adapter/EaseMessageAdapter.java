@@ -112,15 +112,15 @@ public class EaseMessageAdapter extends BaseAdapter {
 
 
     Handler handler = new Handler() {
-        private void refreshList() {
+        private void refreshList(boolean isLast) {
             // you should not call getAllMessages() in UI thread
             // otherwise there is problem when refreshing UI and there is new message arrive
-            Observable.just("")
+            Observable.just(isLast)
                     .subscribeOn(Schedulers.io())
                     .observeOn(Schedulers.io())
-                    .map(new Func1<String, Boolean>() {
+                    .map(new Func1<Boolean, Boolean>() {
                         @Override
-                        public Boolean call(String s) {
+                        public Boolean call(Boolean isLastRefresh) {
                             List<EMMessage> var = conversation.getAllMessages();
                             List<EMMessage> data = new ArrayList<>();
                             for (EMMessage emMessage : var) {
@@ -133,7 +133,7 @@ public class EaseMessageAdapter extends BaseAdapter {
                             }
                             messages = var.toArray(new EMMessage[var.size()]);
                             conversation.markAllMessagesAsRead();
-                            return true;
+                            return isLastRefresh;
                         }
                     })
                     .observeOn(AndroidSchedulers.mainThread())
@@ -141,6 +141,10 @@ public class EaseMessageAdapter extends BaseAdapter {
                         @Override
                         public void call(Boolean aBoolean) {
                             notifyDataSetChanged();
+                            if (aBoolean&&messages != null && messages.length > 0) {
+                                listView.setSelection(messages.length - 1);
+                            }
+
                         }
                     }, new Action1<Throwable>() {
                         @Override
@@ -154,13 +158,12 @@ public class EaseMessageAdapter extends BaseAdapter {
         @Override
         public void handleMessage(android.os.Message message) {
             switch (message.what) {
-                case HANDLER_MESSAGE_REFRESH_LIST:
-                    refreshList();
-                    break;
+
                 case HANDLER_MESSAGE_SELECT_LAST:
-                    if (messages != null && messages.length > 0) {
-                        listView.setSelection(messages.length - 1);
-                    }
+                    refreshList(true);
+                    break;
+                case HANDLER_MESSAGE_REFRESH_LIST:
+                    refreshList(false);
                     break;
                 case HANDLER_MESSAGE_SEEK_TO:
                     int position = message.arg1;
@@ -184,11 +187,9 @@ public class EaseMessageAdapter extends BaseAdapter {
      * refresh and select the last
      */
     public void refreshSelectLast() {
-        final int TIME_DELAY_REFRESH_SELECT_LAST = 30;
         handler.removeMessages(HANDLER_MESSAGE_REFRESH_LIST);
         handler.removeMessages(HANDLER_MESSAGE_SELECT_LAST);
-        handler.sendEmptyMessageDelayed(HANDLER_MESSAGE_REFRESH_LIST, TIME_DELAY_REFRESH_SELECT_LAST);
-        handler.sendEmptyMessageDelayed(HANDLER_MESSAGE_SELECT_LAST, TIME_DELAY_REFRESH_SELECT_LAST);
+        handler.sendEmptyMessageDelayed(HANDLER_MESSAGE_SELECT_LAST, 50);
     }
 
     /**
