@@ -195,6 +195,7 @@ public class DrawableProvider {
 
     /**
      * 获取文件为图片时的图片宽高
+     * 矫正图片角度问题
      * options.outWidth
      * options.outHeight
      */
@@ -206,6 +207,18 @@ public class DrawableProvider {
          */
         options.inJustDecodeBounds = true;
         BitmapFactory.decodeFile(filePath, options); // 此时返回的bitmap为null
+
+        try {
+            ExifInterface exifInterface = new ExifInterface(filePath);
+            int orientation = exifInterface.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_UNDEFINED);
+            if (orientation == ExifInterface.ORIENTATION_ROTATE_90 || orientation == ExifInterface.ORIENTATION_ROTATE_270) {
+                int h = options.outWidth;
+                options.outWidth = options.outHeight;
+                options.outHeight = h;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         return options;
     }
 
@@ -243,12 +256,12 @@ public class DrawableProvider {
 //                // Extend start bounds horizontally
 //                startScale = (float) imageviewHeight / bitmapHeight;
 //            } else {
-                startScale = (float) imageViewWidth / bitmapWidth;
+            startScale = (float) imageViewWidth / bitmapWidth;
 //            }
 //
 //            bitmapHeight = (int) (bitmapHeight * startScale);
 //            bitmapWidth = (int) (bitmapWidth * startScale);
-            bitmapHeight= (int) (bitmapHeight*startScale);
+            bitmapHeight = (int) (bitmapHeight * startScale);
             int deltaX = (imageViewWidth - bitmapWidth) / 2;
             int deltaY = (imageviewHeight - bitmapHeight) / 2;
 
@@ -261,6 +274,7 @@ public class DrawableProvider {
             return null;
         }
     }
+
     /**
      * 获取imageview的rect属性:上下左右的位置
      */
