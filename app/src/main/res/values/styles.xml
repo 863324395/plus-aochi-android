@@ -4,6 +4,7 @@
         <item name="android:windowIsTranslucent">true</item>
         <item name="android:windowBackground">@android:color/transparent</item>
     </style>
+
     <!--显示透明背景的activity，用于图片预览缩放动画的实现-->
     <style name="TransParentTheme" parent="TSTheme">
         <item name="android:windowBackground">@android:color/transparent</item>
