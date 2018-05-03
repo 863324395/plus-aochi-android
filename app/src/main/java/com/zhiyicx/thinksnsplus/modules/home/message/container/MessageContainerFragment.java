@@ -2,29 +2,28 @@ package com.zhiyicx.thinksnsplus.modules.home.message.container;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.ViewPager;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import com.hyphenate.chat.EMConversation;
 import com.hyphenate.easeui.ui.EaseConversationListFragment;
 import com.zhiyicx.baseproject.base.TSViewPagerFragment;
+import com.zhiyicx.baseproject.widget.TabSelectView;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.StatusBarUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.modules.chat.select.SelectFriendsActivity;
 import com.zhiyicx.thinksnsplus.modules.home.message.MessageFragment;
+import com.zhiyicx.thinksnsplus.modules.home.message.messagegroup.MessageGroupActivity;
 import com.zhiyicx.thinksnsplus.modules.home.message.messagelist.MessageConversationFragment;
-import com.zhiyicx.thinksnsplus.modules.home.message.notifacationlist.NotificationFragment;
-import com.zhiyicx.thinksnsplus.modules.information.adapter.ScaleTransitionPagerTitleView;
 
 import net.lucode.hackware.magicindicator.buildins.UIUtil;
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.CommonNavigatorAdapter;
@@ -119,6 +118,10 @@ public class MessageContainerFragment extends TSViewPagerFragment implements Eas
         super.initViewPager(rootView);
         mTsvToolbar.setLeftImg(0);
         mTsvToolbar.setRightImg(R.mipmap.ico_spchat, R.color.white);
+        mTsvToolbar.setLeftClickListener(this, () -> {
+            Intent intent = new Intent(getContext(), MessageGroupActivity.class);
+            startActivity(intent);
+        });
         mTsvToolbar.setRightClickListener(this, () -> {
             Intent intent = new Intent(getContext(), SelectFriendsActivity.class);
             startActivity(intent);
@@ -126,6 +129,14 @@ public class MessageContainerFragment extends TSViewPagerFragment implements Eas
         mBadgePagerTitleViews = new ArrayList<>();
         CommonNavigatorAdapter commonNavigatorAdapter = getCommonNavigatorAdapter(initTitles());
         mTsvToolbar.initTabView(mVpFragment, initTitles(), commonNavigatorAdapter);
+
+        mVpFragment.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener(){
+            @Override
+            public void onPageSelected(int position) {
+                super.onPageSelected(position);
+                mTsvToolbar.setLeftImg(position==1?R.mipmap.ico_title_group:0);
+            }
+        });
     }
 
     @Override

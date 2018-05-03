@@ -40,6 +40,7 @@ public interface IBaseMessageRepository {
      * @param id
      */
     void deleteLocalChatGoup(String id);
+    void saveChatGoup(List<ChatGroupBean> groupBeans);
 
     Observable<List<ChatItemBean>> completeUserInfo(List<ChatItemBean> list);
 }

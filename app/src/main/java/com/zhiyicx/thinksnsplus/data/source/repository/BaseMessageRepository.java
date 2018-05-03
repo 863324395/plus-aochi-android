@@ -322,6 +322,11 @@ public class BaseMessageRepository implements IBaseMessageRepository {
     }
 
     @Override
+    public void saveChatGoup(List<ChatGroupBean> groupBeans) {
+        mChatGroupBeanGreenDao.saveMultiData(groupBeans);
+    }
+
+    @Override
     public Observable<UserInfoBean> getUserInfo(String id) {
         return null;
     }

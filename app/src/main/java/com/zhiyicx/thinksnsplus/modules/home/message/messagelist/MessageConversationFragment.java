@@ -12,7 +12,6 @@ import com.hyphenate.chat.EMCmdMessageBody;
 import com.hyphenate.chat.EMConversation;
 import com.hyphenate.easeui.EaseConstant;
 import com.zhiyicx.baseproject.base.TSListFragment;
-import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.em.manager.util.TSEMConstants;
 import com.zhiyicx.baseproject.em.manager.eventbus.TSEMConnectionEvent;
 import com.zhiyicx.baseproject.em.manager.eventbus.TSEMessageEvent;
@@ -31,13 +30,11 @@ import com.zhiyicx.thinksnsplus.modules.chat.ChatActivity;
 import com.zhiyicx.thinksnsplus.modules.home.message.MessageAdapterV2;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
 import com.zhiyicx.thinksnsplus.widget.TSSearchView;
-import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 
 import org.jetbrains.annotations.NotNull;
 import org.simple.eventbus.Subscriber;
 import org.simple.eventbus.ThreadMode;
 
-import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
