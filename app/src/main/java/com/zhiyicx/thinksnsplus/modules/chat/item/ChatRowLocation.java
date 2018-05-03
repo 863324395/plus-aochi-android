@@ -41,7 +41,6 @@ public class ChatRowLocation extends ChatBaseRow{
     protected void onSetUpView() {
         super.onSetUpView();
         EMLocationMessageBody locBody = (EMLocationMessageBody) message.getBody();
-        System.out.println("locBody.getAddress() = " + locBody.getAddress());
         mTvLocation.setText(locBody.getAddress());
     }
 

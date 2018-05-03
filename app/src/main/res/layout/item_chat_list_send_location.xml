@@ -65,12 +65,12 @@
                     android:ellipsize="end"
                     android:gravity="center"
                     android:singleLine="true"
-                    android:paddingLeft="@dimen/spacing_small"
+                    android:paddingLeft="@dimen/spacing_mid_small"
                     android:layout_marginBottom="@dimen/spacing_normal"
-                    android:paddingRight="@dimen/spacing_small"
+                    android:paddingRight="@dimen/spacing_mid_small"
                     android:textColor="@color/important_for_content"
                     android:textSize="@dimen/size_icon_assist"
-                    tools:text="环球中心京东方开始减肥减肥打开闪光灯"/>
+                    tools:text="环球中心京东方开始减肥减肥打开闪光"/>
 
             </FrameLayout>
 

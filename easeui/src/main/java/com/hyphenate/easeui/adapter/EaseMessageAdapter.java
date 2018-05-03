@@ -17,6 +17,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
+import android.os.Message;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
@@ -112,39 +113,44 @@ public class EaseMessageAdapter extends BaseAdapter {
 
 
     Handler handler = new Handler() {
-        private void refreshList(boolean isLast) {
+        private void refreshList(android.os.Message msg) {
             // you should not call getAllMessages() in UI thread
             // otherwise there is problem when refreshing UI and there is new message arrive
-            Observable.just(isLast)
+            Observable.just(msg)
                     .subscribeOn(Schedulers.io())
                     .observeOn(Schedulers.io())
-                    .map(new Func1<Boolean, Boolean>() {
+                    .map(new Func1<android.os.Message, android.os.Message>() {
                         @Override
-                        public Boolean call(Boolean isLastRefresh) {
-                            List<EMMessage> var = conversation.getAllMessages();
-                            List<EMMessage> data = new ArrayList<>();
-                            for (EMMessage emMessage : var) {
-                                boolean isstanceofEText = emMessage.getBody() instanceof EMTextMessageBody;
-                                boolean isNullMessage = isstanceofEText && TextUtils.isEmpty(((EMTextMessageBody) emMessage.getBody())
-                                        .getMessage());
-                                if (!isNullMessage) {
-                                    data.add(emMessage);
-                                }
-                            }
+                        public android.os.Message call(android.os.Message wahtTmp) {
+                            java.util.List<EMMessage> var = conversation.getAllMessages();
                             messages = var.toArray(new EMMessage[var.size()]);
                             conversation.markAllMessagesAsRead();
-                            return isLastRefresh;
+                            return wahtTmp;
                         }
                     })
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Action1<Boolean>() {
+                    .subscribe(new Action1<android.os.Message>() {
                         @Override
-                        public void call(Boolean aBoolean) {
-                            notifyDataSetChanged();
-                            if (aBoolean&&messages != null && messages.length > 0) {
-                                listView.setSelection(messages.length - 1);
-                            }
+                        public void call(android.os.Message wahtData) {
+                            switch (wahtData.what) {
 
+                                case HANDLER_MESSAGE_SELECT_LAST:
+                                    notifyDataSetChanged();
+                                    if (messages != null && messages.length > 0) {
+                                        listView.setSelection(messages.length - 1);
+                                    }
+                                    break;
+                                case HANDLER_MESSAGE_REFRESH_LIST:
+                                    notifyDataSetChanged();
+                                    break;
+                                case HANDLER_MESSAGE_SEEK_TO:
+                                    int position = wahtData.arg1;
+                                    notifyDataSetChanged();
+                                    listView.setSelection(position);
+                                    break;
+                                default:
+                                    break;
+                            }
                         }
                     }, new Action1<Throwable>() {
                         @Override
@@ -157,36 +163,24 @@ public class EaseMessageAdapter extends BaseAdapter {
 
         @Override
         public void handleMessage(android.os.Message message) {
-            switch (message.what) {
-
-                case HANDLER_MESSAGE_SELECT_LAST:
-                    refreshList(true);
-                    break;
-                case HANDLER_MESSAGE_REFRESH_LIST:
-                    refreshList(false);
-                    break;
-                case HANDLER_MESSAGE_SEEK_TO:
-                    int position = message.arg1;
-                    listView.setSelection(position);
-                    break;
-                default:
-                    break;
-            }
+            refreshList(message);
         }
     };
 
     public void refresh() {
+        System.out.println(" = ---------------refresh--------------=");
         if (handler.hasMessages(HANDLER_MESSAGE_REFRESH_LIST)) {
             return;
         }
-        android.os.Message msg = handler.obtainMessage(HANDLER_MESSAGE_REFRESH_LIST);
-        handler.sendMessage(msg);
+        handler.sendMessage(handler.obtainMessage(HANDLER_MESSAGE_REFRESH_LIST));
     }
 
     /**
      * refresh and select the last
      */
     public void refreshSelectLast() {
+        System.out.println(" = ---------------refreshSelectLast--------------=");
+
         handler.removeMessages(HANDLER_MESSAGE_REFRESH_LIST);
         handler.removeMessages(HANDLER_MESSAGE_SELECT_LAST);
         handler.sendEmptyMessageDelayed(HANDLER_MESSAGE_SELECT_LAST, 50);
@@ -196,7 +190,11 @@ public class EaseMessageAdapter extends BaseAdapter {
      * refresh and seek to the position
      */
     public void refreshSeekTo(int position) {
-        handler.sendMessage(handler.obtainMessage(HANDLER_MESSAGE_REFRESH_LIST));
+        System.out.println(" = ---------------refreshSeekTo--------------=" + position);
+
+        Message msg = handler.obtainMessage(HANDLER_MESSAGE_SEEK_TO);
+        msg.arg1 = position;
+        handler.sendMessage(msg);
     }
 
     @Override

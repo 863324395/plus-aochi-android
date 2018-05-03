@@ -126,21 +126,6 @@ public class ChatFragment extends TSEaseChatFragment<ChatContract.Presenter>
     }
 
     @Override
-    protected boolean showToolbar() {
-        return true;
-    }
-
-    @Override
-    protected boolean setUseSatusbar() {
-        return false;
-    }
-
-    @Override
-    protected boolean setUseStatusView() {
-        return false;
-    }
-
-    @Override
     protected int getToolBarLayoutId() {
         return R.layout.ease_ts_title_bar;
     }

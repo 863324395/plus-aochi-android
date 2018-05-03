@@ -98,18 +98,19 @@ public class SendLocationFragment extends TSFragment<SendLocationContract.Presen
             MyLocationStyle myLocationStyle;
             /*初始化定位蓝点样式类myLocationStyle.myLocationType(MyLocationStyle.LOCATION_TYPE_LOCATION_ROTATE);*/
             myLocationStyle = new MyLocationStyle();
+            myLocationStyle.showMyLocation(true);
             //定位一次，且将视角移动到地图中心点。
-//            myLocationStyle.myLocationType(MyLocationStyle.LOCATION_TYPE_LOCATE);
+            myLocationStyle.myLocationType(MyLocationStyle.LOCATION_TYPE_LOCATE);
             // 自定义定位蓝点图标
             myLocationStyle.showMyLocation(true);
 //            myLocationStyle.myLocationIcon(BitmapDescriptorFactory.
 //                    fromResource(R.mipmap.find_ico_location2));
             // 自定义精度范围的圆形边框颜色
-            myLocationStyle.strokeColor(getResources().getColor(R.color.themeColor));
-//            //自定义精度范围的圆形边框宽度
-            myLocationStyle.strokeWidth(5);
-            // 设置圆形的填充颜色
-            myLocationStyle.radiusFillColor(getResources().getColor(R.color.general_for_bg_light_alpha_0_5));
+//            myLocationStyle.strokeColor(getResources().getColor(R.color.themeColor));
+////            //自定义精度范围的圆形边框宽度
+//            myLocationStyle.strokeWidth(5);
+//            // 设置圆形的填充颜色
+//            myLocationStyle.radiusFillColor(getResources().getColor(R.color.general_for_bg_light_alpha_0_5));
             // 将自定义的 myLocationStyle 对象添加到地图上
             aMap.setMyLocationStyle(myLocationStyle);
             /*设置默认定位按钮是否显示，非必需设置。*/
@@ -118,15 +119,7 @@ public class SendLocationFragment extends TSFragment<SendLocationContract.Presen
             aMap.setMyLocationEnabled(true);
         } else {
             // 添加已有的定位点
-            MarkerOptions markerOption = new MarkerOptions();
             LatLng latLng = new LatLng(mLatitude, mLongitude);
-//            markerOption.position(latLng);
-//            markerOption.title(mAddress).snippet("");
-//            markerOption.draggable(false);//设置Marker可拖动
-//            markerOption.icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory
-//                    .decodeResource(getResources(), R.mipmap.find_ico_location2)));
-//            // 将Marker设置为贴地显示，可以双指下拉地图查看效果
-//            markerOption.setFlat(true);//设置marker平贴地图效果
             aMap.addMarker(new MarkerOptions().position(latLng).title(mAddress).snippet(""));
             aMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 18));
         }
@@ -205,7 +198,7 @@ public class SendLocationFragment extends TSFragment<SendLocationContract.Presen
             mLatitude = location.getLatitude();
             mLongitude = location.getLongitude();
             if (location.getExtras() != null) {
-                mAddress = location.getExtras().getString("Address").trim();
+                mAddress = location.getExtras().getString("Address");
             }
         } else {
             showSnackErrorMessage("定位失败");
