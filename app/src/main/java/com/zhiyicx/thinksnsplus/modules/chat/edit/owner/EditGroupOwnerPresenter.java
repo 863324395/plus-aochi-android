@@ -33,7 +33,7 @@ import rx.functions.Func1;
 
 public class EditGroupOwnerPresenter extends AppBasePresenter<EditGroupOwnerContract.View>
         implements EditGroupOwnerContract.Presenter {
-    public static final int DEFAULT_MAX_GRUOP_NUMBER=200;
+    public static final int DEFAULT_MAX_GRUOP_NUMBER = 200;
 
     @Inject
     EditGroupOwnerRepository mRepository;
@@ -71,7 +71,8 @@ public class EditGroupOwnerPresenter extends AppBasePresenter<EditGroupOwnerCont
 
     @Override
     public void updateGroup(ChatGroupBean chatGroupBean) {
-        Subscription subscription = mRepository.updateGroup(chatGroupBean.getId(), chatGroupBean.getName(), chatGroupBean.getDescription(), 0, DEFAULT_MAX_GRUOP_NUMBER, chatGroupBean.isMembersonly(),
+        Subscription subscription = mRepository.updateGroup(chatGroupBean.getId(), chatGroupBean.getName(), chatGroupBean.getDescription(), 0,
+                DEFAULT_MAX_GRUOP_NUMBER, chatGroupBean.isMembersonly(),
                 0, chatGroupBean.getGroup_face(), false, chatGroupBean.getOwner() + "")
                 .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R.string.modifing)))
                 .observeOn(AndroidSchedulers.mainThread())
@@ -127,13 +128,11 @@ public class EditGroupOwnerPresenter extends AppBasePresenter<EditGroupOwnerCont
                     } else {
                         List<UserInfoBean> searchResult = new ArrayList<>();
                         for (UserInfoBean userInfoBean : mRootView.getGroupData().getAffiliations()) {
-                            if (userInfoBean.getName().contains(key)) {
+                            if (!TextUtils.isEmpty(userInfoBean.getName()) && userInfoBean.getName().toLowerCase().contains(key.toLowerCase())) {
                                 searchResult.add(userInfoBean);
                             }
                         }
-                        if (!searchResult.isEmpty()) {
-                            mRootView.onNetResponseSuccess(searchResult, false);
-                        }
+                        mRootView.onNetResponseSuccess(searchResult, false);
                     }
                 });
 

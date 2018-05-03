@@ -312,9 +312,7 @@ public class SelectFriendsPresenter extends AppBasePresenter<SelectFriendsContra
                                 searchResult.add(userInfoBean);
                             }
                         }
-                        if (!searchResult.isEmpty()) {
                             mRootView.onNetResponseSuccess(searchResult, false);
-                        }
                     }
                 });
     }
