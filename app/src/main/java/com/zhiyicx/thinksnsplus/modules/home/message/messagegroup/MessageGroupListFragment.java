@@ -70,6 +70,11 @@ public class MessageGroupListFragment extends TSListFragment<MessageGroupContrac
     }
 
     @Override
+    protected float getItemDecorationSpacing() {
+        return 0;
+    }
+
+    @Override
     protected String setCenterTitle() {
         return getString(R.string.chat_group);
     }
@@ -82,13 +87,6 @@ public class MessageGroupListFragment extends TSListFragment<MessageGroupContrac
     @Override
     protected boolean isNeedRefreshDataWhenComeIn() {
         return true;
-    }
-
-    @Override
-    protected RecyclerView.ItemDecoration getItemDecoration() {
-        return new CustomLinearDecoration(0, getResources().getDimensionPixelSize(R.dimen
-                .divider_line), 0, 0, ContextCompat.getDrawable(getContext(), R.drawable
-                .shape_recyclerview_grey_divider));
     }
 
     @Override
@@ -150,7 +148,7 @@ public class MessageGroupListFragment extends TSListFragment<MessageGroupContrac
             EMConversation conversation = EMClient.getInstance().chatManager().getConversation(id, EMConversation.EMConversationType.GroupChat, true);
             ChatActivity.startChatActivity(mActivity, conversation.conversationId(), EaseConstant.CHATTYPE_GROUP);
             mActivity.finish();
-        }else{
+        } else {
             ToastUtils.showLongToast("error");
         }
 
@@ -216,9 +214,10 @@ public class MessageGroupListFragment extends TSListFragment<MessageGroupContrac
             List<ChatGroupBean> result = new ArrayList<>();
             for (ChatGroupBean sortModel : mListDatas) {
                 String name = sortModel.getName();
-                if (name.contains(filterStr.toString()) ||
-                        HanziToPinyin.getInstance().getSpellStr(name).startsWith(HanziToPinyin.getInstance().getSpellStr(filterStr
-                                .toString()))) {
+                boolean isContent = !TextUtils.isEmpty(name) && name.toLowerCase().contains(filterStr.toString().toLowerCase());
+                boolean isPinyinContent = HanziToPinyin.getInstance().getSpellStr(name).startsWith(HanziToPinyin.getInstance().getSpellStr(filterStr
+                        .toString()));
+                if (isContent || isPinyinContent) {
                     result.add(sortModel);
                 }
             }

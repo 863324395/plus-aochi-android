@@ -7,7 +7,7 @@ import com.zhiyicx.thinksnsplus.base.AppApplication;
  * @Author Jliuer
  * @Date 2018/05/03/15:36
  * @Email Jliuer@aliyun.com
- * @Description
+ * @Description 群
  */
 public class MessageGroupActivity extends TSActivity<MessageGroupPresenter, MessageGroupListFragment> {
 
