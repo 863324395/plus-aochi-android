@@ -1068,7 +1068,7 @@
     <string name="chat_group_owner">群主</string>
     <string name="chat_group">群</string>
     <string name="chat_group_all_member">全部成员</string>
-    <string name="chat_edit_group_add_member">添加好友</string>
+    <string name="chat_edit_group_add_member">添加成员</string>
     <string name="chat_edit_group_remove_member">删除成员</string>
     <string name="chat_edit_group_add">添加</string>
     <string name="chat_edit_group_add_d">添加(%d)</string>
