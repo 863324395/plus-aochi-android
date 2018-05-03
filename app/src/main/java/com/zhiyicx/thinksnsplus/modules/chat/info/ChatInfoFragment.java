@@ -187,7 +187,7 @@ public class ChatInfoFragment extends TSFragment<ChatInfoContract.Presenter> imp
         mRvMemberList.setLayoutManager(manager);
         mRvMemberList.addItemDecoration(new TGridDecoration(0, getResources().getDimensionPixelOffset(R.dimen.spacing_large), true));
         dealAddOrDeleteButton();
-        mChatMemberAdapter = new ChatMemberAdapter(getContext(), mChatMembers, -1);
+        mChatMemberAdapter = new ChatMemberAdapter(getContext(), mChatMembers, -1,false);
         mRvMemberList.setAdapter(mChatMemberAdapter);
         mChatMemberAdapter.setOnItemClickListener(new MultiItemTypeAdapter.OnItemClickListener() {
             @Override

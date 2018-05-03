@@ -7,9 +7,11 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.common.utils.recycleviewdecoration.GridDecoration;
+import com.zhiyicx.common.utils.recycleviewdecoration.TGridDecoration;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.ChatGroupBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
@@ -38,6 +40,7 @@ import static com.zhiyicx.thinksnsplus.modules.chat.select.SelectFriendsFragment
 public class GroupMemberListFragment extends TSFragment<GroupMemberListContract.Presenter> implements GroupMemberListContract.View {
 
     public static final String BUNDLE_GROUP_MEMBER = "bundle_group_member";
+    public static final int DEFAULT_COLUMS = 5;
 
     @BindView(R.id.rv_member_list)
     RecyclerView mRvMemberList;
@@ -54,7 +57,7 @@ public class GroupMemberListFragment extends TSFragment<GroupMemberListContract.
 
     @Override
     protected void initView(View rootView) {
-        GridLayoutManager manager = new GridLayoutManager(getContext(), 5);
+        GridLayoutManager manager = new GridLayoutManager(getContext(), DEFAULT_COLUMS);
         mRvMemberList.setLayoutManager(manager);
         mRvMemberList.addItemDecoration(new GridDecoration(10, getResources().getDimensionPixelOffset(R.dimen.spacing_large)));
     }
@@ -74,7 +77,7 @@ public class GroupMemberListFragment extends TSFragment<GroupMemberListContract.
         mMemberList = new ArrayList<>();
         mChatGroupBean = getArguments().getParcelable(BUNDLE_GROUP_MEMBER);
         initMemberList();
-        mAdapter = new ChatMemberAdapter(getContext(), mMemberList, mChatGroupBean.getOwner());
+        mAdapter = new ChatMemberAdapter(getContext(), mMemberList, mChatGroupBean.getOwner(), true);
         mAdapter.setOnItemClickListener(new MultiItemTypeAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
@@ -104,6 +107,9 @@ public class GroupMemberListFragment extends TSFragment<GroupMemberListContract.
                 return false;
             }
         });
+//        View view=new View(getContext());
+//        view.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,getResources().getDimensionPixelOffset(com
+//                .hyphenate.easeui.R.dimen.chat_bottom_footer_height)));
         mRvMemberList.setAdapter(mAdapter);
     }
 
@@ -123,7 +129,7 @@ public class GroupMemberListFragment extends TSFragment<GroupMemberListContract.
         mAdapter.notifyDataSetChanged();
     }
 
-    private void initMemberList(){
+    private void initMemberList() {
         mMemberList.clear();
         // 添加按钮，都可以拉人
         UserInfoBean chatUserInfoBean = new UserInfoBean();
