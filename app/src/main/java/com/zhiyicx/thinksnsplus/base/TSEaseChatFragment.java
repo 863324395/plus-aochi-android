@@ -465,7 +465,6 @@ public class TSEaseChatFragment<P extends IBasePresenter> extends TSEaseBaseFrag
         TSEMHyphenate.getInstance().setToChatUsername(toChatUsername);
         // 第一次不调用这个
         if (!mIsFirstOnResumeReresh) {
-        if (messageList.getChildCount() > 0) {
             resumeRefreshMessageList();
         }
         mIsFirstOnResumeReresh = false;
