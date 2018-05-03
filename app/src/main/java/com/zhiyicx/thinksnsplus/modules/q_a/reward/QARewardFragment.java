@@ -3,7 +3,6 @@ package com.zhiyicx.thinksnsplus.modules.q_a.reward;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Parcel;
 import android.support.v7.widget.SwitchCompat;
 import android.text.TextUtils;
 import android.view.View;
@@ -577,23 +576,12 @@ public class QARewardFragment extends TSFragment<QARewardContract.Presenter> imp
         if (mQaListInfoBean != null) {
             EventBus.getDefault().post(new Bundle(), EventBusTagConfig.EVENT_PUBLISH_QUESTION);
             PublishQuestionFragment.gDraftQuestion = null;
-            Intent intent = new Intent(mActivity, QuestionDetailActivity.class);
+            Intent intent = new Intent(getActivity(), QuestionDetailActivity.class);
             Bundle bundle = new Bundle();
             bundle.putSerializable(BUNDLE_QUESTION_BEAN, mQaListInfoBean);
             intent.putExtra(BUNDLE_QUESTION_BEAN, bundle);
             startActivity(intent);
         }
-    }
-
-    int getBundleSizeInBytes(Bundle bundle) {
-        Parcel parcel = Parcel.obtain();
-        int size;
-
-        parcel.writeBundle(bundle);
-        size = parcel.dataSize();
-        parcel.recycle();
-
-        return size;
     }
 
     private void initInstructionsPop(int resDesStr) {

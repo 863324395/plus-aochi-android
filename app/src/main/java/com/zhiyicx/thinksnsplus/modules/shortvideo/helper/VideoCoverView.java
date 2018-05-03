@@ -108,10 +108,12 @@ public class VideoCoverView extends RelativeLayout {
             @Override
             public void onViewPositionChanged(View changedView, int left, int top, int dx, int dy) {
                 super.onViewPositionChanged(changedView, left, top, dx, dy);
+                Log.d("onViewPositionChanged::", left + "");
                 RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) mCoverListView.getLayoutParams();
                 int relativePosition = left + changedView.getWidth() - params.leftMargin;
                 float time = TIME * relativePosition / mCoverViewWidth;
                 int frame = (int) ((mCurrentStartTime + time) * 1000);
+                Log.d("onViewPositionChanged::frame::", frame + "");
                 if (mOnScrollDistanceListener != null && Math.abs(left - oldLeft) >= 20) {
                     oldLeft = left;
                     mOnScrollDistanceListener.changeTo(frame);
@@ -158,9 +160,17 @@ public class VideoCoverView extends RelativeLayout {
                 if (mOnScrollDistanceListener != null) {
                     // 这里有padding，并没有重 0 开始
                     RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) mCoverListView.getLayoutParams();
+                    
                     mCoverViewWidth = mCoverListView.getWidth() - 2 * params.leftMargin;
                     int distance = getScollXDistance() + params.leftMargin;
                     mCurrentStartTime = TIME * distance / mCoverViewWidth;
+                    Log.d("distance:", distance + "");
+                    Log.d("time:", mCurrentStartTime + "");
+
+                    int relativePosition = mCoverView.getRight() - params.leftMargin;
+                    float time = TIME * relativePosition / mCoverViewWidth;
+                    int frame = (int) ((mCurrentStartTime + time) * 1000);
+
                     mOnScrollDistanceListener.changeTo((int) (mCurrentStartTime * 1000));
                 }
 
