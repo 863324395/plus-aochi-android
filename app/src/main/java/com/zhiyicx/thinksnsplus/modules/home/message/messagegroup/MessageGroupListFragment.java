@@ -14,11 +14,14 @@ import com.hyphenate.easeui.EaseConstant;
 import com.hyphenate.exceptions.HyphenateException;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.zhiyicx.baseproject.base.TSListFragment;
+import com.zhiyicx.baseproject.em.manager.eventbus.TSEMConnectionEvent;
+import com.zhiyicx.baseproject.em.manager.util.TSEMConstants;
 import com.zhiyicx.baseproject.em.manager.util.TSEMessageUtils;
 import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleTransform;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.HanziToPinyin;
 import com.zhiyicx.common.utils.ToastUtils;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.common.utils.recycleviewdecoration.CustomLinearDecoration;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
@@ -31,6 +34,8 @@ import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
 import org.jetbrains.annotations.NotNull;
+import org.simple.eventbus.Subscriber;
+import org.simple.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,6 +57,11 @@ public class MessageGroupListFragment extends TSListFragment<MessageGroupContrac
     private String mSearchContent;
     private boolean isSearch;
     private List<ChatGroupBean> cache;
+
+    @Override
+    protected boolean useEventBus() {
+        return true;
+    }
 
     @Override
     protected void initView(View rootView) {
@@ -85,16 +95,14 @@ public class MessageGroupListFragment extends TSListFragment<MessageGroupContrac
     protected void initData() {
         super.initData();
         initListener();
+
+        // 刷新信息内容
+        getGroupListData();
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        // 刷新信息内容
-        if (mPresenter != null) {
-            mRefreshlayout.autoRefresh(0);
-            mPresenter.requestNetData(DEFAULT_PAGE_MAX_ID, false);
-        }
         if (!TextUtils.isEmpty(mSearchView.getText())) {
             mSearchView.setText("");
         }
@@ -141,6 +149,7 @@ public class MessageGroupListFragment extends TSListFragment<MessageGroupContrac
         if (data != null) {
             EMConversation conversation = EMClient.getInstance().chatManager().getConversation(id, EMConversation.EMConversationType.GroupChat, true);
             ChatActivity.startChatActivity(mActivity, conversation.conversationId(), EaseConstant.CHATTYPE_GROUP);
+            mActivity.finish();
         }else{
             ToastUtils.showLongToast("error");
         }
@@ -155,6 +164,25 @@ public class MessageGroupListFragment extends TSListFragment<MessageGroupContrac
     @Override
     public String getsearchKeyWord() {
         return mSearchContent;
+    }
+
+    @Subscriber(mode = ThreadMode.MAIN)
+    public void onTSEMConnectionEventBus(TSEMConnectionEvent event) {
+        LogUtils.d("onTSEMConnectionEventBus");
+        switch (event.getType()) {
+            case TSEMConstants.TS_CONNECTION_USER_LOGIN_OTHER_DIVERS:
+                break;
+            case TSEMConstants.TS_CONNECTION_USER_REMOVED:
+                break;
+            case TSEMConstants.TS_CONNECTION_CONNECTED:
+                hideStickyMessage();
+                getGroupListData();
+                break;
+            case TSEMConstants.TS_CONNECTION_DISCONNECTED:
+                showStickyMessage(getString(R.string.chat_unconnected));
+                break;
+            default:
+        }
     }
 
     private void initListener() {
@@ -198,5 +226,12 @@ public class MessageGroupListFragment extends TSListFragment<MessageGroupContrac
             mListDatas.addAll(result);
         }
         refreshData();
+    }
+
+    private void getGroupListData() {
+        if (mPresenter != null) {
+            mRefreshlayout.autoRefresh(0);
+            mPresenter.requestNetData(DEFAULT_PAGE_MAX_ID, false);
+        }
     }
 }
