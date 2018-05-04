@@ -59,6 +59,7 @@ import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.em.manager.util.TSEMConstants;
 import com.zhiyicx.baseproject.em.manager.util.TSEMessageUtils;
 import com.zhiyicx.common.mvp.i.IBasePresenter;
+import com.zhiyicx.common.utils.FileUtils;
 import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.modules.chat.call.TSEMHyphenate;
@@ -729,7 +730,10 @@ public class TSEaseChatFragment<P extends IBasePresenter> extends TSEaseBaseFrag
     }
 
     protected void sendImageMessage(String imagePath) {
-        EMMessage message = EMMessage.createImageSendMessage(imagePath, DealPhotoUtils.checkPhotoIsGif(imagePath), toChatUsername);
+        boolean isGif = DealPhotoUtils.checkPhotoIsGif(imagePath);
+        boolean isNeedOrinImage = isGif || DealPhotoUtils.checkPhotoIsLongImage(imagePath);
+
+        EMMessage message = EMMessage.createImageSendMessage(imagePath, isNeedOrinImage, toChatUsername);
         sendMessage(message);
     }
 

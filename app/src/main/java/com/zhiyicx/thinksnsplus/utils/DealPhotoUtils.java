@@ -10,6 +10,7 @@ import android.os.Environment;
 import android.text.TextUtils;
 
 import com.zhiyicx.baseproject.config.PathConfig;
+import com.zhiyicx.common.utils.DrawableProvider;
 import com.zhiyicx.common.utils.log.LogUtils;
 
 import java.io.File;
@@ -18,6 +19,8 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+
+import static com.zhiyicx.thinksnsplus.utils.ImageUtils.isLongImage;
 
 /**
  * @author Catherine
@@ -231,5 +234,10 @@ public class DealPhotoUtils {
         String type = options.outMimeType;
         LogUtils.d("type", type);
         return !(TextUtils.isEmpty(type) || !type.contains("gif"));
+    }
+
+    public static boolean checkPhotoIsLongImage(String path) {
+        BitmapFactory.Options option = DrawableProvider.getPicsWHByFile(path);
+        return isLongImage(option.outHeight, option.outWidth);
     }
 }

@@ -74,21 +74,6 @@ public class ImageUtils {
         return DeviceUtils.getScreenHeight(AppApplication.getContext());
     }
 
-    public static boolean isLongImage(float netHeight, float netWidth) {
-        float net = netHeight / netWidth;
-        float result = 0;
-        if (net >= 3 || net <= .3f) {
-
-            result = getmWidthPixels() / netWidth;
-
-            if (result <= .3f) {
-
-            } else {
-                result = result * netHeight / getmHightPixels();
-            }
-        }
-        return (result >= 3 || result <= .3f) && result > 0;
-    }
 
     public static int getmMargin() {
         return 2 * AppApplication.getContext().getResources().getDimensionPixelSize(R.dimen.dynamic_list_image_marginright);
@@ -665,6 +650,28 @@ public class ImageUtils {
      */
     public static boolean imageIsGif(String imageMinityp) {
         return FILE_MIME_TYPE_GIF.equals(imageMinityp);
+    }
+    /**
+     * 是否是长图
+     * @param netHeight
+     * @param netWidth
+     * @return
+     */
+    public static boolean isLongImage(float netHeight, float netWidth) {
+        float net = netHeight / netWidth;
+        float result = 0;
+        if (net >= 3 || net <= .3f) {
+
+            result = getmWidthPixels() / netWidth;
+
+            if (result <= .3f) {
+
+            } else {
+                result = result * netHeight / getmHightPixels();
+            }
+        }
+        return (result >= 3 || result <= .3f) && result > 0;
+
     }
 
 }
