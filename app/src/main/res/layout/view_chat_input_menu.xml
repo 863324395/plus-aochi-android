@@ -24,7 +24,7 @@
         <ImageView
             android:id="@+id/btn_set_mode_voice"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:paddingLeft="@dimen/spacing_normal"
             android:paddingRight="@dimen/spacing_normal"
             android:src="@mipmap/ico_chat_keyboard_voice"
@@ -117,7 +117,7 @@
         <ImageView
             android:id="@+id/btn_more"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:paddingLeft="@dimen/spacing_normal"
             android:paddingRight="@dimen/spacing_normal"
             android:src="@mipmap/ico_chat_keyboard_add"

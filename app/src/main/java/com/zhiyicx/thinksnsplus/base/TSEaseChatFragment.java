@@ -127,7 +127,14 @@ public class TSEaseChatFragment<P extends IBasePresenter> extends TSEaseBaseFrag
     protected boolean isRoaming = false;
     private ExecutorService fetchQueue;
 
-    private boolean mIsFirstOnResumeReresh = true;
+    /**
+     * onResume 是时候是否需要刷新
+     */
+    protected boolean mIsNeedRefreshToLast = false;
+
+    public void setNeedRefreshToLast(boolean needRefreshToLast) {
+        mIsNeedRefreshToLast = needRefreshToLast;
+    }
 
     @Override
     protected boolean showToolbar() {
@@ -471,10 +478,10 @@ public class TSEaseChatFragment<P extends IBasePresenter> extends TSEaseBaseFrag
         super.onResume();
         TSEMHyphenate.getInstance().setToChatUsername(toChatUsername);
         // 第一次不调用这个
-        if (!mIsFirstOnResumeReresh) {
+        if (mIsNeedRefreshToLast) {
             resumeRefreshMessageList();
         }
-        mIsFirstOnResumeReresh = false;
+        mIsNeedRefreshToLast = true;
         EaseUI.getInstance().pushActivity(getActivity());
         // register the event listener when enter the foreground
         EMClient.getInstance().chatManager().removeMessageListener(this);
@@ -875,6 +882,7 @@ public class TSEaseChatFragment<P extends IBasePresenter> extends TSEaseBaseFrag
         startActivityForResult(
                 new Intent(MediaStore.ACTION_IMAGE_CAPTURE).putExtra(MediaStore.EXTRA_OUTPUT, photoFile),
                 REQUEST_CODE_CAMERA);
+        mIsNeedRefreshToLast = false;
     }
 
     /**
@@ -890,6 +898,7 @@ public class TSEaseChatFragment<P extends IBasePresenter> extends TSEaseBaseFrag
             intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         }
         startActivityForResult(intent, REQUEST_CODE_LOCAL);
+        mIsNeedRefreshToLast=false;
     }
 
 

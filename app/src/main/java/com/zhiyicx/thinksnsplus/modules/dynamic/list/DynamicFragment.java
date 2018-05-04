@@ -507,7 +507,6 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
         }
 
         GalleryActivity.startToGallery(mActivity, position, imageBeanList, animationRectBeanArrayList);
-        System.out.println("----spend time = " +( System.currentTimeMillis() - start));
     }
 
     @Override

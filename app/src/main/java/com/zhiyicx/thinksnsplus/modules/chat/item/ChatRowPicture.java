@@ -11,12 +11,18 @@ import com.hyphenate.chat.EMImageMessageBody;
 import com.hyphenate.chat.EMMessage;
 import com.hyphenate.easeui.bean.ChatUserInfoBean;
 import com.jakewharton.rxbinding.view.RxView;
+import com.zhiyicx.baseproject.base.TSActivity;
+import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
+import com.zhiyicx.common.utils.ActivityHandler;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.DrawableProvider;
 import com.zhiyicx.common.utils.FileUtils;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.base.TSEaseChatFragment;
 import com.zhiyicx.thinksnsplus.data.beans.AnimationRectBean;
+import com.zhiyicx.thinksnsplus.modules.chat.ChatActivity;
+import com.zhiyicx.thinksnsplus.modules.chat.ChatFragment;
 import com.zhiyicx.thinksnsplus.modules.gallery.GalleryActivity;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 
@@ -112,12 +118,12 @@ public class ChatRowPicture extends ChatBaseRow {
                     if (width > height) {
                         // 宽的长图
                         width = mMaxLocalImageWith;
-                        int tmpHeight = width * 3 / 4;
+                        int tmpHeight = width / 2;
                         height = height > tmpHeight ? tmpHeight : height;
                     } else {
                         // 高的长图
                         width = width > mMaxLocalImageWith ? mMaxLocalImageWith : width;
-                        height = width * 4 / 3;
+                        height = width * 2;
                     }
                 } else {
                     if (width > height) {
@@ -156,6 +162,15 @@ public class ChatRowPicture extends ChatBaseRow {
                         animationRectBeanArrayList.add(rect);
                         GalleryActivity.startToGallery(getContext(), 0, imageBeanList,
                                 animationRectBeanArrayList);
+                        try {
+                            if (ActivityHandler.getInstance().currentActivity() instanceof ChatActivity) {
+                                ((ChatFragment) ((TSActivity) ActivityHandler.getInstance().currentActivity()).getContanierFragment())
+                                        .setNeedRefreshToLast(false);
+
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                     });
 
         } catch (Exception e) {

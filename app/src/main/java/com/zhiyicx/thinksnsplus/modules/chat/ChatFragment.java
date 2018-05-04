@@ -319,11 +319,14 @@ public class ChatFragment extends TSEaseChatFragment<ChatContract.Presenter>
                 Intent intentMap = new Intent(new Intent(getActivity(), SendLocationActivity.class));
                 intentMap.putExtras(new Bundle());
                 startActivityForResult(intentMap, REQUEST_CODE_MAP);
+                mIsNeedRefreshToLast = false;
                 break;
             case ITEM_VIDEO_TS:
                 // 发送视频文件
                 Intent intent = new Intent(getActivity(), ImageGridActivity.class);
                 startActivityForResult(intent, REQUEST_CODE_SELECT_VIDEO);
+                mIsNeedRefreshToLast = false;
+
                 break;
             case ITEM_VIDEO_CALL_TS:
                 // 视频通话
@@ -462,8 +465,9 @@ public class ChatFragment extends TSEaseChatFragment<ChatContract.Presenter>
             if (isUserExit || isUserJoin) {
                 // 只有群聊中才会有 成员 加入or退出的消息
                 mPresenter.updateChatGroupMemberCount(message.conversationId(), 1, isUserJoin);
-                setCenterText(getString(R.string.chat_group_name_default, mPresenter.getGroupName(message.conversationId()), mPresenter.getChatGroupInfo
-                        (message.conversationId())
+                setCenterText(getString(R.string.chat_group_name_default, mPresenter.getGroupName(message.conversationId()), mPresenter
+                        .getChatGroupInfo
+                                (message.conversationId())
                         .getAffiliations_count()));
             }
 
@@ -623,6 +627,7 @@ public class ChatFragment extends TSEaseChatFragment<ChatContract.Presenter>
         } else {
             BaseCallActivity.startVoiceCallActivity(mActivity, toChatUsername, false);
             inputMenu.hideExtendMenuContainer();
+            mIsNeedRefreshToLast = false;
         }
     }
 
@@ -635,6 +640,8 @@ public class ChatFragment extends TSEaseChatFragment<ChatContract.Presenter>
         } else {
             BaseCallActivity.startVideoCallActivity(mActivity, toChatUsername, false);
             inputMenu.hideExtendMenuContainer();
+            mIsNeedRefreshToLast = false;
+
         }
     }
 
