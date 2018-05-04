@@ -172,6 +172,7 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
     @Override
     protected void initData() {
         boolean firstOpenPage = getArguments().getBoolean("firstOpenPage");
+        System.out.println("firstOpenPage = " + firstOpenPage);
         mPreloadSub = Observable.create(subscriber -> {
             DaggerGalleryComponent
                     .builder()
@@ -226,7 +227,7 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
     @Override
     public void onResume() {
         super.onResume();
-        if (getUserVisibleHint() && !mImageIsLoaded) {
+        if (getUserVisibleHint() && !mImageIsLoaded && !getArguments().getBoolean("firstOpenPage")) {
             startLoadProgress();
         }
     }
@@ -287,7 +288,6 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
             mPhotoViewAttacherOrigin.setOnLongClickListener(null);
             mPhotoViewAttacherNormal.setOnLongClickListener(null);
         }
-        startLoadProgress();
         // 显示图片
         loadImage(mImageBean, rect);
         mIsLoaded = true;
@@ -480,6 +480,7 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                         @Override
                         public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
                             LogUtils.i(TAG + "加载原图失败");
+                            startLoadProgress();
                             if (mTvOriginPhoto != null) {
                                 mTvOriginPhoto.setVisibility(View.VISIBLE);
                             }
