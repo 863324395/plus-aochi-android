@@ -108,6 +108,8 @@ public class ChatRowPicture extends ChatBaseRow {
                 width = DEFAULT_IMAGE_MINE_WITH;
             }
 
+            int finalWidth = width;
+            int finalHeight = height;
             // 是否是宽高超出了限制
             boolean isBigImage = width > mMaxLocalImageWith || height > mMaxImageHeight;
             if (isBigImage) {
@@ -143,8 +145,6 @@ public class ChatRowPicture extends ChatBaseRow {
 
             ImageUtils.loadImageDefault(mIvChatContent, url);
 
-            int finalWidth = width;
-            int finalHeight = height;
             RxView.clicks(mIvChatContent)
                     .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
                     .subscribe(aVoid -> {
