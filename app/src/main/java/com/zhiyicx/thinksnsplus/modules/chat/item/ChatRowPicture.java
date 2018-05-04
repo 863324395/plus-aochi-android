@@ -52,13 +52,16 @@ public class ChatRowPicture extends ChatBaseRow {
      */
     private int mMaxImageHeight;
 
+    private int mScreenW;
 
     private AppCompatImageView mIvChatContent;
 
     public ChatRowPicture(Context context, EMMessage message, int position, BaseAdapter adapter, ChatUserInfoBean chatUserInfoBean) {
         super(context, message, position, adapter, chatUserInfoBean);
-        mMaxLocalImageWith = DeviceUtils.getScreenWidth(context) * 4 / 15;
+        mScreenW = DeviceUtils.getScreenWidth(context);
+        mMaxLocalImageWith = mScreenW * 4 / 15;
         mMaxImageHeight = mMaxLocalImageWith * 16 / 9;
+
     }
 
     @Override
@@ -110,31 +113,42 @@ public class ChatRowPicture extends ChatBaseRow {
 
             int finalWidth = width;
             int finalHeight = height;
-            // 是否是宽高超出了限制
-            boolean isBigImage = width > mMaxLocalImageWith || height > mMaxImageHeight;
-            if (isBigImage) {
+            // 是否是长图
+            boolean isLongImage = ImageUtils.isLongImage(height, width);
 
-                boolean isLongImage = ImageUtils.isLongImage(height, width);
-                if (isLongImage) {
-                    // 长图
-                    if (width > height) {
-                        // 宽的长图
-                        width = mMaxLocalImageWith;
-                        int tmpHeight = width / 2;
-                        height = height > tmpHeight ? tmpHeight : height;
-                    } else {
-                        // 高的长图
-                        width = width > mMaxLocalImageWith ? mMaxLocalImageWith : width;
-                        height = width * 2;
-                    }
+            if (isLongImage) {
+                // 长图
+                if (width > height) {
+                    // 宽的长图
+                    width = mMaxLocalImageWith;
+                    int tmpHeight = width / 2;
+                    height = height > tmpHeight ? tmpHeight : height;
                 } else {
-                    if (width > height) {
+                    // 高的长图
+                    width = width > mMaxLocalImageWith ? mMaxLocalImageWith : width;
+                    height = width * 2;
+                }
+            } else {
+                if (width > height) {
+                    if (width > mMaxImageHeight) {
                         height = height * mMaxLocalImageWith / width;
                         width = mMaxLocalImageWith;
-                    } else {
+                    }
+                } else {
+                    if (height > mMaxImageHeight) {
                         width = width * mMaxImageHeight / height;
                         height = mMaxImageHeight;
+                        if (width > mMaxLocalImageWith) {
+                            height = height * mMaxLocalImageWith / width;
+                            width = mMaxLocalImageWith;
+                        }
+                    } else {
+                        if (width > mMaxLocalImageWith) {
+                            height = height * mMaxLocalImageWith / width;
+                            width = mMaxLocalImageWith;
+                        }
                     }
+
                 }
             }
 

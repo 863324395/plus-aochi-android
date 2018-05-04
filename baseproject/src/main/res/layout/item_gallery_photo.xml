@@ -39,6 +39,7 @@
         android:padding="@dimen/loading_padding"
         android:layout_width="@dimen/frame_load_round_size"
         android:layout_height="@dimen/frame_load_round_size"
+        android:visibility="gone"
         android:background="@drawable/round"
         android:src="@drawable/frame_loading_white"
         android:layout_gravity="center"

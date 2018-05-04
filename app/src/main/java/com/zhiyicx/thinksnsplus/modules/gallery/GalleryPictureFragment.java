@@ -72,7 +72,6 @@ import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
@@ -119,7 +118,7 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
     private PayPopWindow mPayPopWindow;
     private boolean mIsLoaded = false;
     private Subscription mPreloadSub;
-
+    private boolean mImageIsLoaded = false;
 
     /**
      * 构造函数
@@ -173,9 +172,6 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
     @Override
     protected void initData() {
         boolean firstOpenPage = getArguments().getBoolean("firstOpenPage");
-        if (firstOpenPage) {
-            ((AnimationDrawable) mPbProgressImage.getDrawable()).start();
-        }
         mPreloadSub = Observable.create(subscriber -> {
             DaggerGalleryComponent
                     .builder()
@@ -207,15 +203,6 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
 
     }
 
-    /**
-     * 预加载
-     */
-    public void preLoadData() {
-        if (!mIsLoaded) {
-            checkAndLoadImage();
-        }
-    }
-
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
@@ -236,6 +223,32 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
         }
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (getUserVisibleHint() && !mImageIsLoaded) {
+            startLoadProgress();
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        stopCenterLoading();
+    }
+
+    /**
+     * 预加载
+     */
+    public void preLoadData() {
+        if (!mIsLoaded) {
+            checkAndLoadImage();
+        }
+    }
+
+    /**
+     * 检查图加载
+     */
     private void checkAndLoadImage() {
         final AnimationRectBean rect = getArguments().getParcelable("rect");
         mImageBean = getArguments() != null ? (ImageBean) getArguments().getParcelable("url") : null;
@@ -274,6 +287,7 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
             mPhotoViewAttacherOrigin.setOnLongClickListener(null);
             mPhotoViewAttacherNormal.setOnLongClickListener(null);
         }
+        startLoadProgress();
         // 显示图片
         loadImage(mImageBean, rect);
         mIsLoaded = true;
@@ -548,10 +562,20 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
     }
 
     /**
+     * 显示中心进度加载
+     */
+    private void startLoadProgress() {
+        if (mPbProgressImage != null && getUserVisibleHint() && mPbProgressImage.getVisibility() == View.GONE) {
+            mPbProgressImage.setVisibility(View.VISIBLE);
+            ((AnimationDrawable) mPbProgressImage.getDrawable()).start();
+        }
+    }
+
+    /**
      * 停止中心加载
      */
     private void stopCenterLoading() {
-        if (mPbProgressImage != null) {
+        if (mPbProgressImage != null && mPbProgressImage.getVisibility() == View.VISIBLE) {
             ((AnimationDrawable) mPbProgressImage.getDrawable()).stop();
             mPbProgressImage.setVisibility(View.GONE);
         }
@@ -754,6 +778,7 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
         @Override
         public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
             super.onResourceReady(resource, glideAnimation);
+            mImageIsLoaded = true;
             stopCenterLoading();
             mPhotoViewAttacherNormal.update();
             // 获取到模糊图进行放大动画
@@ -780,6 +805,7 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
             if (resource == null) {
                 return;
             }
+            mImageIsLoaded = true;
             stopCenterLoading();
 
             if (mIvPager != null) {
