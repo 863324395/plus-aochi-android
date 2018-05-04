@@ -65,12 +65,15 @@ public class ChatBaseRow extends EaseChatRow {
         mMsgStatus = (ImageView) findViewById(R.id.msg_status);
         mProgressBar = (SkinCompatProgressBar) findViewById(R.id.progress_bar);
         mTvMessageStatus = (TextView) findViewById(R.id.tv_message_status);
+        if(mTvMessageStatus!=null) {
+            mTvMessageStatus.setVisibility(GONE);
+        }
         bubbleLayout = findViewById(R.id.rl_chat_bubble);
     }
 
     @Override
     protected void onViewUpdate(EMMessage msg) {
-        mTvMessageStatus.setText(context.getString(msg.isAcked() ? R.string.chat_send_message_read : R.string.chat_send_message_unread));
+//        mTvMessageStatus.setText(context.getString(msg.isAcked() ? R.string.chat_send_message_read : R.string.chat_send_message_unread));
         switch (msg.status()) {
             case CREATE:
                 onMessageCreate();
@@ -92,7 +95,7 @@ public class ChatBaseRow extends EaseChatRow {
     protected void onSetUpView() {
         this.mUserInfoBean = TSEMHyphenate.getInstance().getChatUser(message.getFrom());
         // 头像
-        mTvMessageStatus.setText(context.getString(R.string.chat_send_message_unread));
+//        mTvMessageStatus.setText(context.getString(R.string.chat_send_message_unread));
         ImageUtils.loadUserHead(mUserInfoBean, mIvChatHeadpic, false);
         // 时间
         if (position == 0) {
@@ -162,6 +165,7 @@ public class ChatBaseRow extends EaseChatRow {
         if (mMsgStatus != null) {
             mMsgStatus.setVisibility(View.GONE);
         }
-        mTvMessageStatus.setVisibility(hasRead ? VISIBLE : GONE);
+//        mTvMessageStatus.setVisibility(hasRead ? VISIBLE : GONE);
+        mTvMessageStatus.setVisibility(GONE);
     }
 }
