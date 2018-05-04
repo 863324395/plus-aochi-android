@@ -122,14 +122,16 @@ public class TSEaseChatFragment<P extends IBasePresenter> extends TSEaseBaseFrag
     protected boolean isRoaming = false;
     private ExecutorService fetchQueue;
 
-    @Override
-    protected int getBodyLayoutId() {
-        return R.layout.ease_fragment_chat;
-    }
+    private boolean mIsFirstOnResumeReresh = true;
 
     @Override
     protected boolean showToolbar() {
         return super.showToolbar();
+    }
+
+    @Override
+    protected int getBodyLayoutId() {
+        return R.layout.ease_fragment_chat;
     }
 
     @Override
@@ -160,7 +162,6 @@ public class TSEaseChatFragment<P extends IBasePresenter> extends TSEaseBaseFrag
         if (chatType != EaseConstant.CHATTYPE_SINGLE) {
             messageList.setShowUserNick(true);
         }
-//        messageList.setAvatarShape(1);
         listView = messageList.getListView();
 
         extendMenuItemClickListener = new MyItemClickListener();
@@ -462,10 +463,11 @@ public class TSEaseChatFragment<P extends IBasePresenter> extends TSEaseBaseFrag
     public void onResume() {
         super.onResume();
         TSEMHyphenate.getInstance().setToChatUsername(toChatUsername);
-        if (messageList.getChildCount() > 0) {
+        // 第一次不调用这个
+        if (!mIsFirstOnResumeReresh) {
             resumeRefreshMessageList();
         }
-        resumeRefreshMessageList();
+        mIsFirstOnResumeReresh = false;
         EaseUI.getInstance().pushActivity(getActivity());
         // register the event listener when enter the foreground
         EMClient.getInstance().chatManager().removeMessageListener(this);

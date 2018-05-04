@@ -59,7 +59,7 @@
                     android:layout_gravity="bottom"
                     android:ellipsize="end"
                     android:gravity="center"
-                    android:maxLines="1"
+                    android:singleLine="true"
                     android:paddingLeft="@dimen/spacing_mid_small"
                     android:paddingRight="@dimen/spacing_mid_small"
                     android:layout_marginBottom="@dimen/spacing_normal"

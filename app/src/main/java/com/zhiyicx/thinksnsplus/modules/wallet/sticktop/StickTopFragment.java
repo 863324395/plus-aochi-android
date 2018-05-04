@@ -285,10 +285,10 @@ public class StickTopFragment extends TSFragment<StickTopContract.Presenter> imp
     }
 
     private void setConfirmEnable() {
-        boolean enable = mCurrentDays > 0 && mInputMoneyDouble > 0;
+        boolean enable = mCurrentDays >= 0 && mInputMoneyDouble >= 0;
         mBtTop.setEnabled(enable);
         long money = (long) (mCurrentDays * mInputMoneyDouble);
-        mEtTopTotal.setText(money > 0 ? money + "" : "");
+        mEtTopTotal.setText(money >= 0 ? money + "" : "");
     }
 
     @Override

@@ -52,7 +52,7 @@ public class StickTopPresenter extends AppBasePresenter<StickTopContract.View>
      */
     @Override
     public void stickTop(long parentId) {
-        if (mRootView.getInputMoney() <= 0) {
+        if (mRootView.getInputMoney() < 0) {
             mRootView.initStickTopInstructionsPop();
             return;
         }

@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.chat.select;
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.LinearLayoutManager;
@@ -93,13 +94,22 @@ public class SelectFriendsFragment extends TSListFragment<SelectFriendsContract.
     }
 
     @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        getIntentData();
+    }
+
+    @Override
     protected void initView(View rootView) {
         super.initView(rootView);
         setLoadMorNodataTipText(getString(R.string.no_more_firends));
 
         mSelectedList = new ArrayList<>();
         mSearchResultList = new ArrayList<>();
-        getIntentData();
+
+        if (mChatGroupBean != null) {
+            setCenterText(getString(!mIsDeleteMember ? R.string.chat_edit_group_add_member : R.string.chat_edit_group_remove_member));
+        }
         setLeftTextColor(R.color.themeColor);
         initListener();
     }
@@ -113,6 +123,7 @@ public class SelectFriendsFragment extends TSListFragment<SelectFriendsContract.
                 });
     }
 
+
     /**
      * 获取传递过来的数据，如果是创建会话，那么则不会有传递过来的数据
      */
@@ -120,10 +131,12 @@ public class SelectFriendsFragment extends TSListFragment<SelectFriendsContract.
         if (getArguments() != null) {
             mChatGroupBean = getArguments().getParcelable(BUNDLE_GROUP_EDIT_DATA);
             mIsDeleteMember = getArguments().getBoolean(BUNDLE_GROUP_IS_DELETE);
-            if (mChatGroupBean != null) {
-                setCenterText(getString(!mIsDeleteMember ? R.string.chat_edit_group_add_member : R.string.chat_edit_group_remove_member));
-            }
         }
+    }
+
+    @Override
+    protected boolean isLoadingMoreEnable() {
+        return !mIsDeleteMember;
     }
 
     @Override

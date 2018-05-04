@@ -35,6 +35,11 @@ public class TGridDecoration extends RecyclerView.ItemDecoration {
         this.mFullPadding = fullPadding;
     }
 
+    public TGridDecoration(int left,int top,int right, int bottom, boolean fullPadding) {
+        mSpace = new int[]{right, bottom,left,top};
+        this.mFullPadding = fullPadding;
+    }
+
     @Override
     public void onDraw(Canvas c, RecyclerView parent, RecyclerView.State state) {
         if (mDivider != null) {

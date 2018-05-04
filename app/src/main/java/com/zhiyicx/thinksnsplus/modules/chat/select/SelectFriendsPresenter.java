@@ -308,13 +308,11 @@ public class SelectFriendsPresenter extends AppBasePresenter<SelectFriendsContra
                     } else {
                         List<UserInfoBean> searchResult = new ArrayList<>();
                         for (UserInfoBean userInfoBean : mRootView.getGroupData().getAffiliations()) {
-                            if (userInfoBean.getName().contains(key)) {
+                            if (!TextUtils.isEmpty(userInfoBean.getName()) && userInfoBean.getName().toLowerCase().contains(key.toLowerCase())) {
                                 searchResult.add(userInfoBean);
                             }
                         }
-                        if (!searchResult.isEmpty()) {
                             mRootView.onNetResponseSuccess(searchResult, false);
-                        }
                     }
                 });
     }

@@ -68,15 +68,16 @@ public class EaseChatMessageList extends RelativeLayout{
     public void init(String toChatUsername, int chatType, EaseCustomChatRowProvider customChatRowProvider,EaseChatRow.OnTipMsgClickListener onTipMsgClickListener) {
         this.chatType = chatType;
         this.toChatUsername = toChatUsername;
+        View view=new View(getContext());
+        view.setLayoutParams(new AbsListView.LayoutParams(AbsListView.LayoutParams.MATCH_PARENT,getResources().getDimensionPixelOffset(R.dimen.chat_bottom_footer_height)));
+        listView.addFooterView(view);
         conversation = EMClient.getInstance().chatManager().getConversation(toChatUsername, EaseCommonUtils.getConversationType(chatType), true);
         messageAdapter = new EaseMessageAdapter(context, toChatUsername, chatType, listView, onTipMsgClickListener);
         messageAdapter.setItemStyle(itemStyle);
         messageAdapter.setCustomChatRowProvider(customChatRowProvider);
         // set message adapter AbsListView
         listView.setAdapter(messageAdapter);
-        View view=new View(getContext());
-        view.setLayoutParams(new AbsListView.LayoutParams(AbsListView.LayoutParams.MATCH_PARENT,getResources().getDimensionPixelOffset(R.dimen.chat_bottom_footer_height)));
-        listView.addFooterView(view);
+
         refreshSelectLast();
     }
 

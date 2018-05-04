@@ -101,7 +101,7 @@ public class ChatInfoFragment extends TSFragment<ChatInfoContract.Presenter> imp
     @BindView(R.id.sc_block_message)
     SwitchCompat mScBlockMessage;
     @BindView(R.id.ll_container)
-    LinearLayout mLlContainer;
+    View mLlContainer;
     @BindView(R.id.emptyView)
     EmptyView mEmptyView;
     @BindView(R.id.rl_block_message)
@@ -165,6 +165,15 @@ public class ChatInfoFragment extends TSFragment<ChatInfoContract.Presenter> imp
             mRlBlockMessage.setVisibility(View.GONE);
         } else {
             mPresenter.getGroupChatInfo(mChatId);
+            mEmptyView.setNeedTextTip(false);
+            mEmptyView.setNeedClickLoadState(false);
+            mEmptyView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    showLoadingView();
+                    mPresenter.getGroupChatInfo(mChatId);
+                }
+            });
             // 屏蔽单聊的布局
             mLlSingle.setVisibility(View.GONE);
         }
@@ -178,7 +187,7 @@ public class ChatInfoFragment extends TSFragment<ChatInfoContract.Presenter> imp
         mRvMemberList.setLayoutManager(manager);
         mRvMemberList.addItemDecoration(new TGridDecoration(0, getResources().getDimensionPixelOffset(R.dimen.spacing_large), true));
         dealAddOrDeleteButton();
-        mChatMemberAdapter = new ChatMemberAdapter(getContext(), mChatMembers, -1);
+        mChatMemberAdapter = new ChatMemberAdapter(getContext(), mChatMembers, -1,false);
         mRvMemberList.setAdapter(mChatMemberAdapter);
         mChatMemberAdapter.setOnItemClickListener(new MultiItemTypeAdapter.OnItemClickListener() {
             @Override
@@ -436,15 +445,20 @@ public class ChatInfoFragment extends TSFragment<ChatInfoContract.Presenter> imp
 
     @Override
     public void isShowEmptyView(boolean isShow, boolean isSuccess) {
-        mLlContainer.setVisibility(isShow ? View.GONE : View.VISIBLE);
-        mEmptyView.setErrorType(isShow ? EmptyView.STATE_NETWORK_LOADING : EmptyView.STATE_HIDE_LAYOUT);
+
+        mLlContainer.setVisibility(isSuccess ? View.VISIBLE : View.GONE);
+        if (!isSuccess) {
+            mEmptyView.setVisibility(View.VISIBLE);
+            mEmptyView.setErrorType(EmptyView.STATE_NETWORK_ERROR);
+        } else {
+            mEmptyView.setVisibility(View.GONE);
+        }
         if (!isShow) {
             closeLoadingView();
         }
-        if (!isSuccess) {
-            mEmptyView.setErrorType(EmptyView.STATE_NETWORK_ERROR);
-        }
+
     }
+
 
     @Override
     public String getToUserId() {

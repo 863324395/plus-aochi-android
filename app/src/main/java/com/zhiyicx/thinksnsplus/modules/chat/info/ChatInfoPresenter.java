@@ -177,7 +177,6 @@ public class ChatInfoPresenter extends AppBasePresenter<ChatInfoContract.View>
     @Override
     public void getGroupChatInfo(String groupId) {
         Subscription subscription = mRepository.getGroupChatInfo(groupId)
-                .doOnSubscribe(() -> mRootView.isShowEmptyView(true, true))
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
                 .flatMap(chatGroupBeans -> {
@@ -198,20 +197,17 @@ public class ChatInfoPresenter extends AppBasePresenter<ChatInfoContract.View>
                         mChatGroupBeanGreenDao.saveSingleData(data);
                         mRootView.getGroupInfoSuccess(data);
                         mRootView.isShowEmptyView(false, true);
-                        mRootView.dismissSnackBar();
                     }
 
                     @Override
                     protected void onFailure(String message, int code) {
                         super.onFailure(message, code);
-                        mRootView.showSnackErrorMessage(message);
                         mRootView.isShowEmptyView(false, false);
                     }
 
                     @Override
                     protected void onException(Throwable throwable) {
                         super.onException(throwable);
-                        mRootView.showSnackErrorMessage(throwable.getMessage());
                         mRootView.isShowEmptyView(false, false);
                     }
                 });
