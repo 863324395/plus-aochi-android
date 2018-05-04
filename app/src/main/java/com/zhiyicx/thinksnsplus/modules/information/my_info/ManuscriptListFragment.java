@@ -3,6 +3,7 @@ package com.zhiyicx.thinksnsplus.modules.information.my_info;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -20,6 +21,10 @@ import com.zhiyicx.thinksnsplus.modules.information.publish.detail.EditeInfoDeta
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 
 import javax.inject.Inject;
+
+import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 import static com.zhiyicx.thinksnsplus.modules.information.infodetails.InfoDetailsFragment.BUNDLE_INFO;
 import static com.zhiyicx.thinksnsplus.modules.information.publish.detail.EditeInfoDetailFragment.INFO_REFUSE;
@@ -65,12 +70,32 @@ public class ManuscriptListFragment extends TSListFragment<ManuscriptListContrac
     }
 
     @Override
-    protected void initData() {
-        DaggerManuscriptListComponent.builder()
-                .appComponent(AppApplication.AppComponentHolder.getAppComponent())
-                .manuscripListPresenterModule(new ManuscripListPresenterModule(this))
-                .build().inject(this);
-        super.initData();
+    protected void initView(View rootView) {
+        super.initView(rootView);
+        Observable.create(subscriber -> {
+            DaggerManuscriptListComponent.builder()
+                    .appComponent(AppApplication.AppComponentHolder.getAppComponent())
+                    .manuscripListPresenterModule(new ManuscripListPresenterModule(this))
+                    .build().inject(this);
+            subscriber.onCompleted();
+        }).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new rx.Subscriber<Object>() {
+                    @Override
+                    public void onCompleted() {
+                        initData();
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onNext(Object o) {
+                    }
+                });
+
     }
 
     @Override

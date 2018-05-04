@@ -22,6 +22,10 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
+
 import static com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.POPUPWINDOW_ALPHA;
 import static com.zhiyicx.thinksnsplus.modules.dynamic.list.DynamicFragment.ITEM_SPACING;
 import static com.zhiyicx.thinksnsplus.modules.q_a.detail.question.QuestionDetailActivity.BUNDLE_QUESTION_BEAN;
@@ -104,10 +108,29 @@ public class QA_ListInfoFragment extends TSListFragment<QA_ListInfoConstact.Pres
         super.onCreate(savedInstanceState);
         QA_TYPES = getResources().getStringArray(R.array.qa_net_type);
         mQAInfoType = getArguments().getString(BUNDLE_QA_TYPE);
-        DaggerQA_ListInfoComponent
-                .builder().appComponent(AppApplication.AppComponentHolder.getAppComponent())
-                .qA_listInfoFragmentPresenterModule(new QA_listInfoFragmentPresenterModule(this))
-                .build().inject(this);
+        Observable.create(subscriber -> {
+            DaggerQA_ListInfoComponent
+                    .builder().appComponent(AppApplication.AppComponentHolder.getAppComponent())
+                    .qA_listInfoFragmentPresenterModule(new QA_listInfoFragmentPresenterModule(this))
+                    .build().inject(this);
+            subscriber.onCompleted();
+        }).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new rx.Subscriber<Object>() {
+                    @Override
+                    public void onCompleted() {
+                        initData();
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onNext(Object o) {
+                    }
+                });
 
     }
 

@@ -22,12 +22,13 @@ import rx.Subscription;
 public class ManuscriptListPresenter extends AppBasePresenter<ManuscriptListContract.View>
         implements ManuscriptListContract.Presenter {
 
-    @Inject
     BaseInfoRepository mBaseInfoRepository;
 
     @Inject
-    public ManuscriptListPresenter(ManuscriptListContract.View rootView) {
+    public ManuscriptListPresenter(ManuscriptListContract.View rootView,
+                                   BaseInfoRepository baseInfoRepository) {
         super(rootView);
+        mBaseInfoRepository=baseInfoRepository;
     }
 
     @Override

@@ -33,14 +33,17 @@ import rx.Subscription;
 public class CircleListPresenter extends AppBasePresenter<CircleListContract.View>
         implements CircleListContract.Presenter {
 
-    @Inject
     CircleInfoGreenDaoImpl mCircleInfoGreenDao;
-    @Inject
+
     BaseCircleRepository mBaseCircleRepository;
 
     @Inject
-    public CircleListPresenter(CircleListContract.View rootView) {
+    public CircleListPresenter(CircleListContract.View rootView,
+                               CircleInfoGreenDaoImpl circleInfoGreenDao,
+                               BaseCircleRepository baseCircleRepository) {
         super(rootView);
+        mCircleInfoGreenDao = circleInfoGreenDao;
+        mBaseCircleRepository = baseCircleRepository;
     }
 
     @Override

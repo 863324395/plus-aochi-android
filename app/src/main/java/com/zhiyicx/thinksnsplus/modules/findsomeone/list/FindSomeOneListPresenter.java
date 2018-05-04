@@ -34,12 +34,12 @@ import static com.zhiyicx.thinksnsplus.modules.findsomeone.list.FindSomeOneListF
 @FragmentScoped
 public class FindSomeOneListPresenter extends AppBasePresenter<FindSomeOneListContract.View> implements FindSomeOneListContract.Presenter {
 
-    @Inject
     UserInfoRepository mUserInfoRepository;
 
     @Inject
-    public FindSomeOneListPresenter(FindSomeOneListContract.View rootView) {
+    public FindSomeOneListPresenter(FindSomeOneListContract.View rootView,UserInfoRepository userInfoRepository) {
         super(rootView);
+        mUserInfoRepository = userInfoRepository;
     }
 
     @Override

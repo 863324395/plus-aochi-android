@@ -1,15 +1,14 @@
 package com.zhiyicx.thinksnsplus.modules.circle.all_circle;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
 
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
 import com.zhiyicx.thinksnsplus.modules.circle.detailv2.CircleDetailActivity;
-import com.zhiyicx.thinksnsplus.modules.circle.detailv2.CircleDetailFragment;
 import com.zhiyicx.thinksnsplus.modules.circle.main.adapter.BaseCircleItem;
 import com.zhiyicx.thinksnsplus.modules.circle.main.adapter.CircleListItem;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
@@ -19,6 +18,10 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 import javax.inject.Inject;
+
+import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 /**
  * @author Jliuer
@@ -91,12 +94,36 @@ public class CircleListFragment extends TSListFragment<CircleListContract.Presen
     }
 
     @Override
+    protected void initView(View rootView) {
+        super.initView(rootView);
+        Observable.create(subscriber -> {
+            DaggerCircleListComponent.
+                    builder()
+                    .appComponent(AppApplication.AppComponentHolder.getAppComponent())
+                    .circleListPresenterModule(new CircleListPresenterModule(this))
+                    .build().inject(this);
+            subscriber.onCompleted();
+        }).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new rx.Subscriber<Object>() {
+                    @Override
+                    public void onCompleted() {
+                        initData();
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onNext(Object o) {
+                    }
+                });
+    }
+
+    @Override
     protected void initData() {
-        DaggerCircleListComponent.
-                builder()
-                .appComponent(AppApplication.AppComponentHolder.getAppComponent())
-                .circleListPresenterModule(new CircleListPresenterModule(this))
-                .build().inject(this);
         super.initData();
         mCircleListItem.setPresenter(mPresenter);
     }

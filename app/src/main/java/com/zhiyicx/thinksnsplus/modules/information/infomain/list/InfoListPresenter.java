@@ -36,9 +36,7 @@ import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_UPDATE_LIS
 @FragmentScoped
 public class InfoListPresenter extends AppBasePresenter<InfoMainContract.InfoListView> implements InfoMainContract.InfoListPresenter {
 
-
     InfoListDataBeanGreenDaoImpl mInfoListDataBeanGreenDao;
-
 
     AllAdvertListBeanGreenDaoImpl mAllAdvertListBeanGreenDao;
 

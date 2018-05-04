@@ -32,18 +32,20 @@ import rx.schedulers.Schedulers;
  * @contact email:648129313@qq.com
  */
 @FragmentScoped
-public class RankListPresenter extends AppBasePresenter< RankListContract.View>
+public class RankListPresenter extends AppBasePresenter<RankListContract.View>
         implements RankListContract.Presenter {
 
-    @Inject
     RankIndexBeanGreenDaoImpl mRankIndexBeanGreenDao;
-    
-    @Inject
+
     BaseRankRepository mBaseRankRepository;
 
     @Inject
-    public RankListPresenter(RankListContract.View rootView) {
+    public RankListPresenter(RankListContract.View rootView,
+                             RankIndexBeanGreenDaoImpl rankIndexBeanGreenDao,
+                             BaseRankRepository baseRankRepository) {
         super(rootView);
+        mRankIndexBeanGreenDao = rankIndexBeanGreenDao;
+        mBaseRankRepository = baseRankRepository;
     }
 
     @Override
@@ -206,7 +208,7 @@ public class RankListPresenter extends AppBasePresenter< RankListContract.View>
     @Override
     public void requestCacheData(Long maxId, boolean isLoadMore) {
         List<RankIndexBean> list = mRankIndexBeanGreenDao.getIndexRankList(mRootView.getCategory());
-        mRootView.onCacheResponseSuccess(list,isLoadMore);
+        mRootView.onCacheResponseSuccess(list, isLoadMore);
     }
 
     @Override

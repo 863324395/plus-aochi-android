@@ -30,12 +30,12 @@ import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragm
  */
 public class GalleryPresenter extends AppBasePresenter<GalleryConstract.View> implements GalleryConstract.Presenter {
 
-    @Inject
     DynamicDetailBeanV2GreenDaoImpl mDynamicDetailBeanV2GreenDao;
 
     @Inject
-    public GalleryPresenter(GalleryConstract.View rootView) {
+    public GalleryPresenter(GalleryConstract.View rootView,DynamicDetailBeanV2GreenDaoImpl detailBeanV2GreenDao) {
         super(rootView);
+        mDynamicDetailBeanV2GreenDao = detailBeanV2GreenDao;
     }
 
     @Override

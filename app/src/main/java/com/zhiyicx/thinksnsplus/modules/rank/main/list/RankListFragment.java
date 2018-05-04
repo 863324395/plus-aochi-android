@@ -13,6 +13,10 @@ import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 
 import javax.inject.Inject;
 
+import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
+
 /**
  * @author Catherine
  * @describe
@@ -20,7 +24,7 @@ import javax.inject.Inject;
  * @contact email:648129313@qq.com
  */
 
-public class RankListFragment extends TSListFragment<RankListContract.Presenter, RankIndexBean> implements RankListContract.View{
+public class RankListFragment extends TSListFragment<RankListContract.Presenter, RankIndexBean> implements RankListContract.View {
 
     public static final String BUNDLE_RANK_TYPE = "bundle_rank_type";
 
@@ -29,7 +33,7 @@ public class RankListFragment extends TSListFragment<RankListContract.Presenter,
     @Inject
     RankListPresenter rankListPresenter;
 
-    public RankListFragment instance(Bundle bundle){
+    public RankListFragment instance(Bundle bundle) {
         RankListFragment fragment = new RankListFragment();
         fragment.setArguments(bundle);
         return fragment;
@@ -38,11 +42,30 @@ public class RankListFragment extends TSListFragment<RankListContract.Presenter,
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        DaggerRankListComponent.builder()
-                .appComponent(AppApplication.AppComponentHolder.getAppComponent())
-                .rankListPresenterModule(new RankListPresenterModule(this))
-                .build()
-                .inject(this);
+        Observable.create(subscriber -> {
+            DaggerRankListComponent.builder()
+                    .appComponent(AppApplication.AppComponentHolder.getAppComponent())
+                    .rankListPresenterModule(new RankListPresenterModule(this))
+                    .build()
+                    .inject(this);
+            subscriber.onCompleted();
+        }).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new rx.Subscriber<Object>() {
+                    @Override
+                    public void onCompleted() {
+                        initData();
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onNext(Object o) {
+                    }
+                });
     }
 
     @Override
@@ -63,14 +86,14 @@ public class RankListFragment extends TSListFragment<RankListContract.Presenter,
     @Override
     protected void initData() {
         super.initData();
-        if (mRankIndexBean == null){
+        if (mRankIndexBean == null) {
             mRankIndexBean = (RankIndexBean) getArguments().getSerializable(BUNDLE_RANK_TYPE);
         }
     }
 
     @Override
     protected RecyclerView.Adapter getAdapter() {
-        RankIndexAdapter adapter = new RankIndexAdapter(getContext(), mListDatas,mPresenter);
+        RankIndexAdapter adapter = new RankIndexAdapter(getContext(), mListDatas, mPresenter);
         adapter.setOnItemClickListener(new MultiItemTypeAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
@@ -102,7 +125,7 @@ public class RankListFragment extends TSListFragment<RankListContract.Presenter,
 
     @Override
     public String getCategory() {
-        if (mRankIndexBean == null){
+        if (mRankIndexBean == null) {
             mRankIndexBean = (RankIndexBean) getArguments().getSerializable(BUNDLE_RANK_TYPE);
         }
         return mRankIndexBean == null ? "" : mRankIndexBean.getCategory();
