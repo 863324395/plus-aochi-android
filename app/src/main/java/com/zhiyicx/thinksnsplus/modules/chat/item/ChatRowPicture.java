@@ -130,7 +130,7 @@ public class ChatRowPicture extends ChatBaseRow {
                 }
             } else {
                 if (width > height) {
-                    if (width > mMaxImageHeight) {
+                    if (width > mMaxLocalImageWith) {
                         height = height * mMaxLocalImageWith / width;
                         width = mMaxLocalImageWith;
                     }
