@@ -43,9 +43,14 @@ public class ChatRowText extends ChatBaseRow {
     @Override
     protected void onSetUpView() {
         super.onSetUpView();
-        EMTextMessageBody txtBody = (EMTextMessageBody) message.getBody();
-        // 正文
-        Spannable span = EaseSmileUtils.getSmiledText(context, txtBody.getMessage());
-        mTvChatContent.setText(span, TextView.BufferType.SPANNABLE);
+        try {
+            EMTextMessageBody txtBody = (EMTextMessageBody) message.getBody();
+            // 正文
+            Spannable span = EaseSmileUtils.getSmiledText(context, txtBody.getMessage());
+            mTvChatContent.setText(span, TextView.BufferType.SPANNABLE);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 }

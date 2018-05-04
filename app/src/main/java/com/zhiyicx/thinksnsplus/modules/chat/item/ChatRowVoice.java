@@ -49,37 +49,41 @@ public class ChatRowVoice extends ChatBaseRow{
     @Override
     protected void onSetUpView() {
         super.onSetUpView();
-        EMVoiceMessageBody voiceBody = (EMVoiceMessageBody) message.getBody();
-        int len = voiceBody.getLength();
-        if (len > 0) {
-            mTvVoiceLength.setText(voiceBody.getLength() + "\"");
-            mTvVoiceLength.setVisibility(View.VISIBLE);
-        } else {
-            mTvVoiceLength.setVisibility(View.INVISIBLE);
-        }
-        if (message.direct() == EMMessage.Direct.RECEIVE) {
-            mIvVoicePlay.setImageResource(R.drawable.ico_bofan_grey003);
-        } else {
-            mIvVoicePlay.setImageResource(R.drawable.ico_bofan_black003);
-        }
-        if (message.direct() == EMMessage.Direct.RECEIVE) {
-            LogUtils.d(TAG, "it is receive msg");
-            if (voiceBody.downloadStatus() == EMFileMessageBody.EMDownloadStatus.DOWNLOADING ||
-                    voiceBody.downloadStatus() == EMFileMessageBody.EMDownloadStatus.PENDING) {
-                if (EMClient.getInstance().getOptions().getAutodownloadThumbnail()) {
-                    mProgressBar.setVisibility(View.VISIBLE);
+        try {
+            EMVoiceMessageBody voiceBody = (EMVoiceMessageBody) message.getBody();
+            int len = voiceBody.getLength();
+            if (len > 0) {
+                mTvVoiceLength.setText(voiceBody.getLength() + "\"");
+                mTvVoiceLength.setVisibility(View.VISIBLE);
+            } else {
+                mTvVoiceLength.setVisibility(View.INVISIBLE);
+            }
+            if (message.direct() == EMMessage.Direct.RECEIVE) {
+                mIvVoicePlay.setImageResource(R.drawable.ico_bofan_grey003);
+            } else {
+                mIvVoicePlay.setImageResource(R.drawable.ico_bofan_black003);
+            }
+            if (message.direct() == EMMessage.Direct.RECEIVE) {
+                LogUtils.d(TAG, "it is receive msg");
+                if (voiceBody.downloadStatus() == EMFileMessageBody.EMDownloadStatus.DOWNLOADING ||
+                        voiceBody.downloadStatus() == EMFileMessageBody.EMDownloadStatus.PENDING) {
+                    if (EMClient.getInstance().getOptions().getAutodownloadThumbnail()) {
+                        mProgressBar.setVisibility(View.VISIBLE);
+                    } else {
+                        mProgressBar.setVisibility(View.INVISIBLE);
+                    }
+
                 } else {
                     mProgressBar.setVisibility(View.INVISIBLE);
                 }
-
-            } else {
-                mProgressBar.setVisibility(View.INVISIBLE);
             }
-        }
-        // To avoid the item is recycled by listview and slide to this item again but the animation is stopped.
-        EaseChatRowVoicePlayer voicePlayer = EaseChatRowVoicePlayer.getInstance(getContext());
-        if (voicePlayer != null && voicePlayer.isPlaying() && message.getMsgId().equals(voicePlayer.getCurrentPlayingId())) {
-            startVoicePlayAnimation();
+            // To avoid the item is recycled by listview and slide to this item again but the animation is stopped.
+            EaseChatRowVoicePlayer voicePlayer = EaseChatRowVoicePlayer.getInstance(getContext());
+            if (voicePlayer != null && voicePlayer.isPlaying() && message.getMsgId().equals(voicePlayer.getCurrentPlayingId())) {
+                startVoicePlayAnimation();
+            }
+        }catch (Exception e){
+            e.printStackTrace();
         }
     }
 

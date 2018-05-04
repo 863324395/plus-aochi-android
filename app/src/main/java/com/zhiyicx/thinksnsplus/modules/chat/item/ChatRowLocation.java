@@ -40,8 +40,13 @@ public class ChatRowLocation extends ChatBaseRow{
     @Override
     protected void onSetUpView() {
         super.onSetUpView();
-        EMLocationMessageBody locBody = (EMLocationMessageBody) message.getBody();
-        mTvLocation.setText(locBody.getAddress());
+        try {
+            EMLocationMessageBody locBody = (EMLocationMessageBody) message.getBody();
+            mTvLocation.setText(locBody.getAddress());
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
     }
 
     @Override

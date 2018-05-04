@@ -41,41 +41,45 @@ public class ChatRowVideo extends ChatBaseRow{
     @Override
     protected void onSetUpView() {
         super.onSetUpView();
-        EMVideoMessageBody videoBody = (EMVideoMessageBody) message.getBody();
-        String localThumb = videoBody.getLocalThumb();
-        if (localThumb != null) {
+        try {
+            EMVideoMessageBody videoBody = (EMVideoMessageBody) message.getBody();
+            String localThumb = videoBody.getLocalThumb();
+            if (localThumb != null) {
 
-            showVideoThumbView(localThumb, mIvVideoAvatar, videoBody.getThumbnailUrl(), message);
-        }
-        if (videoBody.getDuration() > 0) {
-            String time = DateUtils.toTime(videoBody.getDuration());
-            mTvVideoLength.setText(time);
-        }
+                showVideoThumbView(localThumb, mIvVideoAvatar, videoBody.getThumbnailUrl(), message);
+            }
+            if (videoBody.getDuration() > 0) {
+                String time = DateUtils.toTime(videoBody.getDuration());
+                mTvVideoLength.setText(time);
+            }
 
-        EMLog.d(TAG,  "video thumbnailStatus:" + videoBody.thumbnailDownloadStatus());
-        if (message.direct() == EMMessage.Direct.RECEIVE) {
-            if (videoBody.thumbnailDownloadStatus() == EMFileMessageBody.EMDownloadStatus.DOWNLOADING ||
-                    videoBody.thumbnailDownloadStatus() == EMFileMessageBody.EMDownloadStatus.PENDING) {
-                mIvVideoAvatar.setImageResource(com.hyphenate.easeui.R.drawable.ease_default_image);
-            } else {
-                // System.err.println("!!!! not back receive, show image directly");
-                mIvVideoAvatar.setImageResource(com.hyphenate.easeui.R.drawable.ease_default_image);
-                if (localThumb != null) {
+            EMLog.d(TAG,  "video thumbnailStatus:" + videoBody.thumbnailDownloadStatus());
+            if (message.direct() == EMMessage.Direct.RECEIVE) {
+                if (videoBody.thumbnailDownloadStatus() == EMFileMessageBody.EMDownloadStatus.DOWNLOADING ||
+                        videoBody.thumbnailDownloadStatus() == EMFileMessageBody.EMDownloadStatus.PENDING) {
+                    mIvVideoAvatar.setImageResource(com.hyphenate.easeui.R.drawable.ease_default_image);
+                } else {
+                    // System.err.println("!!!! not back receive, show image directly");
+                    mIvVideoAvatar.setImageResource(com.hyphenate.easeui.R.drawable.ease_default_image);
+                    if (localThumb != null) {
+                        showVideoThumbView(localThumb, mIvVideoAvatar, videoBody.getThumbnailUrl(), message);
+                    }
+                }
+                return;
+            }else{
+                if (videoBody.thumbnailDownloadStatus() == EMFileMessageBody.EMDownloadStatus.DOWNLOADING ||
+                        videoBody.thumbnailDownloadStatus() == EMFileMessageBody.EMDownloadStatus.PENDING ||
+                        videoBody.thumbnailDownloadStatus() == EMFileMessageBody.EMDownloadStatus.FAILED) {
+                    progressBar.setVisibility(View.INVISIBLE);
+                    mIvVideoAvatar.setImageResource(com.hyphenate.easeui.R.drawable.ease_default_image);
+                } else {
+                    progressBar.setVisibility(View.GONE);
+                    mIvVideoAvatar.setImageResource(com.hyphenate.easeui.R.drawable.ease_default_image);
                     showVideoThumbView(localThumb, mIvVideoAvatar, videoBody.getThumbnailUrl(), message);
                 }
             }
-            return;
-        }else{
-            if (videoBody.thumbnailDownloadStatus() == EMFileMessageBody.EMDownloadStatus.DOWNLOADING ||
-                    videoBody.thumbnailDownloadStatus() == EMFileMessageBody.EMDownloadStatus.PENDING ||
-                    videoBody.thumbnailDownloadStatus() == EMFileMessageBody.EMDownloadStatus.FAILED) {
-                progressBar.setVisibility(View.INVISIBLE);
-                mIvVideoAvatar.setImageResource(com.hyphenate.easeui.R.drawable.ease_default_image);
-            } else {
-                progressBar.setVisibility(View.GONE);
-                mIvVideoAvatar.setImageResource(com.hyphenate.easeui.R.drawable.ease_default_image);
-                showVideoThumbView(localThumb, mIvVideoAvatar, videoBody.getThumbnailUrl(), message);
-            }
+        }catch (Exception e){
+            e.printStackTrace();
         }
     }
 

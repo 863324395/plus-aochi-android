@@ -44,10 +44,14 @@ public class ChatRowFile extends ChatBaseRow{
     @Override
     protected void onSetUpView() {
         super.onSetUpView();
-        EMNormalFileMessageBody fileMessageBody = (EMNormalFileMessageBody) message.getBody();
-        String filePath = fileMessageBody.getLocalUrl();
-        mTvFileName.setText(fileMessageBody.getFileName());
-        mTvFileLength.setText(TextFormater.getDataSize(fileMessageBody.getFileSize()));
+        try {
+            EMNormalFileMessageBody fileMessageBody = (EMNormalFileMessageBody) message.getBody();
+            String filePath = fileMessageBody.getLocalUrl();
+            mTvFileName.setText(fileMessageBody.getFileName());
+            mTvFileLength.setText(TextFormater.getDataSize(fileMessageBody.getFileSize()));
+        }catch (Exception e){
+            e.printStackTrace();
+        }
 //        if (message.direct() == EMMessage.Direct.RECEIVE) {
 //            File file = new File(filePath);
 //            if (file.exists()) {

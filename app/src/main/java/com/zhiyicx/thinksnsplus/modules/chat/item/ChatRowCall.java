@@ -43,20 +43,25 @@ public class ChatRowCall extends ChatBaseRow {
     @Override
     protected void onSetUpView() {
         super.onSetUpView();
-        EMTextMessageBody txtBody = (EMTextMessageBody) message.getBody();
-        mTvChatContent.setText(txtBody.getMessage());
-        if (message.getBooleanAttribute(EaseConstant.MESSAGE_ATTR_IS_VOICE_CALL, false)) {
-            if (message.direct() == EMMessage.Direct.RECEIVE) {
-                mIvCallType.setImageResource(R.mipmap.btn_chat_greyphone);
-            } else {
-                mIvCallType.setImageResource(R.mipmap.btn_chat_bluephone);
+        try {
+            EMTextMessageBody txtBody = (EMTextMessageBody) message.getBody();
+            mTvChatContent.setText(txtBody.getMessage());
+            if (message.getBooleanAttribute(EaseConstant.MESSAGE_ATTR_IS_VOICE_CALL, false)) {
+                if (message.direct() == EMMessage.Direct.RECEIVE) {
+                    mIvCallType.setImageResource(R.mipmap.btn_chat_greyphone);
+                } else {
+                    mIvCallType.setImageResource(R.mipmap.btn_chat_bluephone);
+                }
+            } else if (message.getBooleanAttribute(EaseConstant.MESSAGE_ATTR_IS_VIDEO_CALL, false)) {
+                if (message.direct() == EMMessage.Direct.RECEIVE) {
+                    mIvCallType.setImageResource(R.mipmap.btn_chat_greyvideo);
+                } else {
+                    mIvCallType.setImageResource(R.mipmap.btn_chat_bluevideo);
+                }
             }
-        } else if (message.getBooleanAttribute(EaseConstant.MESSAGE_ATTR_IS_VIDEO_CALL, false)) {
-            if (message.direct() == EMMessage.Direct.RECEIVE) {
-                mIvCallType.setImageResource(R.mipmap.btn_chat_greyvideo);
-            } else {
-                mIvCallType.setImageResource(R.mipmap.btn_chat_bluevideo);
-            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+
     }
 }

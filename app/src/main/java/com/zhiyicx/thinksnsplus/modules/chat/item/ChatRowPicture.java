@@ -69,75 +69,80 @@ public class ChatRowPicture extends ChatBaseRow {
     @Override
     protected void onSetUpView() {
         super.onSetUpView();
-        EMImageMessageBody imageMessageBody = (EMImageMessageBody) message.getBody();
-        // 图片地址
-        int width;
-        int height;
-        String url;
-        // 自己发送的,并且文件还存在
-        boolean isUseLocalImage = message.direct() == EMMessage.Direct.SEND && !TextUtils.isEmpty(imageMessageBody.getLocalUrl()) && FileUtils
-                .isFileExists
-                        (imageMessageBody.getLocalUrl());
-        url = isUseLocalImage ? imageMessageBody.getLocalUrl() : imageMessageBody.getRemoteUrl();
+        try {
+            EMImageMessageBody imageMessageBody = (EMImageMessageBody) message.getBody();
+            // 图片地址
+            int width;
+            int height;
+            String url;
+            // 自己发送的,并且文件还存在
+            boolean isUseLocalImage = message.direct() == EMMessage.Direct.SEND && !TextUtils.isEmpty(imageMessageBody.getLocalUrl()) && FileUtils
+                    .isFileExists
+                            (imageMessageBody.getLocalUrl());
+            url = isUseLocalImage ? imageMessageBody.getLocalUrl() : imageMessageBody.getRemoteUrl();
 
-        if (isUseLocalImage) {
-            // 本地
-            BitmapFactory.Options option = DrawableProvider.getPicsWHByFile(imageMessageBody.getLocalUrl());
-            if (option.outWidth == 0) {
-                width = DEFAULT_IMAGE_SIZE;
-                height = DEFAULT_IMAGE_SIZE;
+            if (isUseLocalImage) {
+                // 本地
+                BitmapFactory.Options option = DrawableProvider.getPicsWHByFile(imageMessageBody.getLocalUrl());
+                if (option.outWidth == 0) {
+                    width = DEFAULT_IMAGE_SIZE;
+                    height = DEFAULT_IMAGE_SIZE;
+                } else {
+                    width = option.outWidth;
+                    height = option.outHeight;
+                    if (width > mMaxLocalImageWith) {
+                        int caculateHeight = (int) (((float) mMaxLocalImageWith / width) * height);
+                        height = caculateHeight > height ? height : caculateHeight;
+                        width = mMaxLocalImageWith;
+                    }
+                }
             } else {
-                width = option.outWidth;
-                height = option.outHeight;
-                if (width > mMaxLocalImageWith) {
-                    int caculateHeight = (int) (((float) mMaxLocalImageWith / width) * height);
-                    height = caculateHeight > height ? height : caculateHeight;
-                    width = mMaxLocalImageWith;
+                width = imageMessageBody.getWidth();
+                height = imageMessageBody.getHeight();
+                if (width > mMaxNetImageWith) {
+                    int calculateHeight = (int) (((float) mMaxNetImageWith / width) * height);
+                    height = calculateHeight > height ? height : calculateHeight;
+                    width = mMaxNetImageWith;
                 }
             }
-        } else {
-            width = imageMessageBody.getWidth();
-            height = imageMessageBody.getHeight();
-            if (width > mMaxNetImageWith) {
-                int calculateHeight = (int) (((float) mMaxNetImageWith / width) * height);
-                height = calculateHeight > height ? height : calculateHeight;
-                width = mMaxNetImageWith;
+            // 给一个最小值
+            if (width < DEFAULT_IMAGE_MINE_SIZE) {
+                height = (int) ((float) DEFAULT_IMAGE_MINE_SIZE / width * height);
+                width = DEFAULT_IMAGE_MINE_SIZE;
             }
+
+
+            RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) mIvChatContent.getLayoutParams();
+            layoutParams.width = width;
+            layoutParams.height = height;
+            mIvChatContent.setLayoutParams(layoutParams);
+
+            ImageUtils.loadImageDefault(mIvChatContent, url);
+
+            int finalWidth = width;
+            int finalHeight = height;
+            RxView.clicks(mIvChatContent)
+                    .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
+                    .subscribe(aVoid -> {
+                        // 跳转查看大图
+                        List<ImageBean> imageBeanList = new ArrayList<>();
+                        ArrayList<AnimationRectBean> animationRectBeanArrayList
+                                = new ArrayList<>();
+                        ImageBean imageBean = new ImageBean();
+                        imageBean.setImgUrl(url);
+                        imageBean.setStorage_id(0);
+                        imageBean.setWidth(finalWidth);
+                        imageBean.setHeight(finalHeight);
+                        imageBeanList.add(imageBean);
+                        AnimationRectBean rect = AnimationRectBean.buildFromImageView(mIvChatContent);
+                        animationRectBeanArrayList.add(rect);
+                        GalleryActivity.startToGallery(getContext(), 0, imageBeanList,
+                                animationRectBeanArrayList);
+                    });
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        // 给一个最小值
-        if (width < DEFAULT_IMAGE_MINE_SIZE) {
-            height = (int) ((float)DEFAULT_IMAGE_MINE_SIZE / width * height);
-            width = DEFAULT_IMAGE_MINE_SIZE;
-        }
-
-
-        RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) mIvChatContent.getLayoutParams();
-        layoutParams.width = width;
-        layoutParams.height = height;
-        mIvChatContent.setLayoutParams(layoutParams);
-
-        ImageUtils.loadImageDefault(mIvChatContent, url);
-
-        int finalWidth = width;
-        int finalHeight = height;
-        RxView.clicks(mIvChatContent)
-                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
-                .subscribe(aVoid -> {
-                    // 跳转查看大图
-                    List<ImageBean> imageBeanList = new ArrayList<>();
-                    ArrayList<AnimationRectBean> animationRectBeanArrayList
-                            = new ArrayList<>();
-                    ImageBean imageBean = new ImageBean();
-                    imageBean.setImgUrl(url);
-                    imageBean.setStorage_id(0);
-                    imageBean.setWidth(finalWidth);
-                    imageBean.setHeight(finalHeight);
-                    imageBeanList.add(imageBean);
-                    AnimationRectBean rect = AnimationRectBean.buildFromImageView(mIvChatContent);
-                    animationRectBeanArrayList.add(rect);
-                    GalleryActivity.startToGallery(getContext(), 0, imageBeanList,
-                            animationRectBeanArrayList);
-                });
 
     }
 

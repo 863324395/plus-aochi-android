@@ -74,11 +74,16 @@ public class ChatRowTipText extends ChatBaseRow {
                 mTvChatTime.setVisibility(GONE);
             }
         }
+        try {
+            EMTextMessageBody txtBody = (EMTextMessageBody) message.getBody();
+            // 正文
+            Spannable span = EaseSmileUtils.getSmiledText(context, txtBody.getMessage());
+            mTvChatContent.setText(span, TextView.BufferType.SPANNABLE);
 
-        EMTextMessageBody txtBody = (EMTextMessageBody) message.getBody();
-        // 正文
-        Spannable span = EaseSmileUtils.getSmiledText(context, txtBody.getMessage());
-        mTvChatContent.setText(span, TextView.BufferType.SPANNABLE);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
 
         ConvertUtils.stringLinkConvert(mTvChatContent, setLiknks(mTvChatContent.getText().toString()), false);
     }
