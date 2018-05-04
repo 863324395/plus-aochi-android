@@ -90,6 +90,7 @@ public class ChatRowPicture extends ChatBaseRow {
                 } else {
                     width = option.outWidth;
                     height = option.outHeight;
+
                     if (width > mMaxLocalImageWith) {
                         int caculateHeight = (int) (((float) mMaxLocalImageWith / width) * height);
                         height = caculateHeight > height ? height : caculateHeight;
