@@ -127,6 +127,7 @@
         <!--图片宽高,如果不设置宽度和高度的话，默认按照图片的宽度和高度来-->
         <attr name="itv_iconWidth" format="dimension|reference"/>
         <attr name="itv_iconHeight" format="dimension|reference"/>
+        <attr name="itv_extroHeight" format="dimension|reference"/>
     </declare-styleable>
 
     <declare-styleable name="PagerRecyclerView">

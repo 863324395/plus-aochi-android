@@ -3,7 +3,6 @@ package com.zhiyicx.thinksnsplus.modules.dynamic.send;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
-import android.media.Image;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
@@ -31,6 +30,7 @@ import com.zhiyicx.baseproject.impl.photoselector.DaggerPhotoSelectorImplCompone
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl;
 import com.zhiyicx.baseproject.impl.photoselector.PhotoSeletorImplModule;
+import com.zhiyicx.baseproject.impl.photoselector.Toll;
 import com.zhiyicx.baseproject.widget.button.CombinationButton;
 import com.zhiyicx.baseproject.widget.imageview.FilterImageView;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
@@ -54,11 +54,14 @@ import com.zhiyicx.thinksnsplus.data.beans.GroupDynamicListBean;
 import com.zhiyicx.thinksnsplus.data.beans.GroupSendDynamicDataBean;
 import com.zhiyicx.thinksnsplus.data.beans.SendDynamicDataBean;
 import com.zhiyicx.thinksnsplus.data.beans.SendDynamicDataBeanV2;
+import com.zhiyicx.thinksnsplus.modules.dynamic.send.picture_toll.PictureTollActivity;
 import com.zhiyicx.thinksnsplus.modules.photopicker.PhotoAlbumDetailsActivity;
 import com.zhiyicx.thinksnsplus.modules.photopicker.PhotoViewActivity;
+import com.zhiyicx.thinksnsplus.modules.photopicker.PhotoViewFragment;
 import com.zhiyicx.thinksnsplus.modules.shortvideo.cover.CoverActivity;
 import com.zhiyicx.thinksnsplus.modules.shortvideo.videostore.VideoSelectActivity;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
+import com.zhiyicx.thinksnsplus.widget.IconTextView;
 import com.zhiyicx.thinksnsplus.widget.UserInfoInroduceInputView;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
@@ -69,6 +72,7 @@ import java.util.List;
 import butterknife.BindView;
 
 import static com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl.TOLLBUNDLE;
+import static com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl.TOLL_TYPE;
 import static com.zhiyicx.baseproject.impl.photoselector.Toll.DOWNLOAD_TOLL_TYPE;
 import static com.zhiyicx.baseproject.impl.photoselector.Toll.LOOK_TOLL;
 import static com.zhiyicx.baseproject.impl.photoselector.Toll.LOOK_TOLL_TYPE;
@@ -185,6 +189,8 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
     private ActionPopupWindow mInstructionsPopupWindow;
 
     private SendDynamicDataBean mSendDynamicDataBean;
+
+    private int mCurrentTollImageBean;
 
     public static SendDynamicFragment initFragment(Bundle bundle) {
         SendDynamicFragment sendDynamicFragment = new SendDynamicFragment();
@@ -515,6 +521,13 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
         super.onActivityResult(requestCode, resultCode, data);
         // 获取图片选择器返回结果
         if (mPhotoSelector != null && dynamicType != SendDynamicDataBean.VIDEO_TEXT_DYNAMIC) {
+            if (requestCode == PhotoViewFragment.REQUEST_CODE) {
+                // 设置收费金额快捷入口返回
+                Toll toll = data.getBundleExtra(TOLL_TYPE).getParcelable(TOLL_TYPE);
+                selectedPhotos.get(mCurrentTollImageBean).setToll(toll);
+                mCommonAdapter.notifyDataSetChanged();
+                return;
+            }
             // 图片选择器界面数据保存操作
             if (data != null) {
                 Bundle tollBundle = new Bundle();
@@ -807,17 +820,19 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                 convertView.getLayoutParams().width = width / ITEM_COLUM;
                 convertView.getLayoutParams().height = width / ITEM_COLUM;
                 final FilterImageView imageView = holder.getView(R.id.iv_dynamic_img);
-                final ImageView paintView = holder.getView(R.id.iv_dynamic_img_paint);
+                final IconTextView paintView = holder.getView(R.id.iv_dynamic_img_paint);
                 final View filterView = holder.getView(R.id.iv_dynamic_img_filter);
                 if (TextUtils.isEmpty(imageBean.getImgUrl())) {
                     // 最后一项作为占位图
                     paintView.setVisibility(View.GONE);
                     filterView.setVisibility(View.GONE);
+                    holder.setVisible(R.id.iv_dynamic_img_video,View.GONE);
                     // 换成摄像图标
                     imageView.setImageResource(dynamicType == SendDynamicDataBean.VIDEO_TEXT_DYNAMIC ?
                             R.mipmap.ico_video_remake : R.mipmap.img_edit_photo_frame);
                     holder.setVisible(R.id.tv_record, dynamicType == SendDynamicDataBean.VIDEO_TEXT_DYNAMIC ? View.VISIBLE : View.GONE);
                 } else {
+                    holder.setVisible(R.id.iv_dynamic_img_video,dynamicType == SendDynamicDataBean.VIDEO_TEXT_DYNAMIC?View.VISIBLE:View.GONE);
                     paintView.setVisibility(isToll ? View.VISIBLE : View.GONE);
                     filterView.setVisibility(isToll ? View.VISIBLE : View.GONE);
                     holder.setVisible(R.id.tv_record, View.GONE);
@@ -828,13 +843,9 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                     if (imageBean.getToll_type() > 0) {
                         hasTollPic = true;
                         filterView.setVisibility(View.VISIBLE);
-                        paintView.setImageResource(R.mipmap.ico_lock);
+                        paintView.setIconRes(R.mipmap.ico_lock);
                     } else {
-                        paintView.setImageResource(R.mipmap.ico_edit_pen);
-                        if (dynamicType == SendDynamicDataBean.VIDEO_TEXT_DYNAMIC) {
-                            paintView.setVisibility(View.VISIBLE);
-                            paintView.setImageResource(R.mipmap.ico_video_recordings_white);
-                        }
+                        paintView.setIconRes(R.mipmap.ico_edit_pen);
                         filterView.setVisibility(View.GONE);
                     }
                     Glide.with(getContext())
@@ -848,6 +859,15 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                     imageView.setIshowGifTag(ImageUtils.imageIsGif(imageBean.getImgMimeType()));
 
                 }
+                paintView.setOnClickListener(v -> {
+                    DeviceUtils.hideSoftKeyboard(getContext(), v);
+                    Intent intent = new Intent(getActivity(), PictureTollActivity.class);
+                    Bundle bundle1 = new Bundle();
+                    bundle1.putParcelable(PhotoViewFragment.OLDTOLL, imageBean);
+                    mCurrentTollImageBean = position;
+                    intent.putExtra(PhotoViewFragment.OLDTOLL, bundle1);
+                    startActivityForResult(intent, PhotoViewFragment.REQUEST_CODE);
+                });
                 imageView.setOnClickListener(v -> {
                     try {
                         DeviceUtils.hideSoftKeyboard(getContext(), v);
@@ -1010,7 +1030,7 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                     ImageBean oldImageBean = oldList.get(i);
                     boolean tollIsSame = newImageBean.getToll() != null && !newImageBean.getToll().equals(oldImageBean.getToll
                             ());
-                    if (!tollIsSame){
+                    if (!tollIsSame) {
                         return true;
                     }
                     if (!oldImageBean.equals(newImageBean)) {

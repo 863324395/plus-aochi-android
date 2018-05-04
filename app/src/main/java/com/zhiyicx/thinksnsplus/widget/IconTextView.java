@@ -52,6 +52,7 @@ public class IconTextView extends View {
     private int mExtroHeight = 10;
     private boolean inTapRegion;
     private int mStartX, mStartY;
+    private Paint.FontMetricsInt mFontMetricsInt;
 
     public enum Direction {
         TOP(0), BOTTOM(1), LEFT(2), RIGHT(3);
@@ -90,6 +91,7 @@ public class IconTextView extends View {
                         .getResources().getDisplayMetrics()));
         mIconWidth = ta.getDimensionPixelSize(R.styleable.IconTextView_itv_iconWidth, 0);
         mIconHeight = ta.getDimensionPixelSize(R.styleable.IconTextView_itv_iconHeight, 0);
+        mExtroHeight = ta.getDimensionPixelSize(R.styleable.IconTextView_itv_extroHeight, 10);
 
         mDrawable = ta.getDrawable(R.styleable.IconTextView_itv_icon);
         mDirection = Direction.values()[ta.getInt(R.styleable.IconTextView_itv_direction, 0)];
@@ -116,6 +118,7 @@ public class IconTextView extends View {
         inTapRegion = false;
         mPaint.getTextBounds(mText, 0, mText.length(), mTextBound);
         fixDrawableSize();
+        mFontMetricsInt =  mPaint.getFontMetricsInt();
     }
 
     private void fixDrawableSize() {
@@ -330,7 +333,7 @@ public class IconTextView extends View {
                         / 2 + 0.5f);
                 mIconBound.left = mCacheBound.left + tempGap;
                 tempGap = (int) ((mCacheBound.height() - mIconHeight) / 2.0f + 0.5f);
-                mIconBound.top = mCacheBound.top + tempGap;
+                mIconBound.top = mCacheBound.top + tempGap + (mFontMetricsInt.ascent-mFontMetricsInt.top)/2;
                 mIconBound.right = mIconBound.left + mIconWidth;
                 mIconBound.bottom = mIconBound.top + mIconHeight;
                 break;
@@ -339,7 +342,7 @@ public class IconTextView extends View {
                         / 2 + 0.5f);
                 mIconBound.left = mCacheBound.right - tempGap - mIconWidth;
                 tempGap = (int) ((mCacheBound.height() - mIconHeight) / 2.0f + 0.5f);
-                mIconBound.top = mCacheBound.top + tempGap;
+                mIconBound.top = mCacheBound.top + tempGap+ (mFontMetricsInt.ascent-mFontMetricsInt.top)/2;
                 mIconBound.right = mCacheBound.right - tempGap;
                 mIconBound.bottom = mIconBound.top + mIconHeight;
                 break;

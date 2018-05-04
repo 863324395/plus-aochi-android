@@ -159,7 +159,7 @@ public class PhotoSelectorImpl implements IPhotoSelector<ImageBean> {
     }
 
     @Override
-    public void getPhotoListFromSelector(int maxCount, ArrayList<String> selectedPhotos, boolean isPreviewEnabled,boolean isShowGif) {
+    public void getPhotoListFromSelector(int maxCount, ArrayList<String> selectedPhotos, boolean isPreviewEnabled, boolean isShowGif) {
         this.maxCount = maxCount;
         // 选择相册
         PhotoPicker.builder()

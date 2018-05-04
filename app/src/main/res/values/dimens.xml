@@ -70,6 +70,7 @@
     <dimen name="send_dynamic_send_container">120dp</dimen>
     <dimen name="send_dynamic_send_button_img">65dp</dimen>
     <dimen name="send_dynamic_close_button_img">50dp</dimen>
+    <dimen name="send_dynamic_set_img_money">30dp</dimen>
     <dimen name="button_send_dynamic_close_container">50.5dp</dimen>
 
     <!--意见反馈-->
