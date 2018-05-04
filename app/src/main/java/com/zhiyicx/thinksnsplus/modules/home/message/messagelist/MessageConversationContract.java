@@ -25,6 +25,12 @@ public interface MessageConversationContract {
      */
     interface View extends ITSListView<MessageItemBeanV2, Presenter> {
         BaseFragment getCurrentFragment();
+
+        /**
+         *
+         * @return 输入框的内容
+         */
+        String getsearchKeyWord();
     }
 
     /**

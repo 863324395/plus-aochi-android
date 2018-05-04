@@ -289,6 +289,13 @@ public class MessageConversationFragment extends TSListFragment<MessageConversat
         });
     }
 
+    /**
+     * @return 输入框的内容
+     */
+    @Override
+    public String getsearchKeyWord() {
+        return mSearchView.getText().toString().trim();
+    }
 
     /**
      * 解绑前的提示选择弹框

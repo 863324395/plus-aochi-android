@@ -617,9 +617,23 @@ public class ImageUtils {
      * @param url
      */
     public static void loadCircleImageDefault(ImageView imageView, String url, int errorResId, int placeResId) {
-
         Glide.with(imageView.getContext())
                 .load(url)
+                .placeholder(placeResId)
+                .error(errorResId)
+                .bitmapTransform(new GlideCircleTransform(imageView.getContext()))
+                .into(imageView);
+    }
+
+    /**
+     * 加载圆图
+     *
+     * @param imageView
+     * @param resId
+     */
+    public static void loadCircleImageDefault(ImageView imageView, int resId, int errorResId, int placeResId) {
+        Glide.with(imageView.getContext())
+                .load(resId)
                 .placeholder(placeResId)
                 .error(errorResId)
                 .bitmapTransform(new GlideCircleTransform(imageView.getContext()))

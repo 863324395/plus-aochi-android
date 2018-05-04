@@ -38,6 +38,10 @@ public interface ITSListView<T, P> extends IBaseView<P> {
      */
     void onResponseError(Throwable throwable, boolean isLoadMore);
 
+    /**
+     * 隐藏刷新动画
+     * @param isLoadMore
+     */
     void hideRefreshState(boolean isLoadMore);
 
     /**

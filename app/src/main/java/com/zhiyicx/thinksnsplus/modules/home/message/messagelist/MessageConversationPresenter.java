@@ -206,6 +206,12 @@ public class MessageConversationPresenter extends AppBasePresenter<MessageConver
     private void getAllConversationV2(boolean isLoadMore) {
         // 已连接才去获取
         if (EMClient.getInstance().isLoggedInBefore() && EMClient.getInstance().isConnected()) {
+
+            if (!TextUtils.isEmpty(mRootView.getsearchKeyWord())) {
+                mRootView.hideRefreshState(isLoadMore);
+                return;
+            }
+
             if (mAllConversaiotnSub != null && !mAllConversaiotnSub.isUnsubscribed()) {
                 mAllConversaiotnSub.unsubscribe();
             }

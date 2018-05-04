@@ -1,32 +1,22 @@
 package com.zhiyicx.thinksnsplus.modules.home.message.messagegroup;
 
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
-import android.view.inputmethod.EditorInfo;
 
 import com.bumptech.glide.Glide;
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMConversation;
 import com.hyphenate.chat.EMGroup;
 import com.hyphenate.easeui.EaseConstant;
-import com.hyphenate.exceptions.HyphenateException;
-import com.jakewharton.rxbinding.widget.RxTextView;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.em.manager.eventbus.TSEMConnectionEvent;
 import com.zhiyicx.baseproject.em.manager.util.TSEMConstants;
-import com.zhiyicx.baseproject.em.manager.util.TSEMessageUtils;
 import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleTransform;
-import com.zhiyicx.common.utils.DeviceUtils;
-import com.zhiyicx.common.utils.HanziToPinyin;
 import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
-import com.zhiyicx.common.utils.recycleviewdecoration.CustomLinearDecoration;
 import com.zhiyicx.thinksnsplus.R;
-import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.ChatGroupBean;
-import com.zhiyicx.thinksnsplus.data.beans.CircleMembers;
 import com.zhiyicx.thinksnsplus.modules.chat.ChatActivity;
 import com.zhiyicx.thinksnsplus.widget.TSSearchView;
 import com.zhy.adapter.recyclerview.CommonAdapter;
@@ -53,9 +43,6 @@ public class MessageGroupListFragment extends TSListFragment<MessageGroupContrac
 
     @BindView(R.id.searchView)
     TSSearchView mSearchView;
-
-    private String mSearchContent;
-    private boolean isSearch;
     private List<ChatGroupBean> cache;
 
     @Override
@@ -66,7 +53,6 @@ public class MessageGroupListFragment extends TSListFragment<MessageGroupContrac
     @Override
     protected void initView(View rootView) {
         super.initView(rootView);
-        mSearchView.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -108,8 +94,17 @@ public class MessageGroupListFragment extends TSListFragment<MessageGroupContrac
 
     @Override
     public void onNetResponseSuccess(@NotNull List<ChatGroupBean> data, boolean isLoadMore) {
+        boolean notSearch = TextUtils.isEmpty(getsearchKeyWord());
+        if (notSearch) {
+            cache = new ArrayList<>(data);
+            mSearchView.setVisibility(data.isEmpty() ? View.GONE : View.VISIBLE);
+        } else {
+            mSearchView.setVisibility(View.VISIBLE);
+        }
         super.onNetResponseSuccess(data, isLoadMore);
-        cache = new ArrayList<>(data);
+        if (!notSearch && mListDatas.isEmpty()) {
+            setEmptyViewVisiable(false);
+        }
     }
 
     @Override
@@ -161,7 +156,7 @@ public class MessageGroupListFragment extends TSListFragment<MessageGroupContrac
 
     @Override
     public String getsearchKeyWord() {
-        return mSearchContent;
+        return mSearchView.getText().toString().trim();
     }
 
     @Subscriber(mode = ThreadMode.MAIN)
@@ -201,23 +196,24 @@ public class MessageGroupListFragment extends TSListFragment<MessageGroupContrac
         });
     }
 
+    /**
+     * 获取
+     *
+     * @param filterStr
+     */
     private void filterData(CharSequence filterStr) {
-        if (mListDatas.isEmpty()) {
+        if (cache.isEmpty()) {
             return;
         }
         if (TextUtils.isEmpty(filterStr)) {
-            isSearch = false;
             mListDatas.clear();
             mListDatas.addAll(cache);
         } else {
-            isSearch = true;
             List<ChatGroupBean> result = new ArrayList<>();
-            for (ChatGroupBean sortModel : mListDatas) {
+            for (ChatGroupBean sortModel : cache) {
                 String name = sortModel.getName();
                 boolean isContent = !TextUtils.isEmpty(name) && name.toLowerCase().contains(filterStr.toString().toLowerCase());
-                boolean isPinyinContent = HanziToPinyin.getInstance().getSpellStr(name).startsWith(HanziToPinyin.getInstance().getSpellStr(filterStr
-                        .toString()));
-                if (isContent || isPinyinContent) {
+                if (isContent) {
                     result.add(sortModel);
                 }
             }
@@ -225,12 +221,17 @@ public class MessageGroupListFragment extends TSListFragment<MessageGroupContrac
             mListDatas.addAll(result);
         }
         refreshData();
+        if (mListDatas.isEmpty()) {
+            setEmptyViewVisiable(false);
+        }
     }
 
+    /**
+     * 获取群列表
+     */
     private void getGroupListData() {
         if (mPresenter != null) {
             mRefreshlayout.autoRefresh(0);
-            mPresenter.requestNetData(DEFAULT_PAGE_MAX_ID, false);
         }
     }
 }

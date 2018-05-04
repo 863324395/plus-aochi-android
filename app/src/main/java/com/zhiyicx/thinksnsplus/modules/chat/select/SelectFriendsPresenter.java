@@ -65,10 +65,10 @@ public class SelectFriendsPresenter extends AppBasePresenter<SelectFriendsContra
 
     @Override
     public void requestNetData(Long maxId, boolean isLoadMore) {
+        String keyWord = mRootView.getSearchKeyWord();
         if (mSearchSub != null && !mSearchSub.isUnsubscribed()) {
             mSearchSub.unsubscribe();
         }
-        String keyWord = mRootView.getSearchKeyWord();
         // 删除用户不需要获取网络数据
         if (!mRootView.getIsDeleteMember()) {
             mSearchSub = mRepository.getUserFriendsList(maxId, keyWord)
@@ -97,6 +97,10 @@ public class SelectFriendsPresenter extends AppBasePresenter<SelectFriendsContra
                     });
             addSubscrebe(mSearchSub);
         } else {
+            if (!TextUtils.isEmpty(keyWord)) {
+                mRootView.hideRefreshState(isLoadMore);
+                return;
+            }
             getLocalUser(keyWord);
         }
 
@@ -312,7 +316,7 @@ public class SelectFriendsPresenter extends AppBasePresenter<SelectFriendsContra
                                 searchResult.add(userInfoBean);
                             }
                         }
-                            mRootView.onNetResponseSuccess(searchResult, false);
+                        mRootView.onNetResponseSuccess(searchResult, false);
                     }
                 });
     }
