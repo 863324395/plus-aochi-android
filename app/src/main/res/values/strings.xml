@@ -1103,4 +1103,5 @@
     <string name="ts_server_version_format">服务器当前版本号：%s</string>
     <string name="review_notificaiton">审核通知</string>
     <string name="no_more_firends">没有更多好友了</string>
+    <string name="integration_pinned_pay_format">%1$d%2$s / %3$d天</string>
 </resources>

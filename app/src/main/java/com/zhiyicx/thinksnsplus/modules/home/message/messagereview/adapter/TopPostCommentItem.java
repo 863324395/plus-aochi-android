@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.home.message.messagereview.adapter;
 
 import android.content.Context;
+import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
@@ -62,11 +63,18 @@ public class TopPostCommentItem extends BaseTopItem implements BaseTopItem.TopRe
         boolean hasImage = !postIsDeleted && postCommentListBean.getPost().getImages() != null && !postCommentListBean.getPost().getImages().isEmpty();
 
         TextView reviewFlag = holder.getTextView(R.id.tv_review);
+        TextView payNum = holder.getTextView(R.id.tv_pay_num);
+
         if (postCommentListBean.getStatus() == TopPostCommentListBean.TOP_REVIEW) {
             reviewFlag.setTextColor(holder.itemView.getResources().getColor(R.color
                     .dyanmic_top_flag));
             reviewFlag.setText(holder.itemView.getResources().getString(R.string.review));
             reviewFlag.setBackgroundResource(R.drawable.shape_bg_circle_box_radus_green);
+
+            payNum.setText(holder.itemView.getResources().getString(R.string.integration_pinned_pay_format, postCommentListBean.getAmount
+                    (), mPresenter.getGoldName(), postCommentListBean.getDay()));
+            payNum.setTextColor(ContextCompat.getColor(holder.itemView.getContext(), R.color.money_gold_light));
+            payNum.setVisibility(View.VISIBLE);
         } else {
             reviewFlag.setBackground(null);
             if (postCommentListBean.getStatus() == TopPostCommentListBean.TOP_REFUSE) {
@@ -76,6 +84,10 @@ public class TopPostCommentItem extends BaseTopItem implements BaseTopItem.TopRe
                 reviewFlag.setTextColor(holder.itemView.getResources().getColor(R.color.general_for_hint));
                 reviewFlag.setText(holder.itemView.getResources().getString(R.string.review_approved));
             }
+            payNum.setText(holder.itemView.getResources().getString(R.string.integration_pinned_pay_format, postCommentListBean.getAmount
+                    (), mPresenter.getGoldName(), postCommentListBean.getDay()));
+            payNum.setTextColor(ContextCompat.getColor(holder.itemView.getContext(), R.color.general_for_hint));
+            payNum.setVisibility(View.VISIBLE);
         }
 
         holder.setVisible(R.id.fl_image_container, hasImage ? View.VISIBLE : View.GONE);
@@ -109,6 +121,7 @@ public class TopPostCommentItem extends BaseTopItem implements BaseTopItem.TopRe
             reviewFlag.setText(holder.itemView.getResources().getString(postIsDeleted ?
                     R.string.review_dynamic_deleted : R.string.review_comment_deleted));
             reviewFlag.setBackground(null);
+            payNum.setVisibility(View.GONE);
         }
 
         List<Link> links = setLinks(holder.itemView.getContext());
