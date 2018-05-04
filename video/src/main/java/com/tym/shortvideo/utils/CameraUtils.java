@@ -42,7 +42,7 @@ public class CameraUtils {
     private static final int Weight = 1000;
 
     // 这里反过来是因为相机的分辨率跟屏幕的分辨率宽高刚好反过来
-    public static Ratio mRatio = Ratio.RATIO_16_9_2_1_1;
+    public static Ratio mRatio = Ratio.RATIO_16_9;
 
     public enum Ratio {
         // 16:9 安卓手机最常见比例

@@ -4,6 +4,7 @@ import android.hardware.Camera;
 
 import com.tym.shortvideo.recodrender.RecordManager;
 import com.tym.shortvideo.utils.CameraUtils;
+import com.tym.shortvideo.utils.DeviceUtils;
 import com.tym.shortvideo.utils.Size;
 
 import java.nio.FloatBuffer;
@@ -64,7 +65,7 @@ public class TextureRotationUtils {
          */
 
         if (is1_1) {
-            if (ratio == CameraUtils.Ratio.RATIO_4_3_2_1_1){
+            if (ratio == CameraUtils.Ratio.RATIO_4_3_2_1_1) {
                 TextureVertices[0] = 0.0f;
                 TextureVertices[1] = 0.0625f;
 
@@ -76,7 +77,7 @@ public class TextureRotationUtils {
 
                 TextureVertices[6] = 1.0f;
                 TextureVertices[7] = 0.9375f;
-            }else if (ratio == CameraUtils.Ratio.RATIO_16_9_2_1_1){
+            } else if (ratio == CameraUtils.Ratio.RATIO_16_9_2_1_1) {
                 TextureVertices[0] = 0.0f;
                 TextureVertices[1] = 0.870625f;
 
@@ -89,7 +90,6 @@ public class TextureRotationUtils {
                 TextureVertices[6] = 1.0f;
                 TextureVertices[7] = 0.109375f;
             }
-//            RecordManager.RECORD_HEIGHT = RecordManager.RECORD_WIDTH = Math.min(size.getHeight(), size.getWidth());
         } else {
             TextureVertices[0] = 0.0f;
             TextureVertices[1] = 0.0f;
@@ -103,8 +103,15 @@ public class TextureRotationUtils {
             TextureVertices[6] = 1.0f;
             TextureVertices[7] = 1.0f;
 
-            RecordManager.RECORD_HEIGHT = Math.max(size.getHeight(), size.getWidth());
-            RecordManager.RECORD_WIDTH = Math.min(size.getHeight(), size.getWidth());
+            if (ratio == CameraUtils.Ratio.RATIO_16_9) {
+                RecordManager.RECORD_WIDTH = DeviceUtils.getScreenWidth();
+                RecordManager.RECORD_HEIGHT = DeviceUtils.getScreenHeight();
+            } else if (ratio == CameraUtils.Ratio.RATIO_4_3) {
+                RecordManager.RECORD_HEIGHT = DeviceUtils.getScreenHeight();
+                RecordManager.RECORD_WIDTH = (int)(DeviceUtils.getScreenHeight() * ratio.getRatio());
+            }
+
+
         }
     }
 
