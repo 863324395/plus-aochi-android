@@ -212,8 +212,11 @@ public class BaseMessageRepository implements IBaseMessageRepository {
                             ChatGroupBean chatGroupBean = mChatGroupBeanGreenDao.getChatGroupBeanById(chatGroupId);
 
                             if (chatGroupBean == null) {
-                                groupIds.append(chatGroupId);
-                                groupIds.append(",");
+                                // 之前在这里也许重复创建了会话 ，fix by tym on 2018-5-4 16:09:22
+                                if (groupIds.indexOf(chatGroupId) == -1) {
+                                    groupIds.append(chatGroupId);
+                                    groupIds.append(",");
+                                }
                             } else {
                                 itemBeanV2.setEmKey(chatGroupBean.getId());
                                 itemBeanV2.setList(chatGroupBean.getAffiliations());

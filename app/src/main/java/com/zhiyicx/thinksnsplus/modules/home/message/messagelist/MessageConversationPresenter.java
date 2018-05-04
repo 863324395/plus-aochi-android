@@ -397,8 +397,10 @@ public class MessageConversationPresenter extends AppBasePresenter<MessageConver
                                 EMConversation conversationOld = mRootView.getListDatas().get(i).getConversation();
                                 if (conversationOld.conversationId().equals(conversationNew.conversationId())) {
                                     // 直接替换会话
+                                    // 之前在这里也许重复创建了会话 ，fix by tym on 2018-5-4 15:47:24
                                     MessageItemBeanV2 itemBeanV2 = mRootView.getListDatas().get(i);
                                     itemBeanV2.setConversation(conversationNew);
+                                    messageItemBeanV2List.add(itemBeanV2);
                                     break;
                                 } else if (i == size - 1) {
                                     // 循环到最后一条，仍然没有会话，那则证明是需要新增一条到会话列表
