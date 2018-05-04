@@ -172,7 +172,6 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
     @Override
     protected void initData() {
         boolean firstOpenPage = getArguments().getBoolean("firstOpenPage");
-        System.out.println("firstOpenPage = " + firstOpenPage);
         mPreloadSub = Observable.create(subscriber -> {
             DaggerGalleryComponent
                     .builder()
@@ -705,7 +704,9 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
             public void run() {
             }
         };
+       
         TransferImageAnimationUtil.startInAnim(rect, mIvPager, endAction, mFlImageContaienr);
+
     }
 
     /**
