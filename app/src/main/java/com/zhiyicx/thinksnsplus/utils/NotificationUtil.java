@@ -75,6 +75,11 @@ public class NotificationUtil {
         notiUtil.postChatNotification(jpushMessageBean, chatId);
     }
 
+    public static void cancelAllNotification(Context context){
+        NotificationUtil notiUtil = new NotificationUtil(context);
+        notiUtil.cancelAllNotification();
+    }
+
     /**
      * 普通的Notification
      */
@@ -138,13 +143,7 @@ public class NotificationUtil {
         builder.setNumber(1);
         Notification notification = builder.build();
         notification.flags = Notification.FLAG_AUTO_CANCEL;
-        try {
-            int id = Integer.parseInt(chatId);
-            notificationManager.notify(id, notification);
-        } catch (Exception e) {
-            LogUtils.e("chat id is invalid id:"+chatId);
-        }
-
+        notificationManager.notify(chatId,0, notification);
     }
 
     /**

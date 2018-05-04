@@ -39,6 +39,7 @@ import com.zhiyicx.thinksnsplus.modules.password.changepassword.ChangePasswordAc
 import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBActivity
 import com.zhiyicx.thinksnsplus.modules.settings.account.AccountManagementActivity
 import com.zhiyicx.thinksnsplus.modules.settings.blacklist.BlackListActivity
+import com.zhiyicx.thinksnsplus.utils.NotificationUtil
 import java.util.concurrent.TimeUnit
 
 /**
@@ -304,6 +305,7 @@ class SettingsFragment : TSFragment<SettingsContract.Presenter>(), SettingsContr
                 .with(activity)
                 .item2ClickListener {
                     if (mPresenter.loginOut()) {
+                        NotificationUtil.cancelAllNotification(context)
                         startActivity(Intent(activity, LoginActivity::class.java))
                     }
                     mLoginoutPopupWindow!!.hide()

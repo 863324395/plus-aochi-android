@@ -399,7 +399,6 @@ public class MessageConversationPresenter extends AppBasePresenter<MessageConver
                                     // 直接替换会话
                                     MessageItemBeanV2 itemBeanV2 = mRootView.getListDatas().get(i);
                                     itemBeanV2.setConversation(conversationNew);
-                                    messageItemBeanV2List.add(itemBeanV2);
                                     break;
                                 } else if (i == size - 1) {
                                     // 循环到最后一条，仍然没有会话，那则证明是需要新增一条到会话列表
