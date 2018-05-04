@@ -70,6 +70,7 @@ import butterknife.BindView;
 import butterknife.OnClick;
 import rx.Observable;
 import rx.Subscriber;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
@@ -117,10 +118,27 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
     private boolean hasAnim = false;
     private PayPopWindow mPayPopWindow;
     private boolean mIsLoaded = false;
+    private Subscription mPreloadSub;
 
-    @Override
-    protected boolean useEventBus() {
-        return true;
+
+    /**
+     * 构造函数
+     *
+     * @param imageBean
+     * @param rect
+     * @param animationIn
+     * @return
+     */
+    public static GalleryPictureFragment newInstance(ImageBean imageBean, AnimationRectBean rect,
+                                                     boolean animationIn, boolean firstOpenPage) {
+        GalleryPictureFragment fragment = new GalleryPictureFragment();
+        Bundle bundle = new Bundle();
+        bundle.putParcelable("url", imageBean);
+        bundle.putParcelable("rect", rect);
+        bundle.putBoolean("animationIn", animationIn);
+        bundle.putBoolean("firstOpenPage", firstOpenPage);
+        fragment.setArguments(bundle);
+        return fragment;
     }
 
     @Override
@@ -132,7 +150,6 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         hasAnim = getArguments().getBoolean("animationIn");
-
     }
 
     @Override
@@ -159,7 +176,7 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
         if (firstOpenPage) {
             ((AnimationDrawable) mPbProgressImage.getDrawable()).start();
         }
-        Observable.create(subscriber -> {
+        mPreloadSub = Observable.create(subscriber -> {
             DaggerGalleryComponent
                     .builder()
                     .appComponent(AppApplication.AppComponentHolder.getAppComponent())
@@ -187,6 +204,7 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                     public void onNext(Object o) {
                     }
                 });
+
     }
 
     /**
@@ -274,6 +292,9 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
         return mImageBean;
     }
 
+    /**
+     * 付费后需要重新加载图片
+     */
     @Override
     public void reLoadImage() {
         checkAndLoadImage();
@@ -299,6 +320,12 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
         return false;
     }
 
+    /**
+     * 图片查看下载
+     *
+     * @param v
+     * @return
+     */
     @Override
     public boolean onLongClick(View v) {
         if (mActionPopupWindow == null) {
@@ -323,7 +350,7 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
         }
 
         mActionPopupWindow.show();
-        return false;
+        return true;
     }
 
     @Override
@@ -384,26 +411,6 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
 
         }
         getSaveBitmapResultObservable(bitmap, glideUrl.toStringUrl());
-    }
-
-    /**
-     * 构造函数
-     *
-     * @param imageBean
-     * @param rect
-     * @param animationIn
-     * @return
-     */
-    public static GalleryPictureFragment newInstance(ImageBean imageBean, AnimationRectBean rect,
-                                                     boolean animationIn, boolean firstOpenPage) {
-        GalleryPictureFragment fragment = new GalleryPictureFragment();
-        Bundle bundle = new Bundle();
-        bundle.putParcelable("url", imageBean);
-        bundle.putParcelable("rect", rect);
-        bundle.putBoolean("animationIn", animationIn);
-        bundle.putBoolean("firstOpenPage", firstOpenPage);
-        fragment.setArguments(bundle);
-        return fragment;
     }
 
     /**
@@ -540,6 +547,9 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
         }
     }
 
+    /**
+     * 停止中心加载
+     */
     private void stopCenterLoading() {
         if (mPbProgressImage != null) {
             ((AnimationDrawable) mPbProgressImage.getDrawable()).stop();
@@ -547,7 +557,9 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
         }
     }
 
-    // 加载原图:
+    /**
+     * 加载原图
+     */
     private void loadOriginImage(ImageBean imageBean) {
         final int w, h;
         w = screenW;
@@ -816,6 +828,14 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
         super.onDestroyView();
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (mPreloadSub != null && !mPreloadSub.isUnsubscribed()) {
+            mPreloadSub.unsubscribe();
+        }
+    }
+
     private void initCenterPopWindow(int resId) {
         if (mPresenter == null) {
             return;
@@ -883,9 +903,13 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
             }
         }
 
-
     }
 
+    /**
+     * 下载原图进度回调
+     *
+     * @param msg
+     */
     private void onMessageHandle(Message msg) {
         // 这部分的图片，都是通过 OKHttp 从网络获取的，如果改图片从 glide缓 存中读取，不会经过这儿
         if (msg.what == ProgressListener.SEND_LOAD_PROGRESS && mTvOriginPhoto != null) {
