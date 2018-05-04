@@ -86,7 +86,7 @@ public class EaseMessageAdapter extends BaseAdapter {
 
     // reference to conversation object in chatsdk
     private EMConversation conversation;
-    EMMessage[] messages = null;
+    private List<EMMessage> messages = new ArrayList<>();
     /**
      * 当前聊天的用户列表
      */
@@ -122,6 +122,9 @@ public class EaseMessageAdapter extends BaseAdapter {
         if (mRefershSub != null && !mRefershSub.isUnsubscribed()) {
             mRefershSub.unsubscribe();
         }
+        final int what = data.getInt(HANDLER_TYPE);
+        final int position = data.getInt(HANDLER_POSITION);
+
         mRefershSub = Observable.just("")
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
@@ -129,9 +132,17 @@ public class EaseMessageAdapter extends BaseAdapter {
                     @Override
                     public String call(String wahtTmp) {
                         List<EMMessage> var = conversation.getAllMessages();
-                        messages = var.toArray(new EMMessage[var.size()]);
-                        conversation.markAllMessagesAsRead();
+
+                        if (what == HANDLER_MESSAGE_SEEK_TO) {
+                            messages.addAll(0, var.subList(0, position + 1));
+                            conversation.markAllMessagesAsRead();
+                        } else {
+                            messages.clear();
+                            messages.addAll(var);
+                            conversation.markAllMessagesAsRead();
+                        }
                         return wahtTmp;
+
                     }
                 })
                 .observeOn(AndroidSchedulers.mainThread())
@@ -142,16 +153,13 @@ public class EaseMessageAdapter extends BaseAdapter {
                             // 页面被释放
                             return;
                         }
-                        int what = data.getInt(HANDLER_TYPE);
                         switch (what) {
-
                             case HANDLER_MESSAGE_SELECT_LAST:
-                                notifyDataSetChanged();
-                                if (messages != null && messages.length > 0) {
+                                if (messages != null && messages.size() > 0) {
                                     listView.post(new Runnable() {
                                         @Override
                                         public void run() {
-                                            listView.setSelection(messages.length - 1);
+                                            listView.setSelection(messages.size() - 1);
                                         }
                                     });
                                 }
@@ -160,18 +168,18 @@ public class EaseMessageAdapter extends BaseAdapter {
                                 notifyDataSetChanged();
                                 break;
                             case HANDLER_MESSAGE_SEEK_TO:
-                                final int position = data.getInt(HANDLER_POSITION);
-                                notifyDataSetChanged();
                                 listView.post(new Runnable() {
                                     @Override
                                     public void run() {
-                                        listView.setSelection(position);
+                                        listView.setSelection(position + 1 > getCount() - 1 ? position : (position + 1));
                                     }
                                 });
                                 break;
                             default:
+                                notifyDataSetChanged();
                                 break;
                         }
+
                     }
                 }, new Action1<Throwable>() {
                     @Override
@@ -179,13 +187,10 @@ public class EaseMessageAdapter extends BaseAdapter {
                         throwable.printStackTrace();
                     }
                 });
-
-
     }
 
 
     public void refresh() {
-        System.out.println(" = ---------------refresh--------------=");
         Bundle bundle = new Bundle();
         bundle.putInt(HANDLER_TYPE, HANDLER_MESSAGE_REFRESH_LIST);
         refreshList(bundle);
@@ -195,7 +200,6 @@ public class EaseMessageAdapter extends BaseAdapter {
      * refresh and select the last
      */
     public void refreshSelectLast() {
-        System.out.println(" = ---------------refreshSelectLast--------------=");
         Bundle bundle = new Bundle();
         bundle.putInt(HANDLER_TYPE, HANDLER_MESSAGE_SELECT_LAST);
         refreshList(bundle);
@@ -206,7 +210,6 @@ public class EaseMessageAdapter extends BaseAdapter {
      * refresh and seek to the position
      */
     public void refreshSeekTo(int position) {
-        System.out.println(" = ---------------refreshSeekTo--------------=" + position);
         Bundle bundle = new Bundle();
         bundle.putInt(HANDLER_TYPE, HANDLER_MESSAGE_SEEK_TO);
         bundle.putInt(HANDLER_POSITION, position);
@@ -215,8 +218,8 @@ public class EaseMessageAdapter extends BaseAdapter {
 
     @Override
     public EMMessage getItem(int position) {
-        if (messages != null && position < messages.length) {
-            return messages[position];
+        if (position < messages.size()) {
+            return messages.get(position);
         }
         return null;
     }
@@ -231,7 +234,7 @@ public class EaseMessageAdapter extends BaseAdapter {
      */
     @Override
     public int getCount() {
-        return messages == null ? 0 : messages.length;
+        return messages.size();
     }
 
     /**
