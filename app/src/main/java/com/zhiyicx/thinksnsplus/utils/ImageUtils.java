@@ -658,9 +658,9 @@ public class ImageUtils {
      * @return
      */
     public static boolean isLongImage(float netHeight, float netWidth) {
-        float net = netHeight / netWidth;
+        float ratio = netHeight / netWidth;
         float result = 0;
-        if (net >= 3 || net <= .3f) {
+        if (ratio >= 3 || ratio <= .3f) {
 
             result = getmWidthPixels() / netWidth;
 

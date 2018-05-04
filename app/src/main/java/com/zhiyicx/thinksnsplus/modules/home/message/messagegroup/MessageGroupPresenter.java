@@ -20,6 +20,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import rx.Observable;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
@@ -50,7 +51,7 @@ public class MessageGroupPresenter extends AppBasePresenter<MessageGroupContract
             return;
         }
 
-        Observable.just(maxId.intValue())
+        Subscription subscribe = Observable.just(maxId.intValue())
                 .subscribeOn(Schedulers.io())
                 .flatMap((Func1<Integer, Observable<List<ChatGroupBean>>>) integer -> {
                     try {
@@ -89,11 +90,12 @@ public class MessageGroupPresenter extends AppBasePresenter<MessageGroupContract
                         mRootView.onResponseError(throwable, false);
                     }
                 });
+        addSubscrebe(subscribe);
     }
 
     @Override
     public void checkGroupExist(String id) {
-        Observable.just(id)
+        Subscription subscribe = Observable.just(id)
                 .subscribeOn(Schedulers.io())
                 .map(s -> {
                     EMGroup group = null;
@@ -111,6 +113,7 @@ public class MessageGroupPresenter extends AppBasePresenter<MessageGroupContract
                         mRootView.checkGroupExist(id, data);
                     }
                 });
+        addSubscrebe(subscribe);
 
     }
 

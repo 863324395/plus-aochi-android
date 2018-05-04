@@ -34,24 +34,25 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
  */
 
 public class ChatRowPicture extends ChatBaseRow {
-    private static final int DEFAULT_IMAGE_MINE_SIZE = 350;
-    private static final int DEFAULT_IMAGE_SIZE = 400;
+    private static final int DEFAULT_IMAGE_MINE_WITH = 200;
+    private static final int DEFAULT_IMAGE_SIZE = 200;
+
     /**
-     * 显示本地图片最大为屏幕 1/3
+     * 显示图片最大为屏幕 1/3
      */
     private int mMaxLocalImageWith;
     /**
-     * 网络图片通过计算去掉周边数据获得 / 或者使用和本地图片一样的规则
+     * 显示图片最大的高度，为最大宽度的20：9
      */
-    private int mMaxNetImageWith;
+    private int mMaxImageHeight;
 
 
     private AppCompatImageView mIvChatContent;
 
     public ChatRowPicture(Context context, EMMessage message, int position, BaseAdapter adapter, ChatUserInfoBean chatUserInfoBean) {
         super(context, message, position, adapter, chatUserInfoBean);
-        mMaxLocalImageWith = DeviceUtils.getScreenWidth(context) *4/ 15;
-        mMaxNetImageWith = DeviceUtils.getScreenWidth(context)*4/ 15;
+        mMaxLocalImageWith = DeviceUtils.getScreenWidth(context) * 4 / 15;
+        mMaxImageHeight = mMaxLocalImageWith * 16 / 9;
     }
 
     @Override
@@ -71,9 +72,9 @@ public class ChatRowPicture extends ChatBaseRow {
         super.onSetUpView();
         try {
             EMImageMessageBody imageMessageBody = (EMImageMessageBody) message.getBody();
-            // 图片地址
             int width;
             int height;
+            // 图片地址
             String url;
             // 自己发送的,并且文件还存在
             boolean isUseLocalImage = message.direct() == EMMessage.Direct.SEND && !TextUtils.isEmpty(imageMessageBody.getLocalUrl()) && FileUtils
@@ -90,28 +91,44 @@ public class ChatRowPicture extends ChatBaseRow {
                 } else {
                     width = option.outWidth;
                     height = option.outHeight;
-
-                    if (width > mMaxLocalImageWith) {
-                        int caculateHeight = (int) (((float) mMaxLocalImageWith / width) * height);
-                        height = caculateHeight > height ? height : caculateHeight;
-                        width = mMaxLocalImageWith;
-                    }
                 }
             } else {
                 width = imageMessageBody.getWidth();
                 height = imageMessageBody.getHeight();
-                if (width > mMaxNetImageWith) {
-                    int calculateHeight = (int) (((float) mMaxNetImageWith / width) * height);
-                    height = calculateHeight > height ? height : calculateHeight;
-                    width = mMaxNetImageWith;
-                }
             }
             // 给一个最小值
-            if (width < DEFAULT_IMAGE_MINE_SIZE) {
-                height = (int) ((float) DEFAULT_IMAGE_MINE_SIZE / width * height);
-                width = DEFAULT_IMAGE_MINE_SIZE;
+            if (width < DEFAULT_IMAGE_MINE_WITH) {
+                height = DEFAULT_IMAGE_MINE_WITH * height / width;
+                width = DEFAULT_IMAGE_MINE_WITH;
             }
 
+            // 是否是宽高超出了限制
+            boolean isBigImage = width > mMaxLocalImageWith || height > mMaxImageHeight;
+            if (isBigImage) {
+
+                boolean isLongImage = ImageUtils.isLongImage(height, width);
+                if (isLongImage) {
+                    // 长图
+                    if (width > height) {
+                        // 宽的长图
+                        width = mMaxLocalImageWith;
+                        int tmpHeight = width * 3 / 4;
+                        height = height > tmpHeight ? tmpHeight : height;
+                    } else {
+                        // 高的长图
+                        width = width > mMaxLocalImageWith ? mMaxLocalImageWith : width;
+                        height = width * 4 / 3;
+                    }
+                } else {
+                    if (width > height) {
+                        height = height * mMaxLocalImageWith / width;
+                        width = mMaxLocalImageWith;
+                    } else {
+                        width = width * mMaxImageHeight / height;
+                        height = mMaxImageHeight;
+                    }
+                }
+            }
 
             RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) mIvChatContent.getLayoutParams();
             layoutParams.width = width;
@@ -146,6 +163,7 @@ public class ChatRowPicture extends ChatBaseRow {
         }
 
     }
+
 
     @Override
     protected void onViewUpdate(EMMessage msg) {
