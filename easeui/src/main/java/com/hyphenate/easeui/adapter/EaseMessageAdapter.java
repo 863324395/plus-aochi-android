@@ -16,6 +16,7 @@ package com.hyphenate.easeui.adapter;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
@@ -48,6 +49,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import rx.Observable;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
@@ -58,7 +60,8 @@ public class EaseMessageAdapter extends BaseAdapter {
     private final static String TAG = "msg";
 
     private Context context;
-
+    private static final String HANDLER_TYPE = "hanlder_type";
+    private static final String HANDLER_POSITION = "hanlder_positon";
     private static final int HANDLER_MESSAGE_REFRESH_LIST = 0;
     private static final int HANDLER_MESSAGE_SELECT_LAST = 1;
     private static final int HANDLER_MESSAGE_SEEK_TO = 2;
@@ -101,6 +104,7 @@ public class EaseMessageAdapter extends BaseAdapter {
 
     private ListView listView;
     private EaseMessageListItemStyle itemStyle;
+    private Subscription mRefershSub;
 
     public EaseMessageAdapter(Context context, String username, int chatType, ListView listView, EaseChatRow.OnTipMsgClickListener
             onTipMsgClickListener) {
@@ -112,67 +116,79 @@ public class EaseMessageAdapter extends BaseAdapter {
     }
 
 
-    Handler handler = new Handler() {
-        private void refreshList(android.os.Message msg) {
-            // you should not call getAllMessages() in UI thread
-            // otherwise there is problem when refreshing UI and there is new message arrive
-            Observable.just(msg)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(Schedulers.io())
-                    .map(new Func1<android.os.Message, android.os.Message>() {
-                        @Override
-                        public android.os.Message call(android.os.Message wahtTmp) {
-                            java.util.List<EMMessage> var = conversation.getAllMessages();
-                            messages = var.toArray(new EMMessage[var.size()]);
-                            conversation.markAllMessagesAsRead();
-                            return wahtTmp;
+    private void refreshList(final Bundle data) {
+        // you should not call getAllMessages() in UI thread
+        // otherwise there is problem when refreshing UI and there is new message arrive
+        if (mRefershSub != null && !mRefershSub.isUnsubscribed()) {
+            mRefershSub.unsubscribe();
+        }
+        mRefershSub = Observable.just("")
+                .subscribeOn(Schedulers.io())
+                .observeOn(Schedulers.io())
+                .map(new Func1<String, String>() {
+                    @Override
+                    public String call(String wahtTmp) {
+                        List<EMMessage> var = conversation.getAllMessages();
+                        messages = var.toArray(new EMMessage[var.size()]);
+                        conversation.markAllMessagesAsRead();
+                        return wahtTmp;
+                    }
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<String>() {
+                    @Override
+                    public void call(String wahtData) {
+                        if (listView == null) {
+                            // 页面被释放
+                            return;
                         }
-                    })
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Action1<android.os.Message>() {
-                        @Override
-                        public void call(android.os.Message wahtData) {
-                            switch (wahtData.what) {
+                        int what = data.getInt(HANDLER_TYPE);
+                        switch (what) {
 
-                                case HANDLER_MESSAGE_SELECT_LAST:
-                                    notifyDataSetChanged();
-                                    if (messages != null && messages.length > 0) {
-                                        listView.setSelection(messages.length - 1);
+                            case HANDLER_MESSAGE_SELECT_LAST:
+                                notifyDataSetChanged();
+                                if (messages != null && messages.length > 0) {
+                                    listView.post(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            listView.setSelection(messages.length - 1);
+                                        }
+                                    });
+                                }
+                                break;
+                            case HANDLER_MESSAGE_REFRESH_LIST:
+                                notifyDataSetChanged();
+                                break;
+                            case HANDLER_MESSAGE_SEEK_TO:
+                                final int position = data.getInt(HANDLER_POSITION);
+                                notifyDataSetChanged();
+                                listView.post(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        listView.setSelection(position);
                                     }
-                                    break;
-                                case HANDLER_MESSAGE_REFRESH_LIST:
-                                    notifyDataSetChanged();
-                                    break;
-                                case HANDLER_MESSAGE_SEEK_TO:
-                                    int position = wahtData.arg1;
-                                    notifyDataSetChanged();
-                                    listView.setSelection(position);
-                                    break;
-                                default:
-                                    break;
-                            }
+                                });
+                                break;
+                            default:
+                                break;
                         }
-                    }, new Action1<Throwable>() {
-                        @Override
-                        public void call(Throwable throwable) {
-                            throwable.printStackTrace();
-                        }
-                    });
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        throwable.printStackTrace();
+                    }
+                });
 
-        }
 
-        @Override
-        public void handleMessage(android.os.Message message) {
-            refreshList(message);
-        }
-    };
+    }
+
 
     public void refresh() {
         System.out.println(" = ---------------refresh--------------=");
-        if (handler.hasMessages(HANDLER_MESSAGE_REFRESH_LIST)) {
-            return;
-        }
-        handler.sendMessage(handler.obtainMessage(HANDLER_MESSAGE_REFRESH_LIST));
+        Bundle bundle = new Bundle();
+        bundle.putInt(HANDLER_TYPE, HANDLER_MESSAGE_REFRESH_LIST);
+        refreshList(bundle);
     }
 
     /**
@@ -180,10 +196,10 @@ public class EaseMessageAdapter extends BaseAdapter {
      */
     public void refreshSelectLast() {
         System.out.println(" = ---------------refreshSelectLast--------------=");
+        Bundle bundle = new Bundle();
+        bundle.putInt(HANDLER_TYPE, HANDLER_MESSAGE_SELECT_LAST);
+        refreshList(bundle);
 
-        handler.removeMessages(HANDLER_MESSAGE_REFRESH_LIST);
-        handler.removeMessages(HANDLER_MESSAGE_SELECT_LAST);
-        handler.sendEmptyMessageDelayed(HANDLER_MESSAGE_SELECT_LAST, 50);
     }
 
     /**
@@ -191,10 +207,10 @@ public class EaseMessageAdapter extends BaseAdapter {
      */
     public void refreshSeekTo(int position) {
         System.out.println(" = ---------------refreshSeekTo--------------=" + position);
-
-        Message msg = handler.obtainMessage(HANDLER_MESSAGE_SEEK_TO);
-        msg.arg1 = position;
-        handler.sendMessage(msg);
+        Bundle bundle = new Bundle();
+        bundle.putInt(HANDLER_TYPE, HANDLER_MESSAGE_SEEK_TO);
+        bundle.putInt(HANDLER_POSITION, position);
+        refreshList(bundle);
     }
 
     @Override

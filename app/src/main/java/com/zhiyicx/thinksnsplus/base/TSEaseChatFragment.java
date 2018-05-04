@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.base;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.ClipboardManager;
@@ -68,13 +69,16 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import rx.Observable;
+
 /**
  * @author Jliuer
  * @Date 18/02/01 11:46
  * @Email Jliuer@aliyun.com
  * @Description 环信 聊天界面 fragment 基类
  */
-public class TSEaseChatFragment<P extends IBasePresenter> extends TSEaseBaseFragment<P> implements EMMessageListener {
+public class TSEaseChatFragment<P extends IBasePresenter> extends TSEaseBaseFragment<P> implements EMMessageListener, SwipeRefreshLayout
+        .OnRefreshListener {
     protected static final String TAG = "EaseChatFragment";
     protected static final int REQUEST_CODE_MAP = 1;
     protected static final int REQUEST_CODE_CAMERA = 2;
@@ -310,6 +314,7 @@ public class TSEaseChatFragment<P extends IBasePresenter> extends TSEaseBaseFrag
         }
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     protected void onMessageListInit(EaseChatRow.OnTipMsgClickListener onTipMsgClickListener) {
         messageList.init(toChatUsername, chatType, chatFragmentHelper != null ?
                 chatFragmentHelper.onSetCustomChatRowProvider() : null, onTipMsgClickListener);
@@ -360,16 +365,17 @@ public class TSEaseChatFragment<P extends IBasePresenter> extends TSEaseBaseFrag
         });
     }
 
+    /**
+     * 下拉加载更多
+     */
     protected void setRefreshLayoutListener() {
-        swipeRefreshLayout.setOnRefreshListener(() -> new Handler().postDelayed(() -> {
-            if (!isRoaming) {
-                loadMoreLocalMessage();
-            } else {
-                loadMoreRoamingMessages();
-            }
-        }, 500));
+        swipeRefreshLayout.setOnRefreshListener(this);
+
     }
 
+    /**
+     * 本地加载更多
+     */
     private void loadMoreLocalMessage() {
         if (listView.getFirstVisiblePosition() == 0 && !isloading && haveMoreData) {
             List<EMMessage> messages;
@@ -596,6 +602,23 @@ public class TSEaseChatFragment<P extends IBasePresenter> extends TSEaseBaseFrag
         if (isMessageListInited) {
             messageList.refresh();
         }
+    }
+
+    /**
+     * 下拉加载更多回调
+     */
+    @Override
+    public void onRefresh() {
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (!isRoaming) {
+                    loadMoreLocalMessage();
+                } else {
+                    loadMoreRoamingMessages();
+                }
+            }
+        }, 200);
     }
 
     /**
