@@ -16,6 +16,11 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import rx.Observable;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
+
 /**
  * @Describe 找人列表页
  * @Author Jungle68
@@ -37,7 +42,7 @@ public class FindSomeOneListFragment extends TSListFragment<FindSomeOneListContr
     public static final String PAGE_TYPE = "page_type";
 
     @Inject
-    FindSomeOneListPresenter mFollowFansListPresenter;
+    FindSomeOneListPresenter mFindSomeOneListPresenter;
     /**
      * 页面类型，由上一个页面决定
      */
@@ -68,13 +73,39 @@ public class FindSomeOneListFragment extends TSListFragment<FindSomeOneListContr
 
     @Override
     protected void initView(View rootView) {
-        DaggerFindSomeOneListPresenterComponent
-                .builder()
-                .appComponent(AppApplication.AppComponentHolder.getAppComponent())
-                .findSomeOneListPresenterModule(new FindSomeOneListPresenterModule(FindSomeOneListFragment.this))
-                .build().inject(FindSomeOneListFragment.this);
         super.initView(rootView);
+        Observable.create(subscriber -> {
+            DaggerFindSomeOneListPresenterComponent
+                    .builder()
+                    .appComponent(AppApplication.AppComponentHolder.getAppComponent())
+                    .findSomeOneListPresenterModule(new FindSomeOneListPresenterModule(FindSomeOneListFragment.this))
+                    .build().inject(FindSomeOneListFragment.this);
+            subscriber.onCompleted();
+        }).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<Object>() {
+                    @Override
+                    public void onCompleted() {
+                        initData();
+                    }
 
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onNext(Object o) {
+                    }
+                });
+    }
+
+
+    @Override
+    protected void initData() {
+        if (mPresenter != null) {
+            super.initData();
+        }
     }
 
     @Override
@@ -104,7 +135,9 @@ public class FindSomeOneListFragment extends TSListFragment<FindSomeOneListContr
 
     @Override
     protected void requestNetData(Long maxId, boolean isLoadMore) {
-        mPresenter.requestNetData(maxId, isLoadMore, pageType);
+        if (mPresenter != null) {
+            mPresenter.requestNetData(maxId, isLoadMore, pageType);
+        }
     }
 
     public static FindSomeOneListFragment initFragment(Bundle bundle) {

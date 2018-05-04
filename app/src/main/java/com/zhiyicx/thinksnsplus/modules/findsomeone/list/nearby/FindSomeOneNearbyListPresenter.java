@@ -45,11 +45,9 @@ public class FindSomeOneNearbyListPresenter extends AppBasePresenter<FindSomeOne
         .Presenter, GeocodeSearch.OnGeocodeSearchListener {
 
     public static final int DEFAULT_NEARBY_RADIUS = 50000; // 搜索范围，单位 M
-    @Inject
+
     FollowFansBeanGreenDaoImpl mFollowFansBeanGreenDao;
 
-
-    @Inject
     UserInfoRepository mUserInfoRepository;
 
     LatLonPoint mLatLonPoint;
@@ -57,8 +55,12 @@ public class FindSomeOneNearbyListPresenter extends AppBasePresenter<FindSomeOne
     private boolean mIsConverLocation;
 
     @Inject
-    public FindSomeOneNearbyListPresenter(FindSomeOneNearbyListContract.View rootView) {
+    public FindSomeOneNearbyListPresenter(FindSomeOneNearbyListContract.View rootView,
+                                          UserInfoRepository userInfoRepository,
+                                          FollowFansBeanGreenDaoImpl followFansBeanGreenDao) {
         super(rootView);
+        mFollowFansBeanGreenDao = followFansBeanGreenDao;
+        mUserInfoRepository = userInfoRepository;
     }
 
     @Override

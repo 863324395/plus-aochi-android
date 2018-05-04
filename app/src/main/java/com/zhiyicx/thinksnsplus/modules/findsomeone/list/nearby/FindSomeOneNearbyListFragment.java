@@ -12,6 +12,11 @@ import com.zhy.adapter.recyclerview.CommonAdapter;
 
 import javax.inject.Inject;
 
+import rx.Observable;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
+
 /**
  * @Describe 附近的人列表页
  * @Author Jungle68
@@ -41,13 +46,38 @@ public class FindSomeOneNearbyListFragment extends TSListFragment<FindSomeOneNea
 
     @Override
     protected void initView(View rootView) {
-        DaggerFindSomeOneNearbyListPresenterComponent
-                .builder()
-                .appComponent(AppApplication.AppComponentHolder.getAppComponent())
-                .findSomeOneNearbyListPresenterModule(new FindSomeOneNearbyListPresenterModule(this))
-                .build().inject(this);
-
         super.initView(rootView);
+        Observable.create(subscriber -> {
+            DaggerFindSomeOneNearbyListPresenterComponent
+                    .builder()
+                    .appComponent(AppApplication.AppComponentHolder.getAppComponent())
+                    .findSomeOneNearbyListPresenterModule(new FindSomeOneNearbyListPresenterModule(this))
+                    .build().inject(this);
+            subscriber.onCompleted();
+        }).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<Object>() {
+                    @Override
+                    public void onCompleted() {
+                        initData();
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onNext(Object o) {
+                    }
+                });
+    }
+
+    @Override
+    protected void initData() {
+        if (mPresenter != null) {
+            super.initData();
+        }
     }
 
     @Override
