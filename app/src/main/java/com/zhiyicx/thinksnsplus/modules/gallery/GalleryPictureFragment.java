@@ -878,7 +878,7 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
         @Override
         public void handleMessage(Message msg) {
             GalleryPictureFragment fragment = mFragment.get();
-            if (fragment != null) {
+            if (fragment != null && fragment.getUserVisibleHint()) {
                 fragment.onMessageHandle(msg);
             }
         }
@@ -891,10 +891,9 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
         if (msg.what == ProgressListener.SEND_LOAD_PROGRESS && mTvOriginPhoto != null) {
             int totalReadBytes = msg.arg1;
             int lengthBytes = msg.arg2;
-            int progressResult = (int) (((float) totalReadBytes / (float) lengthBytes) * 100);
+            int progressResult = totalReadBytes * 100 / lengthBytes;
             mTvOriginPhoto.setText(String.format(Locale.getDefault(), "%d%%", progressResult));
-            LogUtils.i("progress-result:-->" + progressResult + " msg.arg1-->" + msg.arg1 + "  msg.arg2-->" +
-                    msg.arg2 + " 比例-->" + progressResult + "%/" + "100%");
+
             if (progressResult == 100) {
                 mTvOriginPhoto.setText(R.string.completed);
             }
