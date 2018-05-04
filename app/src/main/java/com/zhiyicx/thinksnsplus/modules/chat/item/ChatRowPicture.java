@@ -50,8 +50,8 @@ public class ChatRowPicture extends ChatBaseRow {
 
     public ChatRowPicture(Context context, EMMessage message, int position, BaseAdapter adapter, ChatUserInfoBean chatUserInfoBean) {
         super(context, message, position, adapter, chatUserInfoBean);
-        mMaxLocalImageWith = DeviceUtils.getScreenWidth(context) / 3;
-        mMaxNetImageWith = DeviceUtils.getScreenWidth(context) / 3;
+        mMaxLocalImageWith = DeviceUtils.getScreenWidth(context) *4/ 15;
+        mMaxNetImageWith = DeviceUtils.getScreenWidth(context)*4/ 15;
     }
 
     @Override

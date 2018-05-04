@@ -545,8 +545,10 @@ public class ImageUtils {
     public static String imagePathConvertV2(int storage, int w, int h, int part) {
         if (part == IMAGE_100_ZIP) {
             return String.format(Locale.getDefault(), ApiConfig.APP_DOMAIN + ApiConfig.IMAGE_PATH_V2_ORIGIN, storage);
-
         } else {
+            if (part < 40) {
+                part = 40;
+            }
             return String.format(Locale.getDefault(), ApiConfig.APP_DOMAIN + ApiConfig.IMAGE_PATH_V2, storage, w, h, part);
         }
 
