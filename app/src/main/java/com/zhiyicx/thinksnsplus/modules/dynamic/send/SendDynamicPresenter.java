@@ -52,13 +52,6 @@ public class SendDynamicPresenter extends AppBasePresenter<SendDynamicContract.V
             dynamicBean.setImages(new ArrayList<>());
         }
 
-//        if (mRootView.getDynamicSendData().getDynamicBelong() == SendDynamicDataBean.GROUP_DYNAMIC
-//                && (dynamicBean.getTitle() == null || dynamicBean.getTitle().isEmpty())) {
-//            mRootView.initInstructionsPop(mContext.getString(R.string.instructions),
-//                    mContext.getString(R.string.group_dynamic_send_must_has_title));
-//            return;
-//        }
-
         GroupSendDynamicDataBean groupSendDynamicDataBean = new GroupSendDynamicDataBean();
         groupSendDynamicDataBean.setGroup_post_mark(dynamicBean.getFeed_mark());
         groupSendDynamicDataBean.setGroup_id(dynamicBean.getGroup_id());
@@ -97,7 +90,7 @@ public class SendDynamicPresenter extends AppBasePresenter<SendDynamicContract.V
 
         if (mRootView.hasTollVerify()) {
             // 当设置图片收费时，最少配置一张图
-            mRootView.initInstructionsPop(mContext.getString(R.string.instructions),
+            mRootView.initInstructionsPop(
                     mContext.getString(R.string.dynamic_send_toll_toll_verify));
             return;
         }
@@ -105,7 +98,7 @@ public class SendDynamicPresenter extends AppBasePresenter<SendDynamicContract.V
         int wordLimit = getSystemConfigBean().getFeed().getLimit();
         wordLimit = wordLimit > 0 ? wordLimit : 50;
         if (mRootView.wordsNumLimit() && contentLenght <= wordLimit) {
-            mRootView.initInstructionsPop(mContext.getString(R.string.instructions), String.format(mContext.getString(R.string
+            mRootView.initInstructionsPop(String.format(mContext.getString(R.string
                     .dynamic_send_toll_notes), wordLimit));
             return;
         }
@@ -113,7 +106,7 @@ public class SendDynamicPresenter extends AppBasePresenter<SendDynamicContract.V
                 || mRootView.getTollMoney() != (long) mRootView.getTollMoney();
         if (wordsLimit) {
             // 文字收费金额整数限制
-            mRootView.initInstructionsPop(mContext.getString(R.string.instructions), String.format(Locale.getDefault(),
+            mRootView.initInstructionsPop(String.format(Locale.getDefault(),
                     mContext.getResources().getString(R.string.limit_monye_death), getGoldName()));
             return;
         }

@@ -29,21 +29,53 @@ public interface SendDynamicContract {
          */
         SendDynamicDataBean getDynamicSendData();
 
+        /**
+         * 是否付费认证
+         *
+         * @return
+         */
         boolean hasTollVerify();
 
+        /**
+         * 打包动态图片数据信息v2
+         *
+         * @param sendDynamicDataBeanV2
+         */
         void packageDynamicStorageDataV2(SendDynamicDataBeanV2 sendDynamicDataBeanV2);
+
+        /**
+         * 打包动态图片数据信息
+         *
+         * @param sendDynamicDataBeanV2
+         */
         void packageGroupDynamicStorageData(GroupSendDynamicDataBean sendDynamicDataBeanV2);
 
+        /**
+         * @return 付费金额
+         */
         double getTollMoney();
 
+        /**
+         * @return true 文字金额长度过了收费
+         */
         boolean wordsNumLimit();
+
+        /**
+         * @return true  需要处理适配
+         */
         boolean needCompressVideo();
 
-        void initInstructionsPop(String title,String des);
+        /**
+         * 提示弹框
+         *
+         * @param des
+         */
+        void initInstructionsPop(String des);
     }
 
     interface Presenter extends IBaseTouristPresenter {
         void sendGroupDynamic(GroupDynamicListBean dynamicBean);
+
         void sendDynamicV2(DynamicDetailBeanV2 dynamicBean);
     }
 }

@@ -277,7 +277,6 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
     private void initTollState() {
         boolean canPay = mPresenter.getSystemConfigBean().getFeed().hasPaycontrol();
         mTvToll.setVisibility(canPay && dynamicType != SendDynamicDataBean.VIDEO_TEXT_DYNAMIC ? View.VISIBLE : View.GONE);
-        mTollLine.setVisibility(canPay && dynamicType != SendDynamicDataBean.VIDEO_TEXT_DYNAMIC ? View.GONE : View.VISIBLE);
 
     }
 
@@ -826,13 +825,13 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                     // 最后一项作为占位图
                     paintView.setVisibility(View.GONE);
                     filterView.setVisibility(View.GONE);
-                    holder.setVisible(R.id.iv_dynamic_img_video,View.GONE);
+                    holder.setVisible(R.id.iv_dynamic_img_video, View.GONE);
                     // 换成摄像图标
                     imageView.setImageResource(dynamicType == SendDynamicDataBean.VIDEO_TEXT_DYNAMIC ?
                             R.mipmap.ico_video_remake : R.mipmap.img_edit_photo_frame);
                     holder.setVisible(R.id.tv_record, dynamicType == SendDynamicDataBean.VIDEO_TEXT_DYNAMIC ? View.VISIBLE : View.GONE);
                 } else {
-                    holder.setVisible(R.id.iv_dynamic_img_video,dynamicType == SendDynamicDataBean.VIDEO_TEXT_DYNAMIC?View.VISIBLE:View.GONE);
+                    holder.setVisible(R.id.iv_dynamic_img_video, dynamicType == SendDynamicDataBean.VIDEO_TEXT_DYNAMIC ? View.VISIBLE : View.GONE);
                     paintView.setVisibility(isToll ? View.VISIBLE : View.GONE);
                     filterView.setVisibility(isToll ? View.VISIBLE : View.GONE);
                     holder.setVisible(R.id.tv_record, View.GONE);
@@ -961,11 +960,7 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
             }
             if (mSendDynamicDataBean.getDynamicBelong() == SendDynamicDataBean.GROUP_DYNAMIC) {
                 isFromGroup = true;
-//                mEtDynamicTitle.setVisibility(View.VISIBLE);
-//                mTitleUnderLine.setVisibility(View.VISIBLE);
                 mTvToll.setVisibility(View.GONE);
-                mTollLine.setVisibility(View.GONE);
-
             }
         }
         switch (dynamicType) {
@@ -1043,19 +1038,17 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
     }
 
     @Override
-    public void initInstructionsPop(String title, String des) {
+    public void initInstructionsPop(String des) {
         DeviceUtils.hideSoftKeyboard(getContext(), mRootView);
         if (mInstructionsPopupWindow != null) {
             mInstructionsPopupWindow = mInstructionsPopupWindow.newBuilder()
-                    .item1Str(title)
-                    .desStr(des)
+                    .item1Str(des)
                     .build();
             mInstructionsPopupWindow.show();
             return;
         }
         mInstructionsPopupWindow = ActionPopupWindow.builder()
-                .item1Str(title)
-                .desStr(des)
+                .item1Str(des)
                 .bottomStr(getString(R.string.cancel))
                 .isOutsideTouch(true)
                 .isFocus(true)
