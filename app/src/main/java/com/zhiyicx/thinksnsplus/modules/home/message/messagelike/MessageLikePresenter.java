@@ -3,7 +3,9 @@ package com.zhiyicx.thinksnsplus.modules.home.message.messagelike;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
+import com.zhiyicx.thinksnsplus.data.beans.CommentedBean;
 import com.zhiyicx.thinksnsplus.data.beans.DigedBean;
+import com.zhiyicx.thinksnsplus.data.beans.UserFollowerCountBean;
 import com.zhiyicx.thinksnsplus.data.source.local.DigedBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
 
@@ -14,7 +16,9 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import rx.Observable;
 import rx.Subscription;
+import rx.functions.Func1;
 
 /**
  * @Describe
@@ -37,7 +41,8 @@ public class MessageLikePresenter extends AppBasePresenter<MessageLikeContract.V
 
     @Override
     public void requestNetData(Long maxId, final boolean isLoadMore) {
-        Subscription commentSub = mUserInfoRepository.getMyDiggs(maxId.intValue())
+        Subscription commentSub = mUserInfoRepository.clearUserMessageCount(UserFollowerCountBean.UserBean.MESSAGE_TYPE_FOLLOWING)
+                .flatMap((Func1<Object, Observable<List<DigedBean>>>) o -> mUserInfoRepository.getMyDiggs(maxId.intValue()))
                 .subscribe(new BaseSubscribeForV2<List<DigedBean>>() {
                     @Override
                     protected void onSuccess(List<DigedBean> data) {

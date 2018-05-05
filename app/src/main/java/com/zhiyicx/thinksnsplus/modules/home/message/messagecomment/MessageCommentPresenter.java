@@ -5,20 +5,25 @@ import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
+import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.CommentedBean;
+import com.zhiyicx.thinksnsplus.data.beans.UserFollowerCountBean;
 import com.zhiyicx.thinksnsplus.data.source.local.CommentedBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.CommentRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
 
 import org.jetbrains.annotations.NotNull;
+import org.simple.eventbus.EventBus;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
 
+import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
 
 /**
  * @Describe
@@ -33,6 +38,7 @@ public class MessageCommentPresenter extends AppBasePresenter<MessageCommentCont
     CommentedBeanGreenDaoImpl mCommentedBeanGreenDao;
     @Inject
     UserInfoRepository mUserInfoRepository;
+
     @Inject
     public MessageCommentPresenter(MessageCommentContract.View rootView) {
         super(rootView);
@@ -40,7 +46,8 @@ public class MessageCommentPresenter extends AppBasePresenter<MessageCommentCont
 
     @Override
     public void requestNetData(Long maxId, final boolean isLoadMore) {
-        Subscription commentSub = mUserInfoRepository.getMyComments(maxId.intValue())
+        Subscription commentSub = mUserInfoRepository.clearUserMessageCount(UserFollowerCountBean.UserBean.MESSAGE_TYPE_FOLLOWING)
+                .flatMap((Func1<Object, Observable<List<CommentedBean>>>) o -> mUserInfoRepository.getMyComments(maxId.intValue()))
                 .subscribe(new BaseSubscribeForV2<List<CommentedBean>>() {
                     @Override
                     protected void onSuccess(List<CommentedBean> data) {
