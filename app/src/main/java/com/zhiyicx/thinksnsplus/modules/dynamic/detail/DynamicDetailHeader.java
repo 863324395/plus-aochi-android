@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -327,7 +328,7 @@ public class DynamicDetailHeader {
 
     Bitmap getSharBitmap() {
         if (sharBitmap == null) {
-            sharBitmap = ConvertUtils.drawBg4Bitmap(0xffffff, BitmapFactory.decodeResource(mContent
+            sharBitmap = ConvertUtils.drawBg4Bitmap(ContextCompat.getColor(mContext,R.color.white), BitmapFactory.decodeResource(mContent
                     .getResources(), R.mipmap.icon).copy(Bitmap.Config.RGB_565, true));
         }
         return sharBitmap;

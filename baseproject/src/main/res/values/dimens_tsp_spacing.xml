@@ -51,8 +51,9 @@
     动态详情页；
     文章详情页；
     资讯详情页；音乐播放歌词内容等。
+    伟哥说的改小
     -->
-    <item name="line_spacing_Multiplier_big" format="float" type="dimen">1.7</item>
+    <item name="line_spacing_Multiplier_big" format="float" type="dimen">1.5</item>
     <!--#########################################      tsp 间距定义       ################################-->
 
 </resources>
