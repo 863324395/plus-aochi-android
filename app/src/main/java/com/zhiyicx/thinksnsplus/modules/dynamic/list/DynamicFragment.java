@@ -3,6 +3,7 @@ package com.zhiyicx.thinksnsplus.modules.dynamic.list;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
@@ -192,6 +193,11 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
     }
 
     @Override
+    protected boolean isNeedRefreshDataWhenComeIn() {
+        return !ApiConfig.DYNAMIC_TYPE_FOLLOWS.equals(mDynamicType);
+    }
+
+    @Override
     public void onStart() {
         super.onStart();
         if (mDynamicBannerHeader != null) {
@@ -228,6 +234,13 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
     @Override
     protected int getBodyLayoutId() {
         return R.layout.fragment_list_with_input;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mDynamicType = getArguments().getString(BUNDLE_DYNAMIC_TYPE);
+
     }
 
     @Override
@@ -302,7 +315,6 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
     @Override
     protected void initData() {
         if (mPresenter != null) {
-            mDynamicType = getArguments().getString(BUNDLE_DYNAMIC_TYPE);
             super.initData();
         }
     }
