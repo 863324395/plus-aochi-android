@@ -76,6 +76,7 @@ import static com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl.TOLL_
 import static com.zhiyicx.baseproject.impl.photoselector.Toll.DOWNLOAD_TOLL_TYPE;
 import static com.zhiyicx.baseproject.impl.photoselector.Toll.LOOK_TOLL;
 import static com.zhiyicx.baseproject.impl.photoselector.Toll.LOOK_TOLL_TYPE;
+import static com.zhiyicx.thinksnsplus.data.beans.SendDynamicDataBean.TEXT_ONLY_DYNAMIC;
 
 
 /**
@@ -657,8 +658,8 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
             }
             isToll = !isToll;
             mTvToll.setRightImage(isToll ? R.mipmap.btn_open : R.mipmap.btn_close);
-            mTollLine.setVisibility(isToll ? View.GONE : View.VISIBLE);
-            if (dynamicType == SendDynamicDataBean.TEXT_ONLY_DYNAMIC) {
+            mTollLine.setVisibility(isToll &&dynamicType==TEXT_ONLY_DYNAMIC? View.GONE : View.VISIBLE);
+            if (dynamicType == TEXT_ONLY_DYNAMIC) {
                 mLLToll.setVisibility(isToll ? View.VISIBLE : View.GONE);
                 if (!isToll) {
                     mTollMoney = 0;
@@ -970,7 +971,7 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                 initPhotoSelector();
                 initPhotoList(bundle);
                 break;
-            case SendDynamicDataBean.TEXT_ONLY_DYNAMIC:
+            case TEXT_ONLY_DYNAMIC:
                 hasTollPic = true;
                 // 隐藏图片控件
                 mRvPhotoList.setVisibility(View.GONE);
