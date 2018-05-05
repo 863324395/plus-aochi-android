@@ -106,7 +106,7 @@ public class TSEaseChatFragment<P extends IBasePresenter> extends TSEaseBaseFrag
 
     protected boolean isloading;
     protected boolean haveMoreData = true;
-    protected int pagesize = TSListFragment.DEFAULT_PAGE_DB_SIZE;
+    protected int pagesize = 30;
     protected GroupListener groupListener;
     protected ChatRoomListener chatRoomListener;
     protected EMMessage contextMenuMessage;

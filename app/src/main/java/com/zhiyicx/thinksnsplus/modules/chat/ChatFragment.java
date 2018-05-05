@@ -544,11 +544,27 @@ public class ChatFragment extends TSEaseChatFragment<ChatContract.Presenter>
 
         @Override
         public EaseChatRowPresenter getCustomChatRow(EMMessage message, int position, BaseAdapter adapter) {
-            if (message.getType() == EMMessage.Type.TXT) {
-                // voice call or video call
-                return new TSChatTextPresenter();
+            EaseChatRowPresenter presenter;
+            // voice call or video call
+            if (message.getBooleanAttribute(EaseConstant.MESSAGE_ATTR_IS_VOICE_CALL, false) ||
+                    message.getBooleanAttribute(EaseConstant.MESSAGE_ATTR_IS_VIDEO_CALL, false)) {
+                presenter = new TSChatCallPresneter();
+                return presenter;
+            } else {
+                boolean admin;
+                boolean isGroupChange = TSEMConstants.TS_ATTR_GROUP_CHANGE.equals(message.ext().get("type"))
+                        || TSEMConstants.TS_ATTR_GROUP_CHANGE.equals(message.ext().get("type"))
+                        || TSEMConstants.TS_ATTR_EIXT.equals(message.ext().get("type"))
+                        || TSEMConstants.TS_ATTR_JOIN.equals(message.ext().get("type"));
+
+                admin = "admin".equals(message.getUserName());
+                if (admin || isGroupChange) {
+                    presenter = new TSChatTipTextPresenter();
+                } else {
+                    presenter = new TSChatTextPresenter();
+                }
             }
-            return null;
+            return presenter;
         }
 
         @Override
@@ -566,7 +582,7 @@ public class ChatFragment extends TSEaseChatFragment<ChatContract.Presenter>
                             || TSEMConstants.TS_ATTR_GROUP_CHANGE.equals(message.ext().get("type"))
                             || TSEMConstants.TS_ATTR_EIXT.equals(message.ext().get("type"))
                             || TSEMConstants.TS_ATTR_JOIN.equals(message.ext().get("type"));
-
+                    // admin 是管理员
                     admin = "admin".equals(message.getUserName());
                     if (admin || isGroupChange) {
                         presenter = new TSChatTipTextPresenter();

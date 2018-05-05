@@ -289,7 +289,6 @@ public class EaseMessageAdapter extends BaseAdapter {
     }
 
     protected EaseChatRowPresenter createChatRowPresenter(EMMessage message, int position) {
-//		ChatUserInfoBean chatUserInfoBean = mUserInfoBeanSparseArray.get(Integer.parseInt(message.getFrom()));
         ChatUserInfoBean chatUserInfoBean = new ChatUserInfoBean();
         if (customRowProvider != null && customRowProvider.getCustomChatRow(message, position, this, chatUserInfoBean) != null) {
             return customRowProvider.getCustomChatRow(message, position, this, chatUserInfoBean);
@@ -332,25 +331,22 @@ public class EaseMessageAdapter extends BaseAdapter {
     @SuppressLint("NewApi")
     public View getView(final int position, View convertView, ViewGroup parent) {
         EMMessage message = getItem(position);
-//		ChatUserInfoBean chatUserInfoBean = mUserInfoBeanSparseArray.get(Integer.parseInt(message.getFrom()));
         ChatUserInfoBean chatUserInfoBean = new ChatUserInfoBean();
         EaseChatRowPresenter presenter = null;
 
 
         if (convertView == null) {
             presenter = createChatRowPresenter(message, position);
-
+            // 这个需要快速编辑群名字
             if ("TSChatTipTextPresenter".equals(presenter.getClass().getSimpleName())) {
                 convertView = presenter.createChatRow(context, message, position, this, mOnTipMsgClickListener);
             } else {
                 convertView = presenter.createChatRow(context, message, position, this, chatUserInfoBean);
-
             }
             convertView.setTag(presenter);
         } else {
             presenter = (EaseChatRowPresenter) convertView.getTag();
         }
-
         presenter.setup(message, position, itemClickListener, itemStyle);
         return convertView;
     }

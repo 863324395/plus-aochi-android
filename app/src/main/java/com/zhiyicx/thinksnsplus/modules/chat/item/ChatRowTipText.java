@@ -16,6 +16,7 @@ import com.zhiyicx.baseproject.em.manager.util.TSEMConstants;
 import com.zhiyicx.common.config.ConstantConfig;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.TimeUtils;
+import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 
@@ -96,7 +97,7 @@ public class ChatRowTipText extends ChatBaseRow {
                             .themeColor))
                     .setTextColorOfHighlightedLink(ContextCompat.getColor(context, R.color
                             .general_for_hint))
-                    .setHighlightAlpha(.8f)
+                    .setHighlightAlpha(CustomPopupWindow.POPUPWINDOW_ALPHA)
                     .setOnClickListener((clickedText, linkMetadata) -> {
                         if (mOnTipMsgClickListener != null) {
                             mOnTipMsgClickListener.onTipMsgClick(TipMsgType.CREATE_GROUP);
