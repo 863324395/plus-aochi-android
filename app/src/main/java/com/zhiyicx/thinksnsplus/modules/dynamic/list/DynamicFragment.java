@@ -456,7 +456,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
      */
     @Override
     public void onImageClick(ViewHolder holder, DynamicDetailBeanV2 dynamicBean, int position) {
-        long start=System.currentTimeMillis();
+        long start = System.currentTimeMillis();
         if (!TouristConfig.DYNAMIC_BIG_PHOTO_CAN_LOOK && mPresenter.handleTouristControl()) {
             return;
         }
@@ -816,10 +816,22 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
 
     @Override
     public void onMoreCommentClick(View view, DynamicDetailBeanV2 dynamicBean) {
+
+
         if (!TouristConfig.MORE_COMMENT_CAN_LOOK && mPresenter.handleTouristControl()) {
             return;
         }
         int position = mPresenter.getCurrenPosiotnInDataList(dynamicBean.getFeed_mark());
+        DynamicDetailBeanV2 detailBeanV2 = mListDatas.get(position);
+        boolean canNotLookWords = detailBeanV2.getPaid_node() != null &&
+                !detailBeanV2.getPaid_node().isPaid()
+                && detailBeanV2.getUser_id().intValue() != AppApplication.getMyUserIdWithdefault();
+        if (canNotLookWords) {
+            initImageCenterPopWindow(position, position,
+                    detailBeanV2.getPaid_node().getAmount(),
+                    detailBeanV2.getPaid_node().getNode(), R.string.buy_pay_words_desc, false);
+            return;
+        }
         goDynamicDetail(position, true, (ViewHolder) mRvList.getChildViewHolder(mRvList.getLayoutManager().findViewByPosition(position)));
     }
 
@@ -1174,7 +1186,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
         bundle.putBoolean(LOOK_COMMENT_MORE, isLookMoreComment);
         mPresenter.handleViewCount(mListDatas.get(position).getId(), position);
 
-        if (isLookMoreComment){
+        if (isLookMoreComment) {
             ZhiyiVideoView.releaseAllVideos();
             intent.putExtras(bundle);
             startActivity(intent);

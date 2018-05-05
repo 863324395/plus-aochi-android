@@ -248,7 +248,6 @@ public class EaseMessageAdapter extends BaseAdapter {
         return 14;
     }
 
-
     /**
      * get type of item
      */
