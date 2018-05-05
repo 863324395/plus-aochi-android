@@ -76,6 +76,7 @@ import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
@@ -691,7 +692,9 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                 , ImageZipConfig.IMAGE_100_ZIP, AppApplication.getTOKEN());
         Observable.just(glideUrl)
                 .doOnSubscribe(() -> {
-                    showSnackLoadingMessage(getString(R.string.save_pic_ing));
+                    if (getActivity() != null) {
+                        showSnackLoadingMessage(getString(R.string.save_pic_ing));
+                    }
                 })
                 .observeOn(Schedulers.io())
                 .map(glideUrl1 -> {
@@ -737,7 +740,7 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                             }
                         }
                     }
-                });
+                }, (Action1<Throwable>) Throwable::printStackTrace);
     }
 
     @OnClick({R.id.tv_to_pay, R.id.tv_to_vip, R.id.iv_gif_control})
