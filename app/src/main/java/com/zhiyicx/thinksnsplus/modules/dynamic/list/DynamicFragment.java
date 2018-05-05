@@ -367,7 +367,6 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
         return ITEM_SPACING;
     }
 
-
     @Override
     protected MultiItemTypeAdapter getAdapter() {
         MultiItemTypeAdapter adapter = new MultiItemTypeAdapter<>(getContext(), mListDatas);
@@ -1214,11 +1213,9 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
 
     }
 
-
     public interface OnCommentClickListener {
         void onButtonMenuShow(boolean isShow);
     }
-
 
     @Override
     public void onDestroyView() {

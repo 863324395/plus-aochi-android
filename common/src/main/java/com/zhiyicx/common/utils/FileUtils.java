@@ -412,7 +412,7 @@ public class FileUtils {
             }
         }
         try {
-            File f = new File(dir +"/" + picName);
+            File f = new File(dir + "/" + picName);
 
             boolean result = writeFileFromIS(f, new FileInputStream(dataFile), false);
             if (result) {
@@ -885,6 +885,16 @@ public class FileUtils {
         return "file/*";
     }
 
+    // url = file path or whatever suitable URL you want.
+    public static String getMimeTypeByUrl(String url) {
+        String type = null;
+        String extension = MimeTypeMap.getFileExtensionFromUrl(url);
+        if (extension != null) {
+            type = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
+        }
+        return type;
+    }
+
     /**
      * 获取文件的MIME类型
      *
@@ -902,11 +912,14 @@ public class FileUtils {
      * @return
      */
     public static String getMimeTypeByFile(File file) {
+        String result = getMimeTypeByUrl(file.getAbsolutePath());
+        if (result != null) {
+            return result;
+        }
         BitmapFactory.Options option = DrawableProvider.getPicsWHByFile(file.getPath());
-        if (option != null) {
+        if (option != null && option.outMimeType != null) {
             return option.outMimeType;
         } else {
-            String result;
             result = getMimeType(file.getPath());
             if (TextUtils.isEmpty(result)) {
                 result = getMimeTypeByFileName(file.getName());

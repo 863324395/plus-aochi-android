@@ -858,6 +858,7 @@ public class BackgroundTaskHandler {
 
             if (videoInfo != null) {
                 if (videoInfo.needCompressVideo()) {
+                    // 需要处理视频
                     Observable.empty()
                             .observeOn(Schedulers.io())
                             .subscribe(new EmptySubscribe<Object>() {
@@ -880,7 +881,7 @@ public class BackgroundTaskHandler {
 
                                                     SendDynamicV2(backgroundRequestTaskBean, detailBeanV2, position, getSendDynamicObservable
                                                             (sendDynamicDataBean, position, photos, videoInfo,
-                                                            upLoadPics, video));
+                                                                    upLoadPics, video));
 
                                                 }
 
@@ -893,6 +894,7 @@ public class BackgroundTaskHandler {
                             });
 
                 } else {
+                    // 不需要处理视频
                     upLoadPics.add(mUpLoadRepository.upLoadSingleFileV2(videoInfo.getPath(), "",
                             false, videoInfo.getWidth(), videoInfo.getHeight(),
                             position));
@@ -902,7 +904,7 @@ public class BackgroundTaskHandler {
                                     upLoadPics, video));
                 }
             } else {
-
+                // 没有视频的
                 SendDynamicV2(backgroundRequestTaskBean, detailBeanV2, position, getSendDynamicObservable(sendDynamicDataBean, position, photos,
                         videoInfo,
                         upLoadPics, video));

@@ -112,10 +112,10 @@ public class UpLoadRepository implements IUploadRepository {
     }
 
     /**
+     * @param position 记录上传成功的个数
      * @author Jliuer
      * @Date 18/04/04 15:50
      * @Email Jliuer@aliyun.com
-     * @param position 记录上传成功的个数
      * @Description 上传单个文件
      */
     @Override
@@ -131,10 +131,11 @@ public class UpLoadRepository implements IUploadRepository {
         paramMap.put("width", photoWidth + "");
         paramMap.put("height", photoHeight + "");
         // 如果是图片就处理图片
-        if (isPic) {
+        if (isPic && !TextUtils.isEmpty(mimeType)) {
             paramMap.put("mime_type", mimeType);
         } else {
-            paramMap.put("mime_type", FileUtils.getMimeType(filePath));
+            mimeType = FileUtils.getMimeTypeByFile(new File(filePath));
+            paramMap.put("mime_type", mimeType);
         }
         return checkStorageHash(paramMap.get("hash"))
                 .retryWhen(new RetryWithInterceptDelay(RETRY_MAX_COUNT, RETRY_INTERVAL_TIME) {
@@ -184,7 +185,8 @@ public class UpLoadRepository implements IUploadRepository {
      * @Description 上传单个文件，带进度监听
      */
     public Observable<BaseJson<Integer>> upLoadFileWithProgress(final String filePath, String mimeType,
-                                                                boolean isPic, int photoWidth, int photoHeight, ProgressRequestBody.ProgressRequestListener listener) {
+                                                                boolean isPic, int photoWidth, int photoHeight, ProgressRequestBody
+                                                                        .ProgressRequestListener listener) {
         File file = new File(filePath);
         // 封装上传文件的参数
         final HashMap<String, String> paramMap = new HashMap<>();
