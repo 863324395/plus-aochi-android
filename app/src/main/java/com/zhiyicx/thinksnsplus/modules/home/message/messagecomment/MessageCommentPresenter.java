@@ -46,7 +46,7 @@ public class MessageCommentPresenter extends AppBasePresenter<MessageCommentCont
 
     @Override
     public void requestNetData(Long maxId, final boolean isLoadMore) {
-        Subscription commentSub = mUserInfoRepository.clearUserMessageCount(UserFollowerCountBean.UserBean.MESSAGE_TYPE_FOLLOWING)
+        Subscription commentSub = mUserInfoRepository.clearUserMessageCount(UserFollowerCountBean.UserBean.MESSAGE_TYPE_COMMENTED)
                 .flatMap((Func1<Object, Observable<List<CommentedBean>>>) o -> mUserInfoRepository.getMyComments(maxId.intValue()))
                 .subscribe(new BaseSubscribeForV2<List<CommentedBean>>() {
                     @Override

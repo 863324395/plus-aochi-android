@@ -41,7 +41,7 @@ public class MessageLikePresenter extends AppBasePresenter<MessageLikeContract.V
 
     @Override
     public void requestNetData(Long maxId, final boolean isLoadMore) {
-        Subscription commentSub = mUserInfoRepository.clearUserMessageCount(UserFollowerCountBean.UserBean.MESSAGE_TYPE_FOLLOWING)
+        Subscription commentSub = mUserInfoRepository.clearUserMessageCount(UserFollowerCountBean.UserBean.MESSAGE_TYPE_LIKED)
                 .flatMap((Func1<Object, Observable<List<DigedBean>>>) o -> mUserInfoRepository.getMyDiggs(maxId.intValue()))
                 .subscribe(new BaseSubscribeForV2<List<DigedBean>>() {
                     @Override
