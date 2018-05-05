@@ -4,22 +4,20 @@
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
               android:background="@color/white"
-              android:gravity="center_vertical"
               android:baselineAligned="false"
+              android:gravity="center_vertical"
               android:orientation="horizontal"
               android:paddingBottom="@dimen/spacing_normal_large">
 
-    <LinearLayout
-        android:id="@+id/ll_dig_container"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1">
+
         <!--点赞头像层叠，最多五张-->
         <RelativeLayout
             android:id="@+id/fl_dig_head_container"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/spacing_normal"
+            android:layout_weight="1"
+            android:background="@color/red"
+            android:layout_marginStart="@dimen/spacing_normal"
             android:gravity="center_vertical|left"
             >
             <!--点赞数量-->
@@ -27,18 +25,17 @@
                 android:id="@+id/tv_dig_count"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
-                tools:text="8人点赞"
                 android:textColor="@color/themeColor"
-                android:textSize="@dimen/size_content_assist"/>
+                android:textSize="@dimen/size_content_assist"
+                tools:text="8人点赞"/>
 
             <ImageView
                 android:id="@+id/iv_dig_head5"
                 android:layout_width="@dimen/headpic_for_assist"
                 android:layout_height="@dimen/headpic_for_assist"
-                android:layout_marginRight="@dimen/spacing_normal"
-                android:layout_toLeftOf="@id/tv_dig_count"
+                android:layout_marginEnd="@dimen/spacing_normal"
+                android:layout_toStartOf="@id/tv_dig_count"
                 android:src="@mipmap/pic_default_secret"
                 />
 
@@ -46,8 +43,8 @@
                 android:id="@+id/iv_dig_head4"
                 android:layout_width="@dimen/headpic_for_assist"
                 android:layout_height="@dimen/headpic_for_assist"
-                android:layout_marginRight="@dimen/head4_right_margin"
-                android:layout_toLeftOf="@id/tv_dig_count"
+                android:layout_marginEnd="@dimen/head4_right_margin"
+                android:layout_toStartOf="@id/tv_dig_count"
                 android:src="@mipmap/pic_default_secret"
                 />
 
@@ -55,8 +52,8 @@
                 android:id="@+id/iv_dig_head3"
                 android:layout_width="@dimen/headpic_for_assist"
                 android:layout_height="@dimen/headpic_for_assist"
-                android:layout_marginRight="@dimen/head3_right_margin"
-                android:layout_toLeftOf="@id/tv_dig_count"
+                android:layout_marginEnd="@dimen/head3_right_margin"
+                android:layout_toStartOf="@id/tv_dig_count"
                 android:src="@mipmap/pic_default_secret"
                 />
 
@@ -64,8 +61,8 @@
                 android:id="@+id/iv_dig_head2"
                 android:layout_width="@dimen/headpic_for_assist"
                 android:layout_height="@dimen/headpic_for_assist"
-                android:layout_marginRight="@dimen/head2_right_margin"
-                android:layout_toLeftOf="@id/tv_dig_count"
+                android:layout_marginEnd="@dimen/head2_right_margin"
+                android:layout_toStartOf="@id/tv_dig_count"
                 android:src="@mipmap/pic_default_secret"
                 />
 
@@ -73,17 +70,17 @@
                 android:id="@+id/iv_dig_head1"
                 android:layout_width="@dimen/headpic_for_assist"
                 android:layout_height="@dimen/headpic_for_assist"
-                android:layout_marginRight="@dimen/head1_right_margin"
-                android:layout_toLeftOf="@id/tv_dig_count"
+                android:layout_marginEnd="@dimen/head1_right_margin"
+                android:layout_toStartOf="@id/tv_dig_count"
                 android:src="@mipmap/pic_default_secret"
                 />
 
         </RelativeLayout>
-    </LinearLayout>
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:background="@color/themeColor"
         android:layout_marginRight="@dimen/spacing_normal"
         android:gravity="right"
         android:orientation="vertical">
@@ -93,18 +90,18 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:includeFontPadding="false"
-            tools:text="发布于8分钟前"
             android:textColor="@color/normal_for_assist_text"
-            android:textSize="@dimen/size_content_assist"/>
+            android:textSize="@dimen/size_content_assist"
+            tools:text="发布于8分钟前"/>
 
         <TextView
             android:id="@+id/tv_dynamic_viewer_count"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_small"
-            tools:text="342人浏览"
             android:includeFontPadding="false"
             android:textColor="@color/normal_for_assist_text"
-            android:textSize="@dimen/size_content_assist"/>
+            android:textSize="@dimen/size_content_assist"
+            tools:text="342人浏览"/>
     </LinearLayout>
 </LinearLayout>

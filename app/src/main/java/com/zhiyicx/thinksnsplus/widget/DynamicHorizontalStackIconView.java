@@ -46,7 +46,7 @@ public class DynamicHorizontalStackIconView extends FrameLayout {
     // 浏览量
     private TextView viewerCount;
     // 点赞容器
-    private LinearLayout digContainer;
+    private View digContainer;
 
     private DigContainerClickListener mDigContainerClickListener;
 
@@ -71,7 +71,7 @@ public class DynamicHorizontalStackIconView extends FrameLayout {
         mContext = context;
         LayoutInflater.from(context).inflate(R.layout.view_dynamic_horizontal_stack_icon, this);
         digCount = (TextView) findViewById(R.id.tv_dig_count);
-        digContainer = (LinearLayout) findViewById(R.id.ll_dig_container);
+        digContainer =  findViewById(R.id.fl_dig_head_container);
         setDigRxClickListener();
         // 将图片存到图片数组中,倒序存放
         mImageViews = new ImageView[5];
@@ -100,7 +100,7 @@ public class DynamicHorizontalStackIconView extends FrameLayout {
                     AppApplication.AppComponentHolder.getAppComponent().imageLoader()
                             .loadImage(mContext, GlideImageConfig.builder()
                                     .transformation(new GlideCircleBorderTransform(mContext, mContext.getResources().getDimensionPixelOffset(R
-                                            .dimen.spacing_small_4dp), ContextCompat.getColor(mContext, R.color.white)))
+                                            .dimen.digg_boder_with), ContextCompat.getColor(mContext, R.color.white)))
                                     .placeholder(defaultAvatar)
                                     .errorPic(defaultAvatar)
                                     .imagerView(mImageViews[i])
@@ -133,7 +133,7 @@ public class DynamicHorizontalStackIconView extends FrameLayout {
                     AppApplication.AppComponentHolder.getAppComponent().imageLoader()
                             .loadImage(mContext, GlideImageConfig.builder()
                                     .transformation(new GlideCircleBorderTransform(mContext, mContext.getResources().getDimensionPixelSize(R.dimen
-                                            .spacing_tiny), ContextCompat.getColor(mContext, R.color.white)))
+                                            .digg_boder_with), ContextCompat.getColor(mContext, R.color.white)))
                                     .placeholder(defaultAvatar)
                                     .errorPic(defaultAvatar)
                                     .imagerView(mImageViews[i])
@@ -165,7 +165,7 @@ public class DynamicHorizontalStackIconView extends FrameLayout {
                     AppApplication.AppComponentHolder.getAppComponent().imageLoader()
                             .loadImage(mContext, GlideImageConfig.builder()
                                     .transformation(new GlideCircleBorderTransform(mContext, mContext.getResources().getDimensionPixelSize(R.dimen
-                                            .spacing_tiny), ContextCompat.getColor(mContext, R.color.white)))
+                                            .digg_boder_with), ContextCompat.getColor(mContext, R.color.white)))
                                     .placeholder(defaultAvatar)
                                     .errorPic(defaultAvatar)
                                     .imagerView(mImageViews[i])
@@ -198,7 +198,7 @@ public class DynamicHorizontalStackIconView extends FrameLayout {
                     AppApplication.AppComponentHolder.getAppComponent().imageLoader()
                             .loadImage(mContext, GlideImageConfig.builder()
                                     .transformation(new GlideCircleBorderTransform(mContext, mContext.getResources().getDimensionPixelSize(R.dimen
-                                            .spacing_tiny), ContextCompat.getColor(mContext, R.color.white)))
+                                            .digg_boder_with), ContextCompat.getColor(mContext, R.color.white)))
                                     .placeholder(defaultAvatar)
                                     .errorPic(defaultAvatar)
                                     .imagerView(mImageViews[i])
