@@ -142,6 +142,7 @@ public class FileUtils {
 
     /**
      * 删除文件
+     *
      * @param filePath
      * @return
      */
@@ -363,17 +364,6 @@ public class FileUtils {
         return list;
     }
 
-    /**
-     * 将输入流写入文件
-     *
-     * @param filePath 路径
-     * @param is       输入流
-     * @param append   是否追加在文件末
-     * @return {@code true}: 写入成功<br>{@code false}: 写入失败
-     */
-    public static boolean writeFileFromIS(String filePath, InputStream is, boolean append) {
-        return writeFileFromIS(getFileByPath(filePath), is, append);
-    }
 
     /**
      * 将输入流写入文件
@@ -385,9 +375,6 @@ public class FileUtils {
      */
     public static boolean writeFileFromIS(File file, InputStream is, boolean append) {
         if (file == null || is == null) {
-            return false;
-        }
-        if (!createOrExistsFile(file)) {
             return false;
         }
         OutputStream os = null;
@@ -405,6 +392,41 @@ public class FileUtils {
         } finally {
             CloseUtils.closeIO(is, os);
         }
+    }
+
+    /**
+     * 保存bitmap到文件
+     *
+     * @param picName 图片名称
+     * @param imgPath 图片目录
+     * @return 失败返回各种提示，成功返回图片路径 -2 sd卡不存在 -1 图片保存失败 其他 图片保存成功
+     */
+    public static String saveFileByFileData(File dataFile, String picName, String imgPath) {
+        // 保存在sd卡中
+        File dir = new File(Environment.getExternalStorageDirectory(), imgPath);
+
+        if (!dir.exists() || !dir.isDirectory()) {
+            // 如果没有这样的文件，或者有同名的文件但不是目录，就需要创建这样的目录
+            if (!dir.mkdir()) {
+                return "-2";
+            }
+        }
+        try {
+            File f = new File(dir +"/" + picName);
+
+            boolean result = writeFileFromIS(f, new FileInputStream(dataFile), false);
+            if (result) {
+                return f.getAbsolutePath();
+            } else {
+                return "-1";
+            }
+
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+
+        }
+        return "-1";
     }
 
     /**

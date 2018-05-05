@@ -30,6 +30,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.load.model.stream.StreamModelLoader;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.FutureTarget;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.GlideDrawableImageViewTarget;
@@ -53,7 +54,9 @@ import com.zhiyicx.common.utils.FileUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.AnimationRectBean;
+import com.zhiyicx.thinksnsplus.utils.DealPhotoUtils;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhiyicx.thinksnsplus.utils.TransferImageAnimationUtil;
 
@@ -62,6 +65,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.ref.WeakReference;
 import java.util.Locale;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
@@ -72,6 +76,7 @@ import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
@@ -402,31 +407,6 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
     }
 
     /**
-     * 保存图片
-     */
-    public void saveImage() {
-        int with = (int) mImageBean.getWidth();
-        int height = (int) mImageBean.getHeight();
-        if (with * height == 0) {
-            with = DEFALT_IMAGE_WITH;
-            height = DEFALT_IMAGE_HEIGHT;
-        }
-        // 通过GLide获取bitmap,有缓存读缓存
-        GlideUrl glideUrl = ImageUtils.imagePathConvertV2(mImageBean.getStorage_id(), with, height
-                , ImageZipConfig.IMAGE_100_ZIP, AppApplication.getTOKEN());
-
-        Bitmap bitmap;
-
-        if (mIvPager.getVisibility() == View.VISIBLE) {
-            bitmap = ConvertUtils.drawable2Bitmap(mIvPager.getDrawable());
-        } else {
-            bitmap = ConvertUtils.drawable2Bitmap(mIvOriginPager.getDrawable());
-
-        }
-        getSaveBitmapResultObservable(bitmap, glideUrl.toStringUrl());
-    }
-
-    /**
      * 加载图片
      *
      * @param imageBean
@@ -704,41 +684,60 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
     }
 
     /**
-     * 通过Rxjava在io线程中处理保存图片的逻辑，得到返回结果，否则会阻塞ui
+     * 保存图片,可保存gif
      */
-    private void getSaveBitmapResultObservable(final Bitmap bitmap, final String url) {
-
-        Observable.just(1)// 不能empty否则map无法进行转换
-                .subscribeOn(Schedulers.io())
+    public void saveImage() {
+        GlideUrl glideUrl = ImageUtils.imagePathConvertV2(mImageBean.getStorage_id(), 0, 0
+                , ImageZipConfig.IMAGE_100_ZIP, AppApplication.getTOKEN());
+        Observable.just(glideUrl)
                 .doOnSubscribe(() -> {
                     showSnackLoadingMessage(getString(R.string.save_pic_ing));
                 })
-                .map(integer -> {
-                    String imgName = ConvertUtils.getStringMD5(url) + ".jpg";
-                    String imgPath = PathConfig.PHOTO_SAVA_PATH;
-                    return DrawableProvider.saveBitmap(bitmap, imgName, imgPath);
-                })
-                // subscribeOn & doOnSubscribe 的特殊性质
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(result -> {
-                    switch (result) {
-                        case "-1":
-                            result = getString(R.string.save_failure1);
-                            break;
-                        case "-2":
-                            result = getString(R.string.save_failure2);
-                            break;
-                        default:
-                            File file = new File(result);
-                            if (file.exists()) {
-                                result = getString(R.string.save_success) + result;
-                                FileUtils.insertPhotoToAlbumAndRefresh(context, file);
-                                result = getString(R.string.save_success);
-                            }
+                .observeOn(Schedulers.io())
+                .map(glideUrl1 -> {
+                    String result = "-1";
+                    try {
+                        File cacheFile = Glide.with(getContext().getApplicationContext())
+                                .load(glideUrl1)
+                                .downloadOnly(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL)
+                                .get();
+
+                        String imgName = ConvertUtils.getStringMD5(glideUrl1.toStringUrl()) + (DealPhotoUtils.checkPhotoIsGif(cacheFile
+                                .getAbsolutePath()) ? ".gif" : ".jpg");
+                        String imgPath = PathConfig.PHOTO_SAVA_PATH;
+                        result = FileUtils.saveFileByFileData(cacheFile, imgName, imgPath);
+                        if (!"-1".equals(result) && !"-2".equals(result)) {
+                            FileUtils.insertPhotoToAlbumAndRefresh(context, new File(result));
+                            return result;
+                        }
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    } catch (ExecutionException e) {
+                        e.printStackTrace();
                     }
-                    showSnackSuccessMessage(result);
-                }, Throwable::printStackTrace);
+                    return result;
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new BaseSubscribeForV2<String>() {
+                    @Override
+                    protected void onSuccess(String data) {
+                        if (getActivity() != null) {
+                            switch (data) {
+                                case "-1":
+                                    showSnackErrorMessage(getString(R.string.save_failure1));
+
+                                    break;
+                                case "-2":
+                                    showSnackErrorMessage(getString(R.string.save_failure2));
+
+                                    break;
+                                default:
+                                    showSnackSuccessMessage(getString(R.string.save_success));
+
+                            }
+                        }
+                    }
+                });
     }
 
     @OnClick({R.id.tv_to_pay, R.id.tv_to_vip, R.id.iv_gif_control})
