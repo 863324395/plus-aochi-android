@@ -77,17 +77,6 @@ public class TransferImageAnimationUtil {
         animationSet.setInterpolator(new AccelerateDecelerateInterpolator());
 
         animationSet.playTogether(backgroundAnimator);
-//
-//        animationSet.playTogether(ObjectAnimator.ofFloat(imageView,
-//                "clipBottom", 0,
-//                AnimationRectBean.getClipBottom(rect, finalBounds)));
-//        animationSet.playTogether(ObjectAnimator.ofFloat(imageView,
-//                "clipRight", 0,
-//                AnimationRectBean.getClipRight(rect, finalBounds)));
-//        animationSet.playTogether(ObjectAnimator.ofFloat(imageView,
-//                "clipTop", 0, AnimationRectBean.getClipTop(rect, finalBounds)));
-//        animationSet.playTogether(ObjectAnimator.ofFloat(imageView,
-//                "clipLeft", 0, AnimationRectBean.getClipLeft(rect, finalBounds)));
 
         animationSet.start();
     }
@@ -162,9 +151,8 @@ public class TransferImageAnimationUtil {
      *
      * @param rect      转场动画初始时，由上一个界面传递过来的图片控件属性
      * @param imageView 当前界面要进行缩放的图片控件
-     * @param endAction 在监听ViewTree的同时，需要处理一些其他操作，在新的线程中进行
      */
-    public static void startInAnim(final AnimationRectBean rect, final ImageView imageView, final Runnable endAction, final FrameLayout viewGroup) {
+    public static void startInAnim(final AnimationRectBean rect, final ImageView imageView, final FrameLayout viewGroup) {
         if (imageView == null) {
             return;
         }
@@ -175,7 +163,6 @@ public class TransferImageAnimationUtil {
 
                         if (rect == null) {
                             imageView.getViewTreeObserver().removeOnPreDrawListener(this);
-                            endAction.run();
                             return true;
                         }
 
@@ -185,7 +172,6 @@ public class TransferImageAnimationUtil {
 
                         if (finalBounds == null) {
                             imageView.getViewTreeObserver().removeOnPreDrawListener(this);
-                            endAction.run();
                             return true;
                         }
 
@@ -208,8 +194,7 @@ public class TransferImageAnimationUtil {
                                     .translationX(0)
                                     .translationY(0)
                                     .setDuration(ANIMATION_DURATION)
-                                    .setInterpolator(new AccelerateDecelerateInterpolator())
-                                    .withEndAction(endAction);
+                                    .setInterpolator(new AccelerateDecelerateInterpolator());
                         }
 
 

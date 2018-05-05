@@ -699,13 +699,7 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
      * @param rect
      */
     private void startInAnim(final AnimationRectBean rect) {
-        final Runnable endAction = new Runnable() {
-            @Override
-            public void run() {
-            }
-        };
-       
-        TransferImageAnimationUtil.startInAnim(rect, mIvPager, endAction, mFlImageContaienr);
+        TransferImageAnimationUtil.startInAnim(rect, mIvPager, mFlImageContaienr);
 
     }
 
@@ -820,6 +814,7 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                 startInAnim(rect);
             }
         }
+
     }
 
 
