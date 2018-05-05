@@ -23,7 +23,10 @@ import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.modules.chat.adapter.EditGroupOwnerAdapter;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 
+import org.jetbrains.annotations.NotNull;
 import org.simple.eventbus.EventBus;
+
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -58,11 +61,16 @@ public class EditGroupOwnerFragment extends TSListFragment<EditGroupOwnerContrac
     @Override
     protected void initView(View rootView) {
         super.initView(rootView);
-        setLoadMorNodataTipText(getString(R.string.no_more_firends));
+        setLoadMorNodataTipText(getString(R.string.no_more_group_member));
         RxTextView.textChanges(mEditSearchFriends)
                 .subscribe(charSequence -> {
                     mPresenter.getSearchResult(charSequence.toString().trim());
                 });
+    }
+
+    @Override
+    public String getsearchKeyWord() {
+        return mEditSearchFriends.getText().toString().trim();
     }
 
     @Override
@@ -156,6 +164,18 @@ public class EditGroupOwnerFragment extends TSListFragment<EditGroupOwnerContrac
         EventBus.getDefault().post(mNewOwner, EventBusTagConfig.EVENT_IM_GROUP_CHANGE_OWNER);
         TSEMessageUtils.deleteMessage(mChatGroupBean.getId(), TSEMConstants.TS_ATTR_GROUP_CRATE);
         getActivity().finish();
+    }
+
+    @Override
+    public void onNetResponseSuccess(@NotNull List<UserInfoBean> data, boolean isLoadMore) {
+        super.onNetResponseSuccess(data, isLoadMore);
+        setEmptyViewVisiable(false);
+    }
+
+    @Override
+    public void onCacheResponseSuccess(List<UserInfoBean> data, boolean isLoadMore) {
+        super.onCacheResponseSuccess(data, isLoadMore);
+        setEmptyViewVisiable(false);
     }
 
     @Override

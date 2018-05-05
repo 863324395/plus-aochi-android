@@ -45,6 +45,11 @@ public class EditGroupOwnerPresenter extends AppBasePresenter<EditGroupOwnerCont
 
     @Override
     public void requestNetData(Long maxId, boolean isLoadMore) {
+        // 搜索时的刷新，只处理本地数据
+        if (!TextUtils.isEmpty(mRootView.getsearchKeyWord())) {
+            mRootView.hideRefreshState(isLoadMore);
+            return;
+        }
         getResult("");
     }
 
