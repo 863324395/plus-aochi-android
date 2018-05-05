@@ -721,26 +721,23 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                     return result;
                 })
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new BaseSubscribeForV2<String>() {
-                    @Override
-                    protected void onSuccess(String data) {
-                        if (getActivity() != null) {
-                            switch (data) {
-                                case "-1":
-                                    showSnackErrorMessage(getString(R.string.save_failure1));
+                .subscribe(data -> {
+                    if (getActivity() != null) {
+                        switch (data) {
+                            case "-1":
+                                showSnackErrorMessage(getString(R.string.save_failure1));
 
-                                    break;
-                                case "-2":
-                                    showSnackErrorMessage(getString(R.string.save_failure2));
+                                break;
+                            case "-2":
+                                showSnackErrorMessage(getString(R.string.save_failure2));
 
-                                    break;
-                                default:
-                                    showSnackSuccessMessage(getString(R.string.save_success));
+                                break;
+                            default:
+                                showSnackSuccessMessage(getString(R.string.save_success));
 
-                            }
                         }
                     }
-                }, (Action1<Throwable>) Throwable::printStackTrace);
+                }, Throwable::printStackTrace);
     }
 
     @OnClick({R.id.tv_to_pay, R.id.tv_to_vip, R.id.iv_gif_control})
