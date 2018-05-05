@@ -215,7 +215,6 @@ public class MessageConversationPresenter extends AppBasePresenter<MessageConver
             if (mAllConversaiotnSub != null && !mAllConversaiotnSub.isUnsubscribed()) {
                 mAllConversaiotnSub.unsubscribe();
             }
-
             mAllConversaiotnSub = mRepository.getConversationList((int) AppApplication.getMyUserIdWithdefault())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new BaseSubscribeForV2<List<MessageItemBeanV2>>() {
