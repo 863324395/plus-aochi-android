@@ -10,6 +10,10 @@ import com.hyphenate.chat.EMMessage;
 import com.hyphenate.easeui.bean.ChatUserInfoBean;
 import com.hyphenate.easeui.widget.chatrow.EaseChatRow;
 import com.hyphenate.easeui.widget.presenter.EaseChatLocationPresenter;
+import com.zhiyicx.baseproject.base.TSActivity;
+import com.zhiyicx.common.utils.ActivityHandler;
+import com.zhiyicx.thinksnsplus.modules.chat.ChatActivity;
+import com.zhiyicx.thinksnsplus.modules.chat.ChatFragment;
 import com.zhiyicx.thinksnsplus.modules.chat.item.ChatRowLocation;
 import com.zhiyicx.thinksnsplus.modules.chat.location.SendLocationActivity;
 
@@ -24,7 +28,7 @@ import static com.zhiyicx.thinksnsplus.modules.chat.location.SendLocationFragmen
  * @contact email:648129313@qq.com
  */
 
-public class TSChatLocationPresenter extends EaseChatLocationPresenter{
+public class TSChatLocationPresenter extends EaseChatLocationPresenter {
 
     @Override
     protected EaseChatRow onCreateChatRow(Context cxt, EMMessage message, int position, BaseAdapter adapter, ChatUserInfoBean userInfoBean) {
@@ -41,5 +45,14 @@ public class TSChatLocationPresenter extends EaseChatLocationPresenter{
         bundle.putString(BUNDLE_LOCATION_ADDRESS, locBody.getAddress());
         intent.putExtras(bundle);
         getContext().startActivity(intent);
+        try {
+            if (ActivityHandler.getInstance().currentActivity() instanceof ChatActivity) {
+                ((ChatFragment) ((TSActivity) ActivityHandler.getInstance().currentActivity()).getContanierFragment())
+                        .setNeedRefreshToLast(false);
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
