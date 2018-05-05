@@ -13,9 +13,10 @@
     <dimen name="useredit_divier_marginleft">77dp</dimen>
     <dimen name="introduce_padding_top">22dp</dimen>
     <!--动态详情页面，五张叠加的小头像距离-->
+    <dimen name="head_right_margin_offset">-8dp</dimen>
     <dimen name="head4_right_margin">26dp</dimen>
     <dimen name="head3_right_margin">42dp</dimen>
-    <dimen name="head2_right_margin">58dp</dimen>
+    <dimen name="head2_right_margin">-16dp</dimen>
     <dimen name="head1_right_margin">74dp</dimen>
     <!--仅一张 动态图片最大宽度-->
     <dimen name="dynamic_image_max_width">248dp</dimen>

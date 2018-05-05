@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleBorderTransform;
@@ -96,17 +97,13 @@ public class DynamicHorizontalStackIconView extends FrameLayout {
                 if (i < dynamicDigListBeanList.size()) {
                     DynamicDigListBean dynamicDigListBean = dynamicDigListBeanList.get(i);
                     int defaultAvatar = ImageUtils.getDefaultAvatar(dynamicDigListBean.getDiggUserInfo());
-
-                    AppApplication.AppComponentHolder.getAppComponent().imageLoader()
-                            .loadImage(mContext, GlideImageConfig.builder()
-                                    .transformation(new GlideCircleBorderTransform(mContext, mContext.getResources().getDimensionPixelOffset(R
-                                            .dimen.digg_boder_with), ContextCompat.getColor(mContext, R.color.white)))
-                                    .placeholder(defaultAvatar)
-                                    .errorPic(defaultAvatar)
-                                    .imagerView(mImageViews[i])
-                                    .url(ImageUtils.getUserAvatar(dynamicDigListBean.getDiggUserInfo()))
-                                    .build()
-                            );
+                    Glide.with(mContext)
+                            .load(ImageUtils.getUserAvatar(dynamicDigListBean.getDiggUserInfo()))
+                            .placeholder(defaultAvatar)
+                            .error(defaultAvatar)
+                            .transform(new GlideCircleBorderTransform(mContext, mContext.getResources().getDimensionPixelOffset(R
+                                    .dimen.digg_boder_with), ContextCompat.getColor(mContext, R.color.white)))
+                            .into(mImageViews[i]);
                     mImageViews[i].setVisibility(VISIBLE);
                     digCount.setVisibility(VISIBLE);
                 } else {// 没有显示的图片控件隐藏
