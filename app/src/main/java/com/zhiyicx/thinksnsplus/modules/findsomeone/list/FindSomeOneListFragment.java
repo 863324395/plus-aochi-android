@@ -53,9 +53,12 @@ public class FindSomeOneListFragment extends TSListFragment<FindSomeOneListContr
      */
     private int mRecommentUserSize = 0;
 
+    private FindSomeOneListAdapter mFindSomeOneListAdapter;
+
     @Override
     protected CommonAdapter<UserInfoBean> getAdapter() {
-        return new FindSomeOneListAdapter(getContext(), R.layout.item_find_some_list, mListDatas, mPresenter);
+        mFindSomeOneListAdapter=new FindSomeOneListAdapter(getContext(), R.layout.item_find_some_list, mListDatas, mPresenter);
+        return mFindSomeOneListAdapter;
     }
 
     @Override
@@ -104,6 +107,7 @@ public class FindSomeOneListFragment extends TSListFragment<FindSomeOneListContr
     @Override
     protected void initData() {
         if (mPresenter != null) {
+            mFindSomeOneListAdapter.setPresenter(mPresenter);
             super.initData();
         }
     }

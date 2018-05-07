@@ -124,4 +124,7 @@ public class FindSomeOneListAdapter extends CommonAdapter<UserInfoBean> {
         PersonalCenterFragment.startToPersonalCenter(context, userInfoBean);
     }
 
+    public void setPresenter(FindSomeOneListContract.Presenter presenter) {
+        mPresenter = presenter;
+    }
 }
