@@ -455,8 +455,8 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                     .load(new CustomImageSizeModelImp(imageBean) {
                         @Override
                         public GlideUrl requestGlideUrl() {
-                            boolean isNeedOrin = imageBean.getHeight() > MAX_SERVER_SUPPORT_CUT_IMAGE_WITH_OR_HEIGHT
-                                    || imageBean.getWidth() > MAX_SERVER_SUPPORT_CUT_IMAGE_WITH_OR_HEIGHT
+                            boolean isNeedOrin = w > MAX_SERVER_SUPPORT_CUT_IMAGE_WITH_OR_HEIGHT
+                                    || h > MAX_SERVER_SUPPORT_CUT_IMAGE_WITH_OR_HEIGHT
                                     || ImageUtils.imageIsGif(imageBean.getImgMimeType())
                                     || ImageUtils.isLongImage((float) imageBean.getHeight(), (float) imageBean.getWidth());
                             if (isNeedOrin) {
@@ -496,8 +496,8 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                                 mPhotoViewAttacherNormal.update();
                                 mLlToll.setVisibility(View.VISIBLE);
                             }
-                            boolean isNeedOrin = imageBean.getHeight() > MAX_SERVER_SUPPORT_CUT_IMAGE_WITH_OR_HEIGHT
-                                    || imageBean.getWidth() > MAX_SERVER_SUPPORT_CUT_IMAGE_WITH_OR_HEIGHT
+                            boolean isNeedOrin = h > MAX_SERVER_SUPPORT_CUT_IMAGE_WITH_OR_HEIGHT
+                                    || w > MAX_SERVER_SUPPORT_CUT_IMAGE_WITH_OR_HEIGHT
                                     || ImageUtils.imageIsGif(imageBean.getImgMimeType())
                                     || ImageUtils.isLongImage((float) imageBean.getHeight(), (float) imageBean.getWidth());
                             // 原图没有缓存，从cacheOnlyStreamLoader抛出异常，在这儿加载高清图
@@ -557,9 +557,9 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                         }
                     });
 
-            if (imageBean.getWidth() * imageBean.getHeight() != 0) {
-                requestBuilder.override(w, h);
-            }
+//            if (imageBean.getWidth() * imageBean.getHeight() != 0) {
+//                requestBuilder.override(w, h);
+//            }
 
             requestBuilder.into(
                     ImageUtils.imageIsGif(imageBean.getImgMimeType()) ? new GallaryGlideDrawableImageViewTarget(rect) : new GallarySimpleTarget(rect)
