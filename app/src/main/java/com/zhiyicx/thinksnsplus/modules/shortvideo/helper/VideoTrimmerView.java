@@ -1,13 +1,18 @@
-package com.tym.shortvideo.view;
+package com.zhiyicx.thinksnsplus.modules.shortvideo.helper;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.media.MediaMetadataRetriever;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.Message;
+import android.os.ParcelFileDescriptor;
 import android.support.annotation.IntDef;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -19,24 +24,36 @@ import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.VideoView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DecodeFormat;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool;
+import com.bumptech.glide.load.resource.bitmap.FileDescriptorBitmapDecoder;
+import com.bumptech.glide.load.resource.bitmap.VideoBitmapDecoder;
+import com.bumptech.glide.signature.StringSignature;
 import com.tym.shortvideo.interfaces.ProgressVideoListener;
 import com.tym.shortvideo.interfaces.RangeSeekBarListener;
 import com.tym.shortvideo.interfaces.SingleCallback;
 import com.tym.shortvideo.interfaces.TrimVideoListener;
 import com.tym.shortvideo.recodrender.ParamsManager;
+import com.tym.shortvideo.recordcore.CountDownManager;
 import com.tym.shortvideo.utils.BackgroundExecutor;
 import com.tym.shortvideo.utils.DeviceUtils;
 import com.tym.shortvideo.utils.TrimVideoUtil;
 import com.tym.shortvideo.utils.UiThreadExecutor;
+import com.tym.shortvideo.view.RangeSeekBarView;
+import com.tym.shortvideo.view.Thumb;
 import com.tym.video.R;
 import com.zhiyicx.common.utils.FileUtils;
 import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 
+import java.io.IOException;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Jliuer
@@ -57,6 +74,8 @@ public class VideoTrimmerView extends FrameLayout {
     private static final int margin = DeviceUtils.dipToPX(6);
     private static final int SCREEN_WIDTH = (DeviceUtils.getScreenWidth() - margin * 2);
     private static final int SCREEN_WIDTH_FULL = DeviceUtils.getScreenWidth();
+    private static int thumb_Width =(DeviceUtils.getScreenWidth() - DeviceUtils.dipToPX(20)) /TrimVideoUtil.VIDEO_MAX_DURATION;
+    private static final int thumb_Height = DeviceUtils.dipToPX(60);
     private static final int SHOW_PROGRESS = 2;
 
     private Context mContext;
@@ -65,7 +84,7 @@ public class VideoTrimmerView extends FrameLayout {
     private RelativeLayout mLinearVideo;
     private VideoView mVideoView;
     private ImageView mPlayView;
-    private VideoThumbHorizontalListView videoThumbListView;
+    private RecyclerView videoThumbListView;
 
     private Uri mSrc;
     private String mFinalPath;
@@ -78,7 +97,7 @@ public class VideoTrimmerView extends FrameLayout {
     private long mTimeVideo = 0;
     private long mStartPosition = 0, mEndPosition = 0;
 
-    private VideoThumbAdapter videoThumbAdapter;
+    private CoverAdapter videoThumbAdapter;
     private long pixelRangeMax;
     private int currentPixMax;  //用于处理红色进度条
     private int mScrolledOffset;
@@ -105,11 +124,11 @@ public class VideoTrimmerView extends FrameLayout {
         mLinearVideo = ((RelativeLayout) findViewById(R.id.layout_surface_view));
         mVideoView = ((VideoView) findViewById(R.id.video_loader));
         mPlayView = ((ImageView) findViewById(R.id.icon_video_play));
-        videoThumbListView = (VideoThumbHorizontalListView) findViewById(R.id.video_thumb_listview);
-        videoThumbAdapter = new VideoThumbAdapter(mContext);
+        videoThumbListView = (RecyclerView) findViewById(R.id.video_thumb_listview);
+        videoThumbAdapter = new CoverAdapter();
         videoThumbListView.setAdapter(videoThumbAdapter);
 
-        videoThumbListView.setOnScrollStateChangedListener(onScrollStateChangedListener);
+        videoThumbListView.setLayoutManager(new LinearLayoutManager(mContext,LinearLayoutManager.HORIZONTAL,false));
         setUpListeners();
 
         setUpSeekBar();
@@ -139,21 +158,6 @@ public class VideoTrimmerView extends FrameLayout {
         mSrc = videoURI;
         mVideoView.setVideoURI(mSrc);
         mVideoView.requestFocus();
-
-        TrimVideoUtil.backgroundShootVideoThumb(mContext, mSrc, new SingleCallback<ArrayList<Bitmap>, Integer>() {
-            @Override
-            public void onSingleCallback(final ArrayList<Bitmap> bitmap, final Integer interval) {
-                UiThreadExecutor.runTask("", new Runnable() {
-                    @Override
-                    public void run() {
-                        FileUtils.saveBitmapToFile(mContext, bitmap.get(0), ParamsManager.VideoCover);
-                        videoThumbAdapter.addAll(bitmap);
-                        videoThumbAdapter.notifyDataSetChanged();
-                    }
-                }, 0L);
-
-            }
-        });
     }
 
     private void initSeekBarPosition() {
@@ -409,6 +413,23 @@ public class VideoTrimmerView extends FrameLayout {
                 onClickVideoPlayPause();
             }
         });
+
+        videoThumbListView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                mScrolledOffset=getScollXDistance(recyclerView);
+                onVideoReset();
+                onSeekThumbs(0, mScrolledOffset + leftThumbValue);
+                onSeekThumbs(1, mScrolledOffset + rightThumbValue);
+                mRangeSeekBarView.invalidate();
+            }
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+            }
+        });
     }
 
     private void setUpProgressBarMarginsAndWidth(int left, int right) {
@@ -535,67 +556,6 @@ public class VideoTrimmerView extends FrameLayout {
         mPlayView.setImageResource(isPlaying ? R.drawable.icon_video_pause_black : R.drawable.icon_video_play_black);
     }
 
-    private VideoThumbHorizontalListView.OnScrollStateChangedListener onScrollStateChangedListener = new VideoThumbHorizontalListView.OnScrollStateChangedListener() {
-        @Override
-        public void onScrollStateChanged(ScrollState scrollState, int scrolledOffset) {
-            if (videoThumbListView.getCurrentX() == 0) {
-                return;
-            }
-
-            switch (scrollState) {
-
-                case SCROLL_STATE_FLING:
-                case SCROLL_STATE_IDLE:
-                case SCROLL_STATE_TOUCH_SCROLL:
-
-                    if (scrolledOffset < 0) {
-                        mScrolledOffset = mScrolledOffset - Math.abs(scrolledOffset);
-                        if (mScrolledOffset <= 0) {
-                            mScrolledOffset = 0;
-                        }
-                    } else {
-                        if (PixToTime(mScrolledOffset + SCREEN_WIDTH) <= mDuration)//根据时间来判断还是否可以向左滚动
-                        {
-                            mScrolledOffset = mScrolledOffset + scrolledOffset;
-                        }
-                    }
-                    onVideoReset();
-                    onSeekThumbs(0, mScrolledOffset + leftThumbValue);
-                    onSeekThumbs(1, mScrolledOffset + rightThumbValue);
-                    mRangeSeekBarView.invalidate();
-                    break;
-                default:
-
-            }
-        }
-    };
-
-    private class VideoThumbAdapter extends ArrayAdapter<Bitmap> {
-
-        VideoThumbAdapter(Context context) {
-            super(context, 0);
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            VideoThumbHolder videoThumbHolder;
-            if (convertView == null) {
-                videoThumbHolder = new VideoThumbHolder();
-                convertView = LayoutInflater.from(parent.getContext()).inflate(R.layout.video_thumb_itme_layout, null);
-                videoThumbHolder.thumb = (ImageView) convertView.findViewById(R.id.thumb);
-                convertView.setTag(videoThumbHolder);
-            } else {
-                videoThumbHolder = (VideoThumbHolder) convertView.getTag();
-            }
-            videoThumbHolder.thumb.setImageBitmap(getItem(position));
-            return convertView;
-        }
-    }
-
-    private static class VideoThumbHolder {
-        public ImageView thumb;
-    }
-
     public int getDuration() {
         return mDuration;
     }
@@ -607,5 +567,122 @@ public class VideoTrimmerView extends FrameLayout {
     @IntDef({View.VISIBLE, View.INVISIBLE, View.GONE})
     @Retention(RetentionPolicy.SOURCE)
     public @interface Visibility {
+    }
+
+    class CoverAdapter extends RecyclerView.Adapter<Holder> {
+
+
+        private List<Video> coverList = new ArrayList<>();
+
+        public CoverAdapter() {
+        }
+
+        public CoverAdapter(List<Video> coverList) {
+            this.coverList = coverList;
+        }
+
+        public void addImages(List<Video> coverList) {
+            this.coverList.addAll(coverList);
+            notifyDataSetChanged();
+        }
+
+        @Override
+        public Holder onCreateViewHolder(ViewGroup parent, int viewType) {
+            View convertView = LayoutInflater.from(parent.getContext()).inflate(R.layout.video_thumb_itme_layout, null);
+            return new Holder(convertView);
+        }
+
+        @Override
+        public void onBindViewHolder(Holder holder, int position) {
+
+            final int microSecond = (int) coverList.get(position).mecs;
+            VideoBitmapDecoder videoBitmapDecoder = new VideoBitmapDecoder(microSecond) {
+                @Override
+                public Bitmap decode(ParcelFileDescriptor resource, BitmapPool bitmapPool, int outWidth, int outHeight, DecodeFormat decodeFormat) throws IOException {
+                    MediaMetadataRetriever mediaMetadataRetriever = new MediaMetadataRetriever();
+                    mediaMetadataRetriever.setDataSource(resource.getFileDescriptor());
+                    Bitmap result;
+                    if (microSecond >= 0) {
+                        result = mediaMetadataRetriever.getFrameAtTime(microSecond, MediaMetadataRetriever.OPTION_CLOSEST);
+                    } else {
+                        result = mediaMetadataRetriever.getFrameAtTime();
+                    }
+                    if (result == null) {
+                        result = mediaMetadataRetriever.getFrameAtTime(microSecond);
+                    }
+                    mediaMetadataRetriever.release();
+                    resource.close();
+                    return result;
+                }
+            };
+            FileDescriptorBitmapDecoder fileDescriptorBitmapDecoder = new FileDescriptorBitmapDecoder(videoBitmapDecoder, holder.mBitmapPool, DecodeFormat.PREFER_ARGB_8888);
+            String path = coverList.get(position).path.getPath();
+            Glide.with(getContext())
+                    .load(path)
+                    .asBitmap()
+                    .override(thumb_Width, thumb_Height)
+                    .signature(new StringSignature(path + microSecond))
+                    .diskCacheStrategy(DiskCacheStrategy.RESULT)
+                    .videoDecoder(fileDescriptorBitmapDecoder)
+                    .into(holder.mImageView);
+        }
+
+        @Override
+        public int getItemCount() {
+            return coverList.size();
+        }
+    }
+
+    class Holder extends RecyclerView.ViewHolder {
+        ImageView mImageView;
+        BitmapPool mBitmapPool;
+
+        public Holder(View itemView) {
+            super(itemView);
+            mBitmapPool = Glide.get(getContext()).getBitmapPool();
+            mImageView = (ImageView) itemView.findViewById(R.id.thumb);
+        }
+    }
+
+    /**
+     * 要求 每个item View的高度一致，不然就判断 类型，自己加宽高
+     *
+     * @return
+     */
+    private int getScollXDistance(RecyclerView recyclerView) {
+        LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
+        int position = layoutManager.findFirstVisibleItemPosition();
+        View firstVisiableChildView = layoutManager.findViewByPosition(position);
+        if (firstVisiableChildView == null) {
+            return 0;
+        }
+        int itemWidth = firstVisiableChildView.getWidth();
+        return (position) * itemWidth - firstVisiableChildView.getLeft();
+    }
+
+
+    public interface OnScrollDistanceListener {
+        /**
+         * 时间都去哪儿了
+         *
+         * @param millisecond
+         */
+        void changeTo(long millisecond);
+    }
+
+    public static class Video {
+        Uri path;
+        long mecs;
+
+        public Video(Uri path, long mecs) {
+            this.path = path;
+            this.mecs = mecs;
+        }
+    }
+
+    public void addImages(List<Video> coverList) {
+        if (videoThumbAdapter != null) {
+            videoThumbAdapter.addImages(coverList);
+        }
     }
 }

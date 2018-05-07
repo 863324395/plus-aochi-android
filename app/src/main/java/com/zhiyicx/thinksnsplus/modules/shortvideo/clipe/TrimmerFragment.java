@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.shortvideo.clipe;
 
 import android.app.ProgressDialog;
+import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
@@ -13,15 +14,21 @@ import com.tym.shortvideo.media.VideoInfo;
 import com.tym.shortvideo.recordcore.VideoListManager;
 import com.tym.shortvideo.utils.FileUtils;
 import com.tym.shortvideo.utils.TrimVideoUtil;
-import com.tym.shortvideo.view.VideoTrimmerView;
+import com.zhiyicx.thinksnsplus.modules.shortvideo.helper.VideoTrimmerView;
+import com.zhiyicx.thinksnsplus.modules.shortvideo.helper.VideoTrimmerView;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.modules.shortvideo.cover.CoverActivity;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
+import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 
@@ -50,6 +57,7 @@ public class TrimmerFragment extends TSFragment implements TrimVideoListener {
 
     private ProgressDialog mProgressDialog;
     private VideoInfo mVideoInfo;
+    private ArrayList<String> arrayList;
 
     @Override
     public void onPause() {
@@ -97,6 +105,9 @@ public class TrimmerFragment extends TSFragment implements TrimVideoListener {
         mVideoTrimmerView.setMaxDuration(TrimVideoUtil.VIDEO_MAX_DURATION);
         mVideoTrimmerView.setOnTrimVideoListener(this);
         mVideoTrimmerView.setVideoURI(Uri.parse(path));
+        arrayList = new ArrayList<>();
+        arrayList.add(path);
+        getCoverImageList();
 
         mToolbarCenter.setText(R.string.clip_speed);
         mToolbarLeft.setText(R.string.cancel);
@@ -143,7 +154,6 @@ public class TrimmerFragment extends TSFragment implements TrimVideoListener {
             arrayList.add(path);
             VideoListManager.getInstance().addSubVideo(path, mVideoTrimmerView.getDuration());
             CoverActivity.startCoverActivity(mActivity, arrayList, false, false,false);
-//            PreviewActivity.startPreviewActivity(mActivity, arrayList);
             mActivity.finish();
         });
     }
@@ -160,5 +170,52 @@ public class TrimmerFragment extends TSFragment implements TrimVideoListener {
         }
         mProgressDialog.setMessage(msg);
         return mProgressDialog;
+    }
+
+    private void getCoverImageList() {
+        List<Uri> videoUris = new ArrayList<>();
+        for (String url : arrayList) {
+            videoUris.add(Uri.parse(url));
+        }
+        List<Observable<ArrayList<VideoTrimmerView.Video>>> observableList = new ArrayList<>();
+        for (Uri uri : videoUris) {
+            final ArrayList<VideoTrimmerView.Video> list = new ArrayList<>();
+            Observable<ArrayList<VideoTrimmerView.Video>> observable = Observable.just(uri)
+                    .subscribeOn(Schedulers.io())
+                    .flatMap((Func1<Uri, Observable<ArrayList<VideoTrimmerView.Video>>>) uri1 -> {
+
+                        MediaMetadataRetriever mediaMetadataRetriever =
+                                new MediaMetadataRetriever();
+                        mediaMetadataRetriever.setDataSource(mActivity, uri1);
+
+                        long videoLengthInMs = Long.parseLong
+                                (mediaMetadataRetriever.extractMetadata
+                                        (MediaMetadataRetriever
+                                                .METADATA_KEY_DURATION)) * 1000;
+                        long numThumbs = videoLengthInMs < 1000000
+                                ? 1 : (videoLengthInMs / 1000000);
+
+                        final long interval = videoLengthInMs / numThumbs;
+
+                        for (long i = 0; i < numThumbs; ++i) {
+                            VideoTrimmerView.Video video = new VideoTrimmerView.Video(uri1, i * interval);
+                            list.add(video);
+                        }
+                        return Observable.just(list);
+                    });
+            observableList.add(observable);
+        }
+
+        Observable.combineLatest(observableList, args -> {
+            ArrayList<VideoTrimmerView.Video> result = new ArrayList<>();
+            for (Object obj : args) {
+                if (obj instanceof ArrayList) {
+                    result.addAll((ArrayList<VideoTrimmerView.Video>) obj);
+                }
+            }
+            return result;
+        })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(bitmaps -> mVideoTrimmerView.addImages(bitmaps));
     }
 }

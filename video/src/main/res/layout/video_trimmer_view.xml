@@ -38,7 +38,7 @@
             android:textColor="#444444"
             android:textSize="12dp" />
 
-        <com.tym.shortvideo.view.VideoThumbHorizontalListView
+        <android.support.v7.widget.RecyclerView
             android:id="@+id/video_thumb_listview"
             android:layout_width="match_parent"
             android:layout_height="60dp"
