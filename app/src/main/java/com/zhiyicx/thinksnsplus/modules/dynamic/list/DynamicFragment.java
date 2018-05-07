@@ -25,7 +25,6 @@ import com.zhiyicx.common.BuildConfig;
 import com.zhiyicx.common.utils.AndroidBug5497Workaround;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.DeviceUtils;
-import com.zhiyicx.common.utils.NetUtils;
 import com.zhiyicx.common.utils.TextViewUtils;
 import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.thinksnsplus.R;
