@@ -80,9 +80,9 @@ public abstract class AFilter {
     //纹理坐标
     private float[] coord = {
             0.0f, 0.0f,
-            0.0f, 0.98f,
-            0.98f, 0.0f,
-            0.98f, 0.98f,
+            0.0f, 1f,
+            1f, 0.0f,
+            1f, 1f,
     };
 
     private SparseArray<boolean[]> mBools;
@@ -229,19 +229,19 @@ public abstract class AFilter {
         ByteBuffer b = ByteBuffer.allocateDirect(32);
         b.order(ByteOrder.nativeOrder());
         mTexBuffer = b.asFloatBuffer();
-        if (CameraUtils.getCurrentRatio() == CameraUtils.Ratio.RATIO_16_9_2_1_1) {
-            coord[0] = 0.0f;
-            coord[1] = 0.0f;
-
-            coord[2] = 0.0f;
-            coord[3] = 0.98f;
-
-            coord[4] = 0.98f;
-            coord[5] = 0.0f;
-
-            coord[6] = 0.98f;
-            coord[7] = 0.98f;
-        }
+//        if (CameraUtils.getCurrentRatio() == CameraUtils.Ratio.RATIO_16_9_2_1_1) {
+//            coord[0] = 0.0f;
+//            coord[1] = 0.0f;
+//
+//            coord[2] = 0.0f;
+//            coord[3] = 0.98f;
+//
+//            coord[4] = 0.98f;
+//            coord[5] = 0.0f;
+//
+//            coord[6] = 0.98f;
+//            coord[7] = 0.98f;
+//        }
         mTexBuffer.put(coord);
         mTexBuffer.position(0);
     }
