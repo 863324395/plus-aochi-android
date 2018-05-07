@@ -162,7 +162,7 @@ public class VideoSelectFragment extends TSListFragment {
                         videoInfo.setCover(FileUtils.saveBitmapToFile(mActivity, cover, ParamsManager.VideoCover));
                         SendDynamicDataBean sendDynamicDataBean = new SendDynamicDataBean();
                         sendDynamicDataBean.setDynamicBelong(SendDynamicDataBean.NORMAL_DYNAMIC);
-                        videoInfo.setNeedCompressVideo(false);
+                        videoInfo.setNeedCompressVideo(true);
                         List<ImageBean> pic = new ArrayList<>();
                         ImageBean imageBean = new ImageBean();
                         imageBean.setImgUrl(videoInfo.getCover());

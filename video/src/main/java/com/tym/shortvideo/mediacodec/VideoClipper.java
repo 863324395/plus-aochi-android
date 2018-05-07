@@ -366,15 +366,16 @@ public class VideoClipper {
     private void initVideoCodec() {
         //不对视频进行大小压缩
         int encodeW, encodeH;
-        if (videoRotation == 90 || videoRotation == 270) {
-            encodeW = videoHeight;
-            encodeH = videoWidth;
-        } else {
-            encodeW = videoWidth;
-            encodeH = videoHeight;
-        }
+//        if (videoRotation == 90 || videoRotation == 270) {
+//            encodeW = videoHeight;
+//            encodeH = videoWidth;
+//        } else {
+//            encodeW = videoWidth;
+//            encodeH = videoHeight;
+//        }
 
-
+        encodeW = videoWidth;
+        encodeH = videoHeight;
         //设置视频的编码参数
         MediaFormat mediaFormat = MediaFormat.createVideoFormat("video/avc", encodeW, encodeH);
         // 1.5M
