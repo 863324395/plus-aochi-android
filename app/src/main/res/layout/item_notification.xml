@@ -24,7 +24,7 @@
 
     <TextView
         android:id="@+id/tv_time"
-        android:layout_width="60dp"
+        android:layout_width="52dp"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_marginTop="@dimen/spacing_small"
@@ -32,5 +32,5 @@
         android:includeFontPadding="false"
         android:textColor="@color/general_for_hint"
         android:textSize="@dimen/size_icon_assist"
-        tools:text="15分钟前"/>
+        tools:text="95分钟前"/>
 </RelativeLayout>
