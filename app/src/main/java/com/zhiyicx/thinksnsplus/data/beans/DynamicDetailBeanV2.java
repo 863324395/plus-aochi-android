@@ -537,7 +537,7 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable, Ser
         height = height < DEFALT_IMAGE_HEIGHT ? DEFALT_IMAGE_HEIGHT : height;
         video.setWidth(with);
         video.setHeight(height);
-        video.setGlideUrl(ImageUtils.imagePathConvertV2(true, video.cover_id, with, height,
+        video.setGlideUrl(ImageUtils.imagePathConvertV2(false, video.cover_id, with, height,
                 ImageZipConfig.IMAGE_100_ZIP, AppApplication.getTOKEN()));
     }
 
