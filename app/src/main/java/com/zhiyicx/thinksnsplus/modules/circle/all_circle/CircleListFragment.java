@@ -44,18 +44,13 @@ public class CircleListFragment extends TSListFragment<CircleListContract.Presen
     }
 
     @Override
-    protected boolean isLayzLoad() {
-        return true;
-    }
-
-    @Override
     protected boolean setUseStatusView() {
         return false;
     }
 
     @Override
     protected boolean isNeedRefreshDataWhenComeIn() {
-        return super.isNeedRefreshDataWhenComeIn();
+        return true;
     }
 
     @Override
