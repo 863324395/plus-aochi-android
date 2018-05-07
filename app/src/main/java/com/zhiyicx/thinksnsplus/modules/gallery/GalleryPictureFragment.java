@@ -140,13 +140,14 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
      * @return
      */
     public static GalleryPictureFragment newInstance(ImageBean imageBean, AnimationRectBean rect,
-                                                     boolean animationIn, boolean firstOpenPage) {
+                                                     boolean animationIn, boolean firstOpenPage, boolean needStartLoading) {
         GalleryPictureFragment fragment = new GalleryPictureFragment();
         Bundle bundle = new Bundle();
         bundle.putParcelable("url", imageBean);
         bundle.putParcelable("rect", rect);
         bundle.putBoolean("animationIn", animationIn);
         bundle.putBoolean("firstOpenPage", firstOpenPage);
+        bundle.putBoolean("needStartLoading", needStartLoading);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -448,6 +449,10 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                     .error(R.drawable.shape_default_image)
                     .thumbnail(0.1f);
             local.into(new GallaryGlideDrawableImageViewTarget(rect));
+            // 聊天里面用
+            if (!FileUtils.isFileExists(imageBean.getImgUrl()) && getArguments() != null && getArguments().getBoolean("needStartLoading")) {
+                startLoadProgress();
+            }
         } else {
             // 缩略图
             DrawableRequestBuilder thumbnailBuilder = Glide
@@ -469,7 +474,6 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                     }
                             .requestGlideUrl())
                     .diskCacheStrategy(DiskCacheStrategy.ALL);
-
             // // 不从网络读取原图(CACHE_ONLY_STREAM_LOADER) 尝试从缓存获取原图
             DrawableRequestBuilder requestBuilder = Glide.with(context)
                     .using(CACHE_ONLY_STREAM_LOADER)
@@ -556,10 +560,6 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                             return false;
                         }
                     });
-
-//            if (imageBean.getWidth() * imageBean.getHeight() != 0) {
-//                requestBuilder.override(w, h);
-//            }
 
             requestBuilder.into(
                     ImageUtils.imageIsGif(imageBean.getImgMimeType()) ? new GallaryGlideDrawableImageViewTarget(rect) : new GallarySimpleTarget(rect)

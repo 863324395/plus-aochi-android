@@ -175,7 +175,7 @@ public class ChatRowPicture extends ChatBaseRow {
                         AnimationRectBean rect = AnimationRectBean.buildFromImageView(mIvChatContent);
                         animationRectBeanArrayList.add(rect);
                         GalleryActivity.startToGallery(getContext(), 0, imageBeanList,
-                                animationRectBeanArrayList);
+                                animationRectBeanArrayList, true);
                         try {
                             if (ActivityHandler.getInstance().currentActivity() instanceof ChatActivity) {
                                 ((ChatFragment) ((TSActivity) ActivityHandler.getInstance().currentActivity()).getContanierFragment())

@@ -44,6 +44,7 @@ import butterknife.BindView;
 public class GalleryFragment extends TSFragment {
     public static final String BUNDLE_IMAGS = "imags";
     public static final String BUNDLE_IMAGS_POSITON = "imags_positon";
+    public static final String BUNDLE_NEED_START_LOADING = "start_loding";
     private static final int MAX_OFF_SIZE = 8;
 
     @BindView(R.id.vp_photos)
@@ -51,12 +52,14 @@ public class GalleryFragment extends TSFragment {
     @BindView(R.id.mi_indicator)
     MagicIndicator mMiIndicator;
 
+
     private SectionsPagerAdapter mPagerAdapter;
     /**
      * 点击第几张图片进入的预览界面
      */
     private int currentItem = 0;
     private List<ImageBean> allImages;
+    private boolean mNeedStartLoading = false;
 
     @Override
     protected int getBodyLayoutId() {
@@ -80,6 +83,7 @@ public class GalleryFragment extends TSFragment {
 
     @Override
     protected void initView(View rootView) {
+        mNeedStartLoading = getArguments().getBoolean(BUNDLE_NEED_START_LOADING);
         currentItem = getArguments().getInt(BUNDLE_IMAGS_POSITON);
         rectList = getArguments().getParcelableArrayList("rect");
         allImages = getArguments().getParcelableArrayList(BUNDLE_IMAGS);
@@ -181,7 +185,7 @@ public class GalleryFragment extends TSFragment {
                 boolean isFirstLoadPage = currentItem == position || Math.abs(currentItem - position) == 1;
                 fragment = GalleryPictureFragment
                         .newInstance(allImages.get(position), rectList.get(position), animateIn,
-                                isFirstLoadPage);
+                                isFirstLoadPage,mNeedStartLoading);
                 alreadyAnimateIn = true;
                 fragmentMap.put(position, fragment);
             }
