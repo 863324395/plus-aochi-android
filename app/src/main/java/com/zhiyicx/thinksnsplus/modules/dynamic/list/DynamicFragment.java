@@ -193,7 +193,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
 
     @Override
     protected boolean isNeedRefreshDataWhenComeIn() {
-        return !ApiConfig.DYNAMIC_TYPE_FOLLOWS.equals(mDynamicType);
+        return true;
     }
 
     @Override
@@ -831,18 +831,19 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
         if (!TouristConfig.MORE_COMMENT_CAN_LOOK && mPresenter.handleTouristControl()) {
             return;
         }
-        int position = mPresenter.getCurrenPosiotnInDataList(dynamicBean.getFeed_mark());
-        DynamicDetailBeanV2 detailBeanV2 = mListDatas.get(position);
+        int dataPosition = mPresenter.getCurrenPosiotnInDataList(dynamicBean.getFeed_mark());
+        DynamicDetailBeanV2 detailBeanV2 = mListDatas.get(dataPosition);
         boolean canNotLookWords = detailBeanV2.getPaid_node() != null &&
                 !detailBeanV2.getPaid_node().isPaid()
                 && detailBeanV2.getUser_id().intValue() != AppApplication.getMyUserIdWithdefault();
         if (canNotLookWords) {
-            initImageCenterPopWindow(position, position,
+            initImageCenterPopWindow(dataPosition, dataPosition,
                     detailBeanV2.getPaid_node().getAmount(),
                     detailBeanV2.getPaid_node().getNode(), R.string.buy_pay_words_desc, false);
             return;
         }
-        goDynamicDetail(position, true, (ViewHolder) mRvList.getChildViewHolder(mRvList.getLayoutManager().findViewByPosition(position)));
+        int viewPosition = dataPosition + mHeaderAndFooterWrapper.getHeadersCount();
+        goDynamicDetail(dataPosition, true, (ViewHolder) mRvList.getChildViewHolder(mRvList.getLayoutManager().findViewByPosition(viewPosition)));
     }
 
     @Override

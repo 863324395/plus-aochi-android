@@ -640,9 +640,9 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable, Ser
             // 单张图最小高度
             height = height < DEFALT_IMAGE_HEIGHT ? DEFALT_IMAGE_HEIGHT : height;
             // 这个不知道好久才有用哎
-            proportion = ((with / netWidth) * 100);
+            proportion = with * 100 / netWidth;
             imageBean.setGlideUrl(ImageUtils.imagePathConvertV2(canLook, imageBean.getFile(), canLook ? 0 : with, canLook ? 0 : height
-                    , 100, AppApplication.getTOKEN()));
+                    , proportion, AppApplication.getTOKEN()));
             imageBean.setImageViewWidth(with);
             imageBean.setImageViewHeight(height);
         }
@@ -825,11 +825,9 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable, Ser
          * amount : 100
          * type : download
          * paid : false
-         *
-         *
          */
         private int propPart;
-        @SerializedName(value = "file" ,alternate = {"file_id"})
+        @SerializedName(value = "file", alternate = {"file_id"})
         private int file;
         private String size;
         private String imgUrl;

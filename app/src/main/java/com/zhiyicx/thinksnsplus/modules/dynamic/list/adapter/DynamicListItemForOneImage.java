@@ -10,6 +10,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.widget.imageview.FilterImageView;
 import com.zhiyicx.common.utils.DrawableProvider;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
@@ -59,6 +60,8 @@ public class DynamicListItemForOneImage extends DynamicListBaseItem {
     public void convert(ViewHolder holder, final DynamicDetailBeanV2 dynamicBean, DynamicDetailBeanV2 lastT, int position, int itemCounts) {
         super.convert(holder, dynamicBean, lastT, position, itemCounts);
         initImageView(holder, holder.getView(R.id.siv_0), dynamicBean, 0, 1);
+        LogUtils.d("------------image 1  = " + (System.currentTimeMillis() - start));
+
     }
 
     /**

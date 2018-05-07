@@ -489,6 +489,12 @@ public class ImageUtils {
      * @param part    压缩比例 0-100
      */
     public static GlideUrl imagePathConvertV2(boolean canLook, int storage, int w, int h, int part, String token) {
+        // 保证付费后图不在使用缓存的图片
+        if (canLook) {
+            part = 100;
+        } else {
+            part = 90;
+        }
         String url = imagePathConvertV2(storage, w, h, part);
         return imagePathConvertV2(url, token);
     }
@@ -651,8 +657,10 @@ public class ImageUtils {
     public static boolean imageIsGif(String imageMinityp) {
         return FILE_MIME_TYPE_GIF.equals(imageMinityp);
     }
+
     /**
      * 是否是长图
+     *
      * @param netHeight
      * @param netWidth
      * @return

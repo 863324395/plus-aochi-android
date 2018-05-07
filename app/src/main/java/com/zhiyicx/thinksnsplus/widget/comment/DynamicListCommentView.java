@@ -71,6 +71,7 @@ public class DynamicListCommentView extends LinearLayout {
         mDynamicNoPullRecycleView = (DynamicNoPullRecycleView) findViewById(R.id.fl_comment);
         mMoreComment = (TextView) findViewById(R.id.tv_more_comment);
         setListener();
+        mDynamicNoPullRecycleView.setItemViewCacheSize(SHOW_MORE_COMMENT_SIZE_LIMIT - 1);
     }
 
     private void setListener() {
