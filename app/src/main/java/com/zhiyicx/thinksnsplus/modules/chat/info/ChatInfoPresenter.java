@@ -338,4 +338,9 @@ public class ChatInfoPresenter extends AppBasePresenter<ChatInfoContract.View>
         }
         return false;
     }
+
+    @Override
+    public void saveGroupInfo(ChatGroupBean chatGroupBean) {
+        mChatGroupBeanGreenDao.saveSingleData(chatGroupBean);
+    }
 }

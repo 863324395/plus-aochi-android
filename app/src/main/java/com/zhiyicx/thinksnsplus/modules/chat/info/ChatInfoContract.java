@@ -75,6 +75,8 @@ public interface ChatInfoContract {
          * @return
          */
         boolean checkImhelper(String chatId);
+
+        void saveGroupInfo(ChatGroupBean chatGroupBean);
     }
 
     interface Repository extends IBaseFriendsRepository {

@@ -97,10 +97,6 @@ public class SelectFriendsPresenter extends AppBasePresenter<SelectFriendsContra
                     });
             addSubscrebe(mSearchSub);
         } else {
-            if (!TextUtils.isEmpty(keyWord)) {
-                mRootView.hideRefreshState(isLoadMore);
-                return;
-            }
             getLocalUser(keyWord);
         }
 

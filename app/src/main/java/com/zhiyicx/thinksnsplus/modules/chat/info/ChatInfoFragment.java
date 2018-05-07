@@ -374,7 +374,7 @@ public class ChatInfoFragment extends TSFragment<ChatInfoContract.Presenter> imp
         mChatGroupBean.setDescription(chatGroupBean.getDescription());
         mChatGroupBean.setMembersonly(chatGroupBean.isMembersonly());
         mChatGroupBean.setAllowinvites(chatGroupBean.isAllowinvites());
-
+        mPresenter.saveGroupInfo(mChatGroupBean);
         setGroupData();
     }
 

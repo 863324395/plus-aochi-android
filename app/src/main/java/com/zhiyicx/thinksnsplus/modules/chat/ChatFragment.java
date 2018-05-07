@@ -387,9 +387,7 @@ public class ChatFragment extends TSEaseChatFragment<ChatContract.Presenter>
             mPresenter.getUserInfoForRefreshList(event);
             mPresenter.getGroupChatInfo(event.getMessage().getTo());
             mPresenter.updateChatGroupMemberCount(event.getMessage().getTo(), 1, false);
-            setCenterText(getString(R.string.chat_group_name_default, mPresenter.getGroupName(toChatUsername), mPresenter.getChatGroupInfo
-                    (toChatUsername)
-                    .getAffiliations_count()));
+            setCenterText(mPresenter.getGroupName(toChatUsername));
 
         }
     }
@@ -459,10 +457,7 @@ public class ChatFragment extends TSEaseChatFragment<ChatContract.Presenter>
             if (isUserExit || isUserJoin) {
                 // 只有群聊中才会有 成员 加入or退出的消息
                 mPresenter.updateChatGroupMemberCount(message.conversationId(), 1, isUserJoin);
-                setCenterText(getString(R.string.chat_group_name_default, mPresenter.getGroupName(message.conversationId()), mPresenter
-                        .getChatGroupInfo
-                                (message.conversationId())
-                        .getAffiliations_count()));
+                setCenterText(mPresenter.getGroupName(message.conversationId()));
             }
 
             // if the message is for current conversation
@@ -474,9 +469,6 @@ public class ChatFragment extends TSEaseChatFragment<ChatContract.Presenter>
             } else {
                 EaseUI.getInstance().getNotifier().onNewMsg(message);
             }
-        }
-        if (isGroupChange) {
-            mPresenter.getGroupChatInfo(chatGroupId);
         }
     }
 
