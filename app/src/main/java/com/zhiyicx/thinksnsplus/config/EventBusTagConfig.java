@@ -258,4 +258,5 @@ public class EventBusTagConfig {
 
     public static final String EVENT_USER_HEADPIC_UPDATE="event_user_update_headpic";
 
+    public static final String EVENT_CHAT_CLEAR_MESSAGE="chat_clear_message";
 }

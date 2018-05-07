@@ -32,6 +32,7 @@ import com.zhiyicx.common.utils.recycleviewdecoration.TGridDecoration;
 import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.ChatGroupBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.modules.chat.ChatActivity;
@@ -46,6 +47,8 @@ import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhiyicx.thinksnsplus.utils.TSImHelperUtils;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
+
+import org.simple.eventbus.EventBus;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -565,6 +568,7 @@ public class ChatInfoFragment extends TSFragment<ChatInfoContract.Presenter> imp
                                     , mChatId
                                     , String.valueOf(AppApplication.getMyUserIdWithdefault())
                             );
+                            EventBus.getDefault().post(true, EventBusTagConfig.EVENT_CHAT_CLEAR_MESSAGE);
                         }
                         mClearAllMessagePop.hide();
                     })
