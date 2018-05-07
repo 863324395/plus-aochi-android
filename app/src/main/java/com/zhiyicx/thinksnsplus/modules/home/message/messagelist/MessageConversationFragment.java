@@ -133,9 +133,15 @@ public class MessageConversationFragment extends TSListFragment<MessageConversat
         }
     }
 
+
+
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
+        if (isVisibleToUser){
+            mSearchView.setText("");
+        }
+
         if (isVisibleToUser && mAdapter != null && ((MessageAdapterV2) mAdapter).hasItemOpend()) {
             ((MessageAdapterV2) mAdapter).closeAllItems();
         }
@@ -192,6 +198,8 @@ public class MessageConversationFragment extends TSListFragment<MessageConversat
         super.onPause();
         onBlickClick();
     }
+
+
 
     /**
      * 进入聊天页
