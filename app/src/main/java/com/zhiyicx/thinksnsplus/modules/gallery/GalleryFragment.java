@@ -98,17 +98,15 @@ public class GalleryFragment extends TSFragment {
                 // 刚拖动
                 if (viewPageState == ViewPager.SCROLL_STATE_DRAGGING) {
                     // 获取到的是当前要退出的fragment
-                    GalleryPictureFragment galleryPicturFragment = fragmentMap.get(mVpPhotos.getCurrentItem());
-                    if (galleryPicturFragment != null) {
-                        galleryPicturFragment.showOrHideOriginBtn(false);
+                    if (fragmentMap.get(mVpPhotos.getCurrentItem()) != null) {
+                        fragmentMap.get(mVpPhotos.getCurrentItem()).showOrHideOriginBtn(false);
                     }
                 }
                 // 通过手指滑动切换到新的fragment，而不是第一次进入切换到fragment
                 if (viewPageState == ViewPager.SCROLL_STATE_SETTLING || viewPageState == ViewPager.SCROLL_STATE_IDLE) {
                     // 获取到的是当前要进入的fragment
-                    GalleryPictureFragment galleryPicturFragment = fragmentMap.get(mVpPhotos.getCurrentItem());
-                    if (galleryPicturFragment != null) {
-                        galleryPicturFragment.showOrHideOriginBtn(true);
+                    if (fragmentMap.get(mVpPhotos.getCurrentItem()) != null) {
+                        fragmentMap.get(mVpPhotos.getCurrentItem()).showOrHideOriginBtn(true);
                     }
                 }
             }
@@ -133,9 +131,8 @@ public class GalleryFragment extends TSFragment {
              * @param key
              */
             private void handlePreLoadData(int key) {
-                GalleryPictureFragment nextFragment = fragmentMap.get(key);
-                if (nextFragment != null) {
-                    nextFragment.preLoadData();
+                if (fragmentMap.get(key) != null) {
+                    fragmentMap.get(key).preLoadData();
                 }
             }
         });
