@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter;
 
 import android.content.Context;
 
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
@@ -41,6 +42,8 @@ public class DynamicListItemForThreeImage extends DynamicListBaseItem {
         initImageView(holder, holder.getView(R.id.siv_0), dynamicBean, 0,1); // 数字 0 代表 image 当前的位置， 1 代表他相对与 CURREN_CLOUMS 的份数
         initImageView(holder, holder.getView(R.id.siv_1), dynamicBean, 1,1);
         initImageView(holder, holder.getView(R.id.siv_2), dynamicBean, 2,1);
+        LogUtils.d("------------image 3  = " + (System.currentTimeMillis() - start));
+
     }
 
 

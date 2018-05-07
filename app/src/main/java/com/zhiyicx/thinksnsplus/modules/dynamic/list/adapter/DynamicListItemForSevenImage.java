@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter;
 
 import android.content.Context;
 
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
@@ -46,6 +47,8 @@ public class DynamicListItemForSevenImage extends DynamicListBaseItem {
         initImageView(holder, holder.getView(R.id.siv_4), dynamicBean, 4,2);
         initImageView(holder, holder.getView(R.id.siv_5), dynamicBean, 5,1);
         initImageView(holder, holder.getView(R.id.siv_6), dynamicBean, 6,1);
+        LogUtils.d("------------image 7  = " + (System.currentTimeMillis() - start));
+
     }
 }
 

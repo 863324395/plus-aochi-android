@@ -14,6 +14,7 @@ import com.bumptech.glide.signature.StringSignature;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.FastBlur;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhiyicx.thinksnsplus.modules.shortvideo.helper.ZhiyiVideoView;
@@ -72,6 +73,7 @@ public class DynamicListItemForShorVideo extends DynamicListBaseItem {
     public void convert(ViewHolder holder, final DynamicDetailBeanV2 dynamicBean, DynamicDetailBeanV2 lastT, int position, int itemCounts) {
         super.convert(holder, dynamicBean, lastT, position, itemCounts);
         initVideoView(holder, holder.getView(R.id.videoplayer), dynamicBean, position);
+        LogUtils.d("------------video = " + (System.currentTimeMillis() - start));
     }
 
     /**
@@ -154,10 +156,22 @@ public class DynamicListItemForShorVideo extends DynamicListBaseItem {
                         @Override
                         public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean
                                 isFromMemoryCache, boolean isFirstResource) {
+                            Observable.just(resource)
+                                    .subscribeOn(Schedulers.io())
+                                    .map(glideDrawable -> {
+                                        Bitmap bitmap = FastBlur.blurBitmapForShortVideo(ConvertUtils.drawable2Bitmap(resource), resource
+                                                .getIntrinsicWidth(), resource
+                                                .getIntrinsicHeight());
+                                        return new BitmapDrawable(mContext.getResources(), bitmap);
+                                    })
+                                    .observeOn(AndroidSchedulers.mainThread())
+                                    .subscribe(background -> {
+                                        if (view != null) {
+                                            // 防止被回收
+                                            view.setBackground(background);
+                                        }
+                                    }, Throwable::printStackTrace);
 
-                            Bitmap bitmap = FastBlur.blurBitmap(ConvertUtils.drawable2Bitmap(resource), resource.getIntrinsicWidth(), resource
-                                    .getIntrinsicHeight());
-                            view.setBackground(new BitmapDrawable(mContext.getResources(), bitmap));
                             return false;
                         }
                     })

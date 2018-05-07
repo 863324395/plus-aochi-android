@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.View;
 import android.widget.TextView;
 
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
@@ -59,6 +60,8 @@ public class DynamicListItemForNineImage extends DynamicListBaseItem {
 
         TextView size = holder.getTextView(R.id.tv_numshadow);
         size.setVisibility(View.GONE);
+        LogUtils.d("------------image 9  = " + (System.currentTimeMillis() - start));
+
     }
 
 }
