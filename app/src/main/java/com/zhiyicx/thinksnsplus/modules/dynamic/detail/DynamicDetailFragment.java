@@ -290,7 +290,7 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
 
     @Override
     public void onImageClick(int iamgePosition, long amount, int note) {
-        initImageCenterPopWindow(iamgePosition, amount, note, R.string.buy_pay_words_desc, true);
+        initImageCenterPopWindow(iamgePosition, amount, note, R.string.buy_pay_desc, true);
     }
 
     public static DynamicDetailFragment initFragment(Bundle bundle) {
