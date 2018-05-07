@@ -292,14 +292,16 @@ public class StickTopFragment extends TSFragment<StickTopContract.Presenter> imp
     }
 
     @Override
-    public void initStickTopInstructionsPop() {
+    public void initStickTopInstructionsPop(String dec) {
         if (mStickTopInstructionsPopupWindow != null) {
+            mStickTopInstructionsPopupWindow = mStickTopInstructionsPopupWindow.newBuilder()
+                    .desStr(dec).build();
             mStickTopInstructionsPopupWindow.show();
             return;
         }
         mStickTopInstructionsPopupWindow = ActionPopupWindow.builder()
                 .item1Str(getString(R.string.sticktop_instructions))
-                .desStr(getString(R.string.sticktop_instructions_detail))
+                .desStr(dec)
                 .bottomStr(getString(R.string.cancel))
                 .isOutsideTouch(true)
                 .isFocus(true)

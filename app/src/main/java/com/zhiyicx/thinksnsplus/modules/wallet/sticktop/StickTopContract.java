@@ -20,7 +20,7 @@ public interface StickTopContract {
 
         void gotoRecharge();
 
-        void initStickTopInstructionsPop();
+        void initStickTopInstructionsPop(String dec);
 
         int getTopDyas();
 

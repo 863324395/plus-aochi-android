@@ -52,8 +52,12 @@ public class StickTopPresenter extends AppBasePresenter<StickTopContract.View>
      */
     @Override
     public void stickTop(long parentId) {
-        if (mRootView.getInputMoney() < 0) {
-            mRootView.initStickTopInstructionsPop();
+        if (mRootView.getInputMoney() < 0 && mRootView.getInputMoney() != (int) mRootView.getInputMoney()) {
+            mRootView.initStickTopInstructionsPop(mContext.getString(R.string.sticktop_instructions_detail));
+            return;
+        }
+        if (mRootView.getTopDyas() <= 0) {
+            mRootView.initStickTopInstructionsPop(mContext.getString(R.string.sticktop_instructions_day));
             return;
         }
         if (mRootView.insufficientBalance()) {
@@ -125,8 +129,12 @@ public class StickTopPresenter extends AppBasePresenter<StickTopContract.View>
      */
     @Override
     public void stickTop(long parentId, long childId) {
-        if (mRootView.getInputMoney() != (int) mRootView.getInputMoney()) {
-            mRootView.initStickTopInstructionsPop();
+        if (mRootView.getInputMoney() < 0 && mRootView.getInputMoney() != (int) mRootView.getInputMoney()) {
+            mRootView.initStickTopInstructionsPop(mContext.getString(R.string.sticktop_instructions_detail));
+            return;
+        }
+        if (mRootView.getTopDyas() <= 0) {
+            mRootView.initStickTopInstructionsPop(mContext.getString(R.string.sticktop_instructions_day));
             return;
         }
         if (mRootView.insufficientBalance()) {

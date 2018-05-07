@@ -421,6 +421,7 @@
     <string name="sticktop_instructions">置顶说明</string>
     <string name="sticktop_reward_instructions">打赏说明</string>
     <string name="sticktop_instructions_detail">置顶金额必须是整数，不能出现小数</string>
+    <string name="sticktop_instructions_day">请选择或填写置顶天数</string>
     <string name="sticktop_reward_instructions_detail">打赏金额必须是整数，不能出现小数</string>
     <string name="dynamic_list_top_dynamic">申请动态置顶</string>
     <string name="dynamic_list_top_dynamic_success">申请动态置顶成功</string>
