@@ -79,6 +79,7 @@ public class BaseMessageRepository implements IBaseMessageRepository {
                         itemBeanV2.setEmKey(entry.getKey());
                         list.add(itemBeanV2);
                     }
+                    LogUtils.d("getConversationList::", list.size());
                     // 再在第一条插入ts助手，前提是当前消息列表中没有小助手的消息
                     List<SystemConfigBean.ImHelperBean> tsHlepers = mSystemRepository.getBootstrappersInfoFromLocal().getIm_helper();
                     // 需要手动插入的小助手，本地查找不到会话才插入聊天信息
@@ -184,7 +185,6 @@ public class BaseMessageRepository implements IBaseMessageRepository {
                             // 群聊
                             String chatGroupId = itemBeanV2.getConversation().conversationId();
                             try {
-                                EMClient.getInstance().groupManager().getGroupFromServer(chatGroupId);
                                 EMMessage message = itemBeanV2.getConversation().getLastMessage();
                                 Long userId = Long.parseLong(message.getFrom());
 
@@ -207,6 +207,7 @@ public class BaseMessageRepository implements IBaseMessageRepository {
                                     users.add(itemBeanV2.getConversation().getLastMessage().getFrom());
                                 }
                             } catch (Exception ignored) {
+
                             }
 
                             ChatGroupBean chatGroupBean = mChatGroupBeanGreenDao.getChatGroupBeanById(chatGroupId);
@@ -274,40 +275,47 @@ public class BaseMessageRepository implements IBaseMessageRepository {
                                         });
                             }).flatMap(messages -> {
                                 if (TextUtils.isEmpty(groupIds.toString())) {
-                                    return Observable.just(messages);
+                                    String lastConversationId = "";
+                                    List<MessageItemBeanV2> repeatItemBeanList = new ArrayList<>();
+                                    for (MessageItemBeanV2 exitItem : messages) {
+                                        String currentConversationId = exitItem.getConversation().conversationId();
+
+                                        if (!lastConversationId.equals(currentConversationId)) {
+                                            repeatItemBeanList.add(exitItem);
+                                        }
+                                        lastConversationId = exitItem.getConversation().conversationId();
+                                    }
+                                    return Observable.just(repeatItemBeanList);
                                 }
                                 return getGroupInfo(groupIds.deleteCharAt(groupIds.length() - 1).toString())
                                         .flatMap(data -> {
-                                            List<MessageItemBeanV2> messageItemBeanList = new ArrayList<>();
+                                            List<MessageItemBeanV2> repeatItemBeanList = new ArrayList<>();
+                                            String lastConversationId = "";
                                             mChatGroupBeanGreenDao.saveMultiData(data);
                                             for (ChatGroupBean chatGroupBean : data) {
-                                                // 如果列表已经有  那么就不再追加
-                                                boolean canAdded = true;
+
+
                                                 mUserInfoBeanGreenDao.saveMultiData(chatGroupBean.getAffiliations());
                                                 for (MessageItemBeanV2 exitItem : list1) {
-                                                    if (exitItem.getConversation().conversationId().equals(chatGroupBean.getId())) {
+                                                    String currentConversationId = exitItem.getConversation().conversationId();
+
+                                                    if (currentConversationId.equals(chatGroupBean.getId())) {
                                                         exitItem.setEmKey(chatGroupBean.getId());
                                                         exitItem.setList(chatGroupBean.getAffiliations());
                                                         exitItem.setConversation(EMClient.getInstance().chatManager().getConversation
                                                                 (chatGroupBean
                                                                         .getId()));
                                                         exitItem.setChatGroupBean(chatGroupBean);
-                                                        canAdded = false;
-                                                        break;
                                                     }
+
+                                                    if (!lastConversationId.equals(currentConversationId)) {
+                                                        repeatItemBeanList.add(exitItem);
+                                                    }
+                                                    lastConversationId = exitItem.getConversation().conversationId();
                                                 }
-                                                if (canAdded) {
-                                                    MessageItemBeanV2 itemBeanV2 = new MessageItemBeanV2();
-                                                    itemBeanV2.setEmKey(chatGroupBean.getId());
-                                                    itemBeanV2.setList(chatGroupBean.getAffiliations());
-                                                    itemBeanV2.setConversation(EMClient.getInstance().chatManager().getConversation(chatGroupBean
-                                                            .getId()));
-                                                    itemBeanV2.setChatGroupBean(chatGroupBean);
-                                                    messageItemBeanList.add(itemBeanV2);
-                                                }
+
                                             }
-                                            list1.addAll(0, messageItemBeanList);
-                                            return Observable.just(list1);
+                                            return Observable.just(repeatItemBeanList);
                                         });
                             });
                 });

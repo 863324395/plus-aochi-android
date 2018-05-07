@@ -395,7 +395,7 @@ public class MessageConversationPresenter extends AppBasePresenter<MessageConver
 
                         // 用收到的聊天的item的会话id去本地取出会话
                         EMConversation conversationNew = EMClient.getInstance().chatManager().getConversation(emMessage.conversationId());
-                        if (conversationNew != null) {
+                        if (conversationNew != null && size !=0) {
                             // 会话已经存在
                             for (int i = 0; i < size; i++) {
                                 // 检测列表中是否已经存在了
@@ -410,6 +410,18 @@ public class MessageConversationPresenter extends AppBasePresenter<MessageConver
                                 } else if (i == size - 1) {
                                     // 循环到最后一条，仍然没有会话，那则证明是需要新增一条到会话列表
                                     LogUtils.d("msg::" + "newMsg");
+
+                                    // 之前在这里也许重复创建了会话 ，fix by tym on 2018-5-7 14:40:39
+                                    EMConversation.EMConversationType type = EMConversation.EMConversationType.Chat;
+                                    if (emMessage.getChatType() == EMMessage.ChatType.Chat) {
+                                        type = EMConversation.EMConversationType.Chat;
+                                    } else if (emMessage.getChatType() == EMMessage.ChatType.GroupChat) {
+                                        type = EMConversation.EMConversationType.GroupChat;
+                                    }
+                                    EMConversation conversation =
+                                            EMClient.getInstance().chatManager().getConversation(emMessage.getFrom(), type, true);
+                                    conversation.insertMessage(emMessage);
+
                                     MessageItemBeanV2 itemBeanV2 = new MessageItemBeanV2();
                                     itemBeanV2.setConversation(conversationNew);
                                     itemBeanV2.setEmKey(conversationNew.conversationId());
@@ -427,7 +439,7 @@ public class MessageConversationPresenter extends AppBasePresenter<MessageConver
                                 type = EMConversation.EMConversationType.GroupChat;
                             }
                             EMConversation conversation =
-                                    EMClient.getInstance().chatManager().getConversation(emMessage.getFrom(), type, true);
+                                    EMClient.getInstance().chatManager().getConversation(emMessage.conversationId(), type, true);
                             conversation.insertMessage(emMessage);
                             MessageItemBeanV2 itemBeanV2 = new MessageItemBeanV2();
                             itemBeanV2.setConversation(conversation);

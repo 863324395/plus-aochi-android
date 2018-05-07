@@ -44,7 +44,7 @@ public class CollectListActivity extends TSActivity<CollectListPresenter, Collec
         if (JZVideoPlayer.backPress()) {
             return;
         }
-        ActivityUtils.goHome(this);
+        super.onBackPressed();
     }
 
 }

@@ -121,7 +121,11 @@ public class MessageConversationFragment extends TSListFragment<MessageConversat
         super.onResume();
         // 刷新信息内容
         if (mPresenter != null) {
-            mPresenter.requestNetData(DEFAULT_PAGE_MAX_ID, false);
+            if (mListDatas.isEmpty()) {
+                mRefreshlayout.autoRefresh(0);
+            }else{
+                mPresenter.requestNetData(DEFAULT_PAGE_MAX_ID, false);
+            }
             mPresenter.refreshConversationReadMessage();
         }
         if (getUserVisibleHint() && !TextUtils.isEmpty(mSearchView.getText())) {
@@ -263,7 +267,9 @@ public class MessageConversationFragment extends TSListFragment<MessageConversat
                 }
                 ToastUtils.showToast(groupName + "解散了");
                 EMClient.getInstance().chatManager().deleteConversation(groupId, true);
-                mPresenter.deleteGroup(groupId);
+                if (mPresenter != null) {
+                    mPresenter.deleteGroup(groupId);
+                }
                 break;
             case TSEMConstants.TS_ATTR_GROUP_LAYOFF:
 
