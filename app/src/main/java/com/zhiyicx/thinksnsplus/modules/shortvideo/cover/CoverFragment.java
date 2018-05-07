@@ -442,6 +442,7 @@ public class CoverFragment extends TSFragment implements MediaPlayerWrapper.IMed
                                 (mediaMetadataRetriever.extractMetadata
                                         (MediaMetadataRetriever
                                                 .METADATA_KEY_DURATION)) * 1000;
+                        mediaMetadataRetriever.release();
                         long numThumbs = videoLengthInMs < 1000000
                                 ? 1 : (videoLengthInMs / 1000000);
                         numThumbs += numThumbs;

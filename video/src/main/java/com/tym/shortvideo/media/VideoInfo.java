@@ -11,7 +11,7 @@ import java.io.Serializable;
  * @Email Jliuer@aliyun.com
  * @Description 视频信息类
  */
-public class VideoInfo implements Parcelable,Serializable{
+public class VideoInfo implements Parcelable, Serializable {
     private static final long serialVersionUID = 1333866610918025407L;
     public String path;//路径
     public String cover;//封面路径
@@ -112,7 +112,7 @@ public class VideoInfo implements Parcelable,Serializable{
     }
 
     public int getWidth() {
-        if(width>0){
+        if (width > 0) {
             return width;
         }
         return 500;
@@ -123,9 +123,9 @@ public class VideoInfo implements Parcelable,Serializable{
     }
 
     public int getHeight() {
-        if(height>0) {
+        if (height > 0) {
             return height;
-        }else {
+        } else {
             return 500;
         }
     }

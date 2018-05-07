@@ -247,6 +247,7 @@ public class TrimVideoUtil {
 
     /**
      * 读取媒体库视频
+     *
      * @param mContext
      * @param callback
      */
@@ -278,12 +279,44 @@ public class TrimVideoUtil {
                                                        video.setName(cursor.getString(cursor
                                                                .getColumnIndex(MediaStore.Video
                                                                        .Media.DISPLAY_NAME)));
-                                                       video.setWidth(cursor.getInt(cursor
+
+                                                       int w, h;
+                                                       w = cursor.getInt(cursor
                                                                .getColumnIndex(MediaStore.Video
-                                                                       .Media.WIDTH)));
-                                                       video.setHeight(cursor.getInt(cursor
+                                                                       .Media.WIDTH));
+                                                       h = cursor.getInt(cursor
                                                                .getColumnIndex(MediaStore.Video
-                                                                       .Media.HEIGHT)));
+                                                                       .Media.HEIGHT));
+
+                                                       video.setWidth(w);
+                                                       video.setHeight(h);
+
+                                                       if (w * h == 0) {
+                                                           MediaMetadataRetriever mediaMetadataRetriever =
+                                                                   new MediaMetadataRetriever();
+                                                           mediaMetadataRetriever.setDataSource(mContext, Uri.parse(video.getPath()));
+                                                           try {
+                                                               int rotation = Integer.parseInt(mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_ROTATION));
+                                                               w = Integer.parseInt(mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH));
+                                                               h = Integer.parseInt(mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT));
+                                                               if (rotation == 90 || rotation == 270) {
+                                                                   video.setWidth(h);
+                                                                   video.setHeight(w);
+                                                               } else {
+                                                                   video.setWidth(w);
+                                                                   video.setHeight(h);
+                                                               }
+
+                                                           } catch (Exception e) {
+                                                               continue;
+                                                           } finally {
+                                                               mediaMetadataRetriever.release();
+                                                           }
+                                                       }
+
+                                                       if (w * h == 0) {
+                                                           continue;
+                                                       }
 
                                                        LogUtils.d("---------------------------------------");
                                                        LogUtils.d("path::" + cursor.getString(cursor
