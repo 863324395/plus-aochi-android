@@ -124,8 +124,8 @@ public class CircleListFragment extends TSListFragment<CircleListContract.Presen
 
     @Override
     protected void initData() {
-        super.initData();
         mCircleListItem.setPresenter(mPresenter);
+        super.initData();
     }
 
     @Override

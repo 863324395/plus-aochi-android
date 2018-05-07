@@ -28,6 +28,8 @@ public class FindSomeOneNearbyListFragment extends TSListFragment<FindSomeOneNea
     @Inject
     FindSomeOneNearbyListPresenter mFollowFansListPresenter;
 
+    private FindSomeOneNearbyListAdapter mFindSomeOneNearbyListAdapter;
+
     public static FindSomeOneNearbyListFragment initFragment() {
         FindSomeOneNearbyListFragment followFansListFragment = new FindSomeOneNearbyListFragment();
         return followFansListFragment;
@@ -36,7 +38,8 @@ public class FindSomeOneNearbyListFragment extends TSListFragment<FindSomeOneNea
 
     @Override
     protected CommonAdapter<NearbyBean> getAdapter() {
-        return new FindSomeOneNearbyListAdapter(getContext(), R.layout.item_find_some_list, mListDatas, mPresenter);
+        mFindSomeOneNearbyListAdapter=new FindSomeOneNearbyListAdapter(getContext(), R.layout.item_find_some_list, mListDatas, mPresenter);
+        return mFindSomeOneNearbyListAdapter;
     }
 
     @Override
@@ -76,6 +79,7 @@ public class FindSomeOneNearbyListFragment extends TSListFragment<FindSomeOneNea
     @Override
     protected void initData() {
         if (mPresenter != null) {
+            mFindSomeOneNearbyListAdapter.setPresenter(mPresenter);
             super.initData();
         }
     }

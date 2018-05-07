@@ -123,4 +123,7 @@ public class FindSomeOneNearbyListAdapter extends CommonAdapter<NearbyBean> {
         PersonalCenterFragment.startToPersonalCenter(context, userInfoBean);
     }
 
+    public void setPresenter(FindSomeOneNearbyListContract.Presenter presenter) {
+        mPresenter = presenter;
+    }
 }

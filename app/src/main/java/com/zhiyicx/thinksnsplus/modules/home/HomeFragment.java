@@ -248,6 +248,7 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
                 if (TouristConfig.DYNAMIC_CAN_PUBLISH || !mPresenter.handleTouristControl()) {
                     Intent intent = new Intent(getActivity(), SelectDynamicTypeActivity.class);
                     startActivity(intent);
+                    getActivity().overridePendingTransition(R.anim.animate_noting, R.anim.send_type_colse_fade_out);
                 }
                 break;
             // 点击消息
