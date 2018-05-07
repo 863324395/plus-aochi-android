@@ -24,13 +24,14 @@
 
     <TextView
         android:id="@+id/tv_time"
-        android:layout_width="52dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
+        android:paddingLeft="@dimen/spacing_normal"
         android:layout_marginTop="@dimen/spacing_small"
         android:gravity="top|right"
         android:includeFontPadding="false"
         android:textColor="@color/general_for_hint"
         android:textSize="@dimen/size_icon_assist"
-        tools:text="95分钟前"/>
+        tools:text="15分钟前"/>
 </RelativeLayout>
