@@ -419,7 +419,7 @@ public class MessageConversationPresenter extends AppBasePresenter<MessageConver
                                         type = EMConversation.EMConversationType.GroupChat;
                                     }
                                     EMConversation conversation =
-                                            EMClient.getInstance().chatManager().getConversation(emMessage.getFrom(), type, true);
+                                            EMClient.getInstance().chatManager().getConversation(emMessage.conversationId(), type, true);
                                     conversation.insertMessage(emMessage);
 
                                     MessageItemBeanV2 itemBeanV2 = new MessageItemBeanV2();

@@ -885,7 +885,7 @@ public class TSEMHyphenate {
              */
             @Override
             public void onUserRemoved(String groupId, String groupName) {
-                TSEMessageUtils.sendEixtGroupMessage(groupId, groupName,TSEMConstants.TS_ATTR_GROUP_LAYOFF);
+//                TSEMessageUtils.sendEixtGroupMessage(groupId, groupName,TSEMConstants.TS_ATTR_GROUP_LAYOFF);
                 LogUtils.i("onUserRemoved groupId:%s, groupName:%s", groupId, groupName);
             }
 
@@ -946,7 +946,7 @@ public class TSEMHyphenate {
 
             @Override
             public void onMemberExited(final String groupId, final String member) {
-                TSEMessageUtils.sendGroupMemberJoinOrExitMessage(groupId,member,false,null);
+//                TSEMessageUtils.sendGroupMemberJoinOrExitMessage(groupId,member,false,null);
             }
 
             @Override

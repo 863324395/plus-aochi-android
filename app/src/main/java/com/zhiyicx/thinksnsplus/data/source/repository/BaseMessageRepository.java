@@ -186,28 +186,35 @@ public class BaseMessageRepository implements IBaseMessageRepository {
                             String chatGroupId = itemBeanV2.getConversation().conversationId();
                             try {
                                 EMMessage message = itemBeanV2.getConversation().getLastMessage();
-                                Long userId = Long.parseLong(message.getFrom());
 
-                                boolean isUserJoin = TSEMConstants.TS_ATTR_JOIN.equals(message.ext().get("type"));
-                                boolean isUserExit = TSEMConstants.TS_ATTR_EIXT.equals(message.ext().get("type"));
+                                if ("admin".equals(message.getFrom())) {
 
-                                if (isUserExit || isUserJoin && EMMessage.Type.TXT.equals(message.getType())) {
-                                    String id = ((EMTextMessageBody) message.getBody()).getMessage();
-                                    UserInfoBean userInfoBean = mUserInfoBeanGreenDao.getUserInfoById(id);
-                                    if (userInfoBean == null) {
-                                        users.add(id);
-                                    } else {
-                                        EMTextMessageBody textBody = new EMTextMessageBody(mContext.getResources().getString(R.string
-                                                .userup_exit_group, userInfoBean.getName()));
-                                        message.addBody(textBody);
+                                    boolean isUserJoin = TSEMConstants.TS_ATTR_JOIN.equals(message.ext().get("type"));
+                                    boolean isUserExit = TSEMConstants.TS_ATTR_EIXT.equals(message.ext().get("type"));
+
+                                    String userId = (String) message.ext().get("uid");
+
+                                    if (isUserJoin) {
+                                        UserInfoBean userInfoBean = mUserInfoBeanGreenDao.getUserInfoById(userId);
+                                        if (userInfoBean == null) {
+                                            users.add(userId);
+                                        }
+                                    }
+
+                                    if (groupIds.indexOf(chatGroupId) == -1 && (isUserJoin || isUserExit)) {
+                                        groupIds.append(chatGroupId);
+                                        groupIds.append(",");
+                                    }
+
+                                } else {
+                                    Long userId = Long.parseLong(message.getFrom());
+                                    if (mUserInfoBeanGreenDao.getSingleDataFromCache(userId) == null) {
+                                        users.add(itemBeanV2.getConversation().getLastMessage().getFrom());
                                     }
                                 }
 
-                                if (mUserInfoBeanGreenDao.getSingleDataFromCache(userId) == null) {
-                                    users.add(itemBeanV2.getConversation().getLastMessage().getFrom());
-                                }
                             } catch (Exception ignored) {
-
+                                LogUtils.e(ignored.getMessage());
                             }
 
                             ChatGroupBean chatGroupBean = mChatGroupBeanGreenDao.getChatGroupBeanById(chatGroupId);

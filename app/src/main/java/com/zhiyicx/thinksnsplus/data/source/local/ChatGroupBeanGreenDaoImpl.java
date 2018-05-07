@@ -96,7 +96,7 @@ public class ChatGroupBeanGreenDaoImpl extends CommonCacheImpl<ChatGroupBean> {
         if (chatGroupBean == null) {
             return AppApplication.getContext().getResources().getString(R.string.default_delete_user_name);
         }
-        return chatGroupBean.getName();// + "(" + chatGroupBean.getAffiliations_count() + ")";
+        return chatGroupBean.getName() + "(" + chatGroupBean.getAffiliations_count() + ")";
     }
 
     public boolean updateChatGroupMemberCount(String id, int count, boolean add) {

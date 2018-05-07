@@ -188,11 +188,8 @@ public class ChatFragment extends TSEaseChatFragment<ChatContract.Presenter>
             if (group != null && group.isMsgBlocked()) {
                 mToolbarCenter.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.mipmap.ico_newslist_shield, 0);
             }
-            if (group != null && group.getMemberCount() > 0) {
-                setCenterText(getString(R.string.chat_group_name_default, mPresenter.getGroupName(toChatUsername), group.getMemberCount()));
-            } else {
-                setCenterText(mPresenter.getGroupName(toChatUsername));
-            }
+
+            setCenterText(mPresenter.getGroupName(toChatUsername));
         }
         if (chatType != EaseConstant.CHATTYPE_CHATROOM) {
             onConversationInit();
@@ -223,11 +220,8 @@ public class ChatFragment extends TSEaseChatFragment<ChatContract.Presenter>
             } else if (group != null && !group.isMsgBlocked()) {
                 mToolbarCenter.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
             }
-            if (group != null && group.getMemberCount() > 0) {
-                setCenterText(getString(R.string.chat_group_name_default, mPresenter.getGroupName(toChatUsername), group.getMemberCount()));
-            } else {
-                setCenterText(mPresenter.getGroupName(toChatUsername));
-            }
+
+            setCenterText(mPresenter.getGroupName(toChatUsername));
         }
     }
 
