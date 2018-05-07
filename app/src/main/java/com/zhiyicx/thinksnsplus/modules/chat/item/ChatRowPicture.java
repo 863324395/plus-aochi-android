@@ -5,6 +5,7 @@ import android.graphics.BitmapFactory;
 import android.support.v7.widget.AppCompatImageView;
 import android.text.TextUtils;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import com.hyphenate.chat.EMImageMessageBody;
@@ -128,25 +129,39 @@ public class ChatRowPicture extends ChatBaseRow {
                     width = width > mMaxLocalImageWith ? mMaxLocalImageWith : width;
                     height = width * 2;
                 }
+                mIvChatContent.setScaleType(ImageView.ScaleType.CENTER_CROP);
+
             } else {
                 if (width > height) {
                     if (width > mMaxLocalImageWith) {
                         height = height * mMaxLocalImageWith / width;
                         width = mMaxLocalImageWith;
+                        if (height < 50) {
+                            height = 50;
+                        }
                     }
+                    mIvChatContent.setScaleType(ImageView.ScaleType.FIT_XY);
+
                 } else {
                     if (height > mMaxImageHeight) {
-                        width = width * mMaxImageHeight / height;
-                        height = mMaxImageHeight;
                         if (width > mMaxLocalImageWith) {
                             height = height * mMaxLocalImageWith / width;
                             width = mMaxLocalImageWith;
+                        }
+                        if (height > 2 * mMaxLocalImageWith) {
+                            height = 2 * mMaxLocalImageWith;
+                            // TODO: 2018/5/7  scaleType
+                            mIvChatContent.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                        } else {
+                            mIvChatContent.setScaleType(ImageView.ScaleType.FIT_XY);
                         }
                     } else {
                         if (width > mMaxLocalImageWith) {
                             height = height * mMaxLocalImageWith / width;
                             width = mMaxLocalImageWith;
                         }
+                        mIvChatContent.setScaleType(ImageView.ScaleType.FIT_XY);
+
                     }
 
                 }
