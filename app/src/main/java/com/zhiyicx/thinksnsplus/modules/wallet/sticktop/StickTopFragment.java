@@ -326,6 +326,8 @@ public class StickTopFragment extends TSFragment<StickTopContract.Presenter> imp
     }
 
     /**
+     * 评论置顶
+     *
      * @param context
      * @param type      资源类型：动态、资讯等
      * @param parent_id 资源的ic
@@ -341,33 +343,18 @@ public class StickTopFragment extends TSFragment<StickTopContract.Presenter> imp
         Intent intent = new Intent(context, StickTopActivity.class);
         intent.putExtras(bundle);
         context.startActivity(intent);
+
     }
 
+    /**
+     * 资源置顶
+     *
+     * @param context
+     * @param type
+     * @param parent_id
+     */
     public static void startSticTopActivity(Context context, String type, Long parent_id) {
         startSticTopActivity(context, type, parent_id, null);
-    }
-
-    public static void startSticTopActivity(Context context, String type, Long parent_id, Long child_id, boolean isManager) {
-        Bundle bundle = new Bundle();
-
-        // 资源类型
-        bundle.putString(StickTopFragment.TYPE, type);
-
-        // 资源id
-        bundle.putLong(StickTopFragment.PARENT_ID, parent_id);
-
-        bundle.putBoolean(StickTopFragment.TYPE_MANAGER, isManager);
-
-        if (child_id != null) {
-            bundle.putLong(StickTopFragment.CHILD_ID, child_id);
-        }
-        Intent intent = new Intent(context, StickTopActivity.class);
-        intent.putExtras(bundle);
-        context.startActivity(intent);
-    }
-
-    public static void startSticTopActivity(Context context, String type, Long parent_id, boolean isManager) {
-        startSticTopActivity(context, type, parent_id, null, isManager);
     }
 
 }

@@ -412,13 +412,7 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
                 .item1ClickListener(() -> {
                     // 跳转置顶页面
                     mDeletCommentPopWindow.hide();
-                    Bundle bundle = new Bundle();
-                    bundle.putString(StickTopFragment.TYPE, StickTopFragment.TYPE_INFO);// 资源类型
-                    bundle.putLong(StickTopFragment.PARENT_ID, mInfoMation.getId());// 资源id
-                    bundle.putLong(StickTopFragment.CHILD_ID, data.getId());
-                    Intent intent = new Intent(getActivity(), StickTopActivity.class);
-                    intent.putExtras(bundle);
-                    startActivity(intent);
+                    StickTopFragment.startSticTopActivity(getActivity(), StickTopFragment.TYPE_INFO, mInfoMation.getId(), data.getId());
                     mDeletCommentPopWindow.hide();
                 })
                 .item2ClickListener(() -> {
@@ -485,15 +479,7 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
                     if (infoMation.is_pinned()) {
                         showSnackErrorMessage(getString(R.string.info_alert_reapply_for_top));
                     } else {
-                        // 跳转置顶页面
-                        Bundle bundle = new Bundle();
-                        // 资源类型
-                        bundle.putString(StickTopFragment.TYPE, StickTopFragment.TYPE_INFO);
-                        // 资源id
-                        bundle.putLong(StickTopFragment.PARENT_ID, infoMation.getId());
-                        Intent intent = new Intent(getActivity(), StickTopActivity.class);
-                        intent.putExtras(bundle);
-                        startActivity(intent);
+                        StickTopFragment.startSticTopActivity(getActivity(), StickTopFragment.TYPE_INFO, infoMation.getId());
                     }
                     mDealInfoMationPopWindow.hide();
                 })
@@ -542,6 +528,7 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
 
     /**
      * 评论
+     *
      * @param position
      */
     private void comment(int position) {
@@ -571,6 +558,7 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
 
     /**
      * 举报
+     *
      * @param position
      */
     private void goReportComment(int position) {
@@ -586,6 +574,7 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
 
         }
     }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
