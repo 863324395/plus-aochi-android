@@ -63,7 +63,6 @@
             android:theme="@style/BackGroundLauncherTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
-
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
@@ -174,8 +173,8 @@
         <activity
             android:name=".modules.gallery.GalleryActivity"
             android:hardwareAccelerated="false"
-            android:screenOrientation="portrait"
             android:launchMode="singleTop"
+            android:screenOrientation="portrait"
             android:theme="@style/TransParentTheme">
         </activity>
         <activity
@@ -656,6 +655,7 @@
         <!--环信的聊天页面-->
         <activity
             android:name=".modules.chat.ChatActivity"
+            android:hardwareAccelerated="false"
             android:launchMode="singleTop"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize|stateAlwaysHidden"/>
@@ -737,13 +737,15 @@
         <activity
             android:name=".modules.settings.blacklist.BlackListActivity"
             android:screenOrientation="portrait"/>
-        <activity android:name=".modules.home.message.messagegroup.MessageGroupActivity"
-                  android:screenOrientation="portrait"/>
+        <activity
+            android:name=".modules.home.message.messagegroup.MessageGroupActivity"
+            android:screenOrientation="portrait"/>
         <!-- 开机自启动服务 -->
         <receiver android:name=".modules.chat.call.receiver.StartServiceReceiver">
             <intent-filter android:priority="1000">
                 <action android:name="android.intent.action.BOOT_COMPLETED"/>
                 <action android:name="android.intent.action.QUICKBOOT_POWERON"/>
+
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </receiver>

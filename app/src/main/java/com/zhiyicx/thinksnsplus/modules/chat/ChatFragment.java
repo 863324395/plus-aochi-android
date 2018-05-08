@@ -184,11 +184,6 @@ public class ChatFragment extends TSEaseChatFragment<ChatContract.Presenter>
         if (chatType == EaseConstant.CHATTYPE_SINGLE) {
             setCenterText(mPresenter.getUserName(toChatUsername));
         } else if (chatType == EaseConstant.CHATTYPE_GROUP) {
-            EMGroup group = EMClient.getInstance().groupManager().getGroup(toChatUsername);
-            if (group != null && group.isMsgBlocked()) {
-                mToolbarCenter.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.mipmap.ico_newslist_shield, 0);
-            }
-
             setCenterText(mPresenter.getGroupName(toChatUsername));
         }
         if (chatType != EaseConstant.CHATTYPE_CHATROOM) {

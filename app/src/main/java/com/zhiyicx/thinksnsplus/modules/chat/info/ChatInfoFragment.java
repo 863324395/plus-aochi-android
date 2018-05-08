@@ -558,8 +558,7 @@ public class ChatInfoFragment extends TSFragment<ChatInfoContract.Presenter> imp
                     .backgroundAlpha(CustomPopupWindow.POPUPWINDOW_ALPHA)
                     .with(getActivity())
                     .item2ClickListener(() -> {
-                        EMConversation conversation = EMClient.getInstance().chatManager().getConversation(mChatId);
-                        conversation.clearAllMessages();
+                        EMClient.getInstance().chatManager().getConversation(mChatId).clearAllMessages();
                         if (mPresenter != null && mPresenter.checkImhelper(mChatId)) {
                             TSImHelperUtils.saveDeletedHistoryMessageHelper(
                                     getContext().getApplicationContext()
