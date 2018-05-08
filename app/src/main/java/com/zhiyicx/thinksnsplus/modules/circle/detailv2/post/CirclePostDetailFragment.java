@@ -564,7 +564,7 @@ public class CirclePostDetailFragment extends TSListFragment<CirclePostDetailCon
      */
     private void initDeleteCommentPopupWindow(final CirclePostCommentBean data, boolean isBlackList) {
         mDeletCommentPopWindow = ActionPopupWindow.builder()
-                .item1Str(BuildConfig.USE_TOLL && data.getId() != -1L && !isBlackList ? getString(R.string
+                .item1Str(BuildConfig.USE_TOLL && data.getId() != -1L && !isBlackList && !data.getPinned() ? getString(R.string
                         .dynamic_list_top_comment) : null)
                 .item2Str(getString(R.string.dynamic_list_delete_comment))
                 .bottomStr(getString(R.string.cancel))
