@@ -132,9 +132,7 @@ public class DynamicListItemForShorVideo extends DynamicListBaseItem {
                         }
                     })
                     .into(view.thumbImageView);
-        } else
-
-        {
+        } else {
             // 本地
             videoUrl = video.getUrl();
             with = video.getWidth();
@@ -144,7 +142,7 @@ public class DynamicListItemForShorVideo extends DynamicListBaseItem {
             Glide.with(mContext)
                     .load(video.getCover())
                     .override(with, height)
-                    .signature(new StringSignature(String.valueOf(System.currentTimeMillis())))
+                    .signature(new StringSignature(video.getCover() + dynamicBean.getCreated_at()))
                     .placeholder(R.drawable.shape_default_image)
                     .error(R.drawable.shape_default_image)
                     .listener(new RequestListener<String, GlideDrawable>() {
@@ -182,11 +180,7 @@ public class DynamicListItemForShorVideo extends DynamicListBaseItem {
 
         if (JZVideoPlayerManager.getFirstFloor() != null
                 && JZVideoPlayerManager.getFirstFloor().positionInList == positon
-                && !JZVideoPlayerManager.getCurrentJzvd().
-
-                equals(view))
-
-        {
+                && !JZVideoPlayerManager.getCurrentJzvd().equals(view)) {
 
             boolean isDetailBackToList = false;
             LinkedHashMap<String, Object> map = (LinkedHashMap) JZVideoPlayerManager.getFirstFloor().dataSourceObjects[0];
@@ -212,9 +206,7 @@ public class DynamicListItemForShorVideo extends DynamicListBaseItem {
             } else {
                 view.setUp(videoUrl, JZVideoPlayerStandard.SCREEN_WINDOW_LIST);
             }
-        } else
-
-        {
+        } else {
             view.setUp(videoUrl, JZVideoPlayerStandard.SCREEN_WINDOW_LIST);
         }
 
