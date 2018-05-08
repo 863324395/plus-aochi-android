@@ -44,7 +44,10 @@ public class StickTopFragment extends TSFragment<StickTopContract.Presenter> imp
      */
     public static final String PARENT_ID = "parent_id";
     public static final String CHILD_ID = "child_id";
-
+    /**
+     * 当前资源是否是当前登录用户的
+     */
+    public static final String SOURCE_IS_MINE = "source_is_mine";
     /**
      * value 动态置顶
      */
@@ -113,6 +116,11 @@ public class StickTopFragment extends TSFragment<StickTopContract.Presenter> imp
     private String type;
     private boolean isManager;
     private int mErrorCode;
+    private boolean mSourceIsMine;
+    /**
+     * true 是资源置顶，false 是评论置顶
+     */
+    private boolean mIsSourceTop;
 
     public static StickTopFragment newInstance(Bundle bundle) {
         StickTopFragment stickTopFragment = new StickTopFragment();
@@ -132,6 +140,9 @@ public class StickTopFragment extends TSFragment<StickTopContract.Presenter> imp
         parent_id = getArguments().getLong(PARENT_ID, -1L);
         child_id = getArguments().getLong(CHILD_ID, -1L);
         isManager = getArguments().getBoolean(TYPE_MANAGER);
+        mSourceIsMine = getArguments().getBoolean(SOURCE_IS_MINE);
+
+        mIsSourceTop = child_id <= 0;
         mBlance = mPresenter.getBalance();
         mTvEtFocusableTip.setText(R.string.top_every_day_pay);
         String moneyName = mPresenter.getGoldName();
@@ -144,6 +155,10 @@ public class StickTopFragment extends TSFragment<StickTopContract.Presenter> imp
             mLlTopTotalMoney.setVisibility(View.GONE);
         }
 
+        /**
+         * 资源是我的评论置顶  如果申请后是自己审核的， 按钮改成 “确认置顶”。
+         */
+        mBtTop.setText(getString(!mIsSourceTop && mSourceIsMine ? R.string.sure_top : R.string.to_top));
     }
 
     @Override
@@ -218,7 +233,7 @@ public class StickTopFragment extends TSFragment<StickTopContract.Presenter> imp
         mBlance = balance;
         int average = 0;
         if (mPresenter.getStickTopAverageBean() != null) {
-            if (child_id > 0) {
+            if (!mIsSourceTop) {
                 average = mPresenter.getStickTopAverageBean().getCommentTopAverageNum();
             } else {
                 average = mPresenter.getStickTopAverageBean().getSourceTopAverageNum();
@@ -272,13 +287,13 @@ public class StickTopFragment extends TSFragment<StickTopContract.Presenter> imp
         RxTextView.textChanges(mEtTopTotal)
                 .compose(this.bindToLifecycle())
                 .subscribe(charSequence -> mBtTop.setText(getString(mBlance < mCurrentDays * mInputMoney
-                        ? R.string.to_recharge : R.string.to_top)));
+                        ? R.string.to_recharge : !mIsSourceTop && mSourceIsMine ? R.string.sure_top : R.string.to_top)));
 
         RxView.clicks(mBtTop)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .compose(this.bindToLifecycle())
                 .subscribe(aVoid -> {
-                    if (child_id > 0) {
+                    if (!mIsSourceTop) {
                         mPresenter.stickTop(parent_id, child_id);
                     } else {
                         mPresenter.stickTop(parent_id);
@@ -329,17 +344,19 @@ public class StickTopFragment extends TSFragment<StickTopContract.Presenter> imp
      * 评论置顶
      *
      * @param context
-     * @param type      资源类型：动态、资讯等
-     * @param parent_id 资源的ic
-     * @param child_id  评论的 id
+     * @param type         资源类型：动态、资讯等
+     * @param parentId     资源的ic
+     * @param childId      评论的 id
+     * @param sourceIsMine 该资源是否是当前登录用户的
      */
-    public static void startSticTopActivity(Context context, String type, Long parent_id, Long child_id) {
+    public static void startSticTopActivity(Context context, String type, Long parentId, Long childId, boolean sourceIsMine) {
         Bundle bundle = new Bundle();
         bundle.putString(StickTopFragment.TYPE, type);// 资源类型
-        bundle.putLong(StickTopFragment.PARENT_ID, parent_id);// 资源id
-        if (child_id != null) {
-            bundle.putLong(StickTopFragment.CHILD_ID, child_id);
+        bundle.putLong(StickTopFragment.PARENT_ID, parentId);// 资源id
+        if (childId != null) {
+            bundle.putLong(StickTopFragment.CHILD_ID, childId);
         }
+        bundle.putBoolean(StickTopFragment.SOURCE_IS_MINE, sourceIsMine);
         Intent intent = new Intent(context, StickTopActivity.class);
         intent.putExtras(bundle);
         context.startActivity(intent);
@@ -351,10 +368,10 @@ public class StickTopFragment extends TSFragment<StickTopContract.Presenter> imp
      *
      * @param context
      * @param type
-     * @param parent_id
+     * @param parentId
      */
-    public static void startSticTopActivity(Context context, String type, Long parent_id) {
-        startSticTopActivity(context, type, parent_id, null);
+    public static void startSticTopActivity(Context context, String type, Long parentId) {
+        startSticTopActivity(context, type, parentId, null, true);
     }
 
 }
