@@ -198,9 +198,7 @@ public class CircleListItem extends BaseCircleItem {
                 });
         RxView.clicks(holder.getView(R.id.iv_circle_cover))
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
-                .subscribe(aVoid -> {
-
-                });
+                .subscribe(aVoid -> holder.getConvertView().performClick());
     }
 
 
