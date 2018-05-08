@@ -205,6 +205,7 @@ public class InfoListFragment extends TSListFragment<InfoMainContract.InfoListPr
             return;
         }
         List<RealAdvertListBean> advertList = mPresenter.getBannerAdvert();
+        mListAdvert = mPresenter.getListAdvert();
 
         if (advertList == null || advertList.isEmpty()) {
             return;
@@ -214,7 +215,6 @@ public class InfoListFragment extends TSListFragment<InfoMainContract.InfoListPr
         List<String> advertUrls = new ArrayList<>();
         List<String> advertLinks = new ArrayList<>();
 
-        mListAdvert = mPresenter.getListAdvert();
         for (RealAdvertListBean advert : advertList) {
             advertTitle.add(advert.getTitle());
             advertUrls.add(advert.getAdvertFormat().getImage().getImage());
