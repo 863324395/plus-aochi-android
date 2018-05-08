@@ -573,7 +573,9 @@ public class CirclePostDetailFragment extends TSListFragment<CirclePostDetailCon
                 .backgroundAlpha(POPUPWINDOW_ALPHA)
                 .with(getActivity())
                 .item1ClickListener(() -> {
-                    StickTopFragment.startSticTopActivity(getActivity(), StickTopFragment.TYPE_POST, mCirclePostDetailBean.getId(), data.getId());
+                    boolean sourceIsMine = AppApplication.getMyUserIdWithdefault() == data.getUser_id();
+                    StickTopFragment.startSticTopActivity(getActivity(), StickTopFragment.TYPE_POST, mCirclePostDetailBean.getId(), data.getId(),
+                            sourceIsMine);
                     mDeletCommentPopWindow.hide();
                 })
                 .item2ClickListener(() -> {

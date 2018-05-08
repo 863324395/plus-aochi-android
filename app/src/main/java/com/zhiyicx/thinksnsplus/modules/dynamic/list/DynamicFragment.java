@@ -886,8 +886,9 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
                 .with(getActivity())
                 .item1ClickListener(() -> {
                     mDeletCommentPopWindow.hide();
+                    boolean sourceIsMine = AppApplication.getMyUserIdWithdefault() == dynamicBean.getUser_id();
                     StickTopFragment.startSticTopActivity(getActivity(), StickTopFragment.TYPE_DYNAMIC, dynamicBean.getId(), dynamicBean
-                            .getComments().get(commentPosition).getComment_id());
+                            .getComments().get(commentPosition).getComment_id(), sourceIsMine);
                     showBottomView(true);
                 })
                 .item2ClickListener(() -> {

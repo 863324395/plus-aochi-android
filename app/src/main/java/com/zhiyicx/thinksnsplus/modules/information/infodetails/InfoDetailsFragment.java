@@ -412,7 +412,9 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
                 .item1ClickListener(() -> {
                     // 跳转置顶页面
                     mDeletCommentPopWindow.hide();
-                    StickTopFragment.startSticTopActivity(getActivity(), StickTopFragment.TYPE_INFO, mInfoMation.getId(), data.getId());
+                    boolean sourceIsMine = AppApplication.getMyUserIdWithdefault() == data.getUser_id();
+
+                    StickTopFragment.startSticTopActivity(getActivity(), StickTopFragment.TYPE_INFO, mInfoMation.getId(), data.getId(),sourceIsMine);
                     mDeletCommentPopWindow.hide();
                 })
                 .item2ClickListener(() -> {

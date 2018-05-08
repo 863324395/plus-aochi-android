@@ -1,6 +1,8 @@
 package com.zhiyicx.thinksnsplus.modules.wallet.sticktop;
 
 
+import android.text.TextUtils;
+
 import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
@@ -87,17 +89,9 @@ public class StickTopPresenter extends AppBasePresenter<StickTopContract.View>
                 .subscribe(new BaseSubscribeForV2<BaseJsonV2<Integer>>() {
                     @Override
                     protected void onSuccess(BaseJsonV2<Integer> data) {
-                        switch (mRootView.getType()) {
-                            case TYPE_DYNAMIC:
-                                mRootView.showSnackSuccessMessage(mContext.getString(R.string.dynamic_list_top_dynamic_success));
-                                break;
-                            case TYPE_INFO:
-                                mRootView.showSnackSuccessMessage(mContext.getString(R.string.dynamic_list_top_info_success));
-                                break;
-                            default:
-                                mRootView.showSnackSuccessMessage(mContext.getString(R.string.dynamic_list_top_success));
-
-                        }
+                        mRootView.showSnackSuccessMessage(data.getMessage() != null && !TextUtils.isEmpty(data.getMessage().get(0)) ? data
+                                .getMessage().get(0) : mContext
+                                .getString(R.string.comment_top_success));
 
                         mRootView.topSuccess();
                     }
@@ -151,7 +145,10 @@ public class StickTopPresenter extends AppBasePresenter<StickTopContract.View>
                 .subscribe(new BaseSubscribeForV2<BaseJsonV2<Integer>>() {
                     @Override
                     protected void onSuccess(BaseJsonV2<Integer> data) {
-                        mRootView.showSnackSuccessMessage(mContext.getString(R.string.comment_top_success));
+
+                        mRootView.showSnackSuccessMessage(data.getMessage() != null && !TextUtils.isEmpty(data.getMessage().get(0)) ? data
+                                .getMessage().get(0) : mContext
+                                .getString(R.string.comment_top_success));
                         mRootView.topSuccess();
                     }
 
