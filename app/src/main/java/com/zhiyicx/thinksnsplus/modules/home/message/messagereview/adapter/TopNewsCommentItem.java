@@ -99,13 +99,13 @@ public class TopNewsCommentItem extends BaseTopItem implements BaseTopItem.TopRe
                     .into((ImageView) holder.getView(R.id.iv_detail_image));
         }
 
-        holder.setText(R.id.tv_deatil, newsIsDeleted  ?
+        holder.setText(R.id.tv_deatil, newsIsDeleted ?
                 holder.getConvertView().getResources().getString(R.string.review_content_deleted)
                 : dynamicCommentBean.getNews().getContent());
 
         holder.setText(R.id.tv_content, commentIsDeleted ?
-                String.format(Locale.getDefault(),holder.itemView.getContext().getString(R.string.stick_type_dynamic_commnet_message), " ")
-                :RegexUtils.replaceImageIdAndNeedSpaceString(MarkdownConfig.IMAGE_FORMAT,
+                String.format(Locale.getDefault(), holder.itemView.getContext().getString(R.string.stick_type_dynamic_commnet_message), " ")
+                : RegexUtils.replaceImageIdAndNeedSpaceString(MarkdownConfig.IMAGE_FORMAT,
                 dynamicCommentBean.getComment().getComment_content()));
 
         if (newsIsDeleted || commentIsDeleted) {
@@ -161,8 +161,7 @@ public class TopNewsCommentItem extends BaseTopItem implements BaseTopItem.TopRe
     }
 
     private void handleReView(int position, TopNewsCommentListBean dynamicCommentBean) {
-        if (dynamicCommentBean.getExpires_at() == null
-                && dynamicCommentBean.getNews() != null
+        if (dynamicCommentBean.getNews() != null
                 && dynamicCommentBean.getComment() != null) {
             initReviewPopWindow(dynamicCommentBean, position);
         }

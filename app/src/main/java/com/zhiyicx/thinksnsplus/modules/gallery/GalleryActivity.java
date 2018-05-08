@@ -44,10 +44,16 @@ public class GalleryActivity extends TSActivity {
     }
 
     public static void startToGallery(Context context, int position, List<ImageBean> imageBeanList, List<AnimationRectBean> animationRectBeanList) {
+        startToGallery(context, position, imageBeanList, animationRectBeanList, false);
+    }
+
+    public static void startToGallery(Context context, int position, List<ImageBean> imageBeanList, List<AnimationRectBean> animationRectBeanList,
+                                      boolean isNeedSartLoading) {
         Intent intent = new Intent(context, GalleryActivity.class);
         Bundle bundle = new Bundle();
         bundle.putParcelableArrayList(GalleryFragment.BUNDLE_IMAGS, (ArrayList<? extends Parcelable>) imageBeanList);
         bundle.putInt(GalleryFragment.BUNDLE_IMAGS_POSITON, position);
+        bundle.putBoolean(GalleryFragment.BUNDLE_NEED_START_LOADING, isNeedSartLoading);
         bundle.putParcelableArrayList("rect", (ArrayList<? extends Parcelable>) animationRectBeanList);
         intent.putExtras(bundle);
         context.startActivity(intent);

@@ -72,7 +72,7 @@
             android:layout_toRightOf="@id/tv_toolbar_left"
             android:background="@drawable/info_search_bg"
             android:drawableLeft="@mipmap/search_icon_search"
-            android:drawablePadding="@dimen/spacing_small"
+            android:drawablePadding="@dimen/spacing_mid_small_8dp"
             android:gravity="start|center"
             android:maxLines="1"
             android:paddingBottom="@dimen/divider_line"

@@ -73,7 +73,6 @@ public class CirclePostListItemForOneImage extends CirclePostListBaseItem {
         CirclePostListBean.ImagesBean imageBean = circlePostListBean.getImages().get(0);
 
         if (TextUtils.isEmpty(imageBean.getImgUrl())) {
-            boolean canLook = true;
             with = currentWith;
             height = (with * imageBean.getHeight() / imageBean.getWidth());
             height = height > mImageMaxHeight ? mImageMaxHeight : height;
@@ -90,13 +89,13 @@ public class CirclePostListItemForOneImage extends CirclePostListBaseItem {
             view.showLongImageTag(isLongImage(imageBean.getHeight(), imageBean.getWidth())); // 是否是长图
 
             Glide.with(mContext)
-                    .load(ImageUtils.imagePathConvertV2(canLook, imageBean.getFile_id(), canLook ? 0 : with, canLook ? 0 : height,
+                    .load(ImageUtils.imagePathConvertV2(false, imageBean.getFile_id(), 0, 0,
                             100, AppApplication.getTOKEN()))
                     .asBitmap()
                     .override(with, height)
-                    .placeholder(canLook ? R.drawable.shape_default_image : R.mipmap.pic_locked)
+                    .placeholder(R.drawable.shape_default_image)
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
-                    .error(canLook ? R.drawable.shape_default_image : R.mipmap.pic_locked)
+                    .error(R.drawable.shape_default_image)
                     .into(view);
         } else {
             BitmapFactory.Options option = DrawableProvider.getPicsWHByFile(imageBean.getImgUrl());

@@ -174,7 +174,7 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
     @Override
     public void convert(ViewHolder holder, DynamicDetailBeanV2 dynamicBean, DynamicDetailBeanV2
             lastT, final int position, int itemCounts) {
-         start=System.currentTimeMillis();
+        start = System.currentTimeMillis();
 
         try {
             // 防止个人中心没后头像错误
@@ -413,9 +413,10 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
      * @return
      */
     public boolean isLongImage(int imageHeight, int imageWith) {
-        float a = (float) imageHeight * mHightPixels / ((float) imageWith * mHightPixels);
-
-        return a > 3 || a < .3f;
+//        float a = (float) imageHeight * mHightPixels / ((float) imageWith * mHightPixels);
+//
+//        return a > 3 || a < .3f;
+        return ImageUtils.isLongImage(imageHeight, imageWith);
     }
 
     /**

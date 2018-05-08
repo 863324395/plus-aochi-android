@@ -28,6 +28,7 @@
             android:paddingRight="@dimen/spacing_mid">
 
             <TextView
+                android:id="@+id/tv_et_focusable_tip"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/totop_money"
@@ -76,10 +77,10 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/et_top_total"
+                android:text="@string/et_top_total_pay"
                 android:textColor="@color/important_for_content"
                 android:textSize="@dimen/size_content"
-                tools:text="@string/et_top_total"/>
+                tools:text="@string/et_top_total_pay"/>
 
             <EditText
                 android:id="@+id/et_top_total"
@@ -96,7 +97,7 @@
                 android:textColor="@color/themeColor"
                 android:textColorHint="@color/general_for_hint"
                 android:textSize="@dimen/size_content_assist"
-                tools:hint="@string/et_top_total"/>
+                tools:hint=""/>
 
             <TextView
                 android:id="@+id/tv_total_money"

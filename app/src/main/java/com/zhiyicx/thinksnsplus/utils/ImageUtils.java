@@ -484,20 +484,15 @@ public class ImageUtils {
     /**
      * 图片地址转换 V2 api
      *
-     * @param canLook 是否可查看
+     * @param canLook 是否可以查看
      * @param storage 图片对应的 id 号，也可能是本地的图片路径
      * @param part    压缩比例 0-100
      */
     public static GlideUrl imagePathConvertV2(boolean canLook, int storage, int w, int h, int part, String token) {
-        // 保证付费后图不在使用缓存的图片
-        if (canLook) {
-            part = 100;
-        } else {
-            part = 90;
-        }
-        String url = imagePathConvertV2(storage, w, h, part);
+        String url = imagePathConvertV2(storage, w, h, part, canLook);
         return imagePathConvertV2(url, token);
     }
+
 
     /**
      * 图片地址转换 V2 api
@@ -535,6 +530,27 @@ public class ImageUtils {
      */
     public static String imagePathConvertV2(int storage, int w, int h, int part) {
         if (part == IMAGE_100_ZIP) {
+            return String.format(Locale.getDefault(), ApiConfig.APP_DOMAIN + ApiConfig.IMAGE_PATH_V2_ORIGIN, storage);
+        } else {
+            if (part < 40) {
+                part = 40;
+            }
+            return String.format(Locale.getDefault(), ApiConfig.APP_DOMAIN + ApiConfig.IMAGE_PATH_V2, storage, w, h, part);
+        }
+
+    }
+
+    /**
+     * 通过 图片 id 、with、height、quality
+     *
+     * @param storage id
+     * @param w       with
+     * @param h       height
+     * @param part    quality
+     * @return 请求图片的地址
+     */
+    public static String imagePathConvertV2(int storage, int w, int h, int part, boolean canLook) {
+        if (canLook && part == IMAGE_100_ZIP) {
             return String.format(Locale.getDefault(), ApiConfig.APP_DOMAIN + ApiConfig.IMAGE_PATH_V2_ORIGIN, storage);
         } else {
             if (part < 40) {

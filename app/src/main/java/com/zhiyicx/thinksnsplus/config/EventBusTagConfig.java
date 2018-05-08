@@ -53,7 +53,6 @@ public class EventBusTagConfig {
      * 更新动态列表
      */
     public static final String EVENT_UPDATE_DYNAMIC = "event_update_dynamic";
-
     /**
      * 更新圈子动态列表
      */

@@ -62,8 +62,8 @@ public class CirclePostListBaseItem implements ItemViewDelegate<CirclePostListBe
     private final int mHightPixels;
     private final int mMargin; // 图片容器的边距
     protected final int mDiverwith; // 分割先的宽高
-    protected  int mImageContainerWith; // 图片容器最大宽度
-    protected  int mImageMaxHeight; // 单张图片最大高度
+    protected int mImageContainerWith; // 图片容器最大宽度
+    protected int mImageMaxHeight; // 单张图片最大高度
     protected ImageLoader mImageLoader;
     protected Context mContext;
     protected AuthBean mAuthBean;
@@ -172,7 +172,7 @@ public class CirclePostListBaseItem implements ItemViewDelegate<CirclePostListBe
             holder.setText(R.id.tv_time, TimeUtils.getTimeFriendlyNormal(circlePostListBean
                     .getCreated_at()));
             holder.setText(R.id.tv_title, circlePostListBean.getTitle());
-            ((TextView)holder.getView(R.id.tv_title)).setTypeface(Typeface.DEFAULT_BOLD);
+            ((TextView) holder.getView(R.id.tv_title)).setTypeface(Typeface.DEFAULT_BOLD);
             holder.setTextColor(R.id.tv_title, mContext.getResources().getColor(R.color.important_for_content));
 
             String content = circlePostListBean.getSummary();
@@ -297,19 +297,18 @@ public class CirclePostListBaseItem implements ItemViewDelegate<CirclePostListBe
         if (circlePostListBean.getImages() != null && circlePostListBean.getImages().size() > 0) {
             CirclePostListBean.ImagesBean imageBean = circlePostListBean.getImages().get(positon);
             if (TextUtils.isEmpty(imageBean.getImgUrl())) {
-                Boolean canLook = true;
                 // 是否是 gif
                 view.setIshowGifTag(ImageUtils.imageIsGif(imageBean.getImgMimeType()));
                 // 是否是长图
                 view.showLongImageTag(isLongImage(imageBean.getHeight(), imageBean.getWidth()));
                 Glide.with(mContext)
-                        .load(ImageUtils.imagePathConvertV2(canLook, imageBean.getFile_id(), w, h,
+                        .load(ImageUtils.imagePathConvertV2(false, imageBean.getFile_id(), w, h,
                                 propPart, AppApplication.getTOKEN()))
                         .asBitmap()
                         .override(w, h)
-                        .placeholder(canLook ? R.drawable.shape_default_image : R.mipmap.pic_locked)
+                        .placeholder(R.drawable.shape_default_image)
                         .diskCacheStrategy(DiskCacheStrategy.ALL)
-                        .error(canLook ? R.drawable.shape_default_image : R.mipmap.pic_locked)
+                        .error(R.drawable.shape_default_image)
                         .into(view);
             } else {
                 // 是否是长图

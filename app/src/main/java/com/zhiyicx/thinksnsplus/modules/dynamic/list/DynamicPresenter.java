@@ -67,6 +67,7 @@ import static com.zhiyicx.thinksnsplus.data.beans.TopDynamicBean.TYPE_HOT;
 import static com.zhiyicx.thinksnsplus.data.beans.TopDynamicBean.TYPE_NEW;
 import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment.DYNAMIC_DETAIL_DATA;
 import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment.DYNAMIC_LIST_NEED_REFRESH;
+import static com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListBaseItem.DEFALT_IMAGE_WITH;
 
 /**
  * @Describe
@@ -582,8 +583,12 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.View>
                         if (isImage) {
                             DynamicDetailBeanV2.ImagesBean imageBean = mRootView.getListDatas().get(dynamicPosition).getImages().get(imagePosition);
                             imageBean.setPaid(true);
-                            imageBean.setGlideUrl(ImageUtils.imagePathConvertV2(true, imageBean.getFile(), imageBean.getCurrentWith(), imageBean
-                                            .getCurrentWith(),
+                            int imageWith = imageBean.getCurrentWith();
+                            if (imageWith == 0) {
+                                imageWith = DEFALT_IMAGE_WITH;
+                            }
+                            // 重新给图片地址赋值 ,没付费的图片 w h 都是 0
+                            imageBean.setGlideUrl(ImageUtils.imagePathConvertV2(true, imageBean.getFile(), imageWith, imageWith,
                                     imageBean.getPropPart(), AppApplication.getTOKEN()));
                         } else {
                             mRootView.getListDatas().get(dynamicPosition).getPaid_node().setPaid(true);
@@ -746,7 +751,7 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.View>
                     int dynamicPosition = -1;
                     if (isNeedRefresh) {
                         DynamicDetailBeanV2 dynamicBean = bundle.getParcelable(DYNAMIC_DETAIL_DATA);
-                        dynamicPosition = mRootView.getListDatas().indexOf(dynamicBean);
+                        dynamicPosition = dynamicBean.getFeed_mark() == null ? -1 : getCurrenPosiotnInDataList(dynamicBean.getFeed_mark());
                         // 如果列表有当前评论
                         if (dynamicPosition != -1) {
                             mRootView.getListDatas().set(dynamicPosition, dynamicBean);
