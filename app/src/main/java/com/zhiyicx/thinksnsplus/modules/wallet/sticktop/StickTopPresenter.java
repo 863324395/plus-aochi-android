@@ -172,6 +172,11 @@ public class StickTopPresenter extends AppBasePresenter<StickTopContract.View>
     }
 
     @Override
+    public StickTopAverageBean getStickTopAverageBean() {
+        return mStickTopAverageBean;
+    }
+
+    @Override
     public long getBalance() {
 
         Subscription userInfoSub = mStickTopRepsotory.getInfoAndCommentTopAverageNum()

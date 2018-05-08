@@ -216,7 +216,20 @@ public class StickTopFragment extends TSFragment<StickTopContract.Presenter> imp
     @Override
     public void updateBalance(long balance) {
         mBlance = balance;
-        mTvDynamicTopDec.setText(String.format(getString(R.string.to_top_description), 200, mPresenter.getGoldName(), balance));
+        int average = 0;
+        if (mPresenter.getStickTopAverageBean() != null) {
+            if (child_id > 0) {
+                average = mPresenter.getStickTopAverageBean().getCommentTopAverageNum();
+            } else {
+                average = mPresenter.getStickTopAverageBean().getSourceTopAverageNum();
+            }
+        }
+        //如果服务端给的值小于1，则修正为100
+        if (average < 1) {
+            average = 100;
+        }
+        mTvDynamicTopDec.setVisibility(View.VISIBLE);
+        mTvDynamicTopDec.setText(getString(R.string.to_top_description, average, mPresenter.getGoldName(), balance));
     }
 
     private void initListener() {
