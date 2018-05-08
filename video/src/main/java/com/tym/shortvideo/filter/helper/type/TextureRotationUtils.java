@@ -79,16 +79,16 @@ public class TextureRotationUtils {
                 TextureVertices[7] = 0.9375f;
             } else if (ratio == CameraUtils.Ratio.RATIO_16_9_2_1_1) {
                 TextureVertices[0] = 0.0f;
-                TextureVertices[1] = 0.880625f;
+                TextureVertices[1] = 0.870625f;
 
                 TextureVertices[2] = 1.0f;
-                TextureVertices[3] = 0.880625f;
+                TextureVertices[3] = 0.870625f;
 
                 TextureVertices[4] = 0.0f;
-                TextureVertices[5] = 0.119375f;
+                TextureVertices[5] = 0.109375f;
 
                 TextureVertices[6] = 1.0f;
-                TextureVertices[7] = 0.119375f;
+                TextureVertices[7] = 0.109375f;
             }
         } else {
             TextureVertices[0] = 0.0f;
