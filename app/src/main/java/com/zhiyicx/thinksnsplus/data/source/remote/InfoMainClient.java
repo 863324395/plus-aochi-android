@@ -9,6 +9,7 @@ import com.zhiyicx.thinksnsplus.data.beans.InfoTypeBean;
 import com.zhiyicx.thinksnsplus.data.beans.ReportResultBean;
 import com.zhiyicx.thinksnsplus.data.beans.RewardsCountBean;
 import com.zhiyicx.thinksnsplus.data.beans.RewardsListBean;
+import com.zhiyicx.thinksnsplus.data.beans.StickTopAverageBean;
 import com.zhiyicx.thinksnsplus.data.beans.TopNewsCommentListBean;
 
 import java.util.List;
@@ -28,6 +29,7 @@ import retrofit2.http.Query;
 import rx.Observable;
 
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_DYNAMIC_REPORT;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_DYNAMIC_TOP_AVERAGE_NUM;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_MY_INFO;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_INFO_COLLECTION_LIST;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_INFO_DELETE;
@@ -41,6 +43,7 @@ import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_INFO_REPORT;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_INFO_REWARDS;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_INFO_REWARDS_COUNT;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_INFO_REWARDS_USER_LIST;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_INFO_TOP_AVERAGE_NUM;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_INFO_TOP_LIST;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_INFO_TYPE_V2;
 
@@ -138,6 +141,11 @@ public interface InfoMainClient {
     @POST(ApiConfig.APP_PATH_TOP_INFO)
     Observable<BaseJsonV2<Integer>> stickTopInfo(@Path("news_id") Long news_id, @Field("amount") long amount, @Field("day") int day);
 
+    /**
+     * @return 资讯平均置顶金额
+     */
+    @GET(APP_PATH_INFO_TOP_AVERAGE_NUM)
+    Observable<StickTopAverageBean> getInfoAndCommentTopAverageNum();
     /**
      * 置顶资讯评论
      *

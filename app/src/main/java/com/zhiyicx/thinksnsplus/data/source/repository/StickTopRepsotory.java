@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.data.source.repository;
 
 import com.zhiyicx.common.base.BaseJsonV2;
+import com.zhiyicx.thinksnsplus.data.beans.StickTopAverageBean;
 import com.zhiyicx.thinksnsplus.data.source.remote.CircleClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.DynamicClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.InfoMainClient;
@@ -26,9 +27,9 @@ import static com.zhiyicx.thinksnsplus.modules.wallet.sticktop.StickTopFragment.
  */
 public class StickTopRepsotory implements IStickTopRepository {
 
-    DynamicClient mDynamicClient;
-    InfoMainClient mInfoMainClient;
-    CircleClient mCircleClient;
+    private DynamicClient mDynamicClient;
+    private InfoMainClient mInfoMainClient;
+    private CircleClient mCircleClient;
 
 
     @Inject
@@ -40,46 +41,102 @@ public class StickTopRepsotory implements IStickTopRepository {
 
     @Override
     public Observable<BaseJsonV2<Integer>> stickTop(String type, long parentId, double amount, int day) {
-        if (type.equals(TYPE_DYNAMIC)) {
-            return mDynamicClient.stickTopDynamic(parentId, (long) amount, day)
-                    .subscribeOn(Schedulers.io())
-                    .unsubscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread());
-        } else if (type.equals(TYPE_INFO)) {
-            return mInfoMainClient.stickTopInfo(parentId, (long) amount, day)
-                    .subscribeOn(Schedulers.io())
-                    .unsubscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread());
-        } else if (type.equals(TYPE_POST)) {
-            return mCircleClient.stickTopPost(parentId, (long) amount, day)
-                    .subscribeOn(Schedulers.io())
-                    .unsubscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread());
-        } else {
-            return null;
+        switch (type) {
+            case TYPE_DYNAMIC:
+                return mDynamicClient.stickTopDynamic(parentId, (long) amount, day)
+                        .subscribeOn(Schedulers.io())
+                        .unsubscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread());
+            case TYPE_INFO:
+                return mInfoMainClient.stickTopInfo(parentId, (long) amount, day)
+                        .subscribeOn(Schedulers.io())
+                        .unsubscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread());
+            case TYPE_POST:
+                return mCircleClient.stickTopPost(parentId, (long) amount, day)
+                        .subscribeOn(Schedulers.io())
+                        .unsubscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread());
+            default:
+                return mDynamicClient.stickTopDynamic(parentId, (long) amount, day)
+                        .subscribeOn(Schedulers.io())
+                        .unsubscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread());
         }
 
     }
 
     @Override
     public Observable<BaseJsonV2<Integer>> stickTop(String type, long parentId, long childId, double amount, int day) {
-        if (type.equals(TYPE_DYNAMIC)) {
-            return mDynamicClient.stickTopDynamicComment(parentId, childId, (long) amount, day)
-                    .subscribeOn(Schedulers.io())
-                    .unsubscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread());
-        } else if (type.equals(TYPE_INFO)) {
-            return mInfoMainClient.stickTopInfoComment(parentId, childId, (long) amount, day)
-                    .subscribeOn(Schedulers.io())
-                    .unsubscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread());
-        } else if (type.equals(TYPE_POST)) {
-            return mCircleClient.stickTopPostComment(parentId, childId, (long) amount, day)
-                    .subscribeOn(Schedulers.io())
-                    .unsubscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread());
-        } else {
-            return null;
+        switch (type) {
+            case TYPE_DYNAMIC:
+                return mDynamicClient.stickTopDynamicComment(parentId, childId, (long) amount, day)
+                        .subscribeOn(Schedulers.io())
+                        .unsubscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread());
+            case TYPE_INFO:
+                return mInfoMainClient.stickTopInfoComment(parentId, childId, (long) amount, day)
+                        .subscribeOn(Schedulers.io())
+                        .unsubscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread());
+            case TYPE_POST:
+                return mCircleClient.stickTopPostComment(parentId, childId, (long) amount, day)
+                        .subscribeOn(Schedulers.io())
+                        .unsubscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread());
+            default:
+                return mDynamicClient.stickTopDynamicComment(parentId, childId, (long) amount, day)
+                        .subscribeOn(Schedulers.io())
+                        .unsubscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread());
+        }
+    }
+
+    /**
+     * @return
+     */
+    @Override
+    public Observable<StickTopAverageBean> getDynamicAndCommentTopAverageNum() {
+        return mDynamicClient.getDynamicAndCommentTopAverageNum()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    /**
+     * @return
+     */
+    @Override
+    public Observable<StickTopAverageBean> getInfoAndCommentTopAverageNum() {
+        return mInfoMainClient.getInfoAndCommentTopAverageNum()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    /**
+     * @return
+     */
+    @Override
+    public Observable<StickTopAverageBean> getCircleAndCommentTopAverageNum() {
+        return mCircleClient.getCircleAndCommentTopAverageNum()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    /**
+     * @param type @link{#StickTopFragment.TYPE_DYNAMIC}
+     * @return
+     */
+    @Override
+    public Observable<StickTopAverageBean> getCircleAndCommentTopAverageNumByType(String type) {
+        switch (type) {
+            case TYPE_DYNAMIC:
+                return getDynamicAndCommentTopAverageNum();
+            case TYPE_INFO:
+                return getInfoAndCommentTopAverageNum();
+            case TYPE_POST:
+                return getCircleAndCommentTopAverageNum();
+            default:
+                return getDynamicAndCommentTopAverageNum();
         }
     }
 }

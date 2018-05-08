@@ -12,6 +12,7 @@ import com.zhiyicx.thinksnsplus.data.beans.CircleTypeBean;
 import com.zhiyicx.thinksnsplus.data.beans.PostDigListBean;
 import com.zhiyicx.thinksnsplus.data.beans.ReportResultBean;
 import com.zhiyicx.thinksnsplus.data.beans.RewardsListBean;
+import com.zhiyicx.thinksnsplus.data.beans.StickTopAverageBean;
 import com.zhiyicx.thinksnsplus.data.beans.TopCircleJoinReQuestBean;
 import com.zhiyicx.thinksnsplus.data.beans.TopPostCommentListBean;
 import com.zhiyicx.thinksnsplus.data.beans.TopPostListBean;
@@ -445,6 +446,13 @@ public interface CircleClient {
     @FormUrlEncoded
     @POST(ApiConfig.APP_PATH_TOP_POST)
     Observable<BaseJsonV2<Integer>> stickTopPost(@Path("post_id") Long parent_id, @Field("amount") Long amount, @Field("day") Integer day);
+
+    /**
+     * 圈子、帖子、评论置顶平均金额
+     * @return
+     */
+    @GET(ApiConfig.APP_PATH_TOP_POST_AVERAGE_NUM)
+    Observable<StickTopAverageBean> getCircleAndCommentTopAverageNum();
 
     /**
      * 置顶帖子评论

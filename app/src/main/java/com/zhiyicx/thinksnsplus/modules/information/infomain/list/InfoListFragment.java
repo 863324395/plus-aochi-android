@@ -102,6 +102,7 @@ public class InfoListFragment extends TSListFragment<InfoMainContract.InfoListPr
                 data.add(DynamicListAdvert.advert2Info(advert, maxId));
             }
         } catch (Exception e) {
+            e.printStackTrace();
         }
         super.onNetResponseSuccess(data, isLoadMore);
         if (mInfoBannerHeader == null) {

@@ -134,7 +134,6 @@ public class StickTopFragment extends TSFragment<StickTopContract.Presenter> imp
         isManager = getArguments().getBoolean(TYPE_MANAGER);
         mBlance = mPresenter.getBalance();
         mTvEtFocusableTip.setText(R.string.top_every_day_pay);
-        mTvDynamicTopDec.setText(getString(R.string.to_top_description, 200, mPresenter.getGoldName(), mBlance));
         String moneyName = mPresenter.getGoldName();
         mCustomMoney.setText(moneyName);
         mTotalMoney.setText(moneyName);
@@ -144,6 +143,7 @@ public class StickTopFragment extends TSFragment<StickTopContract.Presenter> imp
             mLlTopMoney.setVisibility(View.GONE);
             mLlTopTotalMoney.setVisibility(View.GONE);
         }
+
     }
 
     @Override
@@ -175,12 +175,7 @@ public class StickTopFragment extends TSFragment<StickTopContract.Presenter> imp
 
     @Override
     public void gotoRecharge() {
-//        mSystemConfigBean = mPresenter.getSystemConfigBean();
-//        if (mSystemConfigBean.getCurrencyRecharge() != null && mSystemConfigBean.getCurrencyRecharge().isOpen()) {
         startActivity(new Intent(getActivity(), MineIntegrationActivity.class));
-//        }else {
-//            showSnackErrorMessage(getString(R.string.current_money_not_enouph));
-//        }
     }
 
     @Override
