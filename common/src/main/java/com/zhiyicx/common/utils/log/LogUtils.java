@@ -110,6 +110,17 @@ public class LogUtils {
 
     public static class LogCatStrategy implements LogStrategy {
 
+        private int last;
+
+        private String randomKey() {
+            int random = (int) (10 * Math.random());
+            if (random == last) {
+                random = (random + 1) % 10;
+            }
+            last = random;
+            return String.valueOf(random);
+        }
+
         private Handler handler;
         private long lastTime = SystemClock.uptimeMillis();
         private long offset = 1;
@@ -131,7 +142,7 @@ public class LogUtils {
             handler.postAtTime(new Runnable() {
                 @Override
                 public void run() {
-                    Log.println(priority, tag, message);
+                    Log.println(priority, randomKey() + tag, message);
                 }
             }, tmp);
         }

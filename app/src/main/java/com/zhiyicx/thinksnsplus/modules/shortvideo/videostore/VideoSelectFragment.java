@@ -162,7 +162,7 @@ public class VideoSelectFragment extends TSListFragment {
                         videoInfo.setCover(FileUtils.saveBitmapToFile(mActivity, cover, ParamsManager.VideoCover));
                         SendDynamicDataBean sendDynamicDataBean = new SendDynamicDataBean();
                         sendDynamicDataBean.setDynamicBelong(SendDynamicDataBean.NORMAL_DYNAMIC);
-                        videoInfo.setNeedCompressVideo(true);
+                        videoInfo.setNeedCompressVideo(false);
                         List<ImageBean> pic = new ArrayList<>();
                         ImageBean imageBean = new ImageBean();
                         imageBean.setImgUrl(videoInfo.getCover());
@@ -180,7 +180,6 @@ public class VideoSelectFragment extends TSListFragment {
                             ArrayList<String> arrayList = new ArrayList<>();
                             arrayList.add(videoInfo.getPath());
                             CoverActivity.startCoverActivity(mActivity, arrayList, false, false,false);
-//                            PreviewActivity.startPreviewActivity(mActivity, arrayList);
                         } else {
                             TrimmerActivity.startTrimmerActivity(mActivity, videoInfo);
                         }
