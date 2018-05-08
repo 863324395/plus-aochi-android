@@ -144,8 +144,8 @@ public class ApiConfig {
      */
 
     public static final String APP_PATH_SEND_DYNAMIC_V2 = "api/" + API_VERSION_2 + "/feeds";// 发布动态 V2
-
-    public static final String APP_PATH_DELETE_DYNAMIC = "api/" + API_VERSION_2 + "/feeds/%s/currency";// 删除一条动态
+    // 删除一条动态
+    public static final String APP_PATH_DELETE_DYNAMIC = "api/" + API_VERSION_2 + "/feeds/%s/currency";
     // 获取动态列表
     public static final String DYNAMIC_TYPE_EMPTY = "empty"; // 占位
     public static final String DYNAMIC_TYPE_NEW = "new"; // 最新动态

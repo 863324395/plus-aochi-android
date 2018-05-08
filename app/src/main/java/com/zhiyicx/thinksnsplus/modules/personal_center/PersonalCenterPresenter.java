@@ -63,8 +63,10 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
+import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.DYNAMIC_LIST_DELETE_UPDATE;
 import static com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2.DYNAMIC_LIST_CONTENT_MAX_SHOW_SIZE;
 import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment.DYNAMIC_DETAIL_DATA;
 import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment.DYNAMIC_DETAIL_DATA_POSITION;
@@ -430,19 +432,7 @@ public class PersonalCenterPresenter extends AppBasePresenter<PersonalCenterCont
         if (position == -1) {
             return;
         }
-        mDynamicDetailBeanV2GreenDao.deleteSingleCache(dynamicBean);
-        mRootView.getListDatas().remove(position);
-        if (mRootView.getListDatas().isEmpty()) {
-            // 增加空数据，用于显示占位图
-            DynamicDetailBeanV2 emptyData = new DynamicDetailBeanV2();
-            mRootView.getListDatas().add(emptyData);
-        }
-        mRootView.refreshData();
-        if (dynamicBean.getId() != null && dynamicBean.getId() != 0) {
-            mBaseDynamicRepository.deleteDynamic(dynamicBean.getId());
-        }
-
-
+        EventBus.getDefault().post(dynamicBean, DYNAMIC_LIST_DELETE_UPDATE);
     }
 
     @Override
@@ -771,8 +761,69 @@ public class PersonalCenterPresenter extends AppBasePresenter<PersonalCenterCont
 
     @Subscriber(tag = EventBusTagConfig.DYNAMIC_LIST_DELETE_UPDATE)
     public void deleteDynamic(DynamicDetailBeanV2 dynamicBean) {
-        deleteDynamic(dynamicBean, mRootView.getListDatas().indexOf(dynamicBean));
-        LogUtils.d(EventBusTagConfig.DYNAMIC_LIST_DELETE_UPDATE);
+        if (dynamicBean == null) {
+            return;
+        }
+        Observable.just(dynamicBean)
+                .observeOn(Schedulers.io())
+                .map(new Func1<DynamicDetailBeanV2, Integer>() {
+                    @Override
+                    public Integer call(DynamicDetailBeanV2 dynamicDetailBeanV2) {
+                        int size = mRootView.getListDatas().size();
+                        int dataPosition = -1;
+                        boolean hasFeedMark = dynamicDetailBeanV2.getFeed_mark() != null && dynamicDetailBeanV2.getFeed_mark() != 0;
+                        for (int i = 0; i < size; i++) {
+                            if (hasFeedMark) {
+                                if (mRootView.getListDatas().get(i) != null && dynamicDetailBeanV2.getFeed_mark().equals(mRootView.getListDatas()
+                                        .get(i)
+                                        .getFeed_mark())) {
+                                    dataPosition = i;
+                                    return dataPosition;
+                                }
+                            } else {
+                                if (mRootView.getListDatas().get(i) != null && dynamicDetailBeanV2.getId() != null && dynamicDetailBeanV2.getId()
+                                        .equals
+                                                (mRootView.getListDatas()
+                                                        .get(i)
+                                                        .getId())) {
+                                    dataPosition = i;
+
+                                    return dataPosition;
+                                }
+                            }
+
+                        }
+                        return dataPosition;
+                    }
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new BaseSubscribeForV2<Integer>() {
+                    @Override
+                    protected void onSuccess(Integer dataPositon) {
+                        if (dataPositon == -1) {
+                            return;
+                        }
+                        try {
+                            mDynamicDetailBeanV2GreenDao.deleteSingleCache(dynamicBean);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        try {
+                            mRootView.getListDatas().remove(dataPositon.intValue());
+                            if (mRootView.getListDatas().isEmpty()) {
+                                // 增加空数据，用于显示占位图
+                                DynamicDetailBeanV2 emptyData = new DynamicDetailBeanV2();
+                                mRootView.getListDatas().add(emptyData);
+                            }
+                            mRootView.refreshData();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        if (dynamicBean.getId() != null && dynamicBean.getId() != 0) {
+                            mBaseDynamicRepository.deleteDynamic(dynamicBean.getId());
+                        }
+                    }
+                });
     }
 
     /**
