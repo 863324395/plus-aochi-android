@@ -988,7 +988,6 @@ public class BackgroundTaskHandler {
     private void SendDynamicV2(BackgroundRequestTaskBean backgroundRequestTaskBean, DynamicDetailBeanV2 detailBeanV2, int[] position,
                                Observable<BaseJson<Object>> observable) {
         observable.subscribeOn(Schedulers.io())
-                .retryWhen(new RetryWithInterceptDelay(RETRY_MAX_COUNT, RETRY_INTERVAL_TIME))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new BaseSubscribeForV2<BaseJson<Object>>() {
                     @Override

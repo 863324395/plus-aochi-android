@@ -24,6 +24,7 @@ import javax.inject.Inject;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
+import retrofit2.adapter.rxjava.HttpException;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -142,11 +143,15 @@ public class UpLoadRepository implements IUploadRepository {
                     @Override
                     protected boolean extraReTryCondition(Throwable throwable) {
                         // 文件不存在 服务器返回404,则 进行 重传文件，不再校验hash
-                        boolean is404 = throwable.toString().contains("404");
-                        if (is404) {
-
+                        // 文件超出大小 服务器返回422,则 抛出，不再校验hash
+                        boolean is404 = false;
+                        boolean is422 = false;
+                        if (throwable instanceof HttpException) {
+                            HttpException exception = (HttpException) throwable;
+                            is404 = exception.code() == 404;
+                            is422 = exception.code() == 422;
                         }
-                        return !is404;
+                        return !is404 || !is422;
                     }
                 })
                 .onErrorReturn(throwable -> {
