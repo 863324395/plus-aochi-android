@@ -401,7 +401,7 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
      */
     private void initDeleteCommentPopupWindow(final InfoCommentListBean data) {
         mDeletCommentPopWindow = ActionPopupWindow.builder()
-                .item1Str(BuildConfig.USE_TOLL && data.getId() != -1L ? getString(R.string.dynamic_list_top_comment) : null)
+                .item1Str(BuildConfig.USE_TOLL && data.getId() != -1L && !data.getPinned() ? getString(R.string.dynamic_list_top_comment) : null)
                 .item1Color(ContextCompat.getColor(getContext(), R.color.themeColor))
                 .item2Str(getString(R.string.dynamic_list_delete_comment))
                 .bottomStr(getString(R.string.cancel))
@@ -414,7 +414,7 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
                     mDeletCommentPopWindow.hide();
                     boolean sourceIsMine = AppApplication.getMyUserIdWithdefault() == data.getUser_id();
 
-                    StickTopFragment.startSticTopActivity(getActivity(), StickTopFragment.TYPE_INFO, mInfoMation.getId(), data.getId(),sourceIsMine);
+                    StickTopFragment.startSticTopActivity(getActivity(), StickTopFragment.TYPE_INFO, mInfoMation.getId(), data.getId(), sourceIsMine);
                     mDeletCommentPopWindow.hide();
                 })
                 .item2ClickListener(() -> {
