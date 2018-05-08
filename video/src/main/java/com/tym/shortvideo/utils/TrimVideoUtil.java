@@ -281,37 +281,25 @@ public class TrimVideoUtil {
                                                                        .Media.DISPLAY_NAME)));
 
                                                        int w, h;
-                                                       w = cursor.getInt(cursor
-                                                               .getColumnIndex(MediaStore.Video
-                                                                       .Media.WIDTH));
-                                                       h = cursor.getInt(cursor
-                                                               .getColumnIndex(MediaStore.Video
-                                                                       .Media.HEIGHT));
-
-                                                       video.setWidth(w);
-                                                       video.setHeight(h);
-
-                                                       if (w * h == 0) {
-                                                           MediaMetadataRetriever mediaMetadataRetriever =
-                                                                   new MediaMetadataRetriever();
-                                                           mediaMetadataRetriever.setDataSource(mContext, Uri.parse(video.getPath()));
-                                                           try {
-                                                               int rotation = Integer.parseInt(mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_ROTATION));
-                                                               w = Integer.parseInt(mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH));
-                                                               h = Integer.parseInt(mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT));
-                                                               if (rotation == 90 || rotation == 270) {
-                                                                   video.setWidth(h);
-                                                                   video.setHeight(w);
-                                                               } else {
-                                                                   video.setWidth(w);
-                                                                   video.setHeight(h);
-                                                               }
-
-                                                           } catch (Exception e) {
-                                                               continue;
-                                                           } finally {
-                                                               mediaMetadataRetriever.release();
+                                                       MediaMetadataRetriever mediaMetadataRetriever =
+                                                               new MediaMetadataRetriever();
+                                                       mediaMetadataRetriever.setDataSource(mContext, Uri.parse(video.getPath()));
+                                                       try {
+                                                           int rotation = Integer.parseInt(mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_ROTATION));
+                                                           w = Integer.parseInt(mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH));
+                                                           h = Integer.parseInt(mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT));
+                                                           if (rotation == 90 || rotation == 270) {
+                                                               video.setWidth(h);
+                                                               video.setHeight(w);
+                                                           } else {
+                                                               video.setWidth(w);
+                                                               video.setHeight(h);
                                                            }
+
+                                                       } catch (Exception e) {
+                                                           continue;
+                                                       } finally {
+                                                           mediaMetadataRetriever.release();
                                                        }
 
                                                        if (w * h == 0) {
