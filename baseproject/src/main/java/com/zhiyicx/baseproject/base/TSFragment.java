@@ -301,10 +301,10 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
     @Override
     public void onResume() {
         super.onResume();
-        boolean isshow = WindowUtils.getIsShown();
-        musicWindowsStatus(isshow);
+        boolean isShow = WindowUtils.getIsShown();
+        musicWindowsStatus(isShow);
         WindowUtils.setWindowDismisslistener(this);
-        if (isshow && mMusicWindowView != null) {
+        if (isShow && mMusicWindowView != null) {
             mMusicWindowView.setVisibility(View.VISIBLE);
             RotateAnimation mRotateAnimation = (RotateAnimation) AnimationUtils.loadAnimation(getActivity(), R.anim
                     .music_window_rotate);
@@ -484,8 +484,8 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
         }
         View view = getRightViewOfMusicWindow();
         if (view != null && WindowUtils.getIsPause()) {
-            // 很遗憾，我也不知道为什么，不用减去 rightX；
             if (view.getTag() != null) {
+                rightViewHadTranslated = false;
                 int right = (int) view.getTag();
                 view.setPadding(view.getPaddingLeft(), view.getPaddingTop(), view.getPaddingRight() - right, view.getPaddingBottom());
                 view.setTag(null);
@@ -746,24 +746,27 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
         WindowUtils.changeToBlackIcon();
         final View view = getRightViewOfMusicWindow();
         if (getRightViewOfMusicWindow() != null) {
-            mViewTreeSubscription = RxView.globalLayouts(getRightViewOfMusicWindow())
-                    .subscribe(new Action1<Void>() {
-                        @Override
-                        public void call(Void aVoid) {
-                            if (view != null && isShow && !rightViewHadTranslated) {
-                                if (view.getVisibility() == View.VISIBLE) {
-                                    // 向左移动一定距离
-                                    int rightX = ConvertUtils.dp2px(getContext(), 24) + ConvertUtils.dp2px(getContext(), 10);
-                                    view.setTag(rightX);
-                                    view.setPadding(view.getPaddingLeft(), view.getPaddingTop(), view.getPaddingRight() + rightX, view
-                                            .getPaddingBottom());
-                                    rightViewHadTranslated = true;
-                                } else {
-                                    rightViewHadTranslated = false;
-                                }
-                            }
-                        }
-                    });
+
+            if (view != null && isShow && !rightViewHadTranslated) {
+                if (view.getVisibility() == View.VISIBLE) {
+                    // 向左移动一定距离
+                    int rightX = ConvertUtils.dp2px(getContext(), 24) + ConvertUtils.dp2px(getContext(), 10);
+                    view.setTag(rightX);
+                    view.setPadding(view.getPaddingLeft(), view.getPaddingTop(), view.getPaddingRight() + rightX, view
+                            .getPaddingBottom());
+                    rightViewHadTranslated = true;
+                } else {
+                    rightViewHadTranslated = false;
+                }
+            }
+
+//            mViewTreeSubscription = RxView.globalLayouts(getRightViewOfMusicWindow())
+//                    .subscribe(new Action1<Void>() {
+//                        @Override
+//                        public void call(Void aVoid) {
+//
+//                        }
+//                    });
         }
     }
 
