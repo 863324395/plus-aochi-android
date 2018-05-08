@@ -9,6 +9,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.view.ViewCompat;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.animation.DecelerateInterpolator;
 import android.view.animation.OvershootInterpolator;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -188,12 +189,18 @@ public class SelectDynamicTypeFragment extends TSFragment<SelectDynamicTypeContr
                 return;
             }
             AnimatorSet mAnimatorSet = new AnimatorSet();
-            int vertical_distance = view.getTop() - mImCloseDynamic.getBottom();
+            int verticalDistance = view.getTop() - mImCloseDynamic.getBottom();
             ViewCompat.setPivotX(view, view.getWidth() / 2.0f);
             ViewCompat.setPivotY(view, view.getHeight() / 2.0f);
             mAnimatorSet.setDuration(300);
-            mAnimatorSet.setInterpolator(new OvershootInterpolator(1f));
-            ObjectAnimator translationY = ObjectAnimator.ofFloat(view, "translationY", vertical_distance, 0);
+            OvershootInterpolator interpolator = new OvershootInterpolator(1f);
+            mAnimatorSet.setInterpolator(interpolator);
+            ObjectAnimator translationY = ObjectAnimator.ofFloat(view, "translationY", verticalDistance, 0);
+            //第一个参数为 view对象，第二个参数为 动画改变的类型，第三，第四个参数依次是开始透明度和结束透明度。
+            ObjectAnimator alpha = ObjectAnimator.ofFloat(getActivity().getWindow().getDecorView(), "alpha", 0f, 0.97f);
+            alpha.setDuration(700);//设置动画时间
+            alpha.setInterpolator(new OvershootInterpolator());//设置动画插入器，减速
+            alpha.start();
             mAnimatorSet.play(translationY);
             view.setVisibility(View.VISIBLE);
             mAnimatorSet.start();

@@ -24,10 +24,9 @@
         <item name="android:windowFullscreen">true</item><!---->
     </style>
 
-    <style name="DynamciSelectTheme" parent="@style/GalleryTheme">
+    <style name="DynamciSelectTheme" parent="@style/TransParentTheme">
         <item name="android:backgroundDimEnabled">false</item>
         <item name="android:windowBackground">@color/home_add_page_bg</item>
-
     </style>
 
     <!--#########################################      动态置顶       ################################-->
@@ -97,6 +96,7 @@
         <item name="TSRightTopRaduis">@dimen/ts_chat_item_iamge_raduis</item>
         <item name="TSRightBottomRaduis">@dimen/ts_chat_item_iamge_raduis</item>
     </style>
+
     <style name="TSChatImageItemRight">
         <item name="TSLeftTopRaduis">@dimen/ts_chat_item_iamge_raduis</item>
         <item name="TSLeftBottomRaduis">@dimen/ts_chat_item_iamge_raduis</item>
