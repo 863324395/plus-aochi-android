@@ -51,6 +51,10 @@ public class ImageUtils {
     private static final long DEFAULT_USER_CACHE_TIME = 3 * 24 * 60_1000;
     private static final long DEFAULT_SHAREPREFERENCES_OFFSET_TIME = 10_1000;
     private static long laste_request_time;
+    /**
+     * 服务器支持的可剪切的最大长度边  阿里 4096
+     */
+    private static final int MAX_SERVER_SUPPORT_CUT_IMAGE_WITH_OR_HEIGHT = 4000;
 
     private static long mHeadPicSigture;
     private static long mCoverSigture;
@@ -489,6 +493,7 @@ public class ImageUtils {
      * @param part    压缩比例 0-100
      */
     public static GlideUrl imagePathConvertV2(boolean canLook, int storage, int w, int h, int part, String token) {
+
         String url = imagePathConvertV2(storage, w, h, part, canLook);
         return imagePathConvertV2(url, token);
     }
@@ -696,6 +701,16 @@ public class ImageUtils {
         }
         return (result >= 3 || result <= .3f) && result > 0;
 
+    }
+
+    /**
+     * 图片宽高是否超过了限制
+     *
+     * @return
+     */
+    public static boolean isWithOrHeightOutOfBounds(int with, int height) {
+        return with > MAX_SERVER_SUPPORT_CUT_IMAGE_WITH_OR_HEIGHT
+                || height > MAX_SERVER_SUPPORT_CUT_IMAGE_WITH_OR_HEIGHT;
     }
 
 }

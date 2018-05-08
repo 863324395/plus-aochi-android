@@ -226,6 +226,7 @@
             android:name=".modules.dynamic.detail.DynamicDetailActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:screenOrientation="portrait"
+            android:hardwareAccelerated="false"
             android:windowSoftInputMode="adjustResize">
         </activity>
         <activity

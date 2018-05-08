@@ -30,6 +30,7 @@ import com.bumptech.glide.request.target.Target;
 import com.klinker.android.link_builder.Link;
 import com.klinker.android.link_builder.LinkMetadata;
 import com.klinker.android.link_builder.NetUrlHandleBean;
+import com.zhiyicx.baseproject.config.ImageZipConfig;
 import com.zhiyicx.common.utils.FastBlur;
 import com.zhiyicx.thinksnsplus.modules.shortvideo.helper.ZhiyiVideoView;
 import com.zhiyicx.baseproject.config.ApiConfig;
@@ -328,7 +329,7 @@ public class DynamicDetailHeader {
 
     Bitmap getSharBitmap() {
         if (sharBitmap == null) {
-            sharBitmap = ConvertUtils.drawBg4Bitmap(ContextCompat.getColor(mContext,R.color.white), BitmapFactory.decodeResource(mContent
+            sharBitmap = ConvertUtils.drawBg4Bitmap(ContextCompat.getColor(mContext, R.color.white), BitmapFactory.decodeResource(mContent
                     .getResources(), R.mipmap.icon).copy(Bitmap.Config.RGB_565, true));
         }
         return sharBitmap;
@@ -432,6 +433,7 @@ public class DynamicDetailHeader {
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(picWidth, height);
         layoutParams.gravity = Gravity.CENTER_HORIZONTAL;
         imageView.setLayoutParams(layoutParams);
+        imageView.setBackgroundResource(R.color.red);
 
         if (TextUtils.isEmpty(imageBean.getImgUrl())) {
             int part = (picWidth / imageBean.getWidth()) * DEFAULT_PART_TOTAL;
@@ -440,16 +442,22 @@ public class DynamicDetailHeader {
             }
             boolean canLook = !(imageBean.isPaid() != null && !imageBean.isPaid()
                     && imageBean.getType().equals(Toll.LOOK_TOLL_TYPE));
-            imageView.setIshowGifTag(ImageUtils.imageIsGif(imageBean.getImgMimeType()));
+            boolean isGif = ImageUtils.imageIsGif(imageBean.getImgMimeType());
+            boolean isImageOutOfBounds = ImageUtils.isWithOrHeightOutOfBounds(picWidth, height);
+            boolean isLongImage = ImageUtils.isLongImage(height, picWidth);
+            boolean isNeedOrigin = isGif || isImageOutOfBounds || isLongImage;
+
+            imageView.setIshowGifTag(isGif);
+            imageView.setScaleType(ImageView.ScaleType.FIT_XY);
             if (ImageUtils.imageIsGif(imageBean.getImgMimeType()) && mIsGifPlay) {
                 GifRequestBuilder requestBuilder = Glide.with(mContext)
                         .load(ImageUtils.imagePathConvertV2(canLook, imageBean.getFile(), canLook
                                         ? picWidth : 0,
-                                canLook ? height : 0, part, AppApplication.getTOKEN()))
+                                canLook ? height : 0, isNeedOrigin ? ImageZipConfig.IMAGE_100_ZIP : part, AppApplication.getTOKEN()))
                         .asGif()
-                        .override(picWidth, height)
                         .placeholder(R.drawable.shape_default_image)
                         .diskCacheStrategy(DiskCacheStrategy.ALL)
+                        .override(picWidth, height)
                         .error(R.drawable.shape_default_image);
                 if (!canLook) {// 切换展位图防止闪屏
                     requestBuilder.placeholder(R.drawable.shape_default_image);
@@ -459,12 +467,12 @@ public class DynamicDetailHeader {
                 BitmapRequestBuilder requestBuilder = Glide.with(mContext)
                         .load(ImageUtils.imagePathConvertV2(canLook, imageBean.getFile(), canLook
                                         ? picWidth : 0,
-                                canLook ? height : 0, part, AppApplication.getTOKEN()))
+                                canLook ? height : 0, isNeedOrigin ? ImageZipConfig.IMAGE_100_ZIP : part, AppApplication.getTOKEN()))
                         .asBitmap()
-                        .override(picWidth, height)
                         .placeholder(R.drawable.shape_default_image)
                         .diskCacheStrategy(DiskCacheStrategy.ALL)
-                        .error(R.drawable.shape_default_image);
+                        .override(picWidth, height)
+                        .error(R.drawable.shape_default_error_image);
                 if (!canLook) {// 切换展位图防止闪屏
                     requestBuilder.placeholder(R.drawable.shape_default_image);
                 }

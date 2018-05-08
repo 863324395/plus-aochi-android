@@ -93,10 +93,7 @@ import static com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListB
  */
 public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presenter> implements View.OnLongClickListener, PhotoViewAttacher
         .OnPhotoTapListener, GalleryConstract.View {
-    /**
-     * 服务器支持的可剪切的最大长度边  阿里 4096
-     */
-    private static final int MAX_SERVER_SUPPORT_CUT_IMAGE_WITH_OR_HEIGHT = 4000;
+
 
     @BindView(R.id.fl_image_contaienr)
     FrameLayout mFlImageContaienr;
@@ -460,8 +457,7 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                     .load(new CustomImageSizeModelImp(imageBean) {
                         @Override
                         public GlideUrl requestGlideUrl() {
-                            boolean isNeedOrin = w > MAX_SERVER_SUPPORT_CUT_IMAGE_WITH_OR_HEIGHT
-                                    || h > MAX_SERVER_SUPPORT_CUT_IMAGE_WITH_OR_HEIGHT
+                            boolean isNeedOrin = ImageUtils.isWithOrHeightOutOfBounds(w, h)
                                     || ImageUtils.imageIsGif(imageBean.getImgMimeType())
                                     || ImageUtils.isLongImage((float) imageBean.getHeight(), (float) imageBean.getWidth());
                             if (isNeedOrin) {
@@ -500,8 +496,7 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                                 mPhotoViewAttacherNormal.update();
                                 mLlToll.setVisibility(View.VISIBLE);
                             }
-                            boolean isNeedOrin = h > MAX_SERVER_SUPPORT_CUT_IMAGE_WITH_OR_HEIGHT
-                                    || w > MAX_SERVER_SUPPORT_CUT_IMAGE_WITH_OR_HEIGHT
+                            boolean isNeedOrin = ImageUtils.isWithOrHeightOutOfBounds(w, h)
                                     || ImageUtils.imageIsGif(imageBean.getImgMimeType())
                                     || ImageUtils.isLongImage((float) imageBean.getHeight(), (float) imageBean.getWidth());
                             // 原图没有缓存，从cacheOnlyStreamLoader抛出异常，在这儿加载高清图
