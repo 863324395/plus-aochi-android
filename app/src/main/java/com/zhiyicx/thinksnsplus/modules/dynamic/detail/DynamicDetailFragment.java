@@ -575,7 +575,7 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
         position = position - mHeaderAndFooterWrapper.getHeadersCount();
         if (mListDatas.get(position).getUser_id() == AppApplication.getmCurrentLoginAuth().getUser_id()) {
             if (mListDatas.get(position).getComment_id() != null) {
-                initDeleteComentPopupWindow(mListDatas.get(position).getComment_id(), position);
+                initDeleteComentPopupWindow(mListDatas.get(position), position);
                 mDeletCommentPopWindow.show();
             }
         } else {
@@ -618,12 +618,13 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
     /**
      * 初始化评论删除选择弹框
      *
-     * @param comment_id      dynamic comment id
+     * @param commentBean     dynamic comment id
      * @param commentPosition current comment position
      */
-    private void initDeleteComentPopupWindow(final long comment_id, final int commentPosition) {
+    private void initDeleteComentPopupWindow(final DynamicCommentBean commentBean, final int commentPosition) {
         mDeletCommentPopWindow = ActionPopupWindow.builder()
-                .item1Str(BuildConfig.USE_TOLL ? getString(R.string.dynamic_list_top_comment) : null)
+                .item1Str(BuildConfig.USE_TOLL && !commentBean.getPinned() ? getString(R
+                        .string.dynamic_list_top_comment) : null)
                 .item2Str(getString(R.string.dynamic_list_delete_comment))
                 .bottomStr(getString(R.string.cancel))
                 .isOutsideTouch(true)
@@ -632,14 +633,15 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
                 .with(getActivity())
                 .item1ClickListener(() -> {
                     boolean sourceIsMine = AppApplication.getMyUserIdWithdefault() == getCurrentDynamic().getUser_id();
-                    StickTopFragment.startSticTopActivity(getActivity(), StickTopFragment.TYPE_DYNAMIC, getCurrentDynamic().getId(), comment_id,
+                    StickTopFragment.startSticTopActivity(getActivity(), StickTopFragment.TYPE_DYNAMIC, getCurrentDynamic().getId(), commentBean
+                                    .getComment_id(),
                             sourceIsMine);
                     mDeletCommentPopWindow.hide();
                 })
                 .item2ClickListener(() -> {
                     mDeletCommentPopWindow.hide();
                     showDeleteTipPopupWindow(getString(R.string.delete_comment), () -> {
-                        mPresenter.deleteCommentV2(comment_id, commentPosition);
+                        mPresenter.deleteCommentV2(commentBean.getComment_id(), commentPosition);
                     }, true);
                 })
                 .bottomClickListener(() -> mDeletCommentPopWindow.hide())

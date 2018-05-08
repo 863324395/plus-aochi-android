@@ -126,6 +126,7 @@ public class DynamicDetailPresenter extends AppBasePresenter<
                 .subscribe(new BaseSubscribeForV2<List<DynamicCommentBean>>() {
                     @Override
                     protected void onSuccess(List<DynamicCommentBean> data) {
+
                         if (!isLoadMore) { // 刷新时，把自己还未发送成功的评论加载到前面
                             List<DynamicCommentBean> myComments = mDynamicCommentBeanGreenDao
                                     .getMySendingComment(mRootView.getCurrentDynamic()
@@ -496,7 +497,7 @@ public class DynamicDetailPresenter extends AppBasePresenter<
     }
 
     @Override
-    public void deleteCommentV2(long comment_id, int commentPosition) {
+    public void deleteCommentV2(long commentId, int commentPosition) {
         mIsNeedDynamicListRefresh = true;
         mRootView.getCurrentDynamic().setFeed_comment_count(mRootView.getCurrentDynamic()
                 .getFeed_comment_count() - 1);
@@ -510,7 +511,7 @@ public class DynamicDetailPresenter extends AppBasePresenter<
         }
         mRootView.refreshData();
         mRootView.updateCommentCountAndDig();
-        mBaseDynamicRepository.deleteCommentV2(mRootView.getCurrentDynamic().getId(), comment_id);
+        mBaseDynamicRepository.deleteCommentV2(mRootView.getCurrentDynamic().getId(), commentId);
     }
 
     /**

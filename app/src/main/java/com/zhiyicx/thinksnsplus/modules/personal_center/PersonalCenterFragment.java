@@ -886,7 +886,10 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
      */
     private void initDeletCommentPopWindow(final DynamicDetailBeanV2 dynamicBean, final int dynamicPositon, final int commentPosition) {
         mDeletCommentPopWindow = ActionPopupWindow.builder()
-                .item1Str(BuildConfig.USE_TOLL ? getString(R.string.dynamic_list_top_comment) : null)
+                .item1Str(BuildConfig.USE_TOLL && dynamicBean.getState() == DynamicDetailBeanV2
+                        .SEND_SUCCESS && !dynamicBean
+                        .getComments().get(commentPosition).getPinned() ? getString(R
+                        .string.dynamic_list_top_comment) : null)
                 .item2Str(getString(R.string.dynamic_list_delete_comment))
                 .bottomStr(getString(R.string.cancel))
                 .isOutsideTouch(true)
