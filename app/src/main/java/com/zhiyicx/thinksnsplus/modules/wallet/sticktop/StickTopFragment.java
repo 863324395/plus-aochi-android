@@ -92,6 +92,8 @@ public class StickTopFragment extends TSFragment<StickTopContract.Presenter> imp
     TextView mCustomMoney;
     @BindView(R.id.tv_total_money)
     TextView mTotalMoney;
+    @BindView(R.id.tv_et_focusable_tip)
+    TextView mTvEtFocusableTip;
 
     @BindView(R.id.line)
     View mLine;
@@ -131,6 +133,7 @@ public class StickTopFragment extends TSFragment<StickTopContract.Presenter> imp
         child_id = getArguments().getLong(CHILD_ID, -1L);
         isManager = getArguments().getBoolean(TYPE_MANAGER);
         mBlance = mPresenter.getBalance();
+        mTvEtFocusableTip.setText(R.string.top_every_day_pay);
         mTvDynamicTopDec.setText(getString(R.string.to_top_description, 200, mPresenter.getGoldName(), mBlance));
         String moneyName = mPresenter.getGoldName();
         mCustomMoney.setText(moneyName);
