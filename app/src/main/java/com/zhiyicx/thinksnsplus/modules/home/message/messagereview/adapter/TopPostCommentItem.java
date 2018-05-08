@@ -110,10 +110,10 @@ public class TopPostCommentItem extends BaseTopItem implements BaseTopItem.TopRe
                 holder.getConvertView().getResources().getString(R.string.review_content_deleted)
                 : postCommentListBean.getPost().getSummary());
 
-        holder.setText(R.id.tv_content, commentIsDeleted ?
-                String.format(Locale.getDefault(),holder.itemView.getContext().getString(R.string.stick_type_dynamic_commnet_message), " ")
-                :RegexUtils.replaceImageIdAndNeedSpaceString(MarkdownConfig.IMAGE_FORMAT,
-                postCommentListBean.getComment().getComment_content()));
+        holder.setText(R.id.tv_content,
+                String.format(Locale.getDefault(),holder.itemView.getContext().getString(R.string.stick_type_dynamic_commnet_message),
+                        commentIsDeleted ?" ":RegexUtils.replaceImageIdAndNeedSpaceString(MarkdownConfig.IMAGE_FORMAT,
+                                postCommentListBean.getComment().getComment_content())));
 
         if (postIsDeleted || commentIsDeleted) {
             reviewFlag.setTextColor(holder.itemView.getResources().getColor(R.color

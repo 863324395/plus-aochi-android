@@ -91,7 +91,7 @@ public class TopPostItem extends BaseTopItem implements BaseTopItem.TopReviewEve
 
         holder.setVisible(R.id.fl_image_container, hasImage ? View.VISIBLE : View.GONE);
 
-        if (hasImage){
+        if (hasImage) {
             holder.setVisible(R.id.fl_image_container, View.VISIBLE);
             String url;
             holder.setVisible(R.id.iv_video_icon, View.GONE);
@@ -106,13 +106,13 @@ public class TopPostItem extends BaseTopItem implements BaseTopItem.TopReviewEve
                     .into((ImageView) holder.getView(R.id.iv_detail_image));
         }
 
-        holder.setText(R.id.tv_deatil, postIsDeleted  ?
+        holder.setText(R.id.tv_deatil, postIsDeleted ?
                 holder.getConvertView().getResources().getString(R.string.review_content_deleted)
                 : postListBean.getPost().getSummary());
 
-        holder.setText(R.id.tv_content, postIsDeleted ?
-                String.format(Locale.getDefault(),holder.itemView.getContext().getString(R.string.stick_type_dynamic_commnet_message), " ")
-                :TextUtils.isEmpty(postListBean.getPost().getTitle()) ? "" +" " : postListBean.getPost().getTitle());
+        holder.setText(R.id.tv_content,
+                String.format(Locale.getDefault(), holder.itemView.getContext().getString(R.string.stick_type_dynamic_commnet_message),
+                        postIsDeleted ? " " : TextUtils.isEmpty(postListBean.getPost().getTitle()) ? "" + " " : postListBean.getPost().getTitle()));
 
         if (postIsDeleted) {
             reviewFlag.setTextColor(holder.itemView.getResources().getColor(R.color

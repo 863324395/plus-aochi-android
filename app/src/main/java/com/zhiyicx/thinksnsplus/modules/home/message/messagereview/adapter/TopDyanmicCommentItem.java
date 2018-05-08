@@ -115,9 +115,9 @@ public class TopDyanmicCommentItem extends BaseTopItem implements BaseTopItem.To
                 holder.getConvertView().getResources().getString(R.string.review_content_deleted)
                 : dynamicCommentBean.getFeed().getFeed_content());
 
-        holder.setText(R.id.tv_content, commentIsDeleted ?
-                String.format(Locale.getDefault(), holder.itemView.getContext().getString(R.string.stick_type_dynamic_commnet_message), " ")
-                : dynamicCommentBean.getComment().getComment_content());
+        holder.setText(R.id.tv_content,
+                String.format(Locale.getDefault(), holder.itemView.getContext().getString(R.string.stick_type_dynamic_commnet_message),
+                        commentIsDeleted ? " " : dynamicCommentBean.getComment().getComment_content()));
 
         if (dynamicIsDeleted || commentIsDeleted) {
             reviewFlag.setTextColor(holder.itemView.getResources().getColor(R.color.message_badge_bg));
