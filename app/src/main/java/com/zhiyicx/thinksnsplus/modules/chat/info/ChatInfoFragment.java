@@ -568,7 +568,6 @@ public class ChatInfoFragment extends TSFragment<ChatInfoContract.Presenter> imp
                                     , mChatId
                                     , String.valueOf(AppApplication.getMyUserIdWithdefault())
                             );
-                            EventBus.getDefault().post(true, EventBusTagConfig.EVENT_CHAT_CLEAR_MESSAGE);
                         }
                         mClearAllMessagePop.hide();
                     })

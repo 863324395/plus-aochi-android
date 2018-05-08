@@ -104,8 +104,6 @@ public class ChatFragment extends TSEaseChatFragment<ChatContract.Presenter>
 
     private ActionPopupWindow mActionPopupWindow;
 
-    private boolean mIsClearMessage = false;
-
     public static ChatFragment instance(Bundle bundle) {
         ChatFragment chatFragment = new ChatFragment();
         chatFragment.setArguments(bundle);
@@ -219,11 +217,6 @@ public class ChatFragment extends TSEaseChatFragment<ChatContract.Presenter>
             }
 
             setCenterText(mPresenter.getGroupName(toChatUsername));
-        }
-
-        if (mIsClearMessage) {
-            messageList.refresh();
-            mIsClearMessage = false;
         }
     }
 
@@ -647,11 +640,6 @@ public class ChatFragment extends TSEaseChatFragment<ChatContract.Presenter>
             mIsNeedRefreshToLast = false;
 
         }
-    }
-
-    @Subscriber(mode = ThreadMode.MAIN, tag = EventBusTagConfig.EVENT_CHAT_CLEAR_MESSAGE)
-    public void clearMessage(boolean isSuccess) {
-        mIsClearMessage = isSuccess;
     }
 
     @Subscriber(mode = ThreadMode.MAIN, tag = EventBusTagConfig.EVENT_IM_DELETE_QUIT)
