@@ -38,6 +38,8 @@ public class MessageGroupPresenter extends AppBasePresenter<MessageGroupContract
     @Inject
     BaseMessageRepository mBaseMessageRepository;
 
+    private Subscription mGroupExistSubscription;
+
     @Inject
     public MessageGroupPresenter(MessageGroupContract.View rootView) {
         super(rootView);
@@ -95,7 +97,10 @@ public class MessageGroupPresenter extends AppBasePresenter<MessageGroupContract
 
     @Override
     public void checkGroupExist(String id) {
-        Subscription subscribe = Observable.just(id)
+        if (mGroupExistSubscription != null && !mGroupExistSubscription.isUnsubscribed()) {
+            mGroupExistSubscription.unsubscribe();
+        }
+        mGroupExistSubscription = Observable.just(id)
                 .subscribeOn(Schedulers.io())
                 .map(s -> {
                     EMGroup group = null;
@@ -113,7 +118,7 @@ public class MessageGroupPresenter extends AppBasePresenter<MessageGroupContract
                         mRootView.checkGroupExist(id, data);
                     }
                 });
-        addSubscrebe(subscribe);
+        addSubscrebe(mGroupExistSubscription);
 
     }
 
