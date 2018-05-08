@@ -190,8 +190,14 @@ var RE = {
 	},
 	initLimit: function initLimit(){
 	    var _self = this;
-	    _self.titleLimit.txtNote=document.getElementById("title");
-	    _self.titleLimit.txtLimit=document.getElementById("txtCount");
+	    _self.titleLimit.txtNote = document.getElementById("title");
+	    _self.titleLimit.txtLimit = document.getElementById("txtCount");
+	    // 屏蔽了标题的回车输入
+	    _self.titleLimit.txtNote.onkeypress = function(){
+                                        if (event.keyCode == 13 ){
+                                            return false;
+                                        }
+                                    }
 	},
 	focus: function focus() {
 		//聚焦
@@ -217,6 +223,7 @@ var RE = {
 	markdownWords: function markdownWords() {
         var _self = this;
 //        var content = _self.cache.editor.innerHTML.replace(/<div\\s+\\S+>\\s+\\S+<\/div>|<[divimginput]+ class=".*">|\u56FE\u7247\u4E0A\u4F20\u5931\u8D25\uFF0C\u8BF7\u70B9\u51FB\u91CD\u8BD5/g, '').replace(/\n|\t/g,'').replace(/<div>[u4e00-u9fa5]+<\/div>/g,"").replace(/div|span/g,'p').trim();
+        // 内容返回出去后 由 Java 处理
         var content = _self.cache.editor.innerHTML;
         AndroidInterface.markdownWords(content);
         return content;
@@ -501,6 +508,8 @@ var RE = {
         var noteView = _self.titleLimit.txtNote;
         var limitCount = _self.titleLimit.limitCount;
         var InPutView = document.getElementById("title");
+        var title = getTitle();
+        console.log("isPublish:::" + title);
         if(InPutView.innerHTML.length < 10 ){
             document.getElementById("stay").style.display="none";
             return
