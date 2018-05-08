@@ -164,6 +164,8 @@ public class StickTopFragment extends TSFragment<StickTopContract.Presenter> imp
         mSelectDays.add(10);
         initSelectDays(mSelectDays);
         initListener();
+        // 默认选中第一个
+        mRbDaysGroup.check(R.id.rb_one);
     }
 
     @Override
