@@ -78,11 +78,11 @@ public abstract class AFilter {
     };
 
     //纹理坐标
-    private float[] coord = {
-            0.0f, 0.0f,
-            0.0f, 1f,
-            1f, 0.0f,
-            1f, 1f,
+    private float[] coord={
+            0.0015f, 0.0f,
+            0.0015f,  1.0f,
+            1.0f,  0.0f,
+            1.0f, 1.0f,
     };
 
     private SparseArray<boolean[]> mBools;
