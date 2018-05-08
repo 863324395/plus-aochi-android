@@ -41,7 +41,8 @@ import static com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.POPUPWI
  * @contact email:648129313@qq.com
  */
 
-public class ScanCodeFragment extends TSFragment<ScanCodeContract.Presenter> implements ScanCodeContract.View, QRCodeView.Delegate {
+public class ScanCodeFragment extends TSFragment<ScanCodeContract.Presenter> implements ScanCodeContract.View,
+        QRCodeView.Delegate {
 
     public static final int MY_PERMISSIONS_REQUEST_CALL_PHOTO = 1;
 

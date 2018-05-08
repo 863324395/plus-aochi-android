@@ -17,7 +17,7 @@
             app:qrcv_cornerColor="@color/colorPrimaryDark"
             app:qrcv_cornerLength="20dp"
             app:qrcv_cornerSize="3dp"
-            app:qrcv_customScanLineDrawable="@mipmap/pic_saoma"
+            app:qrcv_customGridScanLineDrawable="@mipmap/pic_saoma"
             app:qrcv_isBarcode="false"
             app:qrcv_isCenterVertical="false"
             app:qrcv_isOnlyDecodeScanBoxArea="false"
