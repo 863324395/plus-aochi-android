@@ -570,6 +570,15 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
                     if (topData != null && !topData.isEmpty()) {
                         for (DynamicDetailBeanV2 data : topData) {
                             data.setTop(DynamicDetailBeanV2.TOP_SUCCESS);
+                            if(dynamicBeanV2.getFeeds()!=null){
+                                // 删除置顶重复的，只处理刷新
+                                for (DynamicDetailBeanV2 dynamicDetailBeanV2 : dynamicBeanV2.getFeeds()) {
+                                    if(data.getId().equals(dynamicDetailBeanV2.getId())){
+                                        dynamicBeanV2.getFeeds().remove(dynamicDetailBeanV2);
+                                        break;
+                                    }
+                                }
+                            }
                         }
                         if (!type.equals(ApiConfig.DYNAMIC_TYPE_FOLLOWS) && !type.equals(ApiConfig
                                 .DYNAMIC_TYPE_USERS)) {
@@ -582,7 +591,7 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
                     if (listBaseJson.isEmpty()) {
                         return Observable.just(listBaseJson);
                     }
-                    final List<Object> user_ids = new ArrayList<>();
+                    final List<Object> userIds = new ArrayList<>();
                     // 如果是热门，需要初始化时间
                     if (!isLoadMore && type.equals(ApiConfig.DYNAMIC_TYPE_HOTS)) {
                         for (int i = listBaseJson.size() - 1; i >= 0; i--) {
@@ -590,7 +599,7 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
                         }
                     }
                     for (DynamicDetailBeanV2 dynamicBean : listBaseJson) {
-                        user_ids.add(dynamicBean.getUser_id());
+                        userIds.add(dynamicBean.getUser_id());
                         //如果是关注，需要初始化标记
                         if (type.equals(ApiConfig.DYNAMIC_TYPE_FOLLOWS)) {
                             dynamicBean.setFollowed(true);
@@ -603,8 +612,8 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
                             dynamicBean.setMaxId(dynamicBean.getId());
                         }
                         for (DynamicCommentBean dynamicCommentBean : dynamicBean.getComments()) {
-                            user_ids.add(dynamicCommentBean.getUser_id());
-                            user_ids.add(dynamicCommentBean.getReply_to_user_id());
+                            userIds.add(dynamicCommentBean.getUser_id());
+                            userIds.add(dynamicCommentBean.getReply_to_user_id());
                             // 评论中增加 feed_mark \和用户标记
                             dynamicCommentBean.setFeed_mark(dynamicBean.getFeed_mark());
                             dynamicCommentBean.setFeed_user_id(dynamicBean.getUser_id());
@@ -613,7 +622,7 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
                         mDynamicCommentBeanGreenDao.deleteCacheByFeedMark(dynamicBean.getFeed_mark());
                     }
 
-                    return mUserInfoRepository.getUserInfo(user_ids)
+                    return mUserInfoRepository.getUserInfo(userIds)
                             .map(userinfobeans -> {
                                 SparseArray<UserInfoBean> userInfoBeanSparseArray = new SparseArray<>();
                                 List<DynamicDetailBeanV2> topData = new ArrayList<>();
