@@ -14,6 +14,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.animation.FastOutSlowInInterpolator;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Interpolator;
@@ -712,9 +713,15 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
      * 保存图片,可保存gif
      */
     public void saveImage() {
-        GlideUrl glideUrl = ImageUtils.imagePathConvertV2(imageIsCanLook(), mImageBean.getStorage_id(), 0, 0
-                , ImageZipConfig.IMAGE_100_ZIP, AppApplication.getTOKEN());
-        Observable.just(glideUrl)
+        GlideUrl glideUrl = null;
+        String url = null;
+        if (TextUtils.isEmpty(mImageBean.getImgUrl())) {
+            glideUrl = ImageUtils.imagePathConvertV2(imageIsCanLook(), mImageBean.getStorage_id(), 0, 0
+                    , ImageZipConfig.IMAGE_100_ZIP, AppApplication.getTOKEN());
+        } else {
+            url = mImageBean.getImgUrl();
+        }
+        Observable.just(glideUrl == null ? url : glideUrl)
                 .doOnSubscribe(() -> {
                     if (getActivity() != null) {
                         showSnackLoadingMessage(getString(R.string.save_pic_ing));
@@ -728,8 +735,14 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                                 .load(glideUrl1)
                                 .downloadOnly(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL)
                                 .get();
-
-                        String imgName = ConvertUtils.getStringMD5(glideUrl1.toStringUrl()) + (DealPhotoUtils.checkPhotoIsGif(cacheFile
+                        String imagePath;
+                        if (glideUrl1 instanceof GlideUrl) {
+                            GlideUrl glideUrl2 = (GlideUrl) glideUrl1;
+                            imagePath = glideUrl2.toStringUrl();
+                        } else {
+                            imagePath = glideUrl1.toString();
+                        }
+                        String imgName = ConvertUtils.getStringMD5(imagePath) + (DealPhotoUtils.checkPhotoIsGif(cacheFile
                                 .getAbsolutePath()) ? ".gif" : ".jpg");
                         String imgPath = PathConfig.PHOTO_SAVA_PATH;
                         result = FileUtils.saveFileByFileData(cacheFile, imgName, imgPath);
