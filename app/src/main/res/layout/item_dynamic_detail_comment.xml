@@ -5,13 +5,12 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/white"
-    android:paddingLeft="@dimen/spacing_normal"
-    android:paddingRight="@dimen/spacing_normal"
     android:paddingTop="@dimen/spacing_mid"
     tools:context="com.zhiyicx.thinksnsplus.modules.home.HomeActivity">
 
     <com.zhiyicx.baseproject.widget.UserAvatarView
         android:id="@+id/iv_headpic"
+        android:layout_marginLeft="@dimen/spacing_normal"
         android:layout_width="@dimen/headpic_for_assist"
         android:layout_height="@dimen/headpic_for_assist"
         android:layout_marginRight="@dimen/spacing_normal"
@@ -37,6 +36,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:maxLines="1"
+        android:paddingRight="@dimen/spacing_normal"
         android:textColor="@color/general_for_hint"
         android:textSize="@dimen/size_icon_assist"
         tools:text="4分钟前"
@@ -66,6 +66,7 @@
         android:layout_height="wrap_content"
         android:includeFontPadding="false"
         android:layout_below="@+id/tv_name"
+        android:paddingRight="@dimen/spacing_normal"
         android:layout_toLeftOf="@+id/fl_tip"
         android:layout_toRightOf="@+id/iv_headpic"
         android:paddingBottom="@dimen/spacing_mid"
@@ -77,6 +78,7 @@
 
     <include
         android:id="@+id/fl_tip"
+        android:layout_marginRight="@dimen/spacing_normal"
         android:visibility="gone"
         layout="@layout/view_hint_info2"
         android:layout_width="wrap_content"
