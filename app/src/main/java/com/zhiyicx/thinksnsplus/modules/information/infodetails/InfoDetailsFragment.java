@@ -401,7 +401,7 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
      */
     private void initDeleteCommentPopupWindow(final InfoCommentListBean data) {
         mDeletCommentPopWindow = ActionPopupWindow.builder()
-                .item1Str(BuildConfig.USE_TOLL && data.getId() != -1L ? getString(R.string.dynamic_list_top_comment) : null)
+                .item1Str(BuildConfig.USE_TOLL && data.getId() != -1L && !data.getPinned() ? getString(R.string.dynamic_list_top_comment) : null)
                 .item1Color(ContextCompat.getColor(getContext(), R.color.themeColor))
                 .item2Str(getString(R.string.dynamic_list_delete_comment))
                 .bottomStr(getString(R.string.cancel))
@@ -412,13 +412,9 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
                 .item1ClickListener(() -> {
                     // 跳转置顶页面
                     mDeletCommentPopWindow.hide();
-                    Bundle bundle = new Bundle();
-                    bundle.putString(StickTopFragment.TYPE, StickTopFragment.TYPE_INFO);// 资源类型
-                    bundle.putLong(StickTopFragment.PARENT_ID, mInfoMation.getId());// 资源id
-                    bundle.putLong(StickTopFragment.CHILD_ID, data.getId());
-                    Intent intent = new Intent(getActivity(), StickTopActivity.class);
-                    intent.putExtras(bundle);
-                    startActivity(intent);
+                    boolean sourceIsMine = AppApplication.getMyUserIdWithdefault() == data.getUser_id();
+
+                    StickTopFragment.startSticTopActivity(getActivity(), StickTopFragment.TYPE_INFO, mInfoMation.getId(), data.getId(), sourceIsMine);
                     mDeletCommentPopWindow.hide();
                 })
                 .item2ClickListener(() -> {
@@ -485,15 +481,7 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
                     if (infoMation.is_pinned()) {
                         showSnackErrorMessage(getString(R.string.info_alert_reapply_for_top));
                     } else {
-                        // 跳转置顶页面
-                        Bundle bundle = new Bundle();
-                        // 资源类型
-                        bundle.putString(StickTopFragment.TYPE, StickTopFragment.TYPE_INFO);
-                        // 资源id
-                        bundle.putLong(StickTopFragment.PARENT_ID, infoMation.getId());
-                        Intent intent = new Intent(getActivity(), StickTopActivity.class);
-                        intent.putExtras(bundle);
-                        startActivity(intent);
+                        StickTopFragment.startSticTopActivity(getActivity(), StickTopFragment.TYPE_INFO, infoMation.getId());
                     }
                     mDealInfoMationPopWindow.hide();
                 })
@@ -542,6 +530,7 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
 
     /**
      * 评论
+     *
      * @param position
      */
     private void comment(int position) {
@@ -571,6 +560,7 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
 
     /**
      * 举报
+     *
      * @param position
      */
     private void goReportComment(int position) {
@@ -586,6 +576,7 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
 
         }
     }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);

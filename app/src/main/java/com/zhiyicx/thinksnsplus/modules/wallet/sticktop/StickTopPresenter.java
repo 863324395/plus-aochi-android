@@ -1,12 +1,15 @@
 package com.zhiyicx.thinksnsplus.modules.wallet.sticktop;
 
 
+import android.text.TextUtils;
+
 import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
+import com.zhiyicx.thinksnsplus.data.beans.StickTopAverageBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.repository.StickTopRepsotory;
 import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
@@ -16,6 +19,7 @@ import javax.inject.Inject;
 
 import rx.Observable;
 import rx.Subscription;
+import rx.functions.Func1;
 
 import static com.zhiyicx.thinksnsplus.modules.wallet.sticktop.StickTopFragment.TYPE_DYNAMIC;
 import static com.zhiyicx.thinksnsplus.modules.wallet.sticktop.StickTopFragment.TYPE_INFO;
@@ -34,11 +38,7 @@ public class StickTopPresenter extends AppBasePresenter<StickTopContract.View>
     @Inject
     StickTopRepsotory mStickTopRepsotory;
 
-
-    @Override
-    protected boolean useEventBus() {
-        return true;
-    }
+    private StickTopAverageBean mStickTopAverageBean;
 
     @Inject
     public StickTopPresenter(StickTopContract.View rootView) {
@@ -89,17 +89,9 @@ public class StickTopPresenter extends AppBasePresenter<StickTopContract.View>
                 .subscribe(new BaseSubscribeForV2<BaseJsonV2<Integer>>() {
                     @Override
                     protected void onSuccess(BaseJsonV2<Integer> data) {
-                        switch (mRootView.getType()) {
-                            case TYPE_DYNAMIC:
-                                mRootView.showSnackSuccessMessage(mContext.getString(R.string.dynamic_list_top_dynamic_success));
-                                break;
-                            case TYPE_INFO:
-                                mRootView.showSnackSuccessMessage(mContext.getString(R.string.dynamic_list_top_info_success));
-                                break;
-                            default:
-                                mRootView.showSnackSuccessMessage(mContext.getString(R.string.dynamic_list_top_success));
-
-                        }
+                        mRootView.showSnackSuccessMessage(data.getMessage() != null && !TextUtils.isEmpty(data.getMessage().get(0)) ? data
+                                .getMessage().get(0) : mContext
+                                .getString(R.string.comment_top_success));
 
                         mRootView.topSuccess();
                     }
@@ -153,7 +145,10 @@ public class StickTopPresenter extends AppBasePresenter<StickTopContract.View>
                 .subscribe(new BaseSubscribeForV2<BaseJsonV2<Integer>>() {
                     @Override
                     protected void onSuccess(BaseJsonV2<Integer> data) {
-                        mRootView.showSnackSuccessMessage(mContext.getString(R.string.comment_top_success));
+
+                        mRootView.showSnackSuccessMessage(data.getMessage() != null && !TextUtils.isEmpty(data.getMessage().get(0)) ? data
+                                .getMessage().get(0) : mContext
+                                .getString(R.string.comment_top_success));
                         mRootView.topSuccess();
                     }
 
@@ -174,9 +169,18 @@ public class StickTopPresenter extends AppBasePresenter<StickTopContract.View>
     }
 
     @Override
+    public StickTopAverageBean getStickTopAverageBean() {
+        return mStickTopAverageBean;
+    }
+
+    @Override
     public long getBalance() {
 
-        Subscription userInfoSub = mUserInfoRepository.getCurrentLoginUserInfo()
+        Subscription userInfoSub = mStickTopRepsotory.getInfoAndCommentTopAverageNum()
+                .flatMap((Func1<StickTopAverageBean, Observable<UserInfoBean>>) stickTopAverageBean -> {
+                    mStickTopAverageBean = stickTopAverageBean;
+                    return mUserInfoRepository.getCurrentLoginUserInfo();
+                })
                 .subscribe(new BaseSubscribeForV2<UserInfoBean>() {
                     @Override
                     protected void onSuccess(UserInfoBean data) {
@@ -194,6 +198,7 @@ public class StickTopPresenter extends AppBasePresenter<StickTopContract.View>
                         mRootView.showSnackErrorMessage(mContext.getString(R.string.err_net_not_work));
                     }
                 });
+
         addSubscrebe(userInfoSub);
 
         AuthBean authBean = AppApplication.getmCurrentLoginAuth();

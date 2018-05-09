@@ -10,6 +10,7 @@ import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDigListBean;
 import com.zhiyicx.thinksnsplus.data.beans.ReportResultBean;
 import com.zhiyicx.thinksnsplus.data.beans.RewardsListBean;
+import com.zhiyicx.thinksnsplus.data.beans.StickTopAverageBean;
 import com.zhiyicx.thinksnsplus.data.beans.TopDynamicCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.TopNewsCommentListBean;
 
@@ -32,6 +33,7 @@ import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_COMMENT_PAID_V2;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_DYNAMIC_REPORT;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_DYNAMIC_REWARDS;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_DYNAMIC_REWARDS_USER_LIST;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_DYNAMIC_TOP_AVERAGE_NUM;
 
 /**
  * @Describe 动态相关的接口
@@ -207,5 +209,10 @@ public interface DynamicClient {
     @POST(APP_PATH_DYNAMIC_REPORT)
     Observable<ReportResultBean> reportDynamic(@Path("feed_id") String feedId, @Field("reason") String reason);
 
+    /**
+     * @return 动态平均置顶金额
+     */
+    @GET(APP_PATH_DYNAMIC_TOP_AVERAGE_NUM)
+    Observable<StickTopAverageBean> getDynamicAndCommentTopAverageNum();
 
 }

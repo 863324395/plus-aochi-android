@@ -115,7 +115,7 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
         Observable<DynamicBeanV2> observable;
         // 收藏的动态地址和返回大不一样，真滴难受
         if (DYNAMIC_TYPE_MY_COLLECTION.equals(type)) {
-            observable = mDynamicClient.getCollectDynamicListV2(after, user_id,  TSListFragment.DEFAULT_PAGE_SIZE)
+            observable = mDynamicClient.getCollectDynamicListV2(after, user_id, TSListFragment.DEFAULT_PAGE_SIZE)
                     .flatMap(detailBeanV2 -> {
                         DynamicBeanV2 data = new DynamicBeanV2();
                         data.setFeeds(detailBeanV2);
@@ -296,36 +296,44 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
     /**
      * V2
      *
-     * @param feed_mark dyanmic feed mark
-     * @param feed_id   dyanmic detail id
-     * @param after     max_id
+     * @param feedMark dyanmic feed mark
+     * @param feedId   dyanmic detail id
+     * @param after    max_id
      * @return
      */
     @Override
     public Observable<List<DynamicCommentBean>> getDynamicCommentListV2(
-            final Long feed_mark, Long feed_id, Long after) {
-        return mDynamicClient.getDynamicCommentListV2(feed_id, after, TSListFragment.DEFAULT_PAGE_SIZE)
+            final Long feedMark, Long feedId, Long after) {
+        return mDynamicClient.getDynamicCommentListV2(feedId, after, TSListFragment.DEFAULT_PAGE_SIZE)
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
                 .flatMap(listBaseJson -> {
 
-                    final List<Object> user_ids = new ArrayList<>();
+                    final List<Object> userIds = new ArrayList<>();
                     if (listBaseJson.getComments() != null && listBaseJson.getComments().size() > 1) {
                         Collections.sort(listBaseJson.getComments(), new TimeStringSortClass());
                     }
                     for (DynamicCommentBean dynamicCommentBean : listBaseJson.getPinneds()) {
                         dynamicCommentBean.setPinned(true);
+                        for (DynamicCommentBean commentBean : listBaseJson.getComments()) {
+                            if (dynamicCommentBean.getComment_id().equals(commentBean.getComment_id())) {
+                                listBaseJson.getComments().remove(commentBean);
+                                break;
+                            }
+                        }
                     }
+
                     listBaseJson.getPinneds().addAll(listBaseJson.getComments());
                     for (DynamicCommentBean dynamicCommentBean : listBaseJson.getPinneds()) {
-                        user_ids.add(dynamicCommentBean.getUser_id());
-                        user_ids.add(dynamicCommentBean.getReply_to_user_id());
-                        dynamicCommentBean.setFeed_mark(feed_mark);
+                        userIds.add(dynamicCommentBean.getUser_id());
+                        userIds.add(dynamicCommentBean.getReply_to_user_id());
+                        dynamicCommentBean.setFeed_mark(feedMark);
                     }
-                    if (user_ids.isEmpty()) {
+
+                    if (userIds.isEmpty()) {
                         return Observable.just(listBaseJson.getPinneds());
                     }
-                    return mUserInfoRepository.getUserInfo(user_ids)
+                    return mUserInfoRepository.getUserInfo(userIds)
                             .map(userinfobeans -> {
                                 SparseArray<UserInfoBean> userInfoBeanSparseArray = new SparseArray<>();
                                 for (UserInfoBean userInfoBean : userinfobeans) {
@@ -676,6 +684,7 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
                 .unsubscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
+
     @Override
     public Observable<DynamicCommentToll> tollDynamicComment(Long feed_id, int amount) {
         return mDynamicClient.setDynamicCommentToll(feed_id, amount)

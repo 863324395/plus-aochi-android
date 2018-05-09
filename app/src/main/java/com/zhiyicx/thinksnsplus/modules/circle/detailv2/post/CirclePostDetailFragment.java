@@ -564,7 +564,7 @@ public class CirclePostDetailFragment extends TSListFragment<CirclePostDetailCon
      */
     private void initDeleteCommentPopupWindow(final CirclePostCommentBean data, boolean isBlackList) {
         mDeletCommentPopWindow = ActionPopupWindow.builder()
-                .item1Str(BuildConfig.USE_TOLL && data.getId() != -1L && !isBlackList ? getString(R.string
+                .item1Str(BuildConfig.USE_TOLL && data.getId() != -1L && !isBlackList && !data.getPinned() ? getString(R.string
                         .dynamic_list_top_comment) : null)
                 .item2Str(getString(R.string.dynamic_list_delete_comment))
                 .bottomStr(getString(R.string.cancel))
@@ -573,16 +573,9 @@ public class CirclePostDetailFragment extends TSListFragment<CirclePostDetailCon
                 .backgroundAlpha(POPUPWINDOW_ALPHA)
                 .with(getActivity())
                 .item1ClickListener(() -> {
-                    // 跳转置顶页面
-                    mDeletCommentPopWindow.hide();
-                    Bundle bundle = new Bundle();
-                    bundle.putString(StickTopFragment.TYPE, StickTopFragment.TYPE_POST);
-                    bundle.putLong(StickTopFragment.PARENT_ID, mCirclePostDetailBean.getId());
-                    // 资源id
-                    bundle.putLong(StickTopFragment.CHILD_ID, data.getId());
-                    Intent intent = new Intent(getActivity(), StickTopActivity.class);
-                    intent.putExtras(bundle);
-                    startActivity(intent);
+                    boolean sourceIsMine = AppApplication.getMyUserIdWithdefault() == data.getUser_id();
+                    StickTopFragment.startSticTopActivity(getActivity(), StickTopFragment.TYPE_POST, mCirclePostDetailBean.getId(), data.getId(),
+                            sourceIsMine);
                     mDeletCommentPopWindow.hide();
                 })
                 .item2ClickListener(() -> {
@@ -603,7 +596,8 @@ public class CirclePostDetailFragment extends TSListFragment<CirclePostDetailCon
                     CircleMembers.ADMINISTRATOR.equals(circlePostListBean.getGroup().getJoined().getRole());
         }
         boolean isPinned = circlePostListBean.getPinned();
-        boolean isBlackList = circlePostListBean.getGroup().getJoined() != null && CircleMembers.BLACKLIST.equals(mCirclePostDetailBean.getGroup().getJoined().getRole());
+        boolean isBlackList = circlePostListBean.getGroup().getJoined() != null && CircleMembers.BLACKLIST.equals(mCirclePostDetailBean.getGroup()
+                .getJoined().getRole());
 
         mDealPostPopWindow = ActionPopupWindow.builder()
                 .item1Str(isMine && !isBlackList && !isManager ? getString(R.string.post_apply_for_top) : "")
@@ -622,15 +616,8 @@ public class CirclePostDetailFragment extends TSListFragment<CirclePostDetailCon
                     if (circlePostListBean.hasPinned()) {
                         showSnackErrorMessage(getString(R.string.info_alert_reapply_for_top));
                     } else {
-                        // 跳转置顶页面
-                        Bundle bundle = new Bundle();
-                        // 资源类型
-                        bundle.putString(StickTopFragment.TYPE, StickTopFragment.TYPE_POST);
-                        // 资源id
-                        bundle.putLong(StickTopFragment.PARENT_ID, circlePostListBean.getId());
-                        Intent intent = new Intent(getActivity(), StickTopActivity.class);
-                        intent.putExtras(bundle);
-                        startActivity(intent);
+                        StickTopFragment.startSticTopActivity(getActivity(), StickTopFragment.TYPE_POST, circlePostListBean.getId());
+
                     }
                     mDealPostPopWindow.hide();
                 })

@@ -602,6 +602,16 @@ public class BaseCircleRepository implements IBaseCircleRepository {
         return getPostCommentList(postId, (long) after).flatMap(circleCommentZip -> {
             for (CirclePostCommentBean pinned : circleCommentZip.getPinneds()) {
                 pinned.setPinned(true);
+                if (circleCommentZip.getComments() != null) {
+                    // 去除重复的置顶评论
+                    for (CirclePostCommentBean circlePostCommentBean : circleCommentZip.getComments()) {
+                        if (pinned.getId().equals(circlePostCommentBean.getId())) {
+                            circleCommentZip.getComments().remove(circlePostCommentBean);
+                            break;
+                        }
+                    }
+                }
+
             }
             circleCommentZip.getPinneds().addAll(circleCommentZip.getComments());
             return Observable.just(circleCommentZip.getPinneds())

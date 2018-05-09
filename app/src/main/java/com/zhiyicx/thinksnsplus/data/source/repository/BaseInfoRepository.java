@@ -103,7 +103,7 @@ public class BaseInfoRepository implements IBaseInfoRepository {
 
     @Override
     public Observable<List<InfoListDataBean>> getMyInfoList(String type, long max_id) {
-        return mInfoMainClient.getMyInfoList(max_id,TSListFragment.DEFAULT_PAGE_SIZE, type)
+        return mInfoMainClient.getMyInfoList(max_id, TSListFragment.DEFAULT_PAGE_SIZE, type)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
@@ -142,6 +142,16 @@ public class BaseInfoRepository implements IBaseInfoRepository {
                             user_ids.add(commentListBean.getUser_id());
                             user_ids.add(commentListBean.getReply_to_user_id());
                             user_ids.add(commentListBean.getTarget_user());
+                            if (infoCommentBean.getComments() != null) {
+                                // 去掉和置顶重复的数据
+                                for (InfoCommentListBean infoCommentListBean : infoCommentBean.getComments()) {
+                                    if (commentListBean.getId() != null && commentListBean.getId().equals(infoCommentListBean.getId())) {
+                                        infoCommentBean.getComments().remove(infoCommentListBean);
+                                        break;
+                                    }
+                                }
+
+                            }
                         }
                     }
                     if (infoCommentBean.getComments() != null) {

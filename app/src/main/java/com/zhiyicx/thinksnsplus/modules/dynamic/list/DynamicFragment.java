@@ -886,16 +886,9 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
                 .with(getActivity())
                 .item1ClickListener(() -> {
                     mDeletCommentPopWindow.hide();
-                    Bundle bundle = new Bundle();
-                    bundle.putString(StickTopFragment.TYPE, StickTopFragment.TYPE_DYNAMIC);// 资源类型
-                    bundle.putLong(StickTopFragment.PARENT_ID, dynamicBean.getId());// 资源id
-                    bundle.putLong(StickTopFragment.CHILD_ID, dynamicBean
-                            .getComments().get(commentPosition).getComment_id());// 该资源的评论id,
-                    // 非评论置顶不传这个
-                    Intent intent = new Intent(getActivity(), StickTopActivity.class);
-                    intent.putExtras(bundle);
-                    startActivity(intent);
-
+                    boolean sourceIsMine = AppApplication.getMyUserIdWithdefault() == dynamicBean.getUser_id();
+                    StickTopFragment.startSticTopActivity(getActivity(), StickTopFragment.TYPE_DYNAMIC, dynamicBean.getId(), dynamicBean
+                            .getComments().get(commentPosition).getComment_id(), sourceIsMine);
                     showBottomView(true);
                 })
                 .item2ClickListener(() -> {

@@ -44,7 +44,10 @@ public class StickTopFragment extends TSFragment<StickTopContract.Presenter> imp
      */
     public static final String PARENT_ID = "parent_id";
     public static final String CHILD_ID = "child_id";
-
+    /**
+     * 当前资源是否是当前登录用户的
+     */
+    public static final String SOURCE_IS_MINE = "source_is_mine";
     /**
      * value 动态置顶
      */
@@ -113,6 +116,11 @@ public class StickTopFragment extends TSFragment<StickTopContract.Presenter> imp
     private String type;
     private boolean isManager;
     private int mErrorCode;
+    private boolean mSourceIsMine;
+    /**
+     * true 是资源置顶，false 是评论置顶
+     */
+    private boolean mIsSourceTop;
 
     public static StickTopFragment newInstance(Bundle bundle) {
         StickTopFragment stickTopFragment = new StickTopFragment();
@@ -132,9 +140,11 @@ public class StickTopFragment extends TSFragment<StickTopContract.Presenter> imp
         parent_id = getArguments().getLong(PARENT_ID, -1L);
         child_id = getArguments().getLong(CHILD_ID, -1L);
         isManager = getArguments().getBoolean(TYPE_MANAGER);
+        mSourceIsMine = getArguments().getBoolean(SOURCE_IS_MINE);
+
+        mIsSourceTop = child_id <= 0;
         mBlance = mPresenter.getBalance();
         mTvEtFocusableTip.setText(R.string.top_every_day_pay);
-        mTvDynamicTopDec.setText(getString(R.string.to_top_description, 200, mPresenter.getGoldName(), mBlance));
         String moneyName = mPresenter.getGoldName();
         mCustomMoney.setText(moneyName);
         mTotalMoney.setText(moneyName);
@@ -144,6 +154,11 @@ public class StickTopFragment extends TSFragment<StickTopContract.Presenter> imp
             mLlTopMoney.setVisibility(View.GONE);
             mLlTopTotalMoney.setVisibility(View.GONE);
         }
+
+        /**
+         * 资源是我的评论置顶  如果申请后是自己审核的， 按钮改成 “确认置顶”。
+         */
+        mBtTop.setText(getString(!mIsSourceTop && mSourceIsMine ? R.string.sure_top : R.string.to_top));
     }
 
     @Override
@@ -164,6 +179,8 @@ public class StickTopFragment extends TSFragment<StickTopContract.Presenter> imp
         mSelectDays.add(10);
         initSelectDays(mSelectDays);
         initListener();
+        // 默认选中第一个
+        mRbDaysGroup.check(R.id.rb_one);
     }
 
     @Override
@@ -173,12 +190,7 @@ public class StickTopFragment extends TSFragment<StickTopContract.Presenter> imp
 
     @Override
     public void gotoRecharge() {
-//        mSystemConfigBean = mPresenter.getSystemConfigBean();
-//        if (mSystemConfigBean.getCurrencyRecharge() != null && mSystemConfigBean.getCurrencyRecharge().isOpen()) {
         startActivity(new Intent(getActivity(), MineIntegrationActivity.class));
-//        }else {
-//            showSnackErrorMessage(getString(R.string.current_money_not_enouph));
-//        }
     }
 
     @Override
@@ -219,7 +231,20 @@ public class StickTopFragment extends TSFragment<StickTopContract.Presenter> imp
     @Override
     public void updateBalance(long balance) {
         mBlance = balance;
-        mTvDynamicTopDec.setText(String.format(getString(R.string.to_top_description), 200, mPresenter.getGoldName(), balance));
+        int average = 0;
+        if (mPresenter.getStickTopAverageBean() != null) {
+            if (!mIsSourceTop) {
+                average = mPresenter.getStickTopAverageBean().getCommentTopAverageNum();
+            } else {
+                average = mPresenter.getStickTopAverageBean().getSourceTopAverageNum();
+            }
+        }
+        //如果服务端给的值小于1，则修正为100
+        if (average < 1) {
+            average = 100;
+        }
+        mTvDynamicTopDec.setVisibility(View.VISIBLE);
+        mTvDynamicTopDec.setText(getString(R.string.to_top_description, average, mPresenter.getGoldName(), balance));
     }
 
     private void initListener() {
@@ -262,13 +287,13 @@ public class StickTopFragment extends TSFragment<StickTopContract.Presenter> imp
         RxTextView.textChanges(mEtTopTotal)
                 .compose(this.bindToLifecycle())
                 .subscribe(charSequence -> mBtTop.setText(getString(mBlance < mCurrentDays * mInputMoney
-                        ? R.string.to_recharge : R.string.to_top)));
+                        ? R.string.to_recharge : !mIsSourceTop && mSourceIsMine ? R.string.sure_top : R.string.to_top)));
 
         RxView.clicks(mBtTop)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .compose(this.bindToLifecycle())
                 .subscribe(aVoid -> {
-                    if (child_id > 0) {
+                    if (!mIsSourceTop) {
                         mPresenter.stickTop(parent_id, child_id);
                     } else {
                         mPresenter.stickTop(parent_id);
@@ -316,48 +341,37 @@ public class StickTopFragment extends TSFragment<StickTopContract.Presenter> imp
     }
 
     /**
+     * 评论置顶
+     *
      * @param context
-     * @param type      资源类型：动态、资讯等
-     * @param parent_id 资源的ic
-     * @param child_id  评论的 id
+     * @param type         资源类型：动态、资讯等
+     * @param parentId     资源的ic
+     * @param childId      评论的 id
+     * @param sourceIsMine 该资源是否是当前登录用户的
      */
-    public static void startSticTopActivity(Context context, String type, Long parent_id, Long child_id) {
+    public static void startSticTopActivity(Context context, String type, Long parentId, Long childId, boolean sourceIsMine) {
         Bundle bundle = new Bundle();
         bundle.putString(StickTopFragment.TYPE, type);// 资源类型
-        bundle.putLong(StickTopFragment.PARENT_ID, parent_id);// 资源id
-        if (child_id != null) {
-            bundle.putLong(StickTopFragment.CHILD_ID, child_id);
+        bundle.putLong(StickTopFragment.PARENT_ID, parentId);// 资源id
+        if (childId != null) {
+            bundle.putLong(StickTopFragment.CHILD_ID, childId);
         }
+        bundle.putBoolean(StickTopFragment.SOURCE_IS_MINE, sourceIsMine);
         Intent intent = new Intent(context, StickTopActivity.class);
         intent.putExtras(bundle);
         context.startActivity(intent);
+
     }
 
-    public static void startSticTopActivity(Context context, String type, Long parent_id) {
-        startSticTopActivity(context, type, parent_id, null);
-    }
-
-    public static void startSticTopActivity(Context context, String type, Long parent_id, Long child_id, boolean isManager) {
-        Bundle bundle = new Bundle();
-
-        // 资源类型
-        bundle.putString(StickTopFragment.TYPE, type);
-
-        // 资源id
-        bundle.putLong(StickTopFragment.PARENT_ID, parent_id);
-
-        bundle.putBoolean(StickTopFragment.TYPE_MANAGER, isManager);
-
-        if (child_id != null) {
-            bundle.putLong(StickTopFragment.CHILD_ID, child_id);
-        }
-        Intent intent = new Intent(context, StickTopActivity.class);
-        intent.putExtras(bundle);
-        context.startActivity(intent);
-    }
-
-    public static void startSticTopActivity(Context context, String type, Long parent_id, boolean isManager) {
-        startSticTopActivity(context, type, parent_id, null, isManager);
+    /**
+     * 资源置顶
+     *
+     * @param context
+     * @param type
+     * @param parentId
+     */
+    public static void startSticTopActivity(Context context, String type, Long parentId) {
+        startSticTopActivity(context, type, parentId, null, true);
     }
 
 }

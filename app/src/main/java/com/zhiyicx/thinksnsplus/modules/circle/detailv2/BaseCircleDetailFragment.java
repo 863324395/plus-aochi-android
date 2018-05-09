@@ -593,8 +593,10 @@ public class BaseCircleDetailFragment extends TSListFragment<CircleDetailContrac
                 .item1ClickListener(() -> {
                     mDeletCommentPopWindow.hide();
                     showBottomView(true);
+                    boolean sourceIsMine = AppApplication.getMyUserIdWithdefault() == circlePostListBean.getUser_id();
+
                     StickTopFragment.startSticTopActivity(getActivity(), StickTopFragment.TYPE_POST, circlePostListBean.getId(), circlePostListBean
-                            .getComments().get(commentPosition).getId());
+                            .getComments().get(commentPosition).getId(),sourceIsMine);
 
                 })
                 .item2ClickListener(() -> {

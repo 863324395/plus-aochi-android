@@ -562,7 +562,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
 
 
     @Override
-    public void onItemClick(View view,final RecyclerView.ViewHolder holder, int position) {
+    public void onItemClick(View view, final RecyclerView.ViewHolder holder, int position) {
         position = position - mHeaderAndFooterWrapper.getHeadersCount();
         mCurrentPostion = position;
         // 游客处理
@@ -578,7 +578,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
             return;
         }
 
-        goDynamicDetail(position, false,(ViewHolder)holder);
+        goDynamicDetail(position, false, (ViewHolder) holder);
     }
 
     @Override
@@ -841,7 +841,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
         bundle.putInt(DYNAMIC_DETAIL_DATA_POSITION, position);
         bundle.putBoolean(LOOK_COMMENT_MORE, isLookMoreComment);
 
-        if (isLookMoreComment){
+        if (isLookMoreComment) {
             ZhiyiVideoView.releaseAllVideos();
             intent.putExtras(bundle);
             startActivity(intent);
@@ -886,7 +886,10 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
      */
     private void initDeletCommentPopWindow(final DynamicDetailBeanV2 dynamicBean, final int dynamicPositon, final int commentPosition) {
         mDeletCommentPopWindow = ActionPopupWindow.builder()
-                .item1Str(BuildConfig.USE_TOLL ? getString(R.string.dynamic_list_top_comment) : null)
+                .item1Str(BuildConfig.USE_TOLL && dynamicBean.getState() == DynamicDetailBeanV2
+                        .SEND_SUCCESS && !dynamicBean
+                        .getComments().get(commentPosition).getPinned() ? getString(R
+                        .string.dynamic_list_top_comment) : null)
                 .item2Str(getString(R.string.dynamic_list_delete_comment))
                 .bottomStr(getString(R.string.cancel))
                 .isOutsideTouch(true)
@@ -894,9 +897,10 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
                 .backgroundAlpha(POPUPWINDOW_ALPHA)
                 .with(getActivity())
                 .item1ClickListener(() -> {
+                    boolean sourceIsMine = AppApplication.getMyUserIdWithdefault() == dynamicBean.getUser_id();
 
                     StickTopFragment.startSticTopActivity(getActivity(), StickTopFragment.TYPE_DYNAMIC, dynamicBean.getId(), dynamicBean
-                            .getComments().get(commentPosition).getComment_id());
+                            .getComments().get(commentPosition).getComment_id(), sourceIsMine);
                     mDeletCommentPopWindow.hide();
                 })
                 .item2ClickListener(() -> {
@@ -1072,7 +1076,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
     @Override
     public void onMoreCommentClick(View view, DynamicDetailBeanV2 dynamicBean) {
         int position = mPresenter.getCurrenPosiotnInDataList(dynamicBean.getFeed_mark());
-        goDynamicDetail(position, true,(ViewHolder) mRvList.getChildViewHolder(mRvList.getLayoutManager().findViewByPosition(position)));
+        goDynamicDetail(position, true, (ViewHolder) mRvList.getChildViewHolder(mRvList.getLayoutManager().findViewByPosition(position)));
     }
 
     @Override

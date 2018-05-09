@@ -167,9 +167,9 @@ public class PictureTollFragment extends TSFragment {
                 amount = mSystemConfigBean.getFeed().getItems();
             }
             if (amount != null && amount.length > 2) {
-                mSelectMoney.add(0,(float) PayConfig.realCurrency2GameCurrency(amount[0], mSystemConfigBean.getWallet_ratio()));
-                mSelectMoney.add(1,(float) PayConfig.realCurrency2GameCurrency(amount[1], mSystemConfigBean.getWallet_ratio()));
-                mSelectMoney.add(2,(float) PayConfig.realCurrency2GameCurrency(amount[2], mSystemConfigBean.getWallet_ratio()));
+                mSelectMoney.add(0, (float) PayConfig.realCurrency2GameCurrency(amount[0], mSystemConfigBean.getWallet_ratio()));
+                mSelectMoney.add(1, (float) PayConfig.realCurrency2GameCurrency(amount[1], mSystemConfigBean.getWallet_ratio()));
+                mSelectMoney.add(2, (float) PayConfig.realCurrency2GameCurrency(amount[2], mSystemConfigBean.getWallet_ratio()));
             }
             if (mSystemConfigBean.getSite() != null && mSystemConfigBean.getSite().getGold_name() != null) {
                 mMoneyName = mSystemConfigBean.getSite().getGold_name().getName();
@@ -212,6 +212,8 @@ public class PictureTollFragment extends TSFragment {
             mRbDaysGroupTollWays.check(R.id.rb_ways_one);
         } else if (mToll.getToll_type() == DOWNLOAD_TOLL) {
             mRbDaysGroupTollWays.check(R.id.rb_ways_two);
+        } else {
+            mRbDaysGroupTollWays.check(R.id.rb_ways_one);
         }
     }
 

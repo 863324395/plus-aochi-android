@@ -144,8 +144,8 @@ public class ApiConfig {
      */
 
     public static final String APP_PATH_SEND_DYNAMIC_V2 = "api/" + API_VERSION_2 + "/feeds";// 发布动态 V2
-
-    public static final String APP_PATH_DELETE_DYNAMIC = "api/" + API_VERSION_2 + "/feeds/%s/currency";// 删除一条动态
+    // 删除一条动态
+    public static final String APP_PATH_DELETE_DYNAMIC = "api/" + API_VERSION_2 + "/feeds/%s/currency";
     // 获取动态列表
     public static final String DYNAMIC_TYPE_EMPTY = "empty"; // 占位
     public static final String DYNAMIC_TYPE_NEW = "new"; // 最新动态
@@ -214,6 +214,8 @@ public class ApiConfig {
     public static final String APP_PATH_DYNAMIC_REWARDS_USER_LIST = "/api/" + API_VERSION_2 + "/feeds/{feed_id}/rewards";
     // 举报动态
     public static final String APP_PATH_DYNAMIC_REPORT = "/api/" + API_VERSION_2 + "/feeds/{feed_id}/reports";
+    // 获取动态置顶平均积分
+    public static final String APP_PATH_DYNAMIC_TOP_AVERAGE_NUM = "/api/" + API_VERSION_2 + "/feeds/average";
 
     /**
      * 资讯相关
@@ -233,6 +235,8 @@ public class ApiConfig {
     //置顶资讯、评论
     public static final String APP_PATH_TOP_INFO = "/api/" + API_VERSION_2 + "/news/{news_id}/currency-pinneds";
     public static final String APP_PATH_TOP_INFO_COMMENT = "/api/" + API_VERSION_2 + "/news/{news_id}/comments/{comment_id}/currency-pinneds";
+    // 资讯评论平均金额
+    public static final String APP_PATH_INFO_TOP_AVERAGE_NUM = "/api/" + API_VERSION_2 + "/news/average";
 
     // 咨询打赏
     public static final String APP_PATH_INFO_REWARDS = "/api/" + API_VERSION_2 + "/news/{news_id}/new-rewards";
@@ -731,6 +735,10 @@ public class ApiConfig {
      * 帖子置顶
      */
     public static final String APP_PATH_TOP_POST = "api/" + API_VERSION_2 + "/plus-group/currency-pinned/posts/{post_id}";
+    /**
+     * 帖子、评论置顶平均金额
+     */
+    public static final String APP_PATH_TOP_POST_AVERAGE_NUM = "api/" + API_VERSION_2 + "/plus-group/average";
 
     /**
      * 圈主和管理员置顶帖子
