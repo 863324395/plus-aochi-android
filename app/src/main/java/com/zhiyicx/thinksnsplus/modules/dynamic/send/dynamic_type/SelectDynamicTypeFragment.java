@@ -197,7 +197,7 @@ public class SelectDynamicTypeFragment extends TSFragment<SelectDynamicTypeContr
             mAnimatorSet.setInterpolator(interpolator);
             ObjectAnimator translationY = ObjectAnimator.ofFloat(view, "translationY", verticalDistance, 0);
             //第一个参数为 view对象，第二个参数为 动画改变的类型，第三，第四个参数依次是开始透明度和结束透明度。
-            ObjectAnimator alpha = ObjectAnimator.ofFloat(getActivity().getWindow().getDecorView(), "alpha", 0f, 0.97f);
+            ObjectAnimator alpha = ObjectAnimator.ofFloat(getActivity().getWindow().getDecorView(), "alpha", 0f, 0.99f);
             alpha.setDuration(700);//设置动画时间
             alpha.setInterpolator(new OvershootInterpolator());//设置动画插入器，减速
             alpha.start();

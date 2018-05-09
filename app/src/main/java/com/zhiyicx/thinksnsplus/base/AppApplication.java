@@ -84,6 +84,7 @@ import static com.zhiyicx.thinksnsplus.config.ErrorCodeConfig.SYSTEM_MAINTENANCE
  * @Contact 335891510@qq.com
  */
 public class AppApplication extends TSApplication {
+    public static final String NET_REQUEST_HEADER_TYPE = "Bearer";
 
     /**
      * 丢帧检查设置
@@ -234,7 +235,7 @@ public class AppApplication extends TSApplication {
                 if (authBean != null) {
                     return chain.request().newBuilder()
                             .header("Accept", "application/json")
-                            .header("Authorization", " Bearer " + authBean.getToken())
+                            .header("Authorization", " " + NET_REQUEST_HEADER_TYPE + " " + authBean.getToken())
                             .build();
                 } else {
                     return chain.request().newBuilder()
@@ -271,7 +272,7 @@ public class AppApplication extends TSApplication {
                     }
 
                     return response.request().newBuilder()
-                            .header("Authorization", " Bearer " + mCurrentLoginAuth.getToken())
+                            .header("Authorization", " " + NET_REQUEST_HEADER_TYPE + " " + mCurrentLoginAuth.getToken())
                             .build();
                 } else {
                     // 过期了，重新登录
@@ -428,7 +429,7 @@ public class AppApplication extends TSApplication {
     }
 
     public static String getTOKEN() {
-        return "Bearer " + (AppApplication.mCurrentLoginAuth == null ? "" : AppApplication.mCurrentLoginAuth.getToken());
+        return NET_REQUEST_HEADER_TYPE + " " + (AppApplication.mCurrentLoginAuth == null ? "" : AppApplication.mCurrentLoginAuth.getToken());
     }
 
     public static HttpProxyCacheServer getProxy() {

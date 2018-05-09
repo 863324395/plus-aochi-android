@@ -538,6 +538,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
         if (!TouristConfig.USER_INFO_CAN_LOOK && mPresenter.handleTouristControl()) {
             return;
         }
+        // 广告
         if (userInfoBean.getUser_id().intValue() == -1) {
             return;
         }
