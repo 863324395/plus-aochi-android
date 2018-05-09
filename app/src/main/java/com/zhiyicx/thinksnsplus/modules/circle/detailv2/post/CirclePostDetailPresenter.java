@@ -36,6 +36,7 @@ import com.zhiyicx.thinksnsplus.data.source.local.AllAdvertListBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.CirclePostCommentBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.CirclePostListBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.BaseCircleRepository;
+import com.zhiyicx.thinksnsplus.utils.TSShareUtils;
 
 import org.jetbrains.annotations.NotNull;
 import org.simple.eventbus.EventBus;
@@ -353,6 +354,10 @@ public class CirclePostDetailPresenter extends AppBasePresenter<CirclePostDetail
         mBaseCircleRepository.dealLike(isLiked, id);
     }
 
+    /**
+     * 分享帖子
+     * @param shareBitMap
+     */
     @Override
     public void shareInfo(Bitmap shareBitMap) {
         CirclePostListBean circlePostListBean = mRootView.getCurrentePost();
@@ -366,7 +371,8 @@ public class CirclePostDetailPresenter extends AppBasePresenter<CirclePostDetail
         } else {
             shareContent.setBitmap(ConvertUtils.drawBg4Bitmap(Color.WHITE, BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.icon)));
         }
-        shareContent.setUrl(ApiConfig.APP_DOMAIN + ApiConfig.APP_PATH_SHARE_GROUP);
+        shareContent.setUrl(TSShareUtils.Convert2ShareUrl(String.format(ApiConfig.APP_PATH_SHARE_GROUNP_DYNAMIC, circlePostListBean.getGroup_id(),
+                circlePostListBean.getId())));
         mSharePolicy.setShareContent(shareContent);
         mSharePolicy.showShare(((TSFragment) mRootView).getActivity());
     }

@@ -38,6 +38,7 @@ import com.zhiyicx.thinksnsplus.data.source.local.CirclePostListBeanGreenDaoImpl
 import com.zhiyicx.thinksnsplus.data.source.local.CircleSearchBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.BaseCircleRepository;
 import com.zhiyicx.thinksnsplus.modules.circle.detailv2.post.CirclePostDetailFragment;
+import com.zhiyicx.thinksnsplus.utils.TSShareUtils;
 
 import org.jetbrains.annotations.NotNull;
 import org.simple.eventbus.EventBus;
@@ -360,6 +361,12 @@ public class CircleDetailPresenter extends AppBasePresenter<CircleDetailContract
         }
     }
 
+    /**
+     * 分享帖子
+     *
+     * @param circlePostListBean
+     * @param shareBitMap
+     */
     @Override
     public void sharePost(CirclePostListBean circlePostListBean, Bitmap shareBitMap) {
         ((UmengSharePolicyImpl) mSharePolicy).setOnShareCallbackListener(this);
@@ -372,24 +379,31 @@ public class CircleDetailPresenter extends AppBasePresenter<CircleDetailContract
         } else {
             shareContent.setBitmap(ConvertUtils.drawBg4Bitmap(Color.WHITE, BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.icon)));
         }
-        shareContent.setUrl(ApiConfig.APP_DOMAIN + ApiConfig.APP_PATH_SHARE_GROUP);
+        shareContent.setUrl(TSShareUtils.Convert2ShareUrl(String.format(ApiConfig.APP_PATH_SHARE_GROUNP_DYNAMIC, circlePostListBean.getGroup_id(),
+                circlePostListBean.getId())));
         mSharePolicy.setShareContent(shareContent);
         mSharePolicy.showShare(((TSFragment) mRootView).getActivity());
     }
 
+    /**
+     * 分享圈子
+     *
+     * @param circleinfo
+     * @param shareBitMap
+     */
     @Override
-    public void shareCircle(CircleInfo CircleInfo, Bitmap shareBitMap) {
+    public void shareCircle(CircleInfo circleinfo, Bitmap shareBitMap) {
         ((UmengSharePolicyImpl) mSharePolicy).setOnShareCallbackListener(this);
         ShareContent shareContent = new ShareContent();
         shareContent.setTitle(mContext.getString(R.string.share));
-        shareContent.setContent(TextUtils.isEmpty(CircleInfo.getName()) ? mContext.getString(R.string
-                .share_circle) : CircleInfo.getName());
+        shareContent.setContent(TextUtils.isEmpty(circleinfo.getName()) ? mContext.getString(R.string
+                .share_circle) : circleinfo.getName());
         if (shareBitMap != null) {
             shareContent.setBitmap(shareBitMap);
         } else {
             shareContent.setBitmap(ConvertUtils.drawBg4Bitmap(Color.WHITE, BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.icon)));
         }
-        shareContent.setUrl(ApiConfig.APP_DOMAIN + ApiConfig.APP_PATH_SHARE_GROUP);
+        shareContent.setUrl(TSShareUtils.Convert2ShareUrl(String.format(ApiConfig.APP_PATH_SHARE_GROUP, circleinfo.getId(), mRootView.getType())));
         mSharePolicy.setShareContent(shareContent);
         mSharePolicy.showShare(((TSFragment) mRootView).getActivity());
     }

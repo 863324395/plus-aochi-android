@@ -31,6 +31,7 @@ import com.zhiyicx.thinksnsplus.data.source.local.AnswerInfoListBeanGreenDaoImpl
 import com.zhiyicx.thinksnsplus.data.source.local.QAListInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.BaseQARepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.SystemRepository;
+import com.zhiyicx.thinksnsplus.utils.TSShareUtils;
 
 import org.jetbrains.annotations.NotNull;
 import org.simple.eventbus.EventBus;
@@ -46,7 +47,6 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_SHARE_QA_QUESTION_DETAIL;
@@ -172,9 +172,8 @@ public class QuestionDetailPresenter extends AppBasePresenter<QuestionDetailCont
         ((UmengSharePolicyImpl) mSharePolicy).setOnShareCallbackListener(this);
         ShareContent shareContent = new ShareContent();
         shareContent.setTitle(RegexUtils.replaceImageId(MarkdownConfig.IMAGE_FORMAT, mRootView.getCurrentQuestion().getSubject()));
-//        shareContent.setUrl(String.format(Locale.getDefault(), APP_PATH_SHARE_DEFAULT,
-//                mRootView.getCurrentTopicBean().getId()));
-        shareContent.setUrl(String.format(Locale.getDefault(), APP_PATH_SHARE_QA_QUESTION_DETAIL, mRootView.getCurrentQuestion().getId()));
+        shareContent.setUrl(TSShareUtils.Convert2ShareUrl(String.format(Locale.getDefault(), APP_PATH_SHARE_QA_QUESTION_DETAIL, mRootView.getCurrentQuestion().getId
+                ())));
         shareContent.setContent(RegexUtils.replaceImageId(MarkdownConfig.IMAGE_FORMAT, mRootView.getCurrentQuestion().getBody()));
 
         if (bitmap == null) {

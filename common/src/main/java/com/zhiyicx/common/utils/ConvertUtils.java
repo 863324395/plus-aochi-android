@@ -33,6 +33,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.nio.charset.Charset;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -1186,6 +1187,22 @@ public class ConvertUtils {
 
     public static String converInt2HexColor(int color) {
         return "#" + Integer.toHexString(color).substring(2);
+    }
+
+
+    /**
+     * @param original
+     * @return null if fails
+     */
+    public static String urlencode(String original) {
+        try {
+            //return URLEncoder.encode(original, "utf-8");
+            //fixed: to comply with RFC-3986
+            return URLEncoder.encode(original, "utf-8").replace("+", "%20").replace("*", "%2A").replace("%7E", "~");
+        } catch (UnsupportedEncodingException e) {
+            //  Logger.e(e.toString());
+        }
+        return null;
     }
 
 }

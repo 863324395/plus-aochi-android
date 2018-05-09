@@ -9,6 +9,7 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.net.Uri;
 import android.text.TextUtils;
 
 import com.zhiyicx.baseproject.base.TSFragment;
@@ -26,6 +27,9 @@ import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.utils.TSShareUtils;
+
+import org.apache.http.client.utils.URIUtils;
 
 import javax.inject.Inject;
 
@@ -38,6 +42,8 @@ import rx.functions.Action0;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
+
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_SHARE_URL_FORMAT;
 
 /**
  * @author Catherine
@@ -53,8 +59,8 @@ public class MyCodePresenter extends AppBasePresenter<MyCodeContract.View>
     public SharePolicy mSharePolicy;
 
     @Inject
-    public MyCodePresenter( MyCodeContract.View rootView) {
-        super( rootView);
+    public MyCodePresenter(MyCodeContract.View rootView) {
+        super(rootView);
     }
 
     @Override
@@ -66,7 +72,8 @@ public class MyCodePresenter extends AppBasePresenter<MyCodeContract.View>
             String qrCodeContent = String.format(mContext.getString(R.string.my_qr_code_content), userInfoBean.getUser_id());
             Observable.just(qrCodeContent)
                     .subscribeOn(Schedulers.newThread())
-                    .map(s -> QRCodeEncoder.syncEncodeQRCode(s, BGAQRCodeUtil.dp2px(mContext, 150), Color.parseColor("#000000"), getRoundedCornerBitmap(logo, 2)))
+                    .map(s -> QRCodeEncoder.syncEncodeQRCode(s, BGAQRCodeUtil.dp2px(mContext, 150), Color.parseColor("#000000"),
+                            getRoundedCornerBitmap(logo, 2)))
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(bitmap -> {
                         mRootView.setMyCode(bitmap);
@@ -75,7 +82,7 @@ public class MyCodePresenter extends AppBasePresenter<MyCodeContract.View>
         }
     }
 
-    private Bitmap getRoundedCornerBitmap(Bitmap bitmap, float roundPx){
+    private Bitmap getRoundedCornerBitmap(Bitmap bitmap, float roundPx) {
         Bitmap output = Bitmap.createBitmap(bitmap.getWidth(), bitmap
                 .getHeight(), Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(output);
@@ -93,7 +100,7 @@ public class MyCodePresenter extends AppBasePresenter<MyCodeContract.View>
         return output;
     }
 
-    private void setBitmapBorder(Canvas canvas){
+    private void setBitmapBorder(Canvas canvas) {
         Rect rect = canvas.getClipBounds();
         Paint paint = new Paint();
         //设置边框颜色
@@ -119,14 +126,15 @@ public class MyCodePresenter extends AppBasePresenter<MyCodeContract.View>
         if (userInfoBean != null) {
             ShareContent shareContent = new ShareContent();
             shareContent.setTitle(userInfoBean.getName());
-            shareContent.setContent(TextUtils.isEmpty(userInfoBean.getIntro()) ? mContext.getString(R.string.intro_default) : userInfoBean.getIntro());
+            shareContent.setContent(TextUtils.isEmpty(userInfoBean.getIntro()) ? mContext.getString(R.string.intro_default) : userInfoBean.getIntro
+                    ());
             if (null != bitmap) {
                 shareContent.setBitmap(bitmap);
             } else {
                 shareContent.setBitmap(ConvertUtils.drawBg4Bitmap(Color.WHITE, BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.icon)));
             }
-            shareContent.setUrl(String.format(ApiConfig.APP_DOMAIN + ApiConfig.APP_PATH_SHARE_USERINFO, userInfoBean.getUser_id()
-                    == null ? "" : userInfoBean.getUser_id()));
+            shareContent.setUrl(TSShareUtils.Convert2ShareUrl(String.format(ApiConfig.APP_PATH_SHARE_USERINFO, userInfoBean.getUser_id()
+                    == null ? "" : userInfoBean.getUser_id())));
             mSharePolicy.setShareContent(shareContent);
             mSharePolicy.showShare(((TSFragment) mRootView).getActivity());
         }
