@@ -176,7 +176,8 @@ public class VideoSelectFragment extends TSListFragment {
                     })
                     .item2ClickListener(() -> {
                         mPopWindow.hide();
-                        if (videoInfo.getDuration() <= CountDownManager.getInstance().getMinMilliSeconds()) {
+                        if (videoInfo.getDuration() <= 4000) {
+                            // 因为 3002 ， 3300 等时长就很尴尬
                             ArrayList<String> arrayList = new ArrayList<>();
                             arrayList.add(videoInfo.getPath());
                             CoverActivity.startCoverActivity(mActivity, arrayList, false, false,false);
