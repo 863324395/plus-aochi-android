@@ -552,6 +552,8 @@ public class ApiConfig {
     public static final String APP_SHARE_URL_PLATFORM_2 = "&from=" + ANDROID_PLATFORM;
     // 开发中
     public static final String APP_PATH_SHARE_DEFAULT = "api/develop";
+    // 用户二维码
+    public static final String APP_PATH_SHARE_USERINFO_QR = "/users/%s";
     // 用户分享
     public static final String APP_PATH_SHARE_USERINFO = "/users/%s" + APP_SHARE_URL_PLATFORM;
     // 动态分享

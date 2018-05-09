@@ -5,7 +5,6 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 
 import com.zhiyicx.baseproject.base.TSFragment;
-import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.impl.share.UmengSharePolicyImpl;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.thridmanager.share.OnShareCallbackListener;
@@ -24,13 +23,11 @@ import com.zhiyicx.thinksnsplus.data.source.repository.BaseQARepository;
 import com.zhiyicx.thinksnsplus.utils.TSShareUtils;
 
 import org.simple.eventbus.EventBus;
-import org.simple.eventbus.Subscriber;
 
 import javax.inject.Inject;
 
 import rx.Subscription;
 
-import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_SHARE_DEFAULT;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_SHARE_QA_TOPIC;
 
 /**
@@ -90,7 +87,7 @@ public class TopicDetailPresenter extends AppBasePresenter<TopicDetailContract.V
         ((UmengSharePolicyImpl) mSharePolicy).setOnShareCallbackListener(this);
         ShareContent shareContent = new ShareContent();
         shareContent.setTitle(mRootView.getCurrentTopicBean().getName());
-        shareContent.setUrl(TSShareUtils.Convert2ShareUrl(String.format( APP_PATH_SHARE_QA_TOPIC,mRootView.getCurrentTopicBean().getId())));
+        shareContent.setUrl(TSShareUtils.convert2ShareUrl(String.format( APP_PATH_SHARE_QA_TOPIC,mRootView.getCurrentTopicBean().getId())));
         shareContent.setContent(mRootView.getCurrentTopicBean().getDescription());
 
         if (bitmap == null) {

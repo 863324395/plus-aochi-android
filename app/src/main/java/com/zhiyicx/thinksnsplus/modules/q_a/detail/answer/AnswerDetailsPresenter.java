@@ -138,7 +138,7 @@ public class AnswerDetailsPresenter extends AppBasePresenter<
         ((UmengSharePolicyImpl) mSharePolicy).setOnShareCallbackListener(this);
         ShareContent shareContent = new ShareContent();
         shareContent.setTitle(mContext.getString(R.string.app_name_anster, mContext.getString(R.string.app_name)));
-        shareContent.setUrl(TSShareUtils.Convert2ShareUrl(String.format(Locale.getDefault(), APP_PATH_SHARE_QA_ANSWER_DETAIL,
+        shareContent.setUrl(TSShareUtils.convert2ShareUrl(String.format(Locale.getDefault(), APP_PATH_SHARE_QA_ANSWER_DETAIL,
                 mRootView.getAnswerInfo().getQuestion_id(), mRootView.getAnswerInfo().getId())));
         String shargeContent = mRootView.getAnswerInfo().getText_body();
         if (TextUtils.isEmpty(shargeContent)) {
