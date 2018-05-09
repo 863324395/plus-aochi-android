@@ -9,19 +9,6 @@ import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.config.ImageZipConfig;
 import com.zhiyicx.baseproject.impl.share.UmengSharePolicyImpl;
 import com.zhiyicx.common.base.BaseJsonV2;
-import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
-import com.zhiyicx.thinksnsplus.base.EmptySubscribe;
-import com.zhiyicx.thinksnsplus.data.beans.InfoCommentBean;
-import com.zhiyicx.thinksnsplus.data.beans.InfoDigListBean;
-import com.zhiyicx.thinksnsplus.data.beans.InfoListDataBean;
-import com.zhiyicx.thinksnsplus.data.beans.RealAdvertListBean;
-import com.zhiyicx.thinksnsplus.data.beans.RewardsCountBean;
-import com.zhiyicx.thinksnsplus.data.beans.RewardsListBean;
-import com.zhiyicx.thinksnsplus.data.source.local.AllAdvertListBeanGreenDaoImpl;
-import com.zhiyicx.thinksnsplus.data.source.repository.BaseInfoRepository;
-import com.zhiyicx.thinksnsplus.data.source.repository.BaseRewardRepository;
-import com.zhiyicx.thinksnsplus.data.source.repository.VertifyCodeRepository;
-import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.thridmanager.share.OnShareCallbackListener;
 import com.zhiyicx.common.thridmanager.share.Share;
@@ -33,13 +20,25 @@ import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
+import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
+import com.zhiyicx.thinksnsplus.base.EmptySubscribe;
 import com.zhiyicx.thinksnsplus.config.ErrorCodeConfig;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
+import com.zhiyicx.thinksnsplus.data.beans.InfoCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.InfoCommentListBean;
+import com.zhiyicx.thinksnsplus.data.beans.InfoDigListBean;
+import com.zhiyicx.thinksnsplus.data.beans.InfoListDataBean;
+import com.zhiyicx.thinksnsplus.data.beans.RealAdvertListBean;
+import com.zhiyicx.thinksnsplus.data.beans.RewardsCountBean;
+import com.zhiyicx.thinksnsplus.data.beans.RewardsListBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.data.source.local.AllAdvertListBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.InfoCommentListBeanDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.InfoListBeanGreenDaoImpl;
-import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.repository.BaseInfoRepository;
+import com.zhiyicx.thinksnsplus.data.source.repository.BaseRewardRepository;
+import com.zhiyicx.thinksnsplus.utils.ImageUtils;
+import com.zhiyicx.thinksnsplus.utils.TSShareUtils;
 
 import org.jetbrains.annotations.NotNull;
 import org.simple.eventbus.EventBus;
@@ -47,7 +46,6 @@ import org.simple.eventbus.Subscriber;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 import javax.inject.Inject;
 
@@ -57,8 +55,8 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func2;
 import rx.schedulers.Schedulers;
 
-import static com.zhiyicx.baseproject.config.ApiConfig.APP_DOMAIN;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_INFO_DETAILS_FORMAT;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_SHARE_URL_FORMAT;
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_SEND_INFO_LIST_COLLECT;
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_SEND_INFO_LIST_DELETE_UPDATE;
 import static com.zhiyicx.thinksnsplus.data.beans.InfoCommentListBean.SEND_ING;
@@ -187,8 +185,8 @@ public class InfoDetailsPresenter extends AppBasePresenter<InfoDetailsConstract.
         ((UmengSharePolicyImpl) mSharePolicy).setOnShareCallbackListener(this);
         ShareContent shareContent = new ShareContent();
         shareContent.setTitle(mContext.getString(R.string.app_name_info, mContext.getString(R.string.app_name)));
-        shareContent.setUrl(String.format(Locale.getDefault(), APP_DOMAIN + APP_PATH_INFO_DETAILS_FORMAT,
-                mRootView.getCurrentInfo().getId()));
+        shareContent.setUrl(TSShareUtils.Convert2ShareUrl(String.format(APP_PATH_INFO_DETAILS_FORMAT,
+                mRootView.getCurrentInfo().getId())));
         shareContent.setContent(mRootView.getCurrentInfo().getTitle());
 
         if (bitmap == null) {

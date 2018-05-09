@@ -45,6 +45,7 @@ import com.zhiyicx.thinksnsplus.data.source.repository.BaseDynamicRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.BaseRewardRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
 import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
+import com.zhiyicx.thinksnsplus.utils.TSShareUtils;
 
 import org.simple.eventbus.EventBus;
 import org.simple.eventbus.Subscriber;
@@ -60,6 +61,8 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_DOMAIN;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_SHARE_URL_FORMAT;
 import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment.DYNAMIC_DETAIL_DATA;
 import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment.DYNAMIC_LIST_NEED_REFRESH;
 
@@ -103,7 +106,7 @@ public class DynamicDetailPresenter extends AppBasePresenter<
 
     @Inject
     public DynamicDetailPresenter(DynamicDetailContract.View rootView) {
-        super( rootView);
+        super(rootView);
     }
 
     @Override
@@ -167,12 +170,12 @@ public class DynamicDetailPresenter extends AppBasePresenter<
     public void requestCacheData(Long maxId, boolean isLoadMore) {
         if (mRootView.getCurrentDynamic() == null || AppApplication.getmCurrentLoginAuth() ==
                 null) {
-            mRootView.onCacheResponseSuccess(new ArrayList<>(),isLoadMore);
-        }else {
+            mRootView.onCacheResponseSuccess(new ArrayList<>(), isLoadMore);
+        } else {
 
             // 从数据库获取评论列表
-            mRootView.onCacheResponseSuccess( mDynamicCommentBeanGreenDao.getLocalComments(mRootView.getCurrentDynamic()
-                    .getFeed_mark()),isLoadMore);
+            mRootView.onCacheResponseSuccess(mDynamicCommentBeanGreenDao.getLocalComments(mRootView.getCurrentDynamic()
+                    .getFeed_mark()), isLoadMore);
         }
     }
 
@@ -442,8 +445,9 @@ public class DynamicDetailPresenter extends AppBasePresenter<
             shareContent.setBitmap(ConvertUtils.drawBg4Bitmap(Color.WHITE, BitmapFactory
                     .decodeResource(mContext.getResources(), R.mipmap.icon)));
         }
-        shareContent.setUrl(String.format(ApiConfig.APP_DOMAIN+ApiConfig.APP_PATH_SHARE_DYNAMIC, dynamicBean.getId()
-                == null ? "" : dynamicBean.getId()));
+        shareContent.setUrl(TSShareUtils.Convert2ShareUrl(String.format(ApiConfig.APP_PATH_SHARE_DYNAMIC, dynamicBean
+                .getId()
+                == null ? "" : dynamicBean.getId())));
         mSharePolicy.setShareContent(shareContent);
         mSharePolicy.showShare(((TSFragment) mRootView).getActivity());
     }
@@ -466,8 +470,8 @@ public class DynamicDetailPresenter extends AppBasePresenter<
         } else {
             shareContent.setBitmap(ConvertUtils.drawBg4Bitmap(Color.WHITE, BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.icon)));
         }
-        shareContent.setUrl(String.format(ApiConfig.APP_DOMAIN + ApiConfig.APP_PATH_SHARE_DYNAMIC, dynamicBean.getId()
-                == null ? "" : dynamicBean.getId()));
+        shareContent.setUrl(TSShareUtils.Convert2ShareUrl(String.format(ApiConfig.APP_PATH_SHARE_DYNAMIC, dynamicBean.getId()
+                == null ? "" : dynamicBean.getId())));
         mSharePolicy.setShareContent(shareContent);
         switch (type) {
             case QQ:

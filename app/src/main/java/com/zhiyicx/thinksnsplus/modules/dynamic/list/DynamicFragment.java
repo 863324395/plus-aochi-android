@@ -999,7 +999,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
 //                .item4Str(BuildConfig.USE_TOLL && !getDynamicType().equals(ApiConfig
 // .DYNAMIC_TYPE_FOLLOWS) && !feedIdIsNull ? getString(R.string
 // .dynamic_list_top_dynamic) : null)
-                .item4Str(BuildConfig.USE_TOLL && !feedIdIsNull ? getString(R.string
+                .item4Str(BuildConfig.USE_TOLL && !feedIdIsNull && dynamicBean.getTop() == DynamicDetailBeanV2.TOP_SUCCESS ? getString(R.string
                         .dynamic_list_top_dynamic) : null)
                 .item5Str(getString(R.string.dynamic_list_delete_dynamic))
                 .bottomStr(getString(R.string.cancel))

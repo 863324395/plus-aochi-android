@@ -9,7 +9,6 @@ import android.text.TextUtils;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.config.ImageZipConfig;
 import com.zhiyicx.baseproject.config.MarkdownConfig;
-import com.zhiyicx.baseproject.config.PayConfig;
 import com.zhiyicx.baseproject.impl.share.UmengSharePolicyImpl;
 import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
@@ -36,10 +35,10 @@ import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.AllAdvertListBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.AnswerCommentListBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.AnswerInfoListBeanGreenDaoImpl;
-import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.BaseQARepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
+import com.zhiyicx.thinksnsplus.utils.TSShareUtils;
 
 import org.jetbrains.annotations.NotNull;
 import org.simple.eventbus.EventBus;
@@ -56,8 +55,6 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-import static com.zhiyicx.baseproject.config.ApiConfig.APP_DOMAIN;
-import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_INFO_DETAILS_FORMAT;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_SHARE_QA_ANSWER_DETAIL;
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_SEND_INFO_LIST_COLLECT;
 import static com.zhiyicx.thinksnsplus.data.beans.InfoCommentListBean.SEND_ING;
@@ -141,8 +138,8 @@ public class AnswerDetailsPresenter extends AppBasePresenter<
         ((UmengSharePolicyImpl) mSharePolicy).setOnShareCallbackListener(this);
         ShareContent shareContent = new ShareContent();
         shareContent.setTitle(mContext.getString(R.string.app_name_anster, mContext.getString(R.string.app_name)));
-        shareContent.setUrl(String.format(Locale.getDefault(), APP_PATH_SHARE_QA_ANSWER_DETAIL,
-                mRootView.getAnswerInfo().getId()));
+        shareContent.setUrl(TSShareUtils.Convert2ShareUrl(String.format(Locale.getDefault(), APP_PATH_SHARE_QA_ANSWER_DETAIL,
+                mRootView.getAnswerInfo().getQuestion_id(), mRootView.getAnswerInfo().getId())));
         String shargeContent = mRootView.getAnswerInfo().getText_body();
         if (TextUtils.isEmpty(shargeContent)) {
             shargeContent = mRootView.getAnswerInfo().getBody();

@@ -303,11 +303,6 @@ public class ApiConfig {
     // 专辑详情
     public static final String APP_PATH_MUSIC_ABLUM_DETAILS = "api/" + API_VERSION_2 + "/music/specials/{special_id}";
 
-    // 分享歌曲
-    public static final String APP_PATH_MUSIC_SHARE = "api/" + API_VERSION_2 + "/music/%s/share";
-
-    // 分享专辑
-    public static final String APP_PATH_MUSIC_ABLUM_SHARE = "api/" + API_VERSION_2 + "/music/specials/%s/share";
 
     /**
      * *******************************问答相关**************************************/
@@ -536,16 +531,50 @@ public class ApiConfig {
 
     /**
      * 分享相关
+     * urls = [
+     * /users/{user}：用户主页
+     * /feeds/{feed}：动态详情
+     * /news/{news}：资讯详情页面
+     * /questions/{question}：问题详情
+     * /questions/{question}/answers/{answer}：回答详情
+     * /groups/{group}?type={?fetch-posts-type}：圈子详情
+     * /groups/{group}/posts/{post}：帖子详情
+     * /question-topics/{topic} 话题
+     * ]
+     * 上述为「app, pc, h5」需要分享到第三方的页面,分享页面target的值要进行url编码，编码规范RFC 3986
+     * 为了使用户有更好的浏览体验, 分享的出去的内容能够根据用户使用的客户端进行最佳的适配阅读,
+     * 所以将分享出去的url统一为中间跳转的形式
+     * 形式为: domain.com/redirect?target=urls[上面列举的url之一] 比如分享了用户主页
+     * 分享出去的地址为: http://test-plus.zhibocloud.cn/redirect?target=/users/5
      */
-    public static final String APP_PATH_SHARE_USERINFO = "h5/users/feeds/%s";// 用户信息分享地址 url/web/users/feeds/{user_id}
-    public static final String APP_PATH_SHARE_DYNAMIC = "h5/feed/%s";// 动态信息分享地址 url/web/feed/{feed_id}
-    public static final String APP_PATH_SHARE_GROUNP_DYNAMIC = "h5/feed/%s";// 动态信息分享地址 url/web/feed/{feed_id}
-    public static final String APP_PATH_SHARE_DEFAULT = "api/develop";// 开发中的提示
-    public static final String APP_PATH_SHARE_GROUP = "api/develop";// 分享圈子动态，目前暂时用开发中
-    public static final String APP_PATH_SHARE_QA_QUESTION_DETAIL = APP_DOMAIN + "h5/questions/%s/detail";// 问答问题分享 h5
-    public static final String APP_PATH_SHARE_QA_ANSWER_DETAIL = APP_DOMAIN + "h5/questions/answers/%s";// 问答回答分享 h5
+    public static final String APP_SHARE_URL_FORMAT = "redirect?target=";
+    public static final String APP_SHARE_URL_PLATFORM = "?from=" + ANDROID_PLATFORM;
+    public static final String APP_SHARE_URL_PLATFORM_2 = "&from=" + ANDROID_PLATFORM;
+    // 开发中
+    public static final String APP_PATH_SHARE_DEFAULT = "api/develop";
+    // 用户分享
+    public static final String APP_PATH_SHARE_USERINFO = "/users/%s" + APP_SHARE_URL_PLATFORM;
+    // 动态分享
+    public static final String APP_PATH_SHARE_DYNAMIC = "/feeds/%s" + APP_SHARE_URL_PLATFORM;
     // 资讯详情网页
-    public static final String APP_PATH_INFO_DETAILS_FORMAT = "/h5/news/%s/detail";
+    public static final String APP_PATH_INFO_DETAILS_FORMAT = "/news/%s" + APP_SHARE_URL_PLATFORM;
+    // 圈子分享
+    public static final String APP_PATH_SHARE_GROUP = "/groups/%1$s?type=%2$s" + APP_SHARE_URL_PLATFORM_2;
+    // 圈子帖子分享
+    public static final String APP_PATH_SHARE_GROUNP_DYNAMIC = "/groups/%1$s/posts/%2$s" + APP_SHARE_URL_PLATFORM;
+    // 问答详情分享
+    public static final String APP_PATH_SHARE_QA_QUESTION_DETAIL = "/questions/%s" + APP_SHARE_URL_PLATFORM;
+    // 问答回答分享
+    public static final String APP_PATH_SHARE_QA_ANSWER_DETAIL = "/questions/%1$s/answers/%2$s" + APP_SHARE_URL_PLATFORM;
+    // 话题分享
+    public static final String APP_PATH_SHARE_QA_TOPIC = "/question-topics/%s" + APP_SHARE_URL_PLATFORM;
+
+
+    // 分享歌曲,增加分享数
+    public static final String APP_PATH_MUSIC_SHARE = "api/" + API_VERSION_2 + "/music/%s/share";
+    // 分享专辑，增加分享数
+    public static final String APP_PATH_MUSIC_ABLUM_SHARE = "api/" + API_VERSION_2 + "/music/specials/%s/share";
+
 
     /**
      * 仅仅测试使用

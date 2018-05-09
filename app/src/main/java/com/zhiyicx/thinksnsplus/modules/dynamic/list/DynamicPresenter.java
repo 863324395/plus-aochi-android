@@ -43,6 +43,7 @@ import com.zhiyicx.thinksnsplus.data.source.local.TopDynamicBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.BaseDynamicRepository;
 import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
+import com.zhiyicx.thinksnsplus.utils.TSShareUtils;
 
 import org.jetbrains.annotations.NotNull;
 import org.simple.eventbus.EventBus;
@@ -62,6 +63,8 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_DOMAIN;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_SHARE_URL_FORMAT;
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.DYNAMIC_LIST_DELETE_UPDATE;
 import static com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2.DYNAMIC_LIST_CONTENT_MAX_SHOW_SIZE;
 import static com.zhiyicx.thinksnsplus.data.beans.DynamicListAdvert.DEFAULT_ADVERT_FROM_TAG;
@@ -475,8 +478,8 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.View>
             //广告的连接放在了 deleted_at 中
             shareContent.setUrl(dynamicBean.getDeleted_at());
         } else {
-            shareContent.setUrl(String.format(ApiConfig.APP_DOMAIN + ApiConfig.APP_PATH_SHARE_DYNAMIC, dynamicBean.getId()
-                    == null ? "" : dynamicBean.getId()));
+            shareContent.setUrl(TSShareUtils.Convert2ShareUrl(String.format(ApiConfig.APP_PATH_SHARE_DYNAMIC, dynamicBean.getId()
+                    == null ? "" : dynamicBean.getId())));
         }
         mSharePolicy.setShareContent(shareContent);
         mSharePolicy.showShare(((TSFragment) mRootView).getActivity());
@@ -500,8 +503,9 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.View>
         } else {
             shareContent.setBitmap(ConvertUtils.drawBg4Bitmap(Color.WHITE, BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.icon)));
         }
-        shareContent.setUrl(String.format(ApiConfig.APP_DOMAIN + ApiConfig.APP_PATH_SHARE_DYNAMIC, dynamicBean.getId()
-                == null ? "" : dynamicBean.getId()));
+        shareContent.setUrl(TSShareUtils.Convert2ShareUrl(String.format(ApiConfig.APP_PATH_SHARE_DYNAMIC, dynamicBean
+                .getId()
+                == null ? "" : dynamicBean.getId())));
         mSharePolicy.setShareContent(shareContent);
         switch (type) {
             case QQ:
