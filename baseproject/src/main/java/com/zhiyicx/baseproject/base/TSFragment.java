@@ -449,7 +449,7 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
         }
         mSnackBar = TSnackbar.make(mSnackRootView, message, TSnackbar.LENGTH_INDEFINITE)
                 .setPromptThemBackground(Prompt.SUCCESS)
-                .addIconProgressLoading(0, true, false);
+                .addIconProgressLoading(R.drawable.frame_loading_grey, true, false);
 
         mSnackBar.show();
     }

@@ -24,6 +24,7 @@ import android.content.Context;
 import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
+import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
@@ -80,6 +81,8 @@ import static com.trycatch.mysnackbar.AnimationUtils.FAST_OUT_SLOW_IN_INTERPOLAT
  * via {@link #setCallback(Callback)}.</p>
  */
 public final class TSnackbar {
+
+    private AnimationDrawable mAnimationDrawable;
 
     public static final int DEFALUT_ELEVATION = 10;
 
@@ -206,7 +209,7 @@ public final class TSnackbar {
                     case MSG_DISMISS:
                         ((TSnackbar) message.obj).hideView(message.arg1);
                         return true;
-                        default:
+                    default:
                 }
                 return false;
             }
@@ -427,6 +430,9 @@ public final class TSnackbar {
         if (resource_id > 0) {
             drawable = mContext.getResources().getDrawable(resource_id);
         }
+        if (drawable instanceof AnimationDrawable) {
+            mAnimationDrawable = (AnimationDrawable) drawable;
+        }
         addIconProgressLoading(drawable, left, right);
         return this;
     }
@@ -442,7 +448,7 @@ public final class TSnackbar {
         animator.setDuration(1000);
         animator.setInterpolator(new LinearInterpolator());
         animator.setRepeatCount(ValueAnimator.INFINITE);
-        animator.setRepeatMode(ValueAnimator.INFINITE);
+        animator.setRepeatMode(ValueAnimator.REVERSE);
         mView.setBackgroundColor(mContext.getResources().getColor(Prompt.SUCCESS.getBackgroundColor()));
         if (left) {
             mView.getMessageView().setCompoundDrawablesWithIntrinsicBounds(drawable, null, null, null);
@@ -689,6 +695,9 @@ public final class TSnackbar {
      * Show the {@link TSnackbar}.
      */
     public void show() {
+        if (mAnimationDrawable != null) {
+            mAnimationDrawable.start();
+        }
         SnackbarManager.getInstance().show(mDuration, mManagerCallback);
     }
 
@@ -696,6 +705,10 @@ public final class TSnackbar {
      * Dismiss the {@link TSnackbar}.
      */
     public void dismiss() {
+        if (mAnimationDrawable != null) {
+            mAnimationDrawable.stop();
+            mAnimationDrawable = null;
+        }
         dispatchDismiss(Callback.DISMISS_EVENT_MANUAL);
     }
 
