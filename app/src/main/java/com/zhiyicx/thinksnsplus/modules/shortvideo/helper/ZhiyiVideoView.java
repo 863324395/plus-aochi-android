@@ -2,8 +2,10 @@ package com.zhiyicx.thinksnsplus.modules.shortvideo.helper;
 
 import android.content.Context;
 import android.content.pm.ActivityInfo;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.AnimationDrawable;
+import android.graphics.drawable.BitmapDrawable;
 import android.media.AudioManager;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -20,6 +22,10 @@ import android.widget.TextView;
 import com.tym.shortvideo.view.ZhiyiResizeTextureView;
 import com.umeng.socialize.bean.SHARE_MEDIA;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
+import com.zhiyicx.common.utils.ConvertUtils;
+import com.zhiyicx.common.utils.DeviceUtils;
+import com.zhiyicx.common.utils.DrawableProvider;
+import com.zhiyicx.common.utils.FastBlur;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
@@ -32,6 +38,9 @@ import cn.jzvd.JZUtils;
 import cn.jzvd.JZVideoPlayer;
 import cn.jzvd.JZVideoPlayerManager;
 import cn.jzvd.JZVideoPlayerStandard;
+import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 /**
  * @Author Jliuer
@@ -172,12 +181,12 @@ public class ZhiyiVideoView extends JZVideoPlayerStandard {
             // 在 ijk中 10001 是角度信息，IMediaPlayer.MEDIA_INFO_VIDEO_ROTATION_CHANGED
             JZMediaManager.textureView.setRotation(extra);
         }
-        if (what == MEDIA_INFO_BUFFERING_START){
+        if (what == MEDIA_INFO_BUFFERING_START) {
             // 在 ijk中 701 是开始缓冲，IMediaPlayer.MEDIA_INFO_BUFFERING_START
             currentState = CURRENT_STATE_PREPARING;
             changeUiToPreparing();
         }
-        if (what == MEDIA_INFO_BUFFERING_END){
+        if (what == MEDIA_INFO_BUFFERING_END) {
             // 在 ijk中 702 是缓冲完成，IMediaPlayer.MEDIA_INFO_BUFFERING_END
             currentState = CURRENT_STATE_PLAYING;
             changeUiToPlayingClear();
@@ -230,6 +239,7 @@ public class ZhiyiVideoView extends JZVideoPlayerStandard {
         mDefaultStartImageView.setVisibility(GONE);
         mShareLineLinearLayout.setVisibility(GONE);
         mShareLinearLayout.setVisibility(GONE);
+        thumbImageView.setVisibility(progressBar.getProgress() == 0 ? VISIBLE : GONE);
     }
 
     @Override
@@ -391,13 +401,11 @@ public class ZhiyiVideoView extends JZVideoPlayerStandard {
                     .SCREEN_WINDOW_FULLSCREEN, objects);
             jzVideoPlayer.setState(currentState);
             jzVideoPlayer.positionInList = this.positionInList;
+
             jzVideoPlayer.addTextureView();
             JZVideoPlayer firstVideoView = JZVideoPlayerManager.getFirstFloor();
             jzVideoPlayer.setBackground(firstVideoView.getBackground());
             JZVideoPlayerManager.setSecondFloor(jzVideoPlayer);
-//            final Animation ra = AnimationUtils.loadAnimation(getContext(), R.anim
-// .start_fullscreen);
-//            jzVideoPlayer.setAnimation(ra);
 
             int orientation;
             float rotation = 0;
@@ -502,7 +510,6 @@ public class ZhiyiVideoView extends JZVideoPlayerStandard {
     @Override
     public void setBufferProgress(int bufferProgress) {
         super.setBufferProgress(bufferProgress);
-        LogUtils.d("setBufferProgress::"+bufferProgress);
     }
 
     protected ShareInterface mShareInterface;
