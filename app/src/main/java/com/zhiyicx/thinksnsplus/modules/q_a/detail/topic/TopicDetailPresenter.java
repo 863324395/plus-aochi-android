@@ -21,6 +21,7 @@ import com.zhiyicx.thinksnsplus.data.beans.QAPublishBean;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QATopicBean;
 import com.zhiyicx.thinksnsplus.data.source.local.QATopicBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.BaseQARepository;
+import com.zhiyicx.thinksnsplus.utils.TSShareUtils;
 
 import org.simple.eventbus.EventBus;
 import org.simple.eventbus.Subscriber;
@@ -30,6 +31,7 @@ import javax.inject.Inject;
 import rx.Subscription;
 
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_SHARE_DEFAULT;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_SHARE_QA_TOPIC;
 
 /**
  * @author Catherine
@@ -88,9 +90,7 @@ public class TopicDetailPresenter extends AppBasePresenter<TopicDetailContract.V
         ((UmengSharePolicyImpl) mSharePolicy).setOnShareCallbackListener(this);
         ShareContent shareContent = new ShareContent();
         shareContent.setTitle(mRootView.getCurrentTopicBean().getName());
-//        shareContent.setUrl(String.format(Locale.getDefault(), APP_PATH_SHARE_DEFAULT,
-//                mRootView.getCurrentTopicBean().getId()));
-        shareContent.setUrl(ApiConfig.APP_DOMAIN + APP_PATH_SHARE_DEFAULT);
+        shareContent.setUrl(TSShareUtils.Convert2ShareUrl(String.format( APP_PATH_SHARE_QA_TOPIC,mRootView.getCurrentTopicBean().getId())));
         shareContent.setContent(mRootView.getCurrentTopicBean().getDescription());
 
         if (bitmap == null) {

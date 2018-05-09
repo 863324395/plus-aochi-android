@@ -539,6 +539,7 @@ public class ApiConfig {
      * /questions/{question}/answers/{answer}：回答详情
      * /groups/{group}?type={?fetch-posts-type}：圈子详情
      * /groups/{group}/posts/{post}：帖子详情
+     * /question-topics/{topic} 话题
      * ]
      * 上述为「app, pc, h5」需要分享到第三方的页面,分享页面target的值要进行url编码，编码规范RFC 3986
      * 为了使用户有更好的浏览体验, 分享的出去的内容能够根据用户使用的客户端进行最佳的适配阅读,
@@ -565,6 +566,10 @@ public class ApiConfig {
     public static final String APP_PATH_SHARE_QA_QUESTION_DETAIL = "/questions/%s" + APP_SHARE_URL_PLATFORM;
     // 问答回答分享
     public static final String APP_PATH_SHARE_QA_ANSWER_DETAIL = "/questions/%1$s/answers/%2$s" + APP_SHARE_URL_PLATFORM;
+    // 话题分享
+    public static final String APP_PATH_SHARE_QA_TOPIC = "/question-topics/%s" + APP_SHARE_URL_PLATFORM;
+
+
     // 分享歌曲,增加分享数
     public static final String APP_PATH_MUSIC_SHARE = "api/" + API_VERSION_2 + "/music/%s/share";
     // 分享专辑，增加分享数
