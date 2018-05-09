@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.Shader;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.BitmapDrawable;
 import android.media.AudioManager;
@@ -404,7 +405,15 @@ public class ZhiyiVideoView extends JZVideoPlayerStandard {
 
             jzVideoPlayer.addTextureView();
             JZVideoPlayer firstVideoView = JZVideoPlayerManager.getFirstFloor();
-            jzVideoPlayer.setBackground(firstVideoView.getBackground());
+            BitmapDrawable drawable = (BitmapDrawable) firstVideoView.getBackground();
+            Bitmap overlay = Bitmap.createScaledBitmap(drawable.getBitmap(), DeviceUtils.getScreenWidth(getContext()),
+                    DeviceUtils.getScreenWidth(getContext()), false);
+            drawable = new BitmapDrawable(getResources(), overlay);
+            drawable.setTileModeXY(Shader.TileMode.REPEAT, Shader.TileMode.REPEAT);
+
+            LogUtils.d("startWindowFullscreen:::" + drawable.getIntrinsicWidth());
+            LogUtils.d("startWindowFullscreen:::" + drawable.getIntrinsicHeight());
+            jzVideoPlayer.setBackground(drawable);
             JZVideoPlayerManager.setSecondFloor(jzVideoPlayer);
 
             int orientation;

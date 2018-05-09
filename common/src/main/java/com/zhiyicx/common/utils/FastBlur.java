@@ -316,7 +316,7 @@ public class FastBlur {
         // 放大到整个 view 的大小
         bkg = DrawableProvider.getReSizeBitmap(bkg, width, height);
         Bitmap overlay = Bitmap.createBitmap((int) (width / scaleFactor)
-                , (int) (height / scaleFactor), Bitmap.Config.ARGB_8888);
+                , (int) (height / scaleFactor), Bitmap.Config.RGB_565);
         Canvas canvas = new Canvas(overlay);
         canvas.scale(1 / scaleFactor, 1 / scaleFactor);
         Paint paint = new Paint();
