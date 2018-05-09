@@ -406,14 +406,18 @@ public class ZhiyiVideoView extends JZVideoPlayerStandard {
             jzVideoPlayer.addTextureView();
             JZVideoPlayer firstVideoView = JZVideoPlayerManager.getFirstFloor();
             BitmapDrawable drawable = (BitmapDrawable) firstVideoView.getBackground();
-            Bitmap overlay = Bitmap.createScaledBitmap(drawable.getBitmap(), DeviceUtils.getScreenWidth(getContext()),
-                    DeviceUtils.getScreenWidth(getContext()), false);
-            drawable = new BitmapDrawable(getResources(), overlay);
-            drawable.setTileModeXY(Shader.TileMode.REPEAT, Shader.TileMode.REPEAT);
 
-            LogUtils.d("startWindowFullscreen:::" + drawable.getIntrinsicWidth());
-            LogUtils.d("startWindowFullscreen:::" + drawable.getIntrinsicHeight());
-            jzVideoPlayer.setBackground(drawable);
+            Observable.just(drawable.getBitmap())
+                    .subscribeOn(Schedulers.io())
+                    .map(bg -> {
+                        Bitmap overlay = Bitmap.createScaledBitmap(bg, DeviceUtils.getScreenHeight(getContext()),
+                                DeviceUtils.getScreenHeight(getContext()), false);
+                        Bitmap bitmap = FastBlur.blurBitmap(overlay, overlay.getWidth(), overlay.getHeight());
+                        return new BitmapDrawable(getResources(), bitmap);
+                    })
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(jzVideoPlayer::setBackground, Throwable::printStackTrace);
+
             JZVideoPlayerManager.setSecondFloor(jzVideoPlayer);
 
             int orientation;

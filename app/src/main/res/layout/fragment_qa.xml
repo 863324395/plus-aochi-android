@@ -72,7 +72,7 @@
                 android:layout_marginRight="@dimen/spacing_mid"
                 android:gravity="center_vertical"
                 android:paddingLeft="@dimen/spacing_normal"
-                android:src="@mipmap/search_icon_search"
+                android:src="@mipmap/ico_search"
                 android:visibility="visible"/>
 
         </RelativeLayout>
