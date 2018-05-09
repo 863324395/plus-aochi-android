@@ -163,6 +163,7 @@ buildscript {
     repositories {
         jcenter()
         mavenCentral()
+
     }
     dependencies {
         classpath 'me.tatarka:gradle-retrolambda:3.6.1'
@@ -170,6 +171,7 @@ buildscript {
 }
 configurations.all {
     resolutionStrategy {
+        force 'com.android.support:support-fragment:25.3.1'
         force 'com.android.support:support-annotations:25.0.1'
         force 'com.google.code.findbugs:jsr305:1.3.9'
     }
@@ -236,5 +238,7 @@ dependencies {
     implementation dataDependences.kotlin
     implementation dataDependences.ankoCommon
     implementation 'com.github.chrisbanes:PhotoView:2.0.0'
-
+//    compile dataDependences.bigImageViewer
+//    compile dataDependences.bigGlideImageLoader 内部s使用了glide4.5
+//    compile project(':GlideImageLoader')
 }

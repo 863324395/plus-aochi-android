@@ -4,6 +4,9 @@ allprojects {
         maven {
             url "https://jitpack.io"
         }
+        maven {
+            url "http://dl.bintray.com/piasy/maven"
+        }
     }
 }
 
@@ -157,7 +160,10 @@ ext {
             bgaZxing                     : 'cn.bingoogolapple:bga-zxing:1.1.9@aar',
             kotlin                       : "org.jetbrains.kotlin:kotlin-stdlib-jre7:${kotlin_version}",
             // Anko Commons
-            ankoCommon                   : "org.jetbrains.anko:anko-commons:$anko_version"
+            ankoCommon                   : "org.jetbrains.anko:anko-commons:$anko_version",
+            largeBitmap                  : 'com.davemorrissey.labs:subsampling-scale-image-view:3.10.0',
+            bigImageViewer               : 'com.github.piasy:BigImageViewer:1.4.6',
+            bigGlideImageLoader          : 'com.github.piasy:GlideImageLoader:1.4.6'
     ]
     sdksoupportDependencies = [
             appcompatV7     : "com.android.support:appcompat-v7:${androidSupportSdkVersion}",
