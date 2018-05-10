@@ -180,13 +180,13 @@ dependencies {
     def dataDependences = rootProject.ext.dataDependencies
     def supportDependences = rootProject.ext.sdksoupportDependencies
     def testDependences = rootProject.ext.testDependencies
-    implementation 'com.android.support.constraint:constraint-layout:1.0.2'
-    compile fileTree(include: ['*.jar'], dir: 'libs')
+
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
     //support
-    compile supportDependences.appcompatV7
-    compile supportDependences.paletteV7
-    compile supportDependences.supportV4
-    compile supportDependences.constraintLayout
+    implementation supportDependences.appcompatV7
+    implementation supportDependences.paletteV7
+    implementation supportDependences.supportV4
+    implementation supportDependences.constraintLayout
     // Test
     testCompile testDependences.junit
     androidTestCompile(testDependences.espresso) {
@@ -223,7 +223,6 @@ dependencies {
     compile project(':richtexteditorlib')
     // database
     compile dataDependences.greendao
-//    compile dataDependences.guava
     // jpush
     compile dataDependences.jiguangJpush
     compile dataDependences.jiguangJcore
@@ -233,11 +232,8 @@ dependencies {
     compile dataDependences.richtext
     compile(name: 'lint-library-release', ext: 'aar')
     compile dataDependences.flowlayout
-    //    compile dataDependences.contacts
-//    compile dataDependences.update
     implementation dataDependences.kotlin
     implementation dataDependences.ankoCommon
-    implementation 'com.github.chrisbanes:PhotoView:2.0.0'
 //    compile dataDependences.bigImageViewer
 //    compile dataDependences.bigGlideImageLoader 内部s使用了glide4.5
 //    compile project(':GlideImageLoader')
