@@ -39,6 +39,7 @@ import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.TextViewUtils;
 import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.common.utils.UIUtils;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.AnimationRectBean;
@@ -852,7 +853,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
         try {
             playView = holder.getView(R.id.videoplayer);
         } catch (Exception ignore) {
-
+            LogUtils.e(ignore.getMessage());
         }
 
         if (playView != null && JZVideoPlayerManager.getFirstFloor() != null) {
@@ -1077,7 +1078,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
     @Override
     public void onMoreCommentClick(View view, DynamicDetailBeanV2 dynamicBean) {
         int position = mPresenter.getCurrenPosiotnInDataList(dynamicBean.getFeed_mark());
-        goDynamicDetail(position, true, (ViewHolder) mRvList.getChildViewHolder(mRvList.getLayoutManager().findViewByPosition(position)));
+        goDynamicDetail(position, true, (ViewHolder) mRvList.findViewHolderForAdapterPosition(position));
     }
 
     @Override

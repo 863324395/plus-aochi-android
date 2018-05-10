@@ -845,7 +845,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
             return;
         }
         int viewPosition = dataPosition + mHeaderAndFooterWrapper.getHeadersCount();
-        goDynamicDetail(dataPosition, true, (ViewHolder) mRvList.getChildViewHolder(mRvList.getLayoutManager().findViewByPosition(viewPosition)));
+        goDynamicDetail(dataPosition, true, (ViewHolder) mRvList.findViewHolderForAdapterPosition(viewPosition));
     }
 
     @Override
