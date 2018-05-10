@@ -433,6 +433,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
             toll.setToll_type_string(task.getType());
             toll.setPaid_node(task.getPaid_node());
             imageBean.setToll(toll);
+            imageBean.setListCacheUrl(task.getGlideUrl());
             imageBean.setDynamicPosition(dynamicPosition);
             imageBean.setFeed_id(dynamicBean.getId());
             imageBean.setWidth(task.getWidth());

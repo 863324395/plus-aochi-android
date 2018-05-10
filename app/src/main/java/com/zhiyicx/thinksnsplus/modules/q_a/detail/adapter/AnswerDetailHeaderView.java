@@ -19,6 +19,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.load.model.GlideUrl;
 import com.jakewharton.rxbinding.view.RxView;
 import com.klinker.android.link_builder.Link;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
@@ -279,6 +280,7 @@ public class AnswerDetailHeaderView extends BaseWebLoad{
         toll.setPaid_node(0);// 付费节点
         imageBean.setToll(toll);
         imageBean.setStorage_id(Integer.parseInt(id));// 图片附件id
+        imageBean.setListCacheUrl(new GlideUrl(imgPath));
         mImgList.add(imageBean);
         try {
             AnimationRectBean rect = AnimationRectBean.buildFromImageView(mIvDetail);// 动画矩形

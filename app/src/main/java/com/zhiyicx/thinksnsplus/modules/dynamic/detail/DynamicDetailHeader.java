@@ -527,6 +527,7 @@ public class DynamicDetailHeader {
                     toll.setPaid_node(task.getPaid_node());// 付费节点
                     imageBean.setToll(toll);
                     imageBean.setFeed_id(dynamicBean.getId());// 动态id
+                    imageBean.setListCacheUrl(task.getGlideUrl());
                     imageBean.setWidth(task.getWidth());// 图片宽高
                     imageBean.setHeight(task.getHeight());
                     imageBean.setStorage_id(task.getFile());// 图片附件id
