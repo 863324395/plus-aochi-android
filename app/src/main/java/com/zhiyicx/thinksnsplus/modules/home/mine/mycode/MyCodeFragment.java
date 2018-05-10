@@ -128,23 +128,24 @@ public class MyCodeFragment extends TSFragment<MyCodeContract.Presenter> impleme
             if (TextUtils.isEmpty(userInfo.getAvatar())) {
                 // 为空那就用默认的头像咯
                 mPresenter.createUserCodePic(BitmapFactory.decodeResource(getResources(), ImageUtils.getDefaultAvatar(userInfo)));
-            }
-            Glide.with(getContext())
-                    .load(userInfo.getAvatar())
-                    .asBitmap()
-                    .error(ImageUtils.getDefaultAvatar(userInfo))
-                    .placeholder(ImageUtils.getDefaultAvatar(userInfo))
-                    .into(new SimpleTarget<Bitmap>() {
-                        @Override
-                        public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-                            if (resource != null) {
-                                mPresenter.createUserCodePic(resource);
-                            } else {
-                                // 为空那就用默认的头像咯
-                                mPresenter.createUserCodePic(BitmapFactory.decodeResource(getResources(), ImageUtils.getDefaultAvatar(userInfo)));
+            } else {
+                Glide.with(getContext())
+                        .load(userInfo.getAvatar())
+                        .asBitmap()
+                        .error(ImageUtils.getDefaultAvatar(userInfo))
+                        .placeholder(ImageUtils.getDefaultAvatar(userInfo))
+                        .into(new SimpleTarget<Bitmap>() {
+                            @Override
+                            public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                                if (resource != null) {
+                                    mPresenter.createUserCodePic(resource);
+                                } else {
+                                    // 为空那就用默认的头像咯
+                                    mPresenter.createUserCodePic(BitmapFactory.decodeResource(getResources(), ImageUtils.getDefaultAvatar(userInfo)));
+                                }
                             }
-                        }
-                    });
+                        });
+            }
         }
     }
 

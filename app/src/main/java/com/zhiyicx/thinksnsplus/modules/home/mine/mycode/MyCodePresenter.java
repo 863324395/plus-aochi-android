@@ -66,43 +66,37 @@ public class MyCodePresenter extends AppBasePresenter<MyCodeContract.View>
             Subscription subscribe = Observable.just(qrCodeContent)
                     .subscribeOn(Schedulers.newThread())
                     .map(s -> QRCodeEncoder.syncEncodeQRCode(s, BGAQRCodeUtil.dp2px(mContext, 150), Color.parseColor("#000000"),
-                            getRoundedCornerBitmap(logo, 2)))
+                            getRoundedCornerBitmap(logo, 10)))
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(bitmap -> {
                         mRootView.setMyCode(bitmap);
                         mRootView.getEmptyView().setErrorType(EmptyView.STATE_HIDE_LAYOUT);
                     });
             addSubscrebe(subscribe);
+
         }
     }
 
     private Bitmap getRoundedCornerBitmap(Bitmap bitmap, float roundPx) {
-        Bitmap output = Bitmap.createBitmap(bitmap.getWidth(), bitmap
-                .getHeight(), Bitmap.Config.ARGB_8888);
+
+        Bitmap output = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(output);
-        final int color = 0xff424242;
         final Paint paint = new Paint();
+//
+//        final Rect rectbg = new Rect(0, 0, bitmap.getWidth()+100, bitmap.getHeight()+100);
+//        final RectF rectFbg = new RectF(rectbg);
+//        paint.setAntiAlias(true);
+//        paint.setColor(Color.WHITE);
+//        canvas.drawRoundRect(rectFbg, roundPx, roundPx, paint);
+
         final Rect rect = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
-        final RectF rectF = new RectF(rect);
         paint.setAntiAlias(true);
-        canvas.drawARGB(0, 0, 0, 0);
-        paint.setColor(color);
-        canvas.drawRoundRect(rectF, roundPx, roundPx, paint);
+        canvas.drawCircle(bitmap.getWidth() / 2, bitmap.getHeight() / 2, bitmap.getWidth() / 2, paint);
         paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
         canvas.drawBitmap(bitmap, rect, rect, paint);
-//        setBitmapBorder(canvas);
-        return output;
-    }
 
-    private void setBitmapBorder(Canvas canvas) {
-        Rect rect = canvas.getClipBounds();
-        Paint paint = new Paint();
-        //设置边框颜色
-        paint.setColor(Color.WHITE);
-        paint.setStyle(Paint.Style.STROKE);
-        //设置边框宽度
-        paint.setStrokeWidth(10);
-        canvas.drawRect(rect, paint);
+        return output;
+
     }
 
     @Override
