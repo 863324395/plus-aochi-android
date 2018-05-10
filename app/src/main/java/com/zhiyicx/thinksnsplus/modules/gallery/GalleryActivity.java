@@ -43,6 +43,13 @@ public class GalleryActivity extends TSActivity {
         ((BaseFragment) mContanierFragment).onBackPressed();
     }
 
+    /**
+     * 查看大图
+     * @param context
+     * @param position
+     * @param imageBeanList
+     * @param animationRectBeanList
+     */
     public static void startToGallery(Context context, int position, List<ImageBean> imageBeanList, List<AnimationRectBean> animationRectBeanList) {
         startToGallery(context, position, imageBeanList, animationRectBeanList, false);
     }

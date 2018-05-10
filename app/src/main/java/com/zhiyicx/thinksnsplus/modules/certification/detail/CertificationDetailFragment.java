@@ -7,6 +7,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.model.GlideUrl;
 import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.config.ImageZipConfig;
@@ -217,6 +218,8 @@ public class CertificationDetailFragment extends TSFragment<CertificationDetailC
             imageBean.setImgMimeType(mInfo.getFiles().get(i).getImgMimeType());
             imageBean.setToll(toll);
             imageBean.setStorage_id(mInfo.getData().getFiles().get(i));// 图片附件id
+            imageBean.setListCacheUrl(new GlideUrl(ImageUtils.imagePathConvertV2(mInfo.getData().getFiles().get(i), mImageWith, mImageHeight,
+                    ImageZipConfig.IMAGE_70_ZIP)));
             imageBeanList.add(imageBean);
             AnimationRectBean rect = AnimationRectBean.buildFromImageView(i == 0 ? mIvPicOne : mIvPicTwo);// 动画矩形
             animationRectBeanArrayList.add(rect);
