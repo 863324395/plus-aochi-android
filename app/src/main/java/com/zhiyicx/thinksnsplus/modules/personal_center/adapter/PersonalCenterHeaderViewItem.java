@@ -23,9 +23,7 @@ import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.ColorPhrase;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.DeviceUtils;
-import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.common.utils.ZoomView;
-import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
@@ -58,16 +56,16 @@ public class PersonalCenterHeaderViewItem implements TypeChoosePopAdapter.OnType
     private ImageView mIvBackgroundCover;// 封面
     private UserAvatarView mIvHeadIcon;// 用户头像
     private TextView tv_user_name;// 用户名
-    private TextView tv_user_intro;// 用户简介
-    private TextView tv_user_follow;// 用户关注数量
-    private TextView tv_user_fans;// 用户粉丝数量
-    private LinearLayout ll_dynamic_count_container;// 动态数量的容器
-    private TextView tv_dynamic_count;// 动态数量
-    private TextView tv_type;// 动态分类，付费、置顶
+    private TextView mTvUserIntro;// 用户简介
+    private TextView mTvUserFollow;// 用户关注数量
+    private TextView mTvUserFans;// 用户粉丝数量
+    private LinearLayout mLlDynamicCountContainer;// 动态数量的容器
+    private TextView mTvDynamicCount;// 动态数量
+    private TextView mTvType;// 动态分类，付费、置顶
 
     private TagFlowLayout mFlTags;
-    private TextView tv_certify;// 认证
-    private TextView tv_addres;// 地址
+    private TextView mTvCertify;// 认证
+    private TextView mTvAddres;// 地址
     private Activity mActivity;
     private RecyclerView mRecyclerView;
     private HeaderAndFooterWrapper mHeaderAndFooterWrapper;
@@ -245,7 +243,7 @@ public class PersonalCenterHeaderViewItem implements TypeChoosePopAdapter.OnType
         // 标题栏的用户名
         userName.setText(userInfoBean.getName());
         // 设置简介
-        tv_user_intro.setText(mActivity.getString(R.string.default_intro_format, userInfoBean.getIntro()));
+        mTvUserIntro.setText(mActivity.getString(R.string.default_intro_format, userInfoBean.getIntro()));
 
         // 设置关注人数
         String followContent = "关注 " + "<" + ConvertUtils.numberConvert(userInfoBean.getExtra().getFollowings_count()
@@ -254,7 +252,7 @@ public class PersonalCenterHeaderViewItem implements TypeChoosePopAdapter.OnType
                 .innerColor(ContextCompat.getColor(mActivity, R.color.white))
                 .outerColor(ContextCompat.getColor(mActivity, R.color.white))
                 .format();
-        tv_user_follow.setText(followString);
+        mTvUserFollow.setText(followString);
 
         // 设置粉丝人数
         String fansContent = "粉丝 " + "<" + ConvertUtils.numberConvert(userInfoBean.getExtra().getFollowers_count()) +
@@ -263,7 +261,7 @@ public class PersonalCenterHeaderViewItem implements TypeChoosePopAdapter.OnType
                 .innerColor(ContextCompat.getColor(mActivity, R.color.white))
                 .outerColor(ContextCompat.getColor(mActivity, R.color.white))
                 .format();
-        tv_user_fans.setText(fansString);
+        mTvUserFans.setText(fansString);
 
         // 设置动态数量
         String dynamicCountString = String.valueOf(userInfoBean.getExtra().getFeeds_count());
@@ -295,7 +293,7 @@ public class PersonalCenterHeaderViewItem implements TypeChoosePopAdapter.OnType
 //            mActivity.startActivity(intent);
         });
         // 跳转到粉丝列表
-        tv_user_fans.setOnClickListener(v -> {
+        mTvUserFans.setOnClickListener(v -> {
             Bundle bundleFans = new Bundle();
             bundleFans.putInt(FollowFansListFragment.PAGE_TYPE, FollowFansListFragment.FANS_FRAGMENT_PAGE);
             bundleFans.putLong(FollowFansListFragment.PAGE_DATA, userInfoBean.getUser_id());
@@ -305,7 +303,7 @@ public class PersonalCenterHeaderViewItem implements TypeChoosePopAdapter.OnType
         });
 
         // 跳转到关注列表
-        tv_user_follow.setOnClickListener(v -> {
+        mTvUserFollow.setOnClickListener(v -> {
             Bundle bundleFollow = new Bundle();
             bundleFollow.putInt(FollowFansListFragment.PAGE_TYPE, FollowFansListFragment.FOLLOW_FRAGMENT_PAGE);
             bundleFollow.putLong(FollowFansListFragment.PAGE_DATA, userInfoBean.getUser_id());
@@ -318,31 +316,31 @@ public class PersonalCenterHeaderViewItem implements TypeChoosePopAdapter.OnType
             userInfoBean.setTags(new ArrayList<>());
         }
         if (userInfoBean.getVerified() == null || TextUtils.isEmpty(userInfoBean.getVerified().getDescription())) {
-            tv_certify.setVisibility(View.GONE);
+            mTvCertify.setVisibility(View.GONE);
         } else {
-            tv_certify.setVisibility(View.VISIBLE);
-            tv_certify.setText(mActivity.getString(R.string.default_certify_format, userInfoBean.getVerified()
+            mTvCertify.setVisibility(View.VISIBLE);
+            mTvCertify.setText(mActivity.getString(R.string.default_certify_format, userInfoBean.getVerified()
                     .getDescription()));
         }
         if (TextUtils.isEmpty(userInfoBean.getLocation())) {
-            tv_addres.setVisibility(View.GONE);
+            mTvAddres.setVisibility(View.GONE);
         } else {
-            tv_addres.setVisibility(View.VISIBLE);
-            tv_addres.setText(mActivity.getString(R.string.default_location_format, userInfoBean.getLocation()));
+            mTvAddres.setVisibility(View.VISIBLE);
+            mTvAddres.setText(mActivity.getString(R.string.default_location_format, userInfoBean.getLocation()));
         }
         UserInfoTagsAdapter userInfoTagsAdapter = new UserInfoTagsAdapter(userInfoBean.getTags(), mActivity, true);
         mFlTags.setAdapter(userInfoTagsAdapter);
         // 当前登录用户才可以操作
         if (AppApplication.getMyUserIdWithdefault() == userInfoBean.getUser_id()) {
-            tv_type.setVisibility(View.VISIBLE);
+            mTvType.setVisibility(View.VISIBLE);
             initTypePop(dynamicType);
-            tv_type.setOnClickListener(v -> {
+            mTvType.setOnClickListener(v -> {
                 if (mTypeChoosePopupWindow != null) {
                     mTypeChoosePopupWindow.show();
                 }
             });
         } else {
-            tv_type.setVisibility(View.GONE);
+            mTvType.setVisibility(View.GONE);
         }
     }
 
@@ -355,7 +353,7 @@ public class PersonalCenterHeaderViewItem implements TypeChoosePopAdapter.OnType
                 .asVertical()
                 .alpha(1.0f)
                 .itemSpacing(mActivity.getResources().getDimensionPixelOffset(R.dimen.spacing_big_line))
-                .parentView(tv_type)
+                .parentView(mTvType)
                 .build();
 
     }
@@ -369,15 +367,15 @@ public class PersonalCenterHeaderViewItem implements TypeChoosePopAdapter.OnType
         mIvBackgroundCover = (ImageView) headerView.findViewById(R.id.iv_background_cover);
         mIvHeadIcon = (UserAvatarView) headerView.findViewById(R.id.iv_head_icon);
         tv_user_name = (TextView) headerView.findViewById(R.id.tv_user_name);
-        tv_user_intro = (TextView) headerView.findViewById(R.id.tv_user_intro);
-        tv_user_follow = (TextView) headerView.findViewById(R.id.tv_user_follow);
-        tv_user_fans = (TextView) headerView.findViewById(R.id.tv_user_fans);
-        ll_dynamic_count_container = (LinearLayout) headerView.findViewById(R.id.ll_dynamic_count_container);
-        tv_dynamic_count = (TextView) headerView.findViewById(R.id.tv_dynamic_count);
-        tv_type = (TextView) headerView.findViewById(R.id.tv_type);
+        mTvUserIntro = (TextView) headerView.findViewById(R.id.tv_user_intro);
+        mTvUserFollow = (TextView) headerView.findViewById(R.id.tv_user_follow);
+        mTvUserFans = (TextView) headerView.findViewById(R.id.tv_user_fans);
+        mLlDynamicCountContainer = (LinearLayout) headerView.findViewById(R.id.ll_dynamic_count_container);
+        mTvDynamicCount = (TextView) headerView.findViewById(R.id.tv_dynamic_count);
+        mTvType = (TextView) headerView.findViewById(R.id.tv_type);
         mFlTags = (TagFlowLayout) headerView.findViewById(R.id.fl_tags);
-        tv_certify = (TextView) headerView.findViewById(R.id.tv_verify);
-        tv_addres = (TextView) headerView.findViewById(R.id.tv_address);
+        mTvCertify = (TextView) headerView.findViewById(R.id.tv_verify);
+        mTvAddres = (TextView) headerView.findViewById(R.id.tv_address);
 
         // 高度为屏幕宽度一半加上20dp
         int width = DeviceUtils.getScreenWidth(mActivity);
@@ -454,10 +452,10 @@ public class PersonalCenterHeaderViewItem implements TypeChoosePopAdapter.OnType
      */
     public void upDateDynamicNums(int dynamicCountInt) {
         if (dynamicCountInt <= 0) {
-            ll_dynamic_count_container.setVisibility(View.GONE);
+            mLlDynamicCountContainer.setVisibility(View.GONE);
         } else {
-            ll_dynamic_count_container.setVisibility(View.VISIBLE);
-            tv_dynamic_count.setText(mActivity.getString(R.string.dynamic_count, String.valueOf(dynamicCountInt)));
+            mLlDynamicCountContainer.setVisibility(View.VISIBLE);
+            mTvDynamicCount.setText(mActivity.getString(R.string.dynamic_count, String.valueOf(dynamicCountInt)));
         }
         mHeaderAndFooterWrapper.notifyDataSetChanged();
     }
@@ -471,13 +469,13 @@ public class PersonalCenterHeaderViewItem implements TypeChoosePopAdapter.OnType
         mView.onDynamicTypeChanged(type);
         switch (type) {
             case ALL:
-                tv_type.setText(mActivity.getString(R.string.all_dynamic));
+                mTvType.setText(mActivity.getString(R.string.all_dynamic));
                 break;
             case PAID:
-                tv_type.setText(mActivity.getString(R.string.pay_dynamic));
+                mTvType.setText(mActivity.getString(R.string.pay_dynamic));
                 break;
             case PINNED:
-                tv_type.setText(mActivity.getString(R.string.top_dynamic));
+                mTvType.setText(mActivity.getString(R.string.top_dynamic));
 
                 break;
             default:
