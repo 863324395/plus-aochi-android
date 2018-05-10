@@ -22,7 +22,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="center_horizontal|top"
-            android:scaleType="centerCrop"
+            android:scaleType="fitXY"
             android:src="@mipmap/default_pic_personal"/>
         <ImageView
             android:id="@+id/iv_background_cover_top_hint"

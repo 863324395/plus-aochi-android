@@ -1107,6 +1107,6 @@
     <string name="no_more_firends">没有更多好友了</string>
     <string name="no_more_group_member">没有更多成员了</string>
     <string name="integration_pinned_pay_format">%1$d%2$s / %3$d天</string>
-    <string name="top_every_day_pay">每日支付</string>
+    <string name="top_every_day_pay">每天支付</string>
     <string name="sure_top">确认置顶</string>
 </resources>

@@ -22,6 +22,7 @@ import com.zhiyicx.baseproject.widget.UserAvatarView;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.ColorPhrase;
 import com.zhiyicx.common.utils.ConvertUtils;
+import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.common.utils.ZoomView;
 import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
@@ -173,7 +174,7 @@ public class PersonalCenterHeaderViewItem implements TypeChoosePopAdapter.OnType
                     userName.setTranslationY(maxDistance - mDistanceY);
                 } else if (mDistanceY > maxDistance) {
                     userName.setTranslationY(0);
-                } else  {
+                } else {
                     userName.setTranslationY(mToolBarHeight);
                 }
                 //当滑动的距离 <= needDistanceY高度的时候，改变Toolbar背景色的透明度，达到渐变的效果
@@ -363,9 +364,8 @@ public class PersonalCenterHeaderViewItem implements TypeChoosePopAdapter.OnType
         ViewGroup.LayoutParams headerLayoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT);
         headerView.setLayoutParams(headerLayoutParams);
-        /*********************************
-         headerView控件
-         */FrameLayout fl_cover_contaner = (FrameLayout) headerView.findViewById(R.id.fl_cover_contaner);
+        /*********************************headerView控件*/
+        FrameLayout fl_cover_contaner = (FrameLayout) headerView.findViewById(R.id.fl_cover_contaner);
         mIvBackgroundCover = (ImageView) headerView.findViewById(R.id.iv_background_cover);
         mIvHeadIcon = (UserAvatarView) headerView.findViewById(R.id.iv_head_icon);
         tv_user_name = (TextView) headerView.findViewById(R.id.tv_user_name);
@@ -380,9 +380,8 @@ public class PersonalCenterHeaderViewItem implements TypeChoosePopAdapter.OnType
         tv_addres = (TextView) headerView.findViewById(R.id.tv_address);
 
         // 高度为屏幕宽度一半加上20dp
-        int width = UIUtils.getWindowWidth(mActivity);
-        int height = UIUtils.getWindowWidth(mActivity) / 2 + mActivity.getResources().getDimensionPixelSize(R.dimen
-                .spacing_large);
+        int width = DeviceUtils.getScreenWidth(mActivity);
+        int height = width / 2 + mActivity.getResources().getDimensionPixelOffset(R.dimen.spacing_mid);
         LinearLayout.LayoutParams containerLayoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams
                 .MATCH_PARENT, height);
         fl_cover_contaner.setLayoutParams(containerLayoutParams);
