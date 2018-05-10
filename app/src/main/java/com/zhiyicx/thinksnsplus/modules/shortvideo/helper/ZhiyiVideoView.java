@@ -8,6 +8,7 @@ import android.graphics.Shader;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.BitmapDrawable;
 import android.media.AudioManager;
+import android.os.Build;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Gravity;
@@ -27,6 +28,7 @@ import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.DrawableProvider;
 import com.zhiyicx.common.utils.FastBlur;
+import com.zhiyicx.common.utils.StatusBarUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
@@ -99,6 +101,7 @@ public class ZhiyiVideoView extends JZVideoPlayerStandard {
     @Override
     public void playOnThisJzvd() {
         super.playOnThisJzvd();
+        StatusBarUtils.statusBarLightMode(JZUtils.scanForActivity(getContext()),StatusBarUtils.STATUS_TYPE_FLYME);
 //        JZMediaManager.instance().jzMediaInterface.setVolume(0f, 0f);
     }
 
@@ -393,11 +396,19 @@ public class ZhiyiVideoView extends JZVideoPlayerStandard {
             ZhiyiVideoView jzVideoPlayer = constructor.newInstance(getContext());
             jzVideoPlayer.setId(cn.jzvd.R.id.jz_fullscreen_id);
             jzVideoPlayer.setShareInterface(mShareInterface);
-            FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(
+            LayoutParams lp = new LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
             vp.addView(jzVideoPlayer, lp);
-            jzVideoPlayer.setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                    | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY | View.SYSTEM_UI_FLAG_FULLSCREEN);
+            // 三个 tag 依次
+            // 1.隐藏虚拟按键(导航栏)。有些手机会用虚拟按键来代替物理按键。
+            // 2.隐藏了系统栏和其他UI控件
+            // 3.Activity全屏显示，且状态栏被隐藏覆盖掉
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                jzVideoPlayer.setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                        | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY | View.SYSTEM_UI_FLAG_FULLSCREEN);
+            }else{
+                jzVideoPlayer.setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_FULLSCREEN);
+            }
             jzVideoPlayer.setUp(dataSourceObjects, currentUrlMapIndex, JZVideoPlayerStandard
                     .SCREEN_WINDOW_FULLSCREEN, objects);
             jzVideoPlayer.setState(currentState);
@@ -445,6 +456,8 @@ public class ZhiyiVideoView extends JZVideoPlayerStandard {
         }
 //        JZMediaManager.instance().jzMediaInterface.setVolume(1f, 1f);
     }
+
+
 
     @Override
     public void startWindowTiny() {
