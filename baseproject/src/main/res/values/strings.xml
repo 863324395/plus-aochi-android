@@ -74,7 +74,7 @@
     <string name="phone_number_toast_hint">请输入大陆地区合法手机号码</string>
     <string name="email_address_toast_hint">请输入正确的邮箱地址</string>
     <string name="login_account_toast_hint">请输入账号</string>
-    <string name="password_input_hint">输入6&#8211;16位登录密码</string>
+    <string name="password_input_hint">输入6位以上登录密码</string>
     <string name="password_toast_hint">密码长度不能低于6位</string>
     <string name="old_password_toast_hint">密码长度不能低于6位</string>
     <string name="new_password_toast_hint">密码长度不能低于6位</string>
