@@ -24,6 +24,7 @@ public class VideoInfo implements Parcelable, Serializable {
     public int bitRate;//比特率
     public int frameRate;//帧率
     public int frameInterval;//关键帧间隔
+    public long size;//视频大小
 
 
     public int expWidth;//期望宽度
@@ -38,6 +39,14 @@ public class VideoInfo implements Parcelable, Serializable {
 
     // 视频需要压缩
     public boolean needCompressVideo;
+
+    public long getSize() {
+        return size;
+    }
+
+    public void setSize(long size) {
+        this.size = size;
+    }
 
     public boolean needCompressVideo() {
         return needCompressVideo;

@@ -33,6 +33,8 @@ public class RankListFragment extends TSListFragment<RankListContract.Presenter,
     @Inject
     RankListPresenter rankListPresenter;
 
+    private RankIndexAdapter mRankIndexAdapter;
+
     public RankListFragment instance(Bundle bundle) {
         RankListFragment fragment = new RankListFragment();
         fragment.setArguments(bundle);
@@ -86,6 +88,7 @@ public class RankListFragment extends TSListFragment<RankListContract.Presenter,
     @Override
     protected void initData() {
         super.initData();
+        mRankIndexAdapter.setPresenter(mPresenter);
         if (mRankIndexBean == null) {
             mRankIndexBean = (RankIndexBean) getArguments().getSerializable(BUNDLE_RANK_TYPE);
         }
@@ -93,8 +96,8 @@ public class RankListFragment extends TSListFragment<RankListContract.Presenter,
 
     @Override
     protected RecyclerView.Adapter getAdapter() {
-        RankIndexAdapter adapter = new RankIndexAdapter(getContext(), mListDatas, mPresenter);
-        adapter.setOnItemClickListener(new MultiItemTypeAdapter.OnItemClickListener() {
+        mRankIndexAdapter = new RankIndexAdapter(getContext(), mListDatas, mPresenter);
+        mRankIndexAdapter.setOnItemClickListener(new MultiItemTypeAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
 
@@ -105,7 +108,7 @@ public class RankListFragment extends TSListFragment<RankListContract.Presenter,
                 return false;
             }
         });
-        return adapter;
+        return mRankIndexAdapter;
     }
 
     @Override

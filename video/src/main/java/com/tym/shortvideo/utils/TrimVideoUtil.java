@@ -279,6 +279,7 @@ public class TrimVideoUtil {
                                                        video.setName(cursor.getString(cursor
                                                                .getColumnIndex(MediaStore.Video
                                                                        .Media.DISPLAY_NAME)));
+                                                       video.setSize(cursor.getLong(cursor.getColumnIndex(MediaStore.MediaColumns.SIZE)));
 
                                                        int w, h;
                                                        MediaMetadataRetriever mediaMetadataRetriever =

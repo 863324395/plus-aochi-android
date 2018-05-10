@@ -4,13 +4,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import com.jakewharton.rxbinding.view.RxView;
-import com.zhiyicx.common.utils.ConvertUtils;
-import com.zhiyicx.common.utils.recycleviewdecoration.LinearDecoration;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.RankIndexBean;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
@@ -32,13 +29,17 @@ import static com.zhiyicx.thinksnsplus.modules.rank.type_list.RankTypeListActivi
  * @contact email:648129313@qq.com
  */
 
-public class RankIndexAdapter extends CommonAdapter<RankIndexBean>{
+public class RankIndexAdapter extends CommonAdapter<RankIndexBean> {
 
     RankListContract.Presenter mPresenter;
 
     public RankIndexAdapter(Context context, List<RankIndexBean> datas, RankListContract.Presenter presenter) {
         super(context, R.layout.item_rank_index, datas);
-        mPresenter=presenter;
+        mPresenter = presenter;
+    }
+
+    public void setPresenter(RankListContract.Presenter presenter) {
+        mPresenter = presenter;
     }
 
     @Override
@@ -48,9 +49,9 @@ public class RankIndexAdapter extends CommonAdapter<RankIndexBean>{
         rvUsers.setNestedScrollingEnabled(false);
         GridLayoutManager layoutManager = new GridLayoutManager(mContext, 5);
         rvUsers.setLayoutManager(layoutManager);
-        if (rankIndexBean.getUserInfoList() != null){
+        if (rankIndexBean.getUserInfoList() != null) {
             RankIndexUserAdapter adapter;
-            if (rankIndexBean.getUserInfoList().size() > 5){
+            if (rankIndexBean.getUserInfoList().size() > 5) {
                 adapter = new RankIndexUserAdapter(mContext, rankIndexBean.getUserInfoList().subList(0, 5));
             } else {
                 adapter = new RankIndexUserAdapter(mContext, rankIndexBean.getUserInfoList());
