@@ -56,7 +56,6 @@ import rx.functions.Func2;
 import rx.schedulers.Schedulers;
 
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_INFO_DETAILS_FORMAT;
-import static com.zhiyicx.baseproject.config.ApiConfig.APP_SHARE_URL_FORMAT;
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_SEND_INFO_LIST_COLLECT;
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_SEND_INFO_LIST_DELETE_UPDATE;
 import static com.zhiyicx.thinksnsplus.data.beans.InfoCommentListBean.SEND_ING;
@@ -185,7 +184,7 @@ public class InfoDetailsPresenter extends AppBasePresenter<InfoDetailsConstract.
         ((UmengSharePolicyImpl) mSharePolicy).setOnShareCallbackListener(this);
         ShareContent shareContent = new ShareContent();
         shareContent.setTitle(mContext.getString(R.string.app_name_info, mContext.getString(R.string.app_name)));
-        shareContent.setUrl(TSShareUtils.Convert2ShareUrl(String.format(APP_PATH_INFO_DETAILS_FORMAT,
+        shareContent.setUrl(TSShareUtils.convert2ShareUrl(String.format(APP_PATH_INFO_DETAILS_FORMAT,
                 mRootView.getCurrentInfo().getId())));
         shareContent.setContent(mRootView.getCurrentInfo().getTitle());
 

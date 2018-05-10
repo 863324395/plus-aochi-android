@@ -9,7 +9,6 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.RectF;
-import android.net.Uri;
 import android.text.TextUtils;
 
 import com.zhiyicx.baseproject.base.TSFragment;
@@ -26,24 +25,18 @@ import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
-import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.utils.TSShareUtils;
-
-import org.apache.http.client.utils.URIUtils;
 
 import javax.inject.Inject;
 
 import cn.bingoogolapple.qrcode.core.BGAQRCodeUtil;
 import cn.bingoogolapple.qrcode.zxing.QRCodeEncoder;
 import rx.Observable;
-import rx.Scheduler;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action0;
-import rx.functions.Action1;
-import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
-import static com.zhiyicx.baseproject.config.ApiConfig.APP_SHARE_URL_FORMAT;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_SHARE_USERINFO_QR;
 
 /**
  * @author Catherine
@@ -69,8 +62,8 @@ public class MyCodePresenter extends AppBasePresenter<MyCodeContract.View>
         if (userInfoBean != null) {
             mRootView.getEmptyView().setErrorType(EmptyView.STATE_NETWORK_LOADING);
             // 生成用户二维码，二维码的内容为uid=xx的格式
-            String qrCodeContent = String.format(mContext.getString(R.string.my_qr_code_content), userInfoBean.getUser_id());
-            Observable.just(qrCodeContent)
+            String qrCodeContent = TSShareUtils.convert2ShareUrl(String.format(APP_PATH_SHARE_USERINFO_QR, userInfoBean.getUser_id()));
+            Subscription subscribe = Observable.just(qrCodeContent)
                     .subscribeOn(Schedulers.newThread())
                     .map(s -> QRCodeEncoder.syncEncodeQRCode(s, BGAQRCodeUtil.dp2px(mContext, 150), Color.parseColor("#000000"),
                             getRoundedCornerBitmap(logo, 2)))
@@ -79,6 +72,7 @@ public class MyCodePresenter extends AppBasePresenter<MyCodeContract.View>
                         mRootView.setMyCode(bitmap);
                         mRootView.getEmptyView().setErrorType(EmptyView.STATE_HIDE_LAYOUT);
                     });
+            addSubscrebe(subscribe);
         }
     }
 
@@ -133,7 +127,7 @@ public class MyCodePresenter extends AppBasePresenter<MyCodeContract.View>
             } else {
                 shareContent.setBitmap(ConvertUtils.drawBg4Bitmap(Color.WHITE, BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.icon)));
             }
-            shareContent.setUrl(TSShareUtils.Convert2ShareUrl(String.format(ApiConfig.APP_PATH_SHARE_USERINFO, userInfoBean.getUser_id()
+            shareContent.setUrl(TSShareUtils.convert2ShareUrl(String.format(ApiConfig.APP_PATH_SHARE_USERINFO, userInfoBean.getUser_id()
                     == null ? "" : userInfoBean.getUser_id())));
             mSharePolicy.setShareContent(shareContent);
             mSharePolicy.showShare(((TSFragment) mRootView).getActivity());

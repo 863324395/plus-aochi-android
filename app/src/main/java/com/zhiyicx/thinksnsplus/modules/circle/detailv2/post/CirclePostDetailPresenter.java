@@ -371,7 +371,7 @@ public class CirclePostDetailPresenter extends AppBasePresenter<CirclePostDetail
         } else {
             shareContent.setBitmap(ConvertUtils.drawBg4Bitmap(Color.WHITE, BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.icon)));
         }
-        shareContent.setUrl(TSShareUtils.Convert2ShareUrl(String.format(ApiConfig.APP_PATH_SHARE_GROUNP_DYNAMIC, circlePostListBean.getGroup_id(),
+        shareContent.setUrl(TSShareUtils.convert2ShareUrl(String.format(ApiConfig.APP_PATH_SHARE_GROUNP_DYNAMIC, circlePostListBean.getGroup_id(),
                 circlePostListBean.getId())));
         mSharePolicy.setShareContent(shareContent);
         mSharePolicy.showShare(((TSFragment) mRootView).getActivity());

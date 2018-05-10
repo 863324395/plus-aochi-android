@@ -33,6 +33,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
 import java.security.MessageDigest;
@@ -1191,6 +1192,7 @@ public class ConvertUtils {
 
 
     /**
+     * 网页编码  RFC-3986
      * @param original
      * @return null if fails
      */
@@ -1202,7 +1204,25 @@ public class ConvertUtils {
         } catch (UnsupportedEncodingException e) {
             //  Logger.e(e.toString());
         }
-        return null;
+        return "";
     }
+
+    /**
+     * 网页解码  RFC-3986
+     * @param original
+     * @return null if fails
+     */
+    public static String urldecode(String original) {
+        try {
+            //return URLEncoder.encode(original, "utf-8");
+            //fixed: to comply with RFC-3986
+            original = original.replace("%20", "+").replace("%2A", "*").replace("~", "%7E");
+            return URLDecoder.decode(original, "utf-8");
+        } catch (UnsupportedEncodingException e) {
+            //  Logger.e(e.toString());
+        }
+        return "";
+    }
+
 
 }

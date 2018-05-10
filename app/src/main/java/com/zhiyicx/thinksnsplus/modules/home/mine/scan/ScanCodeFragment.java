@@ -21,6 +21,7 @@ import com.tbruyelle.rxpermissions.Permission;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.baseproject.widget.popwindow.PermissionPopupWindow;
+import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
@@ -32,6 +33,8 @@ import cn.bingoogolapple.qrcode.core.QRCodeView;
 import cn.bingoogolapple.qrcode.zxing.ZXingView;
 
 import static android.content.Context.VIBRATOR_SERVICE;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_DOMAIN;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_SHARE_URL_FORMAT;
 import static com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.POPUPWINDOW_ALPHA;
 
 /**
@@ -177,12 +180,19 @@ public class ScanCodeFragment extends TSFragment<ScanCodeContract.Presenter> imp
         // 扫描到结果后直接跳转到个人中心  成功的结果应该是uid=xxx 所以直接取等号后面的内容
         // 至于为什么是uid=xxx ios定的 我也不知道
         try {
-            Long uid = Long.parseLong(result.split("=")[1]);
-            UserInfoBean userInfoBean = new UserInfoBean();
-            userInfoBean.setUser_id(uid);
-            PersonalCenterFragment.startToPersonalCenter(getContext(), userInfoBean);
-            cancleVibrate();
-            getActivity().finish();
+            result = ConvertUtils.urldecode(result);
+            if (result.contains(APP_DOMAIN + APP_SHARE_URL_FORMAT + "/users/")) {
+                String[] splits = result.split("/");
+                Long uid = Long.parseLong(splits[splits.length - 1]);
+                UserInfoBean userInfoBean = new UserInfoBean();
+                userInfoBean.setUser_id(uid);
+                PersonalCenterFragment.startToPersonalCenter(getContext(), userInfoBean);
+                cancleVibrate();
+                getActivity().finish();
+            } else {
+                startScan();
+                showSnackErrorMessage(getString(R.string.qr_scan_failed_alert));
+            }
         } catch (Exception e) {
             startScan();
             showSnackErrorMessage(getString(R.string.qr_scan_failed_alert));

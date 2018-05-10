@@ -19,7 +19,8 @@ public class TSShareUtils {
      * @param shareTypeUrl
      * @return
      */
-    public static String Convert2ShareUrl(String shareTypeUrl) {
+    public static String convert2ShareUrl(String shareTypeUrl) {
         return APP_DOMAIN + APP_SHARE_URL_FORMAT + ConvertUtils.urlencode(shareTypeUrl);
     }
+
 }

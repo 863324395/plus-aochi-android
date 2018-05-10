@@ -9,6 +9,7 @@ import android.view.KeyEvent;
 import com.zhiyicx.baseproject.base.TSActivity;
 import com.zhiyicx.baseproject.config.MarkdownConfig;
 import com.zhiyicx.common.utils.DeviceUtils;
+import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.modules.guide.GuideActivity;
 import com.zhiyicx.thinksnsplus.modules.guide.GuideFragment_v2;
 import com.zhiyicx.thinksnsplus.modules.register.RegisterPresenter;
@@ -26,24 +27,40 @@ public class CustomWEBActivity extends TSActivity<RegisterPresenter, CustomWEBFr
 
     private static String flag = "";
 
+    /**
+     * 广告跳转
+     *
+     * @param context
+     * @param args
+     */
     public static void startToWEBActivity(Context context, String... args) {
         startToWEBActivity(context, null, args);
-
     }
 
+    /**
+     * 网页跳转
+     *
+     * @param context
+     * @param headers
+     * @param args    args[0] url ; args[1] title
+     */
     public static void startToWEBActivity(Context context, HashMap<String, String> headers, String... args) {
         flag = "";
         Intent intent = new Intent(context, CustomWEBActivity.class);
         Bundle bundle = new Bundle();
         if (args.length > 0) {
             try {
-                bundle.putString(CustomWEBFragment.BUNDLE_PARAMS_WEB_URL, args[0]);
+                String url = args[0];
+                // 广告需要 token
+                url = url.replace("__token__", AppApplication.getTOKEN().replace(" ", "|"));
+                bundle.putString(CustomWEBFragment.BUNDLE_PARAMS_WEB_URL, url);
                 bundle.putString(CustomWEBFragment.BUNDLE_PARAMS_WEB_TITLE, args[1]);
                 if (headers != null) {
                     bundle.putSerializable(CustomWEBFragment.BUNDLE_PARAMS_WEB_HEADERS, headers);
                 }
                 flag = args[2];
             } catch (Exception e) {
+                e.printStackTrace();
             }
             intent.putExtras(bundle);
         }
@@ -51,7 +68,19 @@ public class CustomWEBActivity extends TSActivity<RegisterPresenter, CustomWEBFr
 
     }
 
+    /**
+     * 跳转浏览器网页
+     *
+     * @param context
+     * @param url
+     */
     public static void startToOutWEBActivity(Context context, String url) {
+        try {
+            // 广告需要 token
+            url = url.replace("__token__", AppApplication.getTOKEN());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         Intent intent = new Intent();
         intent.setAction("android.intent.action.VIEW");
         String urlRege = "^http://[\\s\\S]+";

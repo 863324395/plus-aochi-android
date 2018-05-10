@@ -172,7 +172,7 @@ public class QuestionDetailPresenter extends AppBasePresenter<QuestionDetailCont
         ((UmengSharePolicyImpl) mSharePolicy).setOnShareCallbackListener(this);
         ShareContent shareContent = new ShareContent();
         shareContent.setTitle(RegexUtils.replaceImageId(MarkdownConfig.IMAGE_FORMAT, mRootView.getCurrentQuestion().getSubject()));
-        shareContent.setUrl(TSShareUtils.Convert2ShareUrl(String.format(Locale.getDefault(), APP_PATH_SHARE_QA_QUESTION_DETAIL, mRootView.getCurrentQuestion().getId
+        shareContent.setUrl(TSShareUtils.convert2ShareUrl(String.format(Locale.getDefault(), APP_PATH_SHARE_QA_QUESTION_DETAIL, mRootView.getCurrentQuestion().getId
                 ())));
         shareContent.setContent(RegexUtils.replaceImageId(MarkdownConfig.IMAGE_FORMAT, mRootView.getCurrentQuestion().getBody()));
 
