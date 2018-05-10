@@ -432,15 +432,16 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
 
     @Override
     public void onNetResponseSuccess(@NotNull List<DynamicDetailBeanV2> data, boolean isLoadMore) {
-        if (mListAdvert != null && getPage() <= mListAdvert.size()) {
-            try {// 添加广告
+        try {// 添加广告
+            if (!data.isEmpty() && mListAdvert != null && mListAdvert.size() >= getPage()) {
+
                 RealAdvertListBean realAdvertListBean = mListAdvert.get(getPage() - 1);
                 DynamicListAdvert advert = realAdvertListBean.getAdvertFormat().getAnalog();
                 long maxId = data.get(data.size() - 1).getMaxId();
                 data.add(DynamicListAdvert.advert2Dynamic(advert, maxId));
-            } catch (Exception ignore) {
-                ignore.printStackTrace();
             }
+        } catch (Exception ignore) {
+            ignore.printStackTrace();
         }
         super.onNetResponseSuccess(data, isLoadMore);
     }

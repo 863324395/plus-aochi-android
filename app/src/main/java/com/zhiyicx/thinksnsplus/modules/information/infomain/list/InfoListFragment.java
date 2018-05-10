@@ -95,7 +95,7 @@ public class InfoListFragment extends TSListFragment<InfoMainContract.InfoListPr
     @Override
     public void onNetResponseSuccess(@NotNull List<BaseListBean> data, boolean isLoadMore) {
         try {// 添加广告
-            if (!data.isEmpty()) {
+            if (!data.isEmpty() && mListAdvert != null && mListAdvert.size() >= getPage()) {
                 RealAdvertListBean realAdvertListBean = mListAdvert.get(getPage() - 1);
                 DynamicListAdvert advert = realAdvertListBean.getAdvertFormat().getAnalog();
                 long maxId = data.get(data.size() - 1).getMaxId();
