@@ -24,9 +24,9 @@ import android.os.MessageQueue;
 import android.os.PowerManager;
 import android.os.StatFs;
 import android.telephony.TelephonyManager;
+import android.text.TextPaint;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.Display;
 import android.view.View;
 import android.view.ViewTreeObserver;
@@ -823,5 +823,36 @@ public class DeviceUtils {
             return count * size / 1024 / 1024;
         }
         return 0;
+    }
+
+    /**
+     *
+     * @param paint 文字控件 paint
+     * @param str
+     * @param totalWidth 文字限制的总宽度
+     * @param defaultWord 默认文字
+     * @return 截取文本控件上指定宽度的文字
+     */
+    public static String getSubStringWidth(TextPaint paint, String str, float totalWidth, String defaultWord) {
+        if (TextUtils.isEmpty(str) || totalWidth <= 0) {
+            return "";
+        }
+
+        if (paint.measureText(str) <= totalWidth) {
+            return str;
+        }
+
+        float defaultWidht = paint.measureText(defaultWord);
+
+        float width = totalWidth - defaultWidht;
+
+        int length = str.length();
+
+        int measurennums = paint.breakText(str, true, width, null);
+
+        if (measurennums > length) {
+            measurennums = length;
+        }
+        return str.substring(0, measurennums) + "..." +defaultWord;
     }
 }

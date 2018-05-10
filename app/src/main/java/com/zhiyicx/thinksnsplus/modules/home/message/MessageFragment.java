@@ -15,6 +15,7 @@ import com.zhiyicx.baseproject.widget.BadgeView;
 import com.zhiyicx.baseproject.widget.recycleview.BlankClickRecycleView;
 import com.zhiyicx.common.base.BaseFragment;
 import com.zhiyicx.common.utils.ConvertUtils;
+import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
@@ -49,6 +50,8 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
         OnUserInfoClickListener, BlankClickRecycleView.BlankClickListener {
 
     private View mHeaderView;
+
+    private static final float MAXWIDTH = 0.65f;
 
     @Inject
     protected MessagePresenter mMessagePresenter;
@@ -293,8 +296,10 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
         tvHeaderSystemMsgTip.setBadgeCount(Integer.parseInt(ConvertUtils.messageNumberConvert
                 (systemMsgItemData.getUnReadMessageNums())));
 
-
-        tvHeaderCommentContent.setText(commentItemData.getConversation().getLast_message().getTxt());
+        float maxW = DeviceUtils.getScreenWidth(mActivity) * MAXWIDTH;
+        String commentText = commentItemData.getConversation().getLast_message().getTxt();
+        boolean threePeople = commentText.endsWith(mActivity.getString(R.string.comment_me_more));
+        tvHeaderCommentContent.setText(DeviceUtils.getSubStringWidth(tvHeaderCommentContent.getPaint(), commentText, maxW, mActivity.getString(threePeople ? R.string.comment_me_more : R.string.comment_me)));
 
         if (commentItemData.getConversation().getLast_message_time() == 0 || commentItemData
                 .getConversation().getLast_message().getTxt().contains(getString(R.string
@@ -308,7 +313,10 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
         tvHeaderCommentTip.setBadgeCount(Integer.parseInt(ConvertUtils.messageNumberConvert
                 (commentItemData.getUnReadMessageNums())));
 
-        tvHeaderLikeContent.setText(likedItemData.getConversation().getLast_message().getTxt());
+        String likeText = likedItemData.getConversation().getLast_message().getTxt();
+        threePeople = likeText.endsWith(mActivity.getString(R.string.like_me_more));
+        tvHeaderLikeContent.setText(DeviceUtils.getSubStringWidth(tvHeaderLikeContent.getPaint(), likeText, maxW, mActivity.getString(threePeople ? R.string.like_me_more : R.string.like_me)));
+
         if (likedItemData.getConversation().getLast_message_time() == 0 || likedItemData
                 .getConversation().getLast_message().getTxt().contains(getString(R.string
                         .has_no_body))) {
