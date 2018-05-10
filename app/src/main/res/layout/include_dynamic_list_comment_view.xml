@@ -8,8 +8,7 @@
         android:layout_below="@+id/fl_tip"
         android:layout_marginLeft="@dimen/dynamic_list_comment_marginright"
         android:layout_marginRight="@dimen/spacing_normal"
-        android:paddingBottom="@dimen/spacing_mid">
-    </com.zhiyicx.thinksnsplus.widget.comment.DynamicListCommentView>
+        android:paddingBottom="@dimen/spacing_mid"/>
 
     <com.zhiyicx.thinksnsplus.widget.comment.GroupDynamicListCommentView
         android:id="@+id/group_comment"
@@ -19,8 +18,7 @@
         android:layout_marginLeft="@dimen/dynamic_list_comment_marginright"
         android:layout_marginRight="@dimen/spacing_normal"
         android:paddingBottom="@dimen/spacing_mid"
-        android:visibility="gone">
-    </com.zhiyicx.thinksnsplus.widget.comment.GroupDynamicListCommentView>
+        android:visibility="gone"/>
 
     <com.zhiyicx.thinksnsplus.widget.comment.CirclePostListCommentView
         android:id="@+id/post_comment"
@@ -30,7 +28,6 @@
         android:layout_marginLeft="@dimen/dynamic_list_comment_marginright"
         android:layout_marginRight="@dimen/spacing_normal"
         android:paddingBottom="@dimen/spacing_mid"
-        android:visibility="gone">
-    </com.zhiyicx.thinksnsplus.widget.comment.CirclePostListCommentView>
+        android:visibility="gone"/>
 
 </merge>
