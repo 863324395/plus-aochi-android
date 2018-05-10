@@ -98,6 +98,13 @@ public class DataDealUitls {
                             test.append("[" + innerfield.getName() + "]");
                             // 对应的单个
                             if (innerfield.get(innerObj) == null) {
+                                // 清空 StringBuilder
+                                test.toString();
+                                continue;
+                            }
+                            if ("serialVersionUID".equals(innerfield.getName())) {
+                                // 清空 StringBuilder
+                                test.toString();
                                 continue;
                             }
                             map.put(test.toString(), innerfield.get(innerObj));

@@ -22,12 +22,15 @@
 
                 <TextView
                     style="@style/style_small_text"
+                    android:layout_width="wrap_content"
+                    android:paddingRight="@dimen/spacing_normal_large"
                     android:text="@string/login_account"/>
 
                 <android.support.v7.widget.AppCompatAutoCompleteTextView
                     android:id="@+id/et_complete_input"
                     style="@style/style_edit"
                     android:layout_width="0dp"
+                    android:layout_marginLeft="0dp"
                     android:layout_weight="1"
                     android:completionThreshold="@integer/login_hint_mix_count"
                     android:hint="@string/login_account_hint"
@@ -58,11 +61,14 @@
 
                 <TextView
                     style="@style/style_small_text"
+                    android:layout_width="wrap_content"
+                    android:paddingRight="@dimen/spacing_normal_large"
                     android:text="@string/password"/>
 
                 <com.zhiyicx.baseproject.widget.edittext.PasswordEditText
                     android:id="@+id/et_login_password"
                     style="@style/style_passward_edit"
+                    android:layout_marginLeft="0dp"
                     android:hint="@string/password_input_hint"
                     android:inputType="text"
                     android:text=""/>
@@ -179,8 +185,8 @@
         <FrameLayout
             android:id="@+id/fl_placeholder"
             android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:clickable="true"
-            android:visibility="gone"
-            android:layout_height="match_parent"/>
+            android:visibility="gone"/>
     </FrameLayout>
 </com.wcy.overscroll.OverScrollLayout>
