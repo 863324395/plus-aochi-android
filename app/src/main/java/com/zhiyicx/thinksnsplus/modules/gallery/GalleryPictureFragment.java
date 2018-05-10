@@ -128,6 +128,7 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
     private boolean mIsLoaded = false;
     private Subscription mPreloadSub;
     private boolean mImageIsLoaded = false;
+    private DrawableRequestBuilder<String> mCurrentHDRequestBuilder;
 
     /**
      * 构造函数
@@ -166,8 +167,12 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
         context = getContext();
         screenW = DeviceUtils.getScreenWidth(context);
         mPhotoViewAttacherNormal = new PhotoViewAttacher(mIvPager);
+
         mPhotoViewAttacherOrigin = new PhotoViewAttacher(mIvOriginPager);
         mPhotoViewAttacherNormal.setOnPhotoTapListener(this);
+
+
+
         mPhotoViewAttacherOrigin.setOnPhotoTapListener(this);
         // 图片长按，保存
         mPhotoViewAttacherOrigin.setOnLongClickListener(this);
@@ -231,11 +236,10 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                 }
             }
             if (!mImageIsLoaded) {
-                startLoadProgress();
+//                startLoadProgress();
             }
         } else {
             stopCenterLoading();
-
         }
     }
 
@@ -243,7 +247,7 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
     public void onResume() {
         super.onResume();
         if (getUserVisibleHint() && !mImageIsLoaded && !getArguments().getBoolean("firstOpenPage")) {
-            startLoadProgress();
+//            startLoadProgress();
         }
     }
 
@@ -463,22 +467,45 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                                     || ImageUtils.isLongImage((float) imageBean.getHeight(), (float) imageBean.getWidth());
                             if (isNeedOrin) {
                                 startLoadProgress();
+
+                                return ImageUtils.imagePathConvertV2(canLook, mImageBean.getStorage_id(), canLook ? w : 0, canLook ? h : 0,
+                                        ImageZipConfig.IMAGE_100_ZIP, AppApplication.getTOKEN());
+                            } else {
+                                return ImageUtils.imagePathConvertV2(imageBean.getListCacheUrl(), AppApplication.getTOKEN());
                             }
-                            return ImageUtils.imagePathConvertV2(canLook, mImageBean.getStorage_id(), canLook ? w : 0, canLook ? h : 0,
-                                    isNeedOrin ? ImageZipConfig.IMAGE_100_ZIP : ImageZipConfig
-                                            .IMAGE_ZIP_BIG, AppApplication.getTOKEN());
+
                         }
                     }
                             .requestGlideUrl())
+                    .listener(new RequestListener<GlideUrl, GlideDrawable>() {
+                        @Override
+                        public boolean onException(Exception e, GlideUrl model, Target<GlideDrawable> target, boolean isFirstResource) {
+                            LogUtils.i(TAG + "加载缩略图失败");
+                            return false;
+                        }
+
+                        @Override
+                        public boolean onResourceReady(GlideDrawable resource, GlideUrl model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                            LogUtils.i(TAG + "加载缩略图成功");
+                            // 获取到模糊图进行放大动画
+                            startInAnim(imageBean, rect);
+                            return false;
+                        }
+                    })
                     .diskCacheStrategy(DiskCacheStrategy.ALL);
-            // // 不从网络读取原图(CACHE_ONLY_STREAM_LOADER) 尝试从缓存获取原图
-            DrawableRequestBuilder requestBuilder = Glide.with(context)
+            if (imageBean.getWidth() * imageBean.getHeight() != 0) {
+                thumbnailBuilder.override(w, h);
+            }
+            // 不从网络读取原图(CACHE_ONLY_STREAM_LOADER) 尝试从缓存获取原图
+            mCurrentHDRequestBuilder = Glide.with(context)
                     .using(CACHE_ONLY_STREAM_LOADER)
                     .load(ImageUtils.imagePathConvertV2(mImageBean.getStorage_id(), 0, 0,
                             ImageZipConfig.IMAGE_100_ZIP))
                     // 加载缩略图，上一个页面已经缓存好了，直接读取
-                    .thumbnail(thumbnailBuilder)
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .placeholder(mIvPager.getDrawable())
+                    .skipMemoryCache(false)
+                    .dontAnimate()
                     .error(R.drawable.shape_default_image)
                     .listener(new RequestListener<String, GlideDrawable>() {
                         // 没有缓存到原图
@@ -508,6 +535,9 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                                                             ImageZipConfig.IMAGE_ZIP_BIG, AppApplication.getTOKEN())
                                     )
                                     .diskCacheStrategy(DiskCacheStrategy.ALL)
+                                    .placeholder(mIvPager.getDrawable())
+                                    .skipMemoryCache(false)
+                                    .dontAnimate()
                                     .listener(new RequestListener<GlideUrl, GlideDrawable>() {
                                         @Override
                                         public boolean onException(Exception e, GlideUrl model, Target<GlideDrawable> target, boolean
@@ -515,7 +545,7 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                                             LogUtils.i(TAG + "加载高清图失败:" + e);
                                             stopCenterLoading();
                                             mTvOriginPhoto.setText(getString(R.string.see_origin_photos_failure));
-                                            mPhotoViewAttacherNormal.update();
+                                            mPhotoViewAttacherNormal.setZoomable(false);
                                             return false;
                                         }
 
@@ -524,12 +554,14 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                                                                        boolean isFromMemoryCache, boolean isFirstResource) {
                                             LogUtils.i(TAG + "加载高清图成功");
                                             stopCenterLoading();
-
+                                            mPhotoViewAttacherNormal.setZoomable(false);
                                             // mPhotoViewAttacherNormal.update() 必须在图片设置上后才有效果
                                             Observable.timer(40, TimeUnit.MILLISECONDS)
                                                     .observeOn(AndroidSchedulers.mainThread())
                                                     .subscribeOn(Schedulers.io())
-                                                    .subscribe(aLong -> mPhotoViewAttacherNormal.update());
+                                                    .subscribe(aLong -> {
+                                                        mPhotoViewAttacherNormal.setZoomable(true);
+                                                    });
 
                                             return false;
                                         }
@@ -556,12 +588,15 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                             return false;
                         }
                     });
-
-            requestBuilder.into(
-                    ImageUtils.imageIsGif(imageBean.getImgMimeType()) ? new GallaryGlideDrawableImageViewTarget(rect) : new GallarySimpleTarget(rect)
-            );
+            intoImageTarget(thumbnailBuilder, imageBean, rect);
 
         }
+    }
+
+    private void intoImageTarget(DrawableRequestBuilder builder, final ImageBean imageBean, final AnimationRectBean rect) {
+        builder.into(
+                ImageUtils.imageIsGif(imageBean.getImgMimeType()) ? new GallaryGlideDrawableImageViewTarget(rect) : new GallarySimpleTarget(rect)
+        );
     }
 
     /**
@@ -570,6 +605,8 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
     private void startLoadProgress() {
         if (mPbProgressImage != null && getUserVisibleHint() && mPbProgressImage.getVisibility() == View.GONE) {
             mPbProgressImage.setVisibility(View.VISIBLE);
+            mPbProgressImage.setAlpha(0.0f);
+            mPbProgressImage.animate().alpha(1.0f).setDuration(100).start();
             ((AnimationDrawable) mPbProgressImage.getDrawable()).start();
         }
     }
@@ -700,13 +737,35 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
     }
 
     /**
-     * 进入动画，在加载图片后调用
-     *
-     * @param rect
+     * 进入动画，在加载缩略图完成后调用
+     * 紧接着就会 尝试从缓存加载 原图
+     * 缓存中没有原图 则开始加载网络高清图
+     * @param imageBean 图片信息
+     * @param rect 动画所需位置信息
      */
-    private void startInAnim(final AnimationRectBean rect) {
-        TransferImageAnimationUtil.startInAnim(rect, mIvPager, mFlImageContaienr);
-
+    private void startInAnim(final ImageBean imageBean, final AnimationRectBean rect) {
+        if (hasAnim) {
+            hasAnim = false;
+            TransferImageAnimationUtil.startInAnim(rect, mIvPager, mFlImageContaienr, new Runnable() {
+                @Override
+                public void run() {
+                    if (mIvPager != null && mActivity != null && mCurrentHDRequestBuilder != null) {
+                        mActivity.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (mIvPager != null && mActivity != null && mCurrentHDRequestBuilder != null) {
+                                    intoImageTarget(mCurrentHDRequestBuilder, imageBean, rect);
+                                }
+                            }
+                        });
+                    }
+                }
+            });
+        }else{
+            if (mIvPager != null && mActivity != null && mCurrentHDRequestBuilder != null) {
+                intoImageTarget(mCurrentHDRequestBuilder, imageBean, rect);
+            }
+        }
     }
 
     /**
@@ -813,11 +872,6 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
             mImageIsLoaded = true;
             stopCenterLoading();
             mPhotoViewAttacherNormal.update();
-            // 获取到模糊图进行放大动画
-            if (hasAnim) {
-                hasAnim = false;
-                startInAnim(rect);
-            }
         }
     }
 
@@ -844,11 +898,6 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                 mIvPager.setImageDrawable(resource);
             }
             mPhotoViewAttacherNormal.update();
-            // 获取到模糊图进行放大动画
-            if (hasAnim) {
-                hasAnim = false;
-                startInAnim(rect);
-            }
         }
 
     }

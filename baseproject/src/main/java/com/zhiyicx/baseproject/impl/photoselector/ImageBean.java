@@ -2,6 +2,9 @@ package com.zhiyicx.baseproject.impl.photoselector;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.text.TextUtils;
+
+import com.bumptech.glide.load.model.GlideUrl;
 
 import java.io.Serializable;
 
@@ -31,6 +34,8 @@ public class ImageBean implements Parcelable, Serializable {
     private int part;// 图片压缩比例
     private String imgMimeType;// 图片类型
     private Toll toll;
+
+    private String listCacheUrl;
 
     public Toll getToll() {
         return toll;
@@ -127,6 +132,18 @@ public class ImageBean implements Parcelable, Serializable {
         this.height = height;
     }
 
+    public void setListCacheUrl(GlideUrl listCacheUrl) {
+        if (TextUtils.isEmpty(imgUrl)) {
+            this.listCacheUrl = listCacheUrl.toStringUrl();
+        } else {
+            this.listCacheUrl = null;
+        }
+    }
+
+    public String getListCacheUrl() {
+        return listCacheUrl;
+    }
+
     public ImageBean(int storage_id) {
         this.storage_id = storage_id;
     }
@@ -154,6 +171,7 @@ public class ImageBean implements Parcelable, Serializable {
                 ", part=" + part +
                 ", imgMimeType='" + imgMimeType + '\'' +
                 ", toll=" + toll +
+                ", listCacheUrl='" + listCacheUrl + '\'' +
                 '}';
     }
 
@@ -161,51 +179,7 @@ public class ImageBean implements Parcelable, Serializable {
     }
 
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.imgUrl);
-        dest.writeValue(this.feed_id);
-        dest.writeInt(this.storage_id);
-        dest.writeInt(this.position);
-        dest.writeInt(this.toll_type);
-        dest.writeLong(this.toll_monye);
-        dest.writeDouble(this.width);
-        dest.writeDouble(this.height);
-        dest.writeInt(this.part);
-        dest.writeString(this.imgMimeType);
-        dest.writeParcelable(this.toll, flags);
-    }
-
-    protected ImageBean(Parcel in) {
-        this.imgUrl = in.readString();
-        this.feed_id = (Long) in.readValue(Long.class.getClassLoader());
-        this.storage_id = in.readInt();
-        this.position = in.readInt();
-        this.toll_type = in.readInt();
-        this.toll_monye = in.readLong();
-        this.width = in.readDouble();
-        this.height = in.readDouble();
-        this.part = in.readInt();
-        this.imgMimeType = in.readString();
-        this.toll = in.readParcelable(Toll.class.getClassLoader());
-    }
-
-    public static final Creator<ImageBean> CREATOR = new Creator<ImageBean>() {
-        @Override
-        public ImageBean createFromParcel(Parcel source) {
-            return new ImageBean(source);
-        }
-
-        @Override
-        public ImageBean[] newArray(int size) {
-            return new ImageBean[size];
-        }
-    };
 
     @Override
     public boolean equals(Object o) {
@@ -225,4 +199,54 @@ public class ImageBean implements Parcelable, Serializable {
     public int hashCode() {
         return imgUrl != null ? imgUrl.hashCode() : 0;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.imgUrl);
+        dest.writeValue(this.feed_id);
+        dest.writeInt(this.storage_id);
+        dest.writeInt(this.position);
+        dest.writeInt(this.dynamicPosition);
+        dest.writeInt(this.toll_type);
+        dest.writeLong(this.toll_monye);
+        dest.writeDouble(this.width);
+        dest.writeDouble(this.height);
+        dest.writeInt(this.part);
+        dest.writeString(this.imgMimeType);
+        dest.writeParcelable(this.toll, flags);
+        dest.writeString(this.listCacheUrl);
+    }
+
+    protected ImageBean(Parcel in) {
+        this.imgUrl = in.readString();
+        this.feed_id = (Long) in.readValue(Long.class.getClassLoader());
+        this.storage_id = in.readInt();
+        this.position = in.readInt();
+        this.dynamicPosition = in.readInt();
+        this.toll_type = in.readInt();
+        this.toll_monye = in.readLong();
+        this.width = in.readDouble();
+        this.height = in.readDouble();
+        this.part = in.readInt();
+        this.imgMimeType = in.readString();
+        this.toll = in.readParcelable(Toll.class.getClassLoader());
+        this.listCacheUrl = in.readString();
+    }
+
+    public static final Creator<ImageBean> CREATOR = new Creator<ImageBean>() {
+        @Override
+        public ImageBean createFromParcel(Parcel source) {
+            return new ImageBean(source);
+        }
+
+        @Override
+        public ImageBean[] newArray(int size) {
+            return new ImageBean[size];
+        }
+    };
 }

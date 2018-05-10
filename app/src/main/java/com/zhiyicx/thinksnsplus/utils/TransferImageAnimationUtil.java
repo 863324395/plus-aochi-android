@@ -195,6 +195,66 @@ public class TransferImageAnimationUtil {
                                     .translationY(0)
                                     .setDuration(ANIMATION_DURATION)
                                     .setInterpolator(new AccelerateDecelerateInterpolator());
+
+                        }
+
+
+                        imageView.getViewTreeObserver().removeOnPreDrawListener(this);
+                        return true;
+                    }
+                });
+    }
+
+    /**
+     * 控件进入时的缩放处理
+     *
+     * @param rect      转场动画初始时，由上一个界面传递过来的图片控件属性
+     * @param imageView 当前界面要进行缩放的图片控件
+     */
+    public static void startInAnim(final AnimationRectBean rect, final ImageView imageView, final FrameLayout viewGroup,final Runnable endAction) {
+        if (imageView == null) {
+            return;
+        }
+        imageView.getViewTreeObserver()
+                .addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+                    @Override
+                    public boolean onPreDraw() {
+
+                        if (rect == null) {
+                            imageView.getViewTreeObserver().removeOnPreDrawListener(this);
+                            return true;
+                        }
+
+                        final Rect startBounds = new Rect(rect.scaledBitmapRect);
+                        final Rect finalBounds =
+                                DrawableProvider.getBitmapRectCloseImageView(imageView);
+
+                        if (finalBounds == null) {
+                            imageView.getViewTreeObserver().removeOnPreDrawListener(this);
+                            return true;
+                        }
+
+                        float startScale = (float) finalBounds.width() / startBounds.width();
+
+                        int deltaTop = startBounds.top - finalBounds.top;
+                        int deltaLeft = startBounds.left - finalBounds.left;
+                        // 位移+缩小
+                        imageView.setPivotY((imageView.getHeight() - finalBounds.height()) / 2);
+                        imageView.setPivotX((imageView.getWidth() - finalBounds.width()) / 2);
+                        imageView.setScaleX(1 / startScale);
+                        imageView.setScaleY(1 / startScale);
+                        imageView.setTranslationX(deltaLeft);
+                        imageView.setTranslationY(deltaTop);
+
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                            imageView.animate()
+                                    .scaleY(1)
+                                    .scaleX(1)
+                                    .translationX(0)
+                                    .translationY(0)
+                                    .setDuration(ANIMATION_DURATION)
+                                    .setInterpolator(new AccelerateDecelerateInterpolator())
+                                    .withEndAction(endAction);
                         }
 
 
