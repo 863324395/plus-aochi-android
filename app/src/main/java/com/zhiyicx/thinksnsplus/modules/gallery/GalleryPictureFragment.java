@@ -172,7 +172,6 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
         mPhotoViewAttacherNormal.setOnPhotoTapListener(this);
 
 
-
         mPhotoViewAttacherOrigin.setOnPhotoTapListener(this);
         // 图片长按，保存
         mPhotoViewAttacherOrigin.setOnLongClickListener(this);
@@ -465,9 +464,8 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                             boolean isNeedOrin = ImageUtils.isWithOrHeightOutOfBounds(w, h)
                                     || ImageUtils.imageIsGif(imageBean.getImgMimeType())
                                     || ImageUtils.isLongImage((float) imageBean.getHeight(), (float) imageBean.getWidth());
-                            if (isNeedOrin) {
+                            if (imageBean.getListCacheUrl() == null || isNeedOrin) {
                                 startLoadProgress();
-
                                 return ImageUtils.imagePathConvertV2(canLook, mImageBean.getStorage_id(), canLook ? w : 0, canLook ? h : 0,
                                         ImageZipConfig.IMAGE_100_ZIP, AppApplication.getTOKEN());
                             } else {
@@ -485,7 +483,8 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                         }
 
                         @Override
-                        public boolean onResourceReady(GlideDrawable resource, GlideUrl model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                        public boolean onResourceReady(GlideDrawable resource, GlideUrl model, Target<GlideDrawable> target, boolean
+                                isFromMemoryCache, boolean isFirstResource) {
                             LogUtils.i(TAG + "加载缩略图成功");
                             // 获取到模糊图进行放大动画
                             startInAnim(imageBean, rect);
@@ -740,8 +739,9 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
      * 进入动画，在加载缩略图完成后调用
      * 紧接着就会 尝试从缓存加载 原图
      * 缓存中没有原图 则开始加载网络高清图
+     *
      * @param imageBean 图片信息
-     * @param rect 动画所需位置信息
+     * @param rect      动画所需位置信息
      */
     private void startInAnim(final ImageBean imageBean, final AnimationRectBean rect) {
         if (hasAnim) {
@@ -761,7 +761,7 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                     }
                 }
             });
-        }else{
+        } else {
             if (mIvPager != null && mActivity != null && mCurrentHDRequestBuilder != null) {
                 intoImageTarget(mCurrentHDRequestBuilder, imageBean, rect);
             }
