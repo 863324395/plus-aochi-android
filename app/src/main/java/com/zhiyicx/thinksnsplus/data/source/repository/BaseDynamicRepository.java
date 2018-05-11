@@ -53,6 +53,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
+import static com.zhiyicx.baseproject.config.ApiConfig.DYNAMIC_TYPE_HOTS;
 import static com.zhiyicx.baseproject.config.ApiConfig.DYNAMIC_TYPE_MY_COLLECTION;
 import static com.zhiyicx.baseproject.config.ApiConfig.DYNAMIC_TYPE_USERS;
 import static com.zhiyicx.thinksnsplus.data.beans.TopDynamicBean.TYPE_HOT;
@@ -122,7 +123,8 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
                         return Observable.just(data);
                     });
         } else {
-            observable = mDynamicClient.getDynamicListV2(type, after, user_id, TSListFragment.DEFAULT_PAGE_SIZE, screen);
+            observable = mDynamicClient.getDynamicListV2(type, DYNAMIC_TYPE_HOTS.equals(type) ? null : after, user_id, TSListFragment
+                    .DEFAULT_PAGE_SIZE, screen, DYNAMIC_TYPE_HOTS.equals(type) ? after.intValue() : null);
         }
         return dealWithDynamicListV2(observable, type, isLoadMore);
     }
@@ -570,10 +572,10 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
                     if (topData != null && !topData.isEmpty()) {
                         for (DynamicDetailBeanV2 data : topData) {
                             data.setTop(DynamicDetailBeanV2.TOP_SUCCESS);
-                            if(dynamicBeanV2.getFeeds()!=null){
+                            if (dynamicBeanV2.getFeeds() != null) {
                                 // 删除置顶重复的，只处理刷新
                                 for (DynamicDetailBeanV2 dynamicDetailBeanV2 : dynamicBeanV2.getFeeds()) {
-                                    if(data.getId().equals(dynamicDetailBeanV2.getId())){
+                                    if (data.getId().equals(dynamicDetailBeanV2.getId())) {
                                         dynamicBeanV2.getFeeds().remove(dynamicDetailBeanV2);
                                         break;
                                     }

@@ -416,17 +416,25 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
     }
 
     /**
-     * 由于热门和关注和最新的 max_id 不同，所以特殊处理
+     * 由于热门和关注和最新的 max_id 不同，所以特殊处理 ,热门分页使用 offset
      *
      * @param data
      * @return
      */
     @Override
     protected Long getMaxId(@NotNull List<DynamicDetailBeanV2> data) {
-        if (mListDatas.size() > 0) {
-            return mListDatas.get(mListDatas.size() - 1).getId();
+        if (mDynamicType.equals(ApiConfig.DYNAMIC_TYPE_HOTS)) {
+            if (DEFAULT_PAGE_SIZE == null) {
+                return (long) mPage * DEFAULT_PAGE_DB_SIZE;
+            } else {
+                return (long) mPage * DEFAULT_PAGE_SIZE;
+            }
         } else {
-            return DEFAULT_PAGE_MAX_ID;
+            if (mListDatas.size() > 0) {
+                return mListDatas.get(mListDatas.size() - 1).getId();
+            } else {
+                return DEFAULT_PAGE_MAX_ID;
+            }
         }
     }
 
