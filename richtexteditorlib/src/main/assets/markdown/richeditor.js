@@ -195,8 +195,9 @@ var RE = {
 	    // 屏蔽了标题的回车输入
 	    _self.titleLimit.txtNote.onkeypress = function(){
                                         if (event.keyCode == 13 ){
-                                            return false;
+                                            return;
                                         }
+
                                     }
 	},
 	focus: function focus() {
@@ -508,8 +509,6 @@ var RE = {
         var noteView = _self.titleLimit.txtNote;
         var limitCount = _self.titleLimit.limitCount;
         var InPutView = document.getElementById("title");
-        var title = getTitle();
-        console.log("isPublish:::" + title);
         if(InPutView.innerHTML.length < 10 ){
             document.getElementById("stay").style.display="none";
             return
