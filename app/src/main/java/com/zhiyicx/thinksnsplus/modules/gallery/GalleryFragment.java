@@ -94,6 +94,8 @@ public class GalleryFragment extends TSFragment {
         if (allImages != null && allImages.size() > 1) {
             addCircleNavigator();
             mMiIndicator.onPageSelected(currentItem);
+        }else{
+            mMiIndicator.setVisibility(View.GONE);
         }
         mVpPhotos.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
             @Override
