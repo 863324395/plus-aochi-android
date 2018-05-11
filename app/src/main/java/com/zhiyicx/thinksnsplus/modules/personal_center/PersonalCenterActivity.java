@@ -55,7 +55,7 @@ public class PersonalCenterActivity extends TSActivity<PersonalCenterPresenter, 
         super.onPause();
         JZVideoPlayer jzVideoPlayer = JZVideoPlayerManager.getCurrentJzvd();
         if (jzVideoPlayer != null) {
-            if (JZUtils.scanForActivity(jzVideoPlayer.getContext()) instanceof HomeActivity) {
+            if (JZUtils.scanForActivity(jzVideoPlayer.getContext()) instanceof PersonalCenterActivity) {
                 jzVideoPlayer.onStateNormal();
             }
         }
