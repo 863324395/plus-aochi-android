@@ -5,7 +5,6 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
@@ -32,7 +31,6 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.load.model.stream.StreamModelLoader;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
-import com.bumptech.glide.request.FutureTarget;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.GlideDrawableImageViewTarget;
@@ -51,12 +49,10 @@ import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.baseproject.widget.popwindow.PayPopWindow;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.DeviceUtils;
-import com.zhiyicx.common.utils.DrawableProvider;
 import com.zhiyicx.common.utils.FileUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
-import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.AnimationRectBean;
 import com.zhiyicx.thinksnsplus.utils.DealPhotoUtils;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
@@ -78,13 +74,9 @@ import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
-import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
-import static com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListBaseItem.DEFALT_IMAGE_HEIGHT;
-import static com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListBaseItem.DEFALT_IMAGE_WITH;
 
 
 /**
@@ -460,9 +452,13 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                 startLoadProgress();
             }
         } else {
+
+            createHDimageLoader(imageBean, canLook, w, h);
+
             // 缩略图
             DrawableRequestBuilder thumbnailBuilder = Glide
                     .with(context)
+                    .using(LIST_CACHE_ONLY_STREAM_LOADER)
                     .load(new CustomImageSizeModelImp(imageBean) {
                         @Override
                         public GlideUrl requestGlideUrl() {
@@ -479,11 +475,15 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
 
                         }
                     }
-                            .requestGlideUrl())
+
+                    .requestGlideUrl())
                     .listener(new RequestListener<GlideUrl, GlideDrawable>() {
                         @Override
                         public boolean onException(Exception e, GlideUrl model, Target<GlideDrawable> target, boolean isFirstResource) {
                             LogUtils.i(TAG + "加载缩略图失败");
+                            startLoadProgress();
+                            intoImageTarget(mCurrentHDRequestBuilder, imageBean, rect);
+                            mFlGalleryPhoto.setBackgroundColor(Color.BLACK);
                             return false;
                         }
 
@@ -500,101 +500,105 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
             if (imageBean.getWidth() * imageBean.getHeight() != 0) {
                 thumbnailBuilder.override(w, h);
             }
-            // 不从网络读取原图(CACHE_ONLY_STREAM_LOADER) 尝试从缓存获取原图
-            mCurrentHDRequestBuilder = Glide.with(context)
-                    .using(CACHE_ONLY_STREAM_LOADER)
-                    .load(ImageUtils.imagePathConvertV2(mImageBean.getStorage_id(), 0, 0,
-                            ImageZipConfig.IMAGE_100_ZIP))
-                    // 加载缩略图，上一个页面已经缓存好了，直接读取
-                    .diskCacheStrategy(DiskCacheStrategy.ALL)
-                    .placeholder(mIvPager.getDrawable())
-                    .skipMemoryCache(false)
-                    .dontAnimate()
-                    .error(R.drawable.shape_default_image)
-                    .listener(new RequestListener<String, GlideDrawable>() {
-                        // 没有缓存到原图
-                        @Override
-                        public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
-                            LogUtils.i(TAG + "加载原图失败");
-                            startLoadProgress();
-                            if (mTvOriginPhoto != null) {
-                                mTvOriginPhoto.setVisibility(View.VISIBLE);
-                            }
-                            if (!canLook) {
-                                if (mTvOriginPhoto != null) {
-                                    mTvOriginPhoto.setVisibility(View.GONE);
-                                }
-                                stopCenterLoading();
-                                mPhotoViewAttacherNormal.update();
-                                mLlToll.setVisibility(View.VISIBLE);
-                            }
-                            boolean isNeedOrin = ImageUtils.isWithOrHeightOutOfBounds(w, h)
-                                    || ImageUtils.imageIsGif(imageBean.getImgMimeType())
-                                    || ImageUtils.isLongImage((float) imageBean.getHeight(), (float) imageBean.getWidth());
-                            // 原图没有缓存，从cacheOnlyStreamLoader抛出异常，在这儿加载高清图
-                            DrawableRequestBuilder builder = Glide.with(context)
-                                    .load(
-                                            ImageUtils.imagePathConvertV2(canLook, mImageBean.getStorage_id(), canLook ? w : 0, canLook ? h : 0,
-                                                    isNeedOrin ? ImageZipConfig.IMAGE_100_ZIP :
-                                                            ImageZipConfig.IMAGE_ZIP_BIG, AppApplication.getTOKEN())
-                                    )
-                                    .diskCacheStrategy(DiskCacheStrategy.ALL)
-                                    .placeholder(mIvPager.getDrawable())
-                                    .skipMemoryCache(false)
-                                    .dontAnimate()
-                                    .listener(new RequestListener<GlideUrl, GlideDrawable>() {
-                                        @Override
-                                        public boolean onException(Exception e, GlideUrl model, Target<GlideDrawable> target, boolean
-                                                isFirstResource) {
-                                            LogUtils.i(TAG + "加载高清图失败:" + e);
-                                            stopCenterLoading();
-                                            mTvOriginPhoto.setText(getString(R.string.see_origin_photos_failure));
-                                            mPhotoViewAttacherNormal.setZoomable(false);
-                                            return false;
-                                        }
 
-                                        @Override
-                                        public boolean onResourceReady(GlideDrawable resource, GlideUrl model, Target<GlideDrawable> target,
-                                                                       boolean isFromMemoryCache, boolean isFirstResource) {
-                                            LogUtils.i(TAG + "加载高清图成功");
-                                            stopCenterLoading();
-                                            mPhotoViewAttacherNormal.setZoomable(false);
-                                            // mPhotoViewAttacherNormal.update() 必须在图片设置上后才有效果
-                                            Observable.timer(40, TimeUnit.MILLISECONDS)
-                                                    .observeOn(AndroidSchedulers.mainThread())
-                                                    .subscribeOn(Schedulers.io())
-                                                    .subscribe(aLong -> {
-                                                        mPhotoViewAttacherNormal.setZoomable(true);
-                                                    });
-
-                                            return false;
-                                        }
-
-
-                                    });
-                            if (imageBean.getWidth() * imageBean.getHeight() != 0) {
-                                builder.override(w, h);
-                            }
-                            if (mIvPager != null) {
-                                builder.into(mIvPager);
-                            }
-                            return false;
-                        }
-
-                        @Override
-                        public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean
-                                isFromMemoryCache, boolean isFirstResource) {
-                            // 只有获取load的图片才会走这儿，缩略图不会
-                            LogUtils.i(TAG + "加载原图成功");
-                            if (mTvOriginPhoto != null) {
-                                mTvOriginPhoto.setVisibility(View.GONE);
-                            }
-                            return false;
-                        }
-                    });
             intoImageTarget(thumbnailBuilder, imageBean, rect);
 
         }
+    }
+
+    private void createHDimageLoader(ImageBean imageBean, boolean canLook, int w, int h) {
+        // 不从网络读取原图(CACHE_ONLY_STREAM_LOADER) 尝试从缓存获取原图
+        mCurrentHDRequestBuilder = Glide.with(context)
+                .using(CACHE_ONLY_STREAM_LOADER)
+                .load(ImageUtils.imagePathConvertV2(mImageBean.getStorage_id(), 0, 0,
+                        ImageZipConfig.IMAGE_100_ZIP))
+                // 加载缩略图，上一个页面已经缓存好了，直接读取
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .placeholder(mIvPager.getDrawable())
+                .skipMemoryCache(false)
+                .dontAnimate()
+                .error(R.drawable.shape_default_image)
+                .listener(new RequestListener<String, GlideDrawable>() {
+                    // 没有缓存到原图
+                    @Override
+                    public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
+                        LogUtils.i(TAG + "加载原图失败");
+                        startLoadProgress();
+                        if (mTvOriginPhoto != null) {
+                            mTvOriginPhoto.setVisibility(View.VISIBLE);
+                        }
+                        if (!canLook) {
+                            if (mTvOriginPhoto != null) {
+                                mTvOriginPhoto.setVisibility(View.GONE);
+                            }
+                            stopCenterLoading();
+                            mPhotoViewAttacherNormal.update();
+                            mLlToll.setVisibility(View.VISIBLE);
+                        }
+                        boolean isNeedOrin = ImageUtils.isWithOrHeightOutOfBounds(w, h)
+                                || ImageUtils.imageIsGif(imageBean.getImgMimeType())
+                                || ImageUtils.isLongImage((float) imageBean.getHeight(), (float) imageBean.getWidth());
+                        // 原图没有缓存，从cacheOnlyStreamLoader抛出异常，在这儿加载高清图
+                        DrawableRequestBuilder builder = Glide.with(context)
+                                .load(
+                                        ImageUtils.imagePathConvertV2(canLook, mImageBean.getStorage_id(), canLook ? w : 0, canLook ? h : 0,
+                                                isNeedOrin ? ImageZipConfig.IMAGE_100_ZIP :
+                                                        ImageZipConfig.IMAGE_ZIP_BIG, AppApplication.getTOKEN())
+                                )
+                                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                                .placeholder(mIvPager.getDrawable())
+                                .skipMemoryCache(false)
+                                .dontAnimate()
+                                .listener(new RequestListener<GlideUrl, GlideDrawable>() {
+                                    @Override
+                                    public boolean onException(Exception e, GlideUrl model, Target<GlideDrawable> target, boolean
+                                            isFirstResource) {
+                                        LogUtils.i(TAG + "加载高清图失败:" + e);
+                                        stopCenterLoading();
+                                        mTvOriginPhoto.setText(getString(R.string.see_origin_photos_failure));
+                                        mPhotoViewAttacherNormal.setZoomable(false);
+                                        return false;
+                                    }
+
+                                    @Override
+                                    public boolean onResourceReady(GlideDrawable resource, GlideUrl model, Target<GlideDrawable> target,
+                                                                   boolean isFromMemoryCache, boolean isFirstResource) {
+                                        LogUtils.i(TAG + "加载高清图成功");
+                                        stopCenterLoading();
+                                        mPhotoViewAttacherNormal.setZoomable(false);
+                                        // mPhotoViewAttacherNormal.update() 必须在图片设置上后才有效果
+                                        Observable.timer(40, TimeUnit.MILLISECONDS)
+                                                .observeOn(AndroidSchedulers.mainThread())
+                                                .subscribeOn(Schedulers.io())
+                                                .subscribe(aLong -> {
+                                                    mPhotoViewAttacherNormal.setZoomable(true);
+                                                });
+
+                                        return false;
+                                    }
+
+
+                                });
+                        if (imageBean.getWidth() * imageBean.getHeight() != 0) {
+                            builder.override(w, h);
+                        }
+                        if (mIvPager != null) {
+                            builder.into(mIvPager);
+                        }
+                        return false;
+                    }
+
+                    @Override
+                    public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean
+                            isFromMemoryCache, boolean isFirstResource) {
+                        // 只有获取load的图片才会走这儿，缩略图不会
+                        LogUtils.i(TAG + "加载原图成功");
+                        if (mTvOriginPhoto != null) {
+                            mTvOriginPhoto.setVisibility(View.GONE);
+                        }
+                        return false;
+                    }
+                });
     }
 
     private void intoImageTarget(DrawableRequestBuilder builder, final ImageBean imageBean, final AnimationRectBean rect) {
@@ -902,7 +906,9 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
 
     }
 
-
+    /**
+     * 原图
+     */
     private static final StreamModelLoader<String> CACHE_ONLY_STREAM_LOADER
             = (model, i, i1) -> new DataFetcher<InputStream>() {
         @Override
@@ -919,6 +925,33 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
         @Override
         public String getId() {
             return model;
+        }
+
+        @Override
+        public void cancel() {
+
+        }
+    };
+
+    /**
+     * 缩略图
+     */
+    private static final StreamModelLoader<GlideUrl> LIST_CACHE_ONLY_STREAM_LOADER
+            = (model, i, i1) -> new DataFetcher<InputStream>() {
+        @Override
+        public InputStream loadData(Priority priority) throws Exception {
+            // 如果是从网络获取图片肯定会走这儿，直接抛出异常，缓存从其他方法获取
+            throw new IOException("intercupt net by own");
+        }
+
+        @Override
+        public void cleanup() {
+
+        }
+
+        @Override
+        public String getId() {
+            return model.toStringUrl();
         }
 
         @Override
