@@ -59,7 +59,6 @@ import rx.schedulers.Schedulers;
 public class MessagePresenter extends AppBasePresenter<MessageContract.View> implements MessageContract.Presenter {
     private static final int MAX_USER_NUMS_COMMENT = 2;
     private static final int MAX_USER_NUMS_DIGG = 3;
-    private static final int MAX_USER_NUMS_ELLIPSIS = Integer.MAX_VALUE;
 
     @Inject
     MessageRepository mMessageRepository;
@@ -449,7 +448,7 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.View> imp
                      * mContext.getString(R.string.has_no_body)
                      + mContext.getString(R.string.comment_me)
                      */
-                    String commentTip = getItemTipStr(data.getComments(), MAX_USER_NUMS_ELLIPSIS);
+                    String commentTip = getItemTipStr(data.getComments(), MAX_USER_NUMS_COMMENT);
                     if (!TextUtils.isEmpty(commentTip)) {
                         if (data.getComments() != null && data.getComments().size() > MAX_USER_NUMS_COMMENT) {
                             commentTip += mContext.getString(R.string.comment_me_more);
@@ -463,7 +462,7 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.View> imp
                     mItemBeanComment.getConversation().getLast_message().setTxt(
                             commentTip);
 
-                    String diggTip = getItemTipStr(data.getLikes(), MAX_USER_NUMS_ELLIPSIS);
+                    String diggTip = getItemTipStr(data.getLikes(), MAX_USER_NUMS_DIGG);
                     if (!TextUtils.isEmpty(diggTip)) {
                         if (data.getLikes() != null && data.getLikes().size() > MAX_USER_NUMS_DIGG) {
                             diggTip += mContext.getString(R.string.like_me_more);
