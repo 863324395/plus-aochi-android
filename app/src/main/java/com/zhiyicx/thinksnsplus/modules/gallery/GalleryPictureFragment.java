@@ -6,6 +6,7 @@ import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.os.Handler;
@@ -98,6 +99,8 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
 
     @BindView(R.id.fl_image_contaienr)
     FrameLayout mFlImageContaienr;
+    @BindView(R.id.fl_gallery_photo)
+    FrameLayout mFlGalleryPhoto;
     @BindView(R.id.iv_orin_pager)
     ImageView mIvOriginPager;
     @BindView(R.id.iv_pager)
@@ -445,6 +448,7 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
         h = imageBean.getWidth() == 0 ? 0 : (int) (w * imageBean.getHeight() / imageBean.getWidth());
         // 本地图片
         if (imageBean.getImgUrl() != null) {
+            mFlGalleryPhoto.setBackgroundColor(Color.BLACK);
             DrawableRequestBuilder local = Glide.with(context)
                     .load(imageBean.getImgUrl())
                     .placeholder(R.drawable.shape_default_image)
@@ -719,7 +723,7 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
             // 退出隐藏查看原图按钮，防止显示在透明背景上
             mTvOriginPhoto.setVisibility(View.GONE);
             AnimationRectBean rect = getArguments().getParcelable("rect");
-            TransferImageAnimationUtil.animateClose(backgroundAnimator, rect, mIvPager);
+            TransferImageAnimationUtil.animateClose(backgroundAnimator,mFlGalleryPhoto, rect, mIvPager);
 
         }
         // 原图可见，退出就是用原图
@@ -732,7 +736,7 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
             // 退出隐藏查看原图按钮，防止显示在透明背景上
             mTvOriginPhoto.setVisibility(View.GONE);
             AnimationRectBean rect = getArguments().getParcelable("rect");
-            TransferImageAnimationUtil.animateClose(backgroundAnimator, rect, mIvOriginPager);
+            TransferImageAnimationUtil.animateClose(backgroundAnimator,mFlGalleryPhoto, rect, mIvOriginPager);
         }
     }
 
@@ -747,24 +751,19 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
     private void startInAnim(final ImageBean imageBean, final AnimationRectBean rect) {
         if (hasAnim) {
             hasAnim = false;
-            TransferImageAnimationUtil.startInAnim(rect, mIvPager, mFlImageContaienr, new Runnable() {
-                @Override
-                public void run() {
-                    if (mIvPager != null && mActivity != null && mCurrentHDRequestBuilder != null) {
-                        mActivity.runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                if (mIvPager != null && mActivity != null && mCurrentHDRequestBuilder != null) {
-                                    intoImageTarget(mCurrentHDRequestBuilder, imageBean, rect);
-                                }
-                            }
-                        });
-                    }
+            TransferImageAnimationUtil.startInAnim(rect, mIvPager, mFlGalleryPhoto, () -> {
+                if (mIvPager != null && mActivity != null && mCurrentHDRequestBuilder != null) {
+                    mActivity.runOnUiThread(() -> {
+                        if (mIvPager != null && mActivity != null && mCurrentHDRequestBuilder != null) {
+                            intoImageTarget(mCurrentHDRequestBuilder, imageBean, rect);
+                        }
+                    });
                 }
             });
         } else {
             if (mIvPager != null && mActivity != null && mCurrentHDRequestBuilder != null) {
                 intoImageTarget(mCurrentHDRequestBuilder, imageBean, rect);
+                mFlGalleryPhoto.setBackgroundColor(Color.BLACK);
             }
         }
     }
