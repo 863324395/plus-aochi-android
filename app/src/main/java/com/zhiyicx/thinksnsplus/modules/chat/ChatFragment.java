@@ -456,7 +456,7 @@ public class ChatFragment extends TSEaseChatFragment<ChatContract.Presenter>
                 if (message.getBody() instanceof EMTextMessageBody) {
                     content = ((EMTextMessageBody) message.getBody()).getMessage();
                 }
-                content = mPresenter.getUserName(toChatUsername) + ":" + content;
+                content = mPresenter.getUserName(message.getFrom()) + ":" + content;
                 jpushMessageBean.setMessage(content);
                 NotificationUtil.showChatNotifyMessageExceptCurrentConversation(mActivity, jpushMessageBean, message.conversationId());
             }
