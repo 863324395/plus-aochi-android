@@ -322,6 +322,11 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
     }
 
     @Override
+    public int getCurrentItem() {
+        return mVpHome.getCurrentItem();
+    }
+
+    @Override
     public void onButtonMenuShow(boolean isShow) {
         if (isShow) {
             //

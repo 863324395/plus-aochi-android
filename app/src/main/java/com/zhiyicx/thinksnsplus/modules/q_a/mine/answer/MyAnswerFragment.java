@@ -114,8 +114,8 @@ public class MyAnswerFragment extends TSListFragment<MyAnswerContract.Presenter,
                 .subscribe(new Subscriber<Object>() {
                     @Override
                     public void onCompleted() {
-                        initData();
                         mAdapterV2.setPresenter(mPresenter);
+                        initData();
                     }
 
                     @Override

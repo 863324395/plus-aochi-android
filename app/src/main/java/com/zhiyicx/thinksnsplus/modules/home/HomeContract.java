@@ -57,7 +57,11 @@ public interface HomeContract {
          */
         CheckInBean getCheckInData();
 
-
+        /**
+         * 当前位置
+         * @return
+         */
+        int getCurrentItem();
     }
 
     interface Presenter extends IBaseTouristPresenter {
@@ -88,6 +92,13 @@ public interface HomeContract {
 
         double getWalletRatio();
 
+        /**
+         * 更新群信息
+         * @param id
+         * @param count
+         * @param add
+         * @return
+         */
         boolean updateChatGroupMemberCount(String id,int count,boolean add);
     }
 }

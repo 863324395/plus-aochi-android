@@ -252,6 +252,10 @@ public class BaseMessageRepository implements IBaseMessageRepository {
                                                         if (list1.get(i).getUserInfo() == null) {
                                                             list1.get(i).setUserInfo(userInfoBeanSparseArray.get(key));
                                                         }
+                                                        // 因为去重，所以 userInfoBeanSparseArray.size < list1.size
+                                                        if (list1.get(i).getUserInfo() == null) {
+                                                            list1.get(i).setUserInfo(mUserInfoBeanGreenDao.getUserInfoById("" + key));
+                                                        }
                                                     } catch (NumberFormatException e) {
                                                         e.printStackTrace();
                                                     }
