@@ -48,10 +48,12 @@ public class DynamicCommentBean extends BaseListBean implements Parcelable,Seria
     @SerializedName(value="feed_user_id", alternate={"target_user"})
     private long feed_user_id; // 发动态人的 id
     private long user_id;// 谁发的这条评论
+    @SerializedName("user")
     @ToOne(joinProperty = "user_id")// DynamicCommentBean 的 user_id 作为外键
     private UserInfoBean commentUser;
     @SerializedName(value="reply_to_user_id", alternate={"reply_user"})
     private long reply_to_user_id;// 评论要发给谁
+    @SerializedName("reply")
     @ToOne(joinProperty = "reply_to_user_id")// DynamicCommentBean 的 user_id 作为外键
     private UserInfoBean replyUser;// 被评论的用户信息
     private int state = SEND_SUCCESS;// 动态发送状态 0 发送失败 1 正在发送 2 发送成功

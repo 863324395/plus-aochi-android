@@ -115,6 +115,7 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable, Ser
     @Convert(converter = PaidNoteConverter.class, columnType = String.class)
     private PaidNote paid_node;
 
+    @SerializedName("user")
     @ToOne(joinProperty = "user_id")// DynamicBean 的 user_id作为外键
     private UserInfoBean userInfoBean;
     // DynamicBean 的 feed_mark 与 DynamicCommentBean 的 feed_mark 关联
@@ -537,7 +538,7 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable, Ser
         height = height < DEFALT_IMAGE_HEIGHT ? DEFALT_IMAGE_HEIGHT : height;
         video.setWidth(with);
         video.setHeight(height);
-        video.setGlideUrl(ImageUtils.imagePathConvertV2(false, video.cover_id, with, height,
+        video.setGlideUrl(ImageUtils.imagePathConvertV2(true, video.cover_id, with, height,
                 ImageZipConfig.IMAGE_100_ZIP, AppApplication.getTOKEN()));
     }
 
