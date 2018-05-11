@@ -563,8 +563,16 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
                 ;
     }
 
+    /**
+     * 动态数据处理，包括置顶数据过滤，用户信息获取
+     *
+     * @param observable
+     * @param type
+     * @param isLoadMore
+     * @return
+     */
     protected Observable<List<DynamicDetailBeanV2>> dealWithDynamicListV2
-            (Observable<DynamicBeanV2> observable, final String type, final boolean isLoadMore) {
+    (Observable<DynamicBeanV2> observable, final String type, final boolean isLoadMore) {
         return observable.subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
                 .map(dynamicBeanV2 -> {
@@ -600,43 +608,64 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
                             listBaseJson.get(i).setHot_creat_time(System.currentTimeMillis());
                         }
                     }
+                    List<DynamicDetailBeanV2> topData = new ArrayList<>();
+
                     for (DynamicDetailBeanV2 dynamicBean : listBaseJson) {
-                        userIds.add(dynamicBean.getUser_id());
+                        if (dynamicBean.getUserInfoBean() == null) {
+                            userIds.add(dynamicBean.getUser_id());
+                        }
                         //如果是关注，需要初始化标记
                         if (type.equals(ApiConfig.DYNAMIC_TYPE_FOLLOWS)) {
                             dynamicBean.setFollowed(true);
                         }
-                        // 热门的 max_id 是通过 hot_creat_time
-                        if (type.equals(ApiConfig.DYNAMIC_TYPE_HOTS)) {
-                            // 标识，最新与关注都是通过 feed_id 标识
-                            dynamicBean.setMaxId(dynamicBean.getHot_creat_time());
-                        } else {
-                            dynamicBean.setMaxId(dynamicBean.getId());
-                        }
+                        // 提前设置 maxId 用于分页
+                        dynamicBean.setMaxId(dynamicBean.getId());
+                        mDynamicCommentBeanGreenDao.insertOrReplace(dynamicBean.getComments());
                         for (DynamicCommentBean dynamicCommentBean : dynamicBean.getComments()) {
-                            userIds.add(dynamicCommentBean.getUser_id());
-                            userIds.add(dynamicCommentBean.getReply_to_user_id());
+                            if (dynamicCommentBean.getCommentUser() == null) {
+                                userIds.add(dynamicCommentBean.getUser_id());
+                            }
+                            if (dynamicCommentBean.getReplyUser() == null) {
+                                userIds.add(dynamicCommentBean.getReply_to_user_id());
+                            }
                             // 评论中增加 feed_mark \和用户标记
                             dynamicCommentBean.setFeed_mark(dynamicBean.getFeed_mark());
                             dynamicCommentBean.setFeed_user_id(dynamicBean.getUser_id());
                         }
                         // 删除本条动态的本地评论
                         mDynamicCommentBeanGreenDao.deleteCacheByFeedMark(dynamicBean.getFeed_mark());
+                        if (dynamicBean.getTop() == DynamicDetailBeanV2.TOP_SUCCESS) {
+                            topData.add(dynamicBean);
+                        }
+                    }
+                    // 置顶只有 热门、最新
+                    if (!type.equals(ApiConfig.DYNAMIC_TYPE_FOLLOWS)) {
+                        TopDynamicBean topDynamicBean = new TopDynamicBean();
+                        topDynamicBean.setType(type.equals(ApiConfig.DYNAMIC_TYPE_NEW) ? TYPE_NEW :
+                                TYPE_HOT);
+                        topDynamicBean.setTopDynamics(topData);
+                        mTopDynamicBeanGreenDao.insertOrReplace(topDynamicBean);
                     }
 
+                    if (userIds.isEmpty()) {
+                        return Observable.just(listBaseJson);
+                    }
                     return mUserInfoRepository.getUserInfo(userIds)
                             .map(userinfobeans -> {
                                 SparseArray<UserInfoBean> userInfoBeanSparseArray = new SparseArray<>();
-                                List<DynamicDetailBeanV2> topData = new ArrayList<>();
                                 for (UserInfoBean userInfoBean : userinfobeans) {
                                     userInfoBeanSparseArray.put(userInfoBean.getUser_id().intValue(), userInfoBean);
                                 }
+
                                 for (DynamicDetailBeanV2 dynamicBean : listBaseJson) {
-                                    dynamicBean.setUserInfoBean(userInfoBeanSparseArray.get(dynamicBean
-                                            .getUser_id().intValue()));
+                                    if (dynamicBean.getUserInfoBean() == null) {
+                                        dynamicBean.setUserInfoBean(userInfoBeanSparseArray.get(dynamicBean
+                                                .getUser_id().intValue()));
+                                    }
                                     dynamicBean.handleData();
                                     for (int i = 0; i < dynamicBean.getComments().size(); i++) {
-                                        if (userInfoBeanSparseArray.get((int) dynamicBean.getComments().get(i)
+                                        if (dynamicBean.getComments().get(i).getCommentUser() == null && userInfoBeanSparseArray.get((int) dynamicBean
+                                                .getComments().get(i)
                                                 .getUser_id()) != null) {
                                             dynamicBean.getComments().get(i).setCommentUser
                                                     (userInfoBeanSparseArray.get((int) dynamicBean.getComments()
@@ -648,22 +677,14 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
                                             userInfoBean.setUser_id(0L);
                                             dynamicBean.getComments().get(i).setReplyUser(userInfoBean);
                                         } else {
-                                            dynamicBean.getComments().get(i).setReplyUser(userInfoBeanSparseArray
-                                                    .get((int) dynamicBean.getComments().get(i)
-                                                            .getReply_to_user_id()));
+                                            if (dynamicBean.getComments().get(i).getReplyUser() == null) {
+                                                dynamicBean.getComments().get(i).setReplyUser(userInfoBeanSparseArray
+                                                        .get((int) dynamicBean.getComments().get(i)
+                                                                .getReply_to_user_id()));
+                                            }
                                         }
                                     }
-                                    if (dynamicBean.getTop() == DynamicDetailBeanV2.TOP_SUCCESS) {
-                                        topData.add(dynamicBean);
-                                    }
-                                }
-                                // 置顶只有 热门、最新
-                                if (!type.equals(ApiConfig.DYNAMIC_TYPE_FOLLOWS)) {
-                                    TopDynamicBean topDynamicBean = new TopDynamicBean();
-                                    topDynamicBean.setType(type.equals(ApiConfig.DYNAMIC_TYPE_NEW) ? TYPE_NEW :
-                                            TYPE_HOT);
-                                    topDynamicBean.setTopDynamics(topData);
-                                    mTopDynamicBeanGreenDao.insertOrReplace(topDynamicBean);
+
                                 }
                                 return listBaseJson;
                             });
