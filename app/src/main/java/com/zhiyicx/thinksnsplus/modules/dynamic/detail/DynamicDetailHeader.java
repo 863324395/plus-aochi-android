@@ -433,7 +433,6 @@ public class DynamicDetailHeader {
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(picWidth, height);
         layoutParams.gravity = Gravity.CENTER_HORIZONTAL;
         imageView.setLayoutParams(layoutParams);
-        imageView.setBackgroundResource(R.color.red);
 
         if (TextUtils.isEmpty(imageBean.getImgUrl())) {
             int part = (picWidth / imageBean.getWidth()) * DEFAULT_PART_TOTAL;

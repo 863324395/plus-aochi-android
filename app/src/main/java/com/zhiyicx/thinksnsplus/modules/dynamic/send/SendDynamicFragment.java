@@ -966,6 +966,8 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
         }
         switch (dynamicType) {
             case SendDynamicDataBean.VIDEO_TEXT_DYNAMIC:
+                mEtDynamicContent.getEtContent().setHint(getString(R.string
+                        .dynamic_content_no_pic_hint));
             case SendDynamicDataBean.PHOTO_TEXT_DYNAMIC:
                 // 没有图片就初始化这些
                 initPhotoSelector();

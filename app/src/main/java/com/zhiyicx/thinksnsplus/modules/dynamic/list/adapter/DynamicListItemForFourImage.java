@@ -38,7 +38,6 @@ public class DynamicListItemForFourImage extends DynamicListBaseItem {
         return R.layout.item_dynamic_list_four_image;
     }
 
-
     @Override
     public void convert(ViewHolder holder, final DynamicDetailBeanV2 dynamicBean, DynamicDetailBeanV2 lastT, int position, int itemCounts) {
         super.convert(holder, dynamicBean, lastT, position,itemCounts);
