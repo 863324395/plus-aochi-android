@@ -93,6 +93,7 @@
                     android:hint="@string/edit_user_name"
                     android:inputType="text"
                     android:maxLines="1"
+                    android:maxLength="@integer/username_max_length"
                     android:paddingRight="@dimen/spacing_mid"
                     android:textColor="@color/important_for_content"
                     android:textColorHint="@color/general_for_hint"
