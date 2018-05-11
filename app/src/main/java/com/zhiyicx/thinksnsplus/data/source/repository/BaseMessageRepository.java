@@ -8,7 +8,6 @@ import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMConversation;
 import com.hyphenate.chat.EMMessage;
 import com.hyphenate.chat.EMTextMessageBody;
-import com.hyphenate.exceptions.HyphenateException;
 import com.zhiyicx.baseproject.base.SystemConfigBean;
 import com.zhiyicx.baseproject.em.manager.util.TSEMConstants;
 import com.zhiyicx.common.utils.log.LogUtils;
@@ -34,8 +33,6 @@ import java.util.Map;
 import javax.inject.Inject;
 
 import rx.Observable;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 /**
@@ -368,8 +365,6 @@ public class BaseMessageRepository implements IBaseMessageRepository {
                                 SparseArray<UserInfoBean> userInfoBeanSparseArray = new SparseArray<>();
                                 for (UserInfoBean userInfoBean : userInfoBeans) {
                                     userInfoBeanSparseArray.put(userInfoBean.getUser_id().intValue(), userInfoBean);
-                                    // 更新数据库
-                                    mUserInfoBeanGreenDao.insertOrReplace(userInfoBean);
                                 }
                                 for (int i = 0; i < list1.size(); i++) {
                                     int key;
@@ -379,6 +374,9 @@ public class BaseMessageRepository implements IBaseMessageRepository {
                                         key = Integer.parseInt(list1.get(i).getMessage().getFrom());
                                     }
                                     list1.get(i).setUserInfo(userInfoBeanSparseArray.get(key));
+                                    if (list1.get(i).getUserInfo() == null && !"admin".equals(list1.get(i).getMessage().getFrom())) {
+                                        list1.get(i).setUserInfo(mUserInfoBeanGreenDao.getUserInfoById(key + ""));
+                                    }
                                 }
                                 return list1;
                             });
