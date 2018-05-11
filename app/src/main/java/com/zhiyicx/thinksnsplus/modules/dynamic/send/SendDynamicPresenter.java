@@ -102,9 +102,12 @@ public class SendDynamicPresenter extends AppBasePresenter<SendDynamicContract.V
                     .dynamic_send_toll_notes), wordLimit));
             return;
         }
-        boolean wordsLimit = (mRootView.wordsNumLimit() && mRootView.getTollMoney() <= 0d)
-                || mRootView.getTollMoney() != (long) mRootView.getTollMoney();
-        if (wordsLimit) {
+        if ((mRootView.wordsNumLimit() && mRootView.getTollMoney() <= 0d)) {
+            mRootView.initInstructionsPop(String.format(Locale.getDefault(),
+                    mContext.getResources().getString(R.string.please_set_limit_money)));
+            return;
+        }
+        if (mRootView.getTollMoney() != (long) mRootView.getTollMoney()) {
             // 文字收费金额整数限制
             mRootView.initInstructionsPop(String.format(Locale.getDefault(),
                     mContext.getResources().getString(R.string.limit_monye_death), getGoldName()));
