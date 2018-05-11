@@ -44,6 +44,7 @@ import com.zhiyicx.thinksnsplus.modules.home.find.FindFragment;
 import com.zhiyicx.thinksnsplus.modules.home.main.MainFragment;
 import com.zhiyicx.thinksnsplus.modules.home.message.container.MessageContainerFragment;
 import com.zhiyicx.thinksnsplus.modules.home.mine.MineFragment;
+import com.zhiyicx.thinksnsplus.modules.shortvideo.helper.ZhiyiVideoView;
 import com.zhiyicx.thinksnsplus.widget.popwindow.CheckInPopWindow;
 
 import java.util.ArrayList;
@@ -54,6 +55,7 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import cn.jzvd.JZVideoPlayerManager;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
@@ -379,6 +381,14 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
             @Override
             public void onPageSelected(int position) {
                 changeNavigationButton(position);
+                // 停掉当前播放
+                if (JZVideoPlayerManager.getCurrentJzvd() != null) {
+                    if (JZVideoPlayerManager.getCurrentJzvd().currentState == ZhiyiVideoView.CURRENT_STATE_PREPARING
+                            || JZVideoPlayerManager.getCurrentJzvd().currentState == ZhiyiVideoView.CURRENT_STATE_PREPARING_CHANGING_URL) {
+                        ZhiyiVideoView.releaseAllVideos();
+                    }
+                }
+                ZhiyiVideoView.goOnPlayOnPause();
             }
 
             @Override
