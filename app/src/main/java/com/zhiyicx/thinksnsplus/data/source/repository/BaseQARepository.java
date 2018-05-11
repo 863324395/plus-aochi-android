@@ -578,7 +578,7 @@ public class BaseQARepository implements IBasePublishQuestionRepository {
     @Override
     public Observable<List<AnswerInfoBean>> getUserAnswerList(String type, Long maxId) {
         if (MyAnswerContainerFragment.TYPE_FOLLOW.equals(type)) {
-            return getUserCollectAnswerList((long) TSListFragment.DEFAULT_PAGE_SIZE, maxId);
+            return getUserCollectAnswerList(TSListFragment.DEFAULT_PAGE_SIZE, maxId);
         }
         return mQAClient.getUserAnswerList(type, TSListFragment.DEFAULT_PAGE_SIZE, maxId)
                 .subscribeOn(Schedulers.io())
@@ -586,7 +586,7 @@ public class BaseQARepository implements IBasePublishQuestionRepository {
     }
 
     @Override
-    public Observable<List<AnswerInfoBean>> getUserCollectAnswerList(Long limit, Long maxId) {
+    public Observable<List<AnswerInfoBean>> getUserCollectAnswerList(Integer limit, Long maxId) {
         return mQAClient.getUserCollectAnswerList(TSListFragment.DEFAULT_PAGE_SIZE, maxId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

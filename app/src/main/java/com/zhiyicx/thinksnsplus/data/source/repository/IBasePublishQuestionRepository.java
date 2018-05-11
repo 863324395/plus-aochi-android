@@ -113,7 +113,7 @@ public interface IBasePublishQuestionRepository {
     /**
      * 获取用户收藏的回答列表
      */
-    Observable<List<AnswerInfoBean>> getUserCollectAnswerList(Long limit, Long maxId);
+    Observable<List<AnswerInfoBean>> getUserCollectAnswerList(Integer limit, Long maxId);
 
     Observable<Object> publishQuestion(QAPublishBean qaPublishBean);
 
