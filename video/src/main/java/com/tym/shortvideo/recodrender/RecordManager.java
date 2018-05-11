@@ -69,7 +69,8 @@ public final class RecordManager {
         return mInstance;
     }
 
-    private RecordManager() {}
+    private RecordManager() {
+    }
 
     /**
      * 初始化录制线程
@@ -97,6 +98,7 @@ public final class RecordManager {
 
     /**
      * 初始化录制器，此时耗时大约200ms左右，不能放在跟渲染线程同一个Looper里面
+     *
      * @param width
      * @param height
      */
@@ -107,50 +109,61 @@ public final class RecordManager {
 
     /**
      * 初始化录制器，此时耗时大约200ms左右，不能放在跟渲染线程同一个Looper里面
+     *
      * @param width
      * @param height
      * @param listener
      */
     public void initRecorder(int width, int height, MediaEncoder.MediaEncoderListener listener) {
-
-        Handler handler = mRecordThread.getHandler();
-        if (handler != null) {
-            handler.sendMessage(handler.obtainMessage(MSG_INIT_RECORDER, width, height, listener));
+        if (mRecordThread != null) {
+            Handler handler = mRecordThread.getHandler();
+            if (handler != null) {
+                handler.sendMessage(handler.obtainMessage(MSG_INIT_RECORDER, width, height, listener));
+            }
         }
     }
 
     /**
      * 设置渲染Texture的宽高
+     *
      * @param width
      * @param height
      */
     public void setTextureSize(int width, int height) {
-        Handler handler = mRecordThread.getHandler();
-        if (handler != null) {
-            handler.sendMessage(handler.obtainMessage(MSG_SET_TEXTURE_SIZE, width, height));
+        if (mRecordThread != null) {
+            Handler handler = mRecordThread.getHandler();
+            if (handler != null) {
+                handler.sendMessage(handler.obtainMessage(MSG_SET_TEXTURE_SIZE, width, height));
+            }
         }
     }
 
     /**
      * 设置预览大小
+     *
      * @param width
      * @param height
      */
     public void setDisplaySize(int width, int height) {
-        Handler handler = mRecordThread.getHandler();
-        if (handler != null) {
-            handler.sendMessage(handler.obtainMessage(MSG_SET_DISPLAY_SIZE, width, height));
+        if (mRecordThread != null) {
+            Handler handler = mRecordThread.getHandler();
+            if (handler != null) {
+                handler.sendMessage(handler.obtainMessage(MSG_SET_DISPLAY_SIZE, width, height));
+            }
         }
     }
 
     /**
      * 开始录制
+     *
      * @param sharedContext EGLContext上下文包装类
      */
     public void startRecording(EGLContext sharedContext) {
-        Handler handler = mRecordThread.getHandler();
-        if (handler != null) {
-            handler.sendMessage(handler.obtainMessage(MSG_START_RECORDING, sharedContext));
+        if (mRecordThread != null) {
+            Handler handler = mRecordThread.getHandler();
+            if (handler != null) {
+                handler.sendMessage(handler.obtainMessage(MSG_START_RECORDING, sharedContext));
+            }
         }
     }
 
@@ -159,18 +172,24 @@ public final class RecordManager {
      * 帧可用
      */
     public void frameAvailable() {
-        Handler handler = mRecordThread.getHandler();
-        if (handler != null) {
-            handler.sendMessage(handler.obtainMessage(MSG_FRAME_AVAILABLE));
+        if (mRecordThread != null) {
+            Handler handler = mRecordThread.getHandler();
+            if (handler != null) {
+                handler.sendMessage(handler.obtainMessage(MSG_FRAME_AVAILABLE));
+            }
         }
     }
 
     /**
      * 发送渲染指令
-     * @param texture 当前Texture
+     *
+     * @param texture   当前Texture
      * @param timeStamp 时间戳
      */
     synchronized public void drawRecorderFrame(int texture, long timeStamp) {
+        if (mRecordThread == null) {
+            return;
+        }
         Handler handler = mRecordThread.getHandler();
         if (handler != null) {
             handler.sendMessage(handler
@@ -196,6 +215,9 @@ public final class RecordManager {
      * 暂停录制
      */
     public void pauseRecording() {
+        if (mRecordThread == null) {
+            return;
+        }
         Handler handler = mRecordThread.getHandler();
         if (handler != null) {
             handler.sendMessage(handler.obtainMessage(MSG_PAUSE_RECORDING));
@@ -206,6 +228,9 @@ public final class RecordManager {
      * 继续录制
      */
     public void continueRecording() {
+        if (mRecordThread == null) {
+            return;
+        }
         Handler handler = mRecordThread.getHandler();
         if (handler != null) {
             handler.sendMessage(handler.obtainMessage(MSG_CONTINUE_RECORDING));
@@ -215,9 +240,13 @@ public final class RecordManager {
 
     /**
      * 设置帧率
+     *
      * @param frameRate
      */
     public void setFrameRate(int frameRate) {
+        if (mRecordThread == null) {
+            return;
+        }
         Handler handler = mRecordThread.getHandler();
         if (handler != null) {
             handler.sendMessage(handler.obtainMessage(MSG_FRAME_RATE, frameRate));
@@ -227,9 +256,13 @@ public final class RecordManager {
 
     /**
      * 是否允许录制高清视频
+     *
      * @param enable
      */
     public void enableHighDefinition(boolean enable) {
+        if (mRecordThread == null) {
+            return;
+        }
         Handler handler = mRecordThread.getHandler();
         if (handler != null) {
             handler.sendMessage(handler.obtainMessage(MSG_HIGHTDEFINITION, enable));
@@ -238,9 +271,13 @@ public final class RecordManager {
 
     /**
      * 是否允许录音
+     *
      * @param enable
      */
     public void setEnableAudioRecording(boolean enable) {
+        if (mRecordThread == null) {
+            return;
+        }
         Handler handler = mRecordThread.getHandler();
         if (handler != null) {
             handler.sendMessage(handler.obtainMessage(MSG_ENABLE_AUDIO, enable));
@@ -249,6 +286,7 @@ public final class RecordManager {
 
     /**
      * 获取输出路径
+     *
      * @return
      */
     public String getOutputPath() {
@@ -257,6 +295,7 @@ public final class RecordManager {
 
     /**
      * 设置输出路径
+     *
      * @param path
      */
     public void setOutputPath(String path) {
@@ -314,6 +353,7 @@ public final class RecordManager {
 
         /**
          * 初始化录制器
+         *
          * @param width
          * @param height
          * @param listener
@@ -330,6 +370,7 @@ public final class RecordManager {
 
         /**
          * 设置渲染Texture的宽高
+         *
          * @param width
          * @param height
          */
@@ -344,6 +385,7 @@ public final class RecordManager {
 
         /**
          * 设置预览大小
+         *
          * @param width
          * @param height
          */
@@ -358,6 +400,7 @@ public final class RecordManager {
 
         /**
          * 开始录制
+         *
          * @param eglContext EGLContext上下文包装类
          */
         void startRecording(EGLContext eglContext) {
@@ -384,8 +427,9 @@ public final class RecordManager {
 
         /**
          * 发送渲染指令
+         *
          * @param currentTexture 当前Texture
-         * @param timeStamp 时间戳
+         * @param timeStamp      时间戳
          */
         void drawRecordingFrame(int currentTexture, long timeStamp) {
             if (VERBOSE) {
@@ -436,6 +480,7 @@ public final class RecordManager {
 
         /**
          * 设置帧率
+         *
          * @param frameRate
          */
         void setFrameRate(int frameRate) {
@@ -450,6 +495,7 @@ public final class RecordManager {
 
         /**
          * 是否允许录制高清视频
+         *
          * @param enable
          */
         void enableHighDefinition(boolean enable) {
@@ -464,6 +510,7 @@ public final class RecordManager {
 
         /**
          * 是否允许录音
+         *
          * @param enable
          */
         void setEnableAudioRecording(boolean enable) {

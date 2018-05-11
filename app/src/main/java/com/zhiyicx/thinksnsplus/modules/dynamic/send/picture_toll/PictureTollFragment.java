@@ -167,9 +167,9 @@ public class PictureTollFragment extends TSFragment {
                 amount = mSystemConfigBean.getFeed().getItems();
             }
             if (amount != null && amount.length > 2) {
-                mSelectMoney.add(0, (float) PayConfig.realCurrency2GameCurrency(amount[0], mSystemConfigBean.getWallet_ratio()));
-                mSelectMoney.add(1, (float) PayConfig.realCurrency2GameCurrency(amount[1], mSystemConfigBean.getWallet_ratio()));
-                mSelectMoney.add(2, (float) PayConfig.realCurrency2GameCurrency(amount[2], mSystemConfigBean.getWallet_ratio()));
+                mSelectMoney.add(0, (float) amount[0]);
+                mSelectMoney.add(1, (float) amount[1]);
+                mSelectMoney.add(2, (float) amount[2]);
             }
             if (mSystemConfigBean.getSite() != null && mSystemConfigBean.getSite().getGold_name() != null) {
                 mMoneyName = mSystemConfigBean.getSite().getGold_name().getName();

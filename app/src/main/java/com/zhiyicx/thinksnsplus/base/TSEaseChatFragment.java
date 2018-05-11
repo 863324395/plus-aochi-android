@@ -254,7 +254,7 @@ public class TSEaseChatFragment<P extends IBasePresenter> extends TSEaseBaseFrag
         setRefreshLayoutListener();
 
         // show forward message if the message is not null
-        String forward_msg_id = getArguments().getString("forward_msg_id");
+        String forward_msg_id = fragmentArgs.getString("forward_msg_id");
         if (forward_msg_id != null) {
             forwardMessage(forward_msg_id);
         }
@@ -898,7 +898,7 @@ public class TSEaseChatFragment<P extends IBasePresenter> extends TSEaseBaseFrag
             intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         }
         startActivityForResult(intent, REQUEST_CODE_LOCAL);
-        mIsNeedRefreshToLast=false;
+        mIsNeedRefreshToLast = false;
     }
 
 

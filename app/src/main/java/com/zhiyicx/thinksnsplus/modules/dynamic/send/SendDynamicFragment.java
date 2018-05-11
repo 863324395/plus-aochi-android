@@ -298,9 +298,9 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                 mTvWordsLimit.setText(String.format(getString(R.string.dynamic_send_toll_notes), wordLimit > 0 ? wordLimit : 50));
             }
             if (amount != null && amount.length > 2) {
-                mSelectMoney.add(0, (float) PayConfig.realCurrency2GameCurrency(amount[0], mSystemConfigBean.getWallet_ratio()));
-                mSelectMoney.add(1, (float) PayConfig.realCurrency2GameCurrency(amount[1], mSystemConfigBean.getWallet_ratio()));
-                mSelectMoney.add(2, (float) PayConfig.realCurrency2GameCurrency(amount[2], mSystemConfigBean.getWallet_ratio()));
+                mSelectMoney.add(0, (float) amount[0]);
+                mSelectMoney.add(1, (float)amount[1]);
+                mSelectMoney.add(2, (float)amount[2]);
             }
         }
         initSelectMoney(mSelectMoney);
@@ -556,12 +556,14 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
     public void sendDynamicComplete() {
         com.zhiyicx.common.utils.DeviceUtils.hideSoftKeyboard(getContext(), mToolbarRight);
         // 让主页先刷新
-        getView().postDelayed(() -> {
-            if (getActivity() != null) {
-                getActivity().finish();
-                getActivity().overridePendingTransition(0, R.anim.fade_out);
-            }
-        }, 100);
+        if (getView() != null) {
+            getView().postDelayed(() -> {
+                if (getActivity() != null) {
+                    getActivity().finish();
+                    getActivity().overridePendingTransition(0, R.anim.fade_out);
+                }
+            }, 100);
+        }
 
 
     }
@@ -658,7 +660,7 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
             }
             isToll = !isToll;
             mTvToll.setRightImage(isToll ? R.mipmap.btn_open : R.mipmap.btn_close);
-            mTollLine.setVisibility(isToll &&dynamicType==TEXT_ONLY_DYNAMIC? View.GONE : View.VISIBLE);
+            mTollLine.setVisibility(isToll && dynamicType == TEXT_ONLY_DYNAMIC ? View.GONE : View.VISIBLE);
             if (dynamicType == TEXT_ONLY_DYNAMIC) {
                 mLLToll.setVisibility(isToll ? View.VISIBLE : View.GONE);
                 if (!isToll) {
