@@ -235,7 +235,7 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                 }
             }
             if (!mImageIsLoaded) {
-//                startLoadProgress();
+                startLoadProgress();
             }
         } else {
             stopCenterLoading();
@@ -246,7 +246,7 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
     public void onResume() {
         super.onResume();
         if (getUserVisibleHint() && !mImageIsLoaded && !getArguments().getBoolean("firstOpenPage")) {
-//            startLoadProgress();
+            startLoadProgress();
         }
     }
 
@@ -447,6 +447,7 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
         if (imageBean.getImgUrl() != null) {
             DrawableRequestBuilder local = Glide.with(context)
                     .load(imageBean.getImgUrl())
+                    .placeholder(R.drawable.shape_default_image)
                     .error(R.drawable.shape_default_image)
                     .thumbnail(0.1f);
             local.into(new GallaryGlideDrawableImageViewTarget(rect));
@@ -464,7 +465,7 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                             boolean isNeedOrin = ImageUtils.isWithOrHeightOutOfBounds(w, h)
                                     || ImageUtils.imageIsGif(imageBean.getImgMimeType())
                                     || ImageUtils.isLongImage((float) imageBean.getHeight(), (float) imageBean.getWidth());
-                            if (imageBean.getListCacheUrl() == null || isNeedOrin) {
+                            if (TextUtils.isEmpty(imageBean.getListCacheUrl()) || isNeedOrin) {
                                 startLoadProgress();
                                 return ImageUtils.imagePathConvertV2(canLook, mImageBean.getStorage_id(), canLook ? w : 0, canLook ? h : 0,
                                         ImageZipConfig.IMAGE_100_ZIP, AppApplication.getTOKEN());

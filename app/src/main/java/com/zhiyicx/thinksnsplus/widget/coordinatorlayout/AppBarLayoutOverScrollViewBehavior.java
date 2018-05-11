@@ -71,7 +71,7 @@ public class AppBarLayoutOverScrollViewBehavior extends AppBarLayout.Behavior {
             }
         }
         abl.addOnOffsetChangedListener((appBarLayout, i) -> {
-                    float point = Float.valueOf(Math.abs(i)) / Float.valueOf(appBarLayout.getTotalScrollRange());
+                    float point = (float) Math.abs(i) / (float) appBarLayout.getTotalScrollRange();
                     middleLayout.setAlpha(1f - point);
                     ViewHelper.setPivotX(middleLayout, 0);
                     ViewHelper.setPivotY(middleLayout,

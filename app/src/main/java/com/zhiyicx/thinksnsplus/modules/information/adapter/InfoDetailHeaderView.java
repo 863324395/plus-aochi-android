@@ -338,12 +338,7 @@ public class InfoDetailHeaderView extends BaseWebLoad {
             List<UserTagBean> tagBeanList = infoMain.getTags();
             if (tagBeanList != null && tagBeanList.size() > 0) {
                 UserInfoTagsAdapter mUserInfoTagsAdapter = new UserInfoTagsAdapter(tagBeanList, mContext);
-                mFtlRelate.setOnTagClickListener(new TagFlowLayout.OnTagClickListener() {
-                    @Override
-                    public boolean onTagClick(View view, int position, FlowLayout parent) {
-                        return false;
-                    }
-                });
+                mFtlRelate.setOnTagClickListener((view, position, parent) -> false);
                 mFtlRelate.setAdapter(mUserInfoTagsAdapter);
             }
             LinearLayoutManager manager = new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false);

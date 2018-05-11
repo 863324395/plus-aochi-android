@@ -629,6 +629,7 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
             ImageView imageView = holder.getView(id);
             ImageBean imageBean = new ImageBean();
             imageBean.setStorage_id(task.get(i).getFile_id());
+            imageBean.setListCacheUrl(task.get(i).getGlideUrl());
             imageBean.setWidth(task.get(i).getWidth());
             imageBean.setHeight(task.get(i).getHeight());
             imageBean.setImgMimeType(task.get(i).getImgMimeType());

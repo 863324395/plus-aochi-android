@@ -57,7 +57,8 @@ public class CirclePostListBaseItem implements ItemViewDelegate<CirclePostListBe
 
     protected final String TAG = this.getClass().getSimpleName();
     private static final int CURREN_CLOUMS = 0;
-    protected static final int DEFALT_IMAGE_HEIGHT = 300;
+    public static final int DEFALT_IMAGE_HEIGHT = 280;
+    public static final int DEFALT_IMAGE_WITH = 360;
     private final int mWidthPixels; // 屏幕宽度
     private final int mHightPixels;
     private final int mMargin; // 图片容器的边距
@@ -153,9 +154,8 @@ public class CirclePostListBaseItem implements ItemViewDelegate<CirclePostListBe
 
     @Override
     public boolean isForViewType(CirclePostListBean item, int position) {
-        boolean isForViewType = (item.getImages() != null && item.getImages().size
+        return (item.getImages() != null && item.getImages().size
                 () == getImageCounts());
-        return isForViewType;
     }
 
     protected int getImageCounts() {
@@ -169,13 +169,12 @@ public class CirclePostListBaseItem implements ItemViewDelegate<CirclePostListBe
             ImageUtils.loadCircleUserHeadPic(circlePostListBean.getUserInfoBean(), holder.getView(R.id.iv_headpic));
 
             holder.setText(R.id.tv_name, circlePostListBean.getUserInfoBean().getName());
-            holder.setText(R.id.tv_time, TimeUtils.getTimeFriendlyNormal(circlePostListBean
-                    .getCreated_at()));
+            holder.setText(R.id.tv_time, circlePostListBean.getFriendlyTime());
             holder.setText(R.id.tv_title, circlePostListBean.getTitle());
             ((TextView) holder.getView(R.id.tv_title)).setTypeface(Typeface.DEFAULT_BOLD);
             holder.setTextColor(R.id.tv_title, mContext.getResources().getColor(R.color.important_for_content));
 
-            String content = circlePostListBean.getSummary();
+            String content = circlePostListBean.getFriendlyContent();
             TextView contentView = holder.getView(R.id.tv_content);
             TextView contentFrom = holder.getView(R.id.tv_from);
 
@@ -199,8 +198,6 @@ public class CirclePostListBaseItem implements ItemViewDelegate<CirclePostListBe
             if (TextUtils.isEmpty(content)) {
                 contentView.setVisibility(View.GONE);
             } else {
-                content = content.replaceAll(MarkdownConfig.NETSITE_FORMAT, Link.DEFAULT_NET_SITE);
-                content = content.replaceAll(MarkdownConfig.IMAGE_FORMAT, "");
                 contentView.setText(content);
                 ConvertUtils.stringLinkConvert(contentView, setLinkLinks(circlePostListBean, contentView.getText().toString()), false);
                 contentView.setVisibility(View.VISIBLE);
@@ -291,45 +288,38 @@ public class CirclePostListBaseItem implements ItemViewDelegate<CirclePostListBe
      */
     protected void initImageView(final ViewHolder holder, FilterImageView view, final
     CirclePostListBean circlePostListBean, final int positon, int part) {
-        int propPart = getProportion(view, circlePostListBean, part);
-        int w, h;
-        w = h = getCurrenItemWith(part);
+
         if (circlePostListBean.getImages() != null && circlePostListBean.getImages().size() > 0) {
+
             CirclePostListBean.ImagesBean imageBean = circlePostListBean.getImages().get(positon);
             if (TextUtils.isEmpty(imageBean.getImgUrl())) {
                 // 是否是 gif
                 view.setIshowGifTag(ImageUtils.imageIsGif(imageBean.getImgMimeType()));
                 // 是否是长图
-                view.showLongImageTag(isLongImage(imageBean.getHeight(), imageBean.getWidth()));
-                Glide.with(mContext)
-                        .load(ImageUtils.imagePathConvertV2(false, imageBean.getFile_id(), w, h,
-                                propPart, AppApplication.getTOKEN()))
+                view.showLongImageTag(imageBean.hasLongImage());
+                Glide.with(view.getContext())
+                        .load(imageBean.getGlideUrl())
                         .asBitmap()
-                        .override(w, h)
                         .placeholder(R.drawable.shape_default_image)
                         .diskCacheStrategy(DiskCacheStrategy.ALL)
                         .error(R.drawable.shape_default_image)
                         .into(view);
             } else {
-                // 是否是长图
                 BitmapFactory.Options option = DrawableProvider.getPicsWHByFile(imageBean.getImgUrl());
-                // 是否是 gif
                 view.setIshowGifTag(ImageUtils.imageIsGif(option.outMimeType));
                 view.showLongImageTag(isLongImage(option.outHeight, option.outWidth));
-                Glide.with(mContext)
+
+                Glide.with(view.getContext())
                         .load(imageBean.getImgUrl())
                         .asBitmap()
-                        .override(w, h)
+                        .override(imageBean.getCurrentWith(), imageBean.getCurrentWith())
                         .placeholder(R.drawable.shape_default_image)
                         .diskCacheStrategy(DiskCacheStrategy.ALL)
-                        .error(R.mipmap.pic_locked)
+                        .error(R.drawable.shape_default_image)
                         .into(view);
             }
         }
 
-        if (circlePostListBean.getImages() != null) {
-            circlePostListBean.getImages().get(positon).setPropPart(propPart);
-        }
         RxView.clicks(view)
                 // 两秒钟之内只取一个点击事件，防抖操作
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)

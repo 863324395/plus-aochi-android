@@ -3,15 +3,24 @@ package com.zhiyicx.thinksnsplus.data.beans;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.bumptech.glide.load.model.GlideUrl;
 import com.google.gson.annotations.SerializedName;
+import com.klinker.android.link_builder.Link;
 import com.zhiyicx.baseproject.base.BaseListBean;
+import com.zhiyicx.baseproject.config.MarkdownConfig;
+import com.zhiyicx.baseproject.impl.photoselector.Toll;
+import com.zhiyicx.common.utils.TimeUtils;
+import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.source.local.data_convert.BaseConvert;
 import com.zhiyicx.thinksnsplus.data.source.local.data_convert.UserInfoBeanConvert;
+import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 
 import org.greenrobot.greendao.annotation.Convert;
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Keep;
+import org.greenrobot.greendao.annotation.Transient;
 import org.greenrobot.greendao.annotation.Unique;
 
 import java.io.Serializable;
@@ -87,6 +96,11 @@ public class CirclePostListBean extends BaseListBean implements Serializable, Cl
     private boolean pinned;
     @Convert(converter = PostDigListConvert.class, columnType = String.class)
     private List<PostDigListBean> digs;
+
+    @Transient
+    private String friendlyTime;
+    @Transient
+    private String friendlyContent;
 
     @Override
     public Long getMaxId() {
@@ -279,6 +293,22 @@ public class CirclePostListBean extends BaseListBean implements Serializable, Cl
         this.images = images;
     }
 
+    public String getFriendlyTime() {
+        return friendlyTime;
+    }
+
+    public void setFriendlyTime(String friendlyTime) {
+        this.friendlyTime = friendlyTime;
+    }
+
+    public String getFriendlyContent() {
+        return friendlyContent;
+    }
+
+    public void setFriendlyContent(String friendlyContent) {
+        this.friendlyContent = friendlyContent;
+    }
+
     public static class ImagesBean implements Serializable, Parcelable {
         private static final long serialVersionUID = -2450120806619198355L;
         /**
@@ -295,8 +325,42 @@ public class CirclePostListBean extends BaseListBean implements Serializable, Cl
         @SerializedName("id")
         private int file_id;
         private String imgUrl;
-        @SerializedName(value = "type", alternate = "mime")
+        /**
+         * 图片类型
+         */
+        @SerializedName(value = "type", alternate = "mime,imgMimeType")
         private String type;
+
+
+        private int currentWith;
+        /**
+         * imageViewWidth、imageViewHeight 单张图宽高使用
+         */
+        private int imageViewWidth;
+        private int imageViewHeight;
+        private boolean isLongImage;
+        private String netUrl;
+        private transient GlideUrl glideUrl;
+
+        @Override
+        public String toString() {
+            return "ImagesBean{" +
+                    "raw='" + raw + '\'' +
+                    ", size='" + size + '\'' +
+                    ", width=" + width +
+                    ", propPart=" + propPart +
+                    ", height=" + height +
+                    ", file_id=" + file_id +
+                    ", imgUrl='" + imgUrl + '\'' +
+                    ", type='" + type + '\'' +
+                    ", currentWith=" + currentWith +
+                    ", imageViewWidth=" + imageViewWidth +
+                    ", imageViewHeight=" + imageViewHeight +
+                    ", isLongImage=" + isLongImage +
+                    ", netUrl='" + netUrl + '\'' +
+                    ", glideUrl=" + glideUrl +
+                    '}';
+        }
 
         public int getPropPart() {
             return propPart;
@@ -399,6 +463,53 @@ public class CirclePostListBean extends BaseListBean implements Serializable, Cl
             this.file_id = file_id;
         }
 
+        public int getCurrentWith() {
+            return currentWith;
+        }
+
+        public void setCurrentWith(int currentWith) {
+            this.currentWith = currentWith;
+        }
+
+        public int getImageViewWidth() {
+            return imageViewWidth;
+        }
+
+        public void setImageViewWidth(int imageViewWidth) {
+            this.imageViewWidth = imageViewWidth;
+        }
+
+        public int getImageViewHeight() {
+            return imageViewHeight;
+        }
+
+        public void setImageViewHeight(int imageViewHeight) {
+            this.imageViewHeight = imageViewHeight;
+        }
+
+        public boolean hasLongImage() {
+            return isLongImage;
+        }
+
+        public void setLongImage(boolean longImage) {
+            isLongImage = longImage;
+        }
+
+        public String getNetUrl() {
+            return netUrl;
+        }
+
+        public void setNetUrl(String netUrl) {
+            this.netUrl = netUrl;
+        }
+
+        public GlideUrl getGlideUrl() {
+            return glideUrl;
+        }
+
+        public void setGlideUrl(GlideUrl glideUrl) {
+            this.glideUrl = glideUrl;
+        }
 
         @Override
         public int describeContents() {
@@ -413,6 +524,13 @@ public class CirclePostListBean extends BaseListBean implements Serializable, Cl
             dest.writeInt(this.propPart);
             dest.writeInt(this.height);
             dest.writeInt(this.file_id);
+            dest.writeString(this.imgUrl);
+            dest.writeString(this.type);
+            dest.writeInt(this.currentWith);
+            dest.writeInt(this.imageViewWidth);
+            dest.writeInt(this.imageViewHeight);
+            dest.writeByte(this.isLongImage ? (byte) 1 : (byte) 0);
+            dest.writeString(this.netUrl);
         }
 
         public ImagesBean() {
@@ -425,6 +543,13 @@ public class CirclePostListBean extends BaseListBean implements Serializable, Cl
             this.propPart = in.readInt();
             this.height = in.readInt();
             this.file_id = in.readInt();
+            this.imgUrl = in.readString();
+            this.type = in.readString();
+            this.currentWith = in.readInt();
+            this.imageViewWidth = in.readInt();
+            this.imageViewHeight = in.readInt();
+            this.isLongImage = in.readByte() != 0;
+            this.netUrl = in.readString();
         }
 
         public static final Creator<ImagesBean> CREATOR = new Creator<ImagesBean>() {
@@ -604,5 +729,121 @@ public class CirclePostListBean extends BaseListBean implements Serializable, Cl
             e.printStackTrace();
         }
         return null;
+    }
+
+    public void handleData(){
+        if (images != null) {
+            int imageCount = images.size();
+            for (int i = 0; i < imageCount; i++) {
+                dealImageBean(images.get(i), i, imageCount);
+            }
+        }
+
+        if (created_at != null) {
+            friendlyTime = TimeUtils.getTimeFriendlyNormal(created_at);
+        }
+        if (summary != null) {
+            friendlyContent = summary.replaceAll(MarkdownConfig.NETSITE_FORMAT, Link.DEFAULT_NET_SITE);
+            friendlyContent = friendlyContent.replaceAll(MarkdownConfig.IMAGE_FORMAT, "");
+        }
+    }
+
+    private void dealImageBean(ImagesBean imageBean, int i, int imageCount) {
+        if (imageBean.getWidth() == 0) {
+            imageBean.setWidth(DEFALT_IMAGE_WITH);
+        }
+        if (imageBean.getHeight() == 0) {
+            imageBean.setHeight(DEFALT_IMAGE_HEIGHT);
+        }
+
+        // 计算宽高，从 size 中分离
+        int netWidth = imageBean.getWidth();
+        int netHeight = imageBean.getHeight();
+
+
+        int currenCloums;
+        int part;
+        switch (imageCount) {
+            case 1:
+                currenCloums = part = 1;
+                break;
+            case 9:
+                currenCloums = 3;
+                part = 1;
+                break;
+            case 2:
+                part = 1;
+                currenCloums = 2;
+                break;
+            case 3:
+                part = 1;
+                currenCloums = 3;
+                break;
+            case 4:
+                part = 1;
+                currenCloums = 2;
+                break;
+            case 5:
+                currenCloums = 3;
+                if (i == 0) {
+                    part = 2;
+                } else if (i == 1 || i == 2) {
+                    part = 1;
+                } else {
+                    currenCloums = 2;
+                    part = 1;
+                }
+                break;
+            case 6:
+                part = i == 0 ? 2 : 1;
+                currenCloums = 3;
+                break;
+            case 7:
+                if (i == 0 || i == 3 || i == 4) {
+                    part = 2;
+                } else {
+                    part = 1;
+                }
+                currenCloums = 3;
+                break;
+            case 8:
+                if (i == 3 || i == 4) {
+                    part = 2;
+                } else {
+                    part = 1;
+                }
+                currenCloums = 3;
+                break;
+            default:
+                currenCloums = 1;
+                part = 1;
+                break;
+        }
+        int currentWith = (ImageUtils.getmImageContainerWith() - (currenCloums - 1) * ImageUtils.getmDiverwith()) / currenCloums * part;
+        int proportion;
+        int with = netWidth > currentWith ? currentWith : netWidth;
+        float quality = (float) with / (float) netWidth;
+        proportion = (int) (quality * 100);
+        proportion = proportion > 100 ? 100 : proportion;
+        imageBean.setCurrentWith(currentWith);
+
+        imageBean.setGlideUrl(ImageUtils.imagePathConvertV2(true, imageBean.getFile_id(), currentWith, currentWith,
+                proportion, AppApplication.getTOKEN()));
+        if (imageCount == 1) {
+            with = currentWith;
+            int height = (with * netHeight / netWidth);
+            int mImageMaxHeight = ImageUtils.getmImageMaxHeight();
+            height = height > mImageMaxHeight ? mImageMaxHeight : height;
+            // 单张图最小高度
+            height = height < DEFALT_IMAGE_HEIGHT ? DEFALT_IMAGE_HEIGHT : height;
+            // 这个不知道好久才有用哎
+            proportion = with * 100 / netWidth;
+            imageBean.setGlideUrl(ImageUtils.imagePathConvertV2(true, imageBean.getFile_id(), 0, 0
+                    , proportion, AppApplication.getTOKEN()));
+            imageBean.setImageViewWidth(with);
+            imageBean.setImageViewHeight(height);
+        }
+        imageBean.setPropPart(proportion);
+        imageBean.setLongImage(ImageUtils.isLongImage(netHeight, netWidth));
     }
 }

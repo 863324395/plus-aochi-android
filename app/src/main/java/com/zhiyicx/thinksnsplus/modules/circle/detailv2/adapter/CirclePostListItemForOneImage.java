@@ -63,34 +63,20 @@ public class CirclePostListItemForOneImage extends CirclePostListBaseItem {
     @Override
     protected void initImageView(final ViewHolder holder, FilterImageView view,
                                  final CirclePostListBean circlePostListBean, final int positon, int part) {
-        /**
-         * 一张图时候，需要对宽高做限制
-         */
         int with;
         int height;
-        int proportion; // 压缩比例
-        int currentWith = getCurrenItemWith(part);
         CirclePostListBean.ImagesBean imageBean = circlePostListBean.getImages().get(0);
 
         if (TextUtils.isEmpty(imageBean.getImgUrl())) {
-            with = currentWith;
-            height = (with * imageBean.getHeight() / imageBean.getWidth());
-            height = height > mImageMaxHeight ? mImageMaxHeight : height;
-            proportion = ((with / imageBean.getWidth()) * 100);
-            if (with * height == 0) {// 就怕是 0
-                with = height = DEFALT_IMAGE_HEIGHT;
-            }
-            if (height < DEFALT_IMAGE_HEIGHT) {
-                height = DEFALT_IMAGE_HEIGHT;
-            }
-            view.setLayoutParams(new LinearLayout.LayoutParams(with, height));
+            with = imageBean.getImageViewWidth();
+            height = imageBean.getImageViewHeight();
             // 是否是 gif
             view.setIshowGifTag(ImageUtils.imageIsGif(imageBean.getImgMimeType()));
-            view.showLongImageTag(isLongImage(imageBean.getHeight(), imageBean.getWidth())); // 是否是长图
-
+            // 是否是长图
+            view.showLongImageTag(imageBean.hasLongImage());
+            view.setLayoutParams(new LinearLayout.LayoutParams(with, height));
             Glide.with(mContext)
-                    .load(ImageUtils.imagePathConvertV2(false, imageBean.getFile_id(), 0, 0,
-                            100, AppApplication.getTOKEN()))
+                    .load(imageBean.getGlideUrl())
                     .asBitmap()
                     .override(with, height)
                     .placeholder(R.drawable.shape_default_image)
@@ -98,24 +84,26 @@ public class CirclePostListItemForOneImage extends CirclePostListBaseItem {
                     .error(R.drawable.shape_default_image)
                     .into(view);
         } else {
+            // 本地
             BitmapFactory.Options option = DrawableProvider.getPicsWHByFile(imageBean.getImgUrl());
-//            with = option.outWidth > currentWith ? currentWith : option.outWidth;
-            with = currentWith;
-
-            if (option.outWidth == 0) {
+            with = imageBean.getCurrentWith();
+            height = imageBean.getHeight();
+            if (height == 0 && option.outWidth == 0) {
                 height = with;
-                proportion = 100;
             } else {
                 height = with * option.outHeight / option.outWidth;
                 height = height > mImageMaxHeight ? mImageMaxHeight : height;
-                proportion = ((with / option.outWidth) * 100);
-                // 是否是 gif
-                view.setIshowGifTag(ImageUtils.imageIsGif(option.outMimeType));
-                view.showLongImageTag(isLongImage(option.outHeight, option.outWidth)); // 是否是长图
             }
-            if (height < DEFALT_IMAGE_HEIGHT) {
+            if (height <= 0) {
                 height = DEFALT_IMAGE_HEIGHT;
             }
+            if (with <= 0) {
+                with = DEFALT_IMAGE_WITH;
+            }
+            // 是否是 gif
+            view.setIshowGifTag(ImageUtils.imageIsGif(option.outMimeType));
+            // 是否是长图
+            view.showLongImageTag(isLongImage(option.outHeight, option.outWidth));
             view.setLayoutParams(new LinearLayout.LayoutParams(with, height));
 
             Glide.with(mContext)
@@ -128,11 +116,8 @@ public class CirclePostListItemForOneImage extends CirclePostListBaseItem {
                     .into(view);
         }
 
-        if (circlePostListBean.getImages() != null) {
-            circlePostListBean.getImages().get(positon).setPropPart(proportion);
-        }
         RxView.clicks(view)
-                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)  // 两秒钟之内只取一个点击事件，防抖操作
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .subscribe(aVoid -> {
                     if (mOnImageClickListener != null) {
                         mOnImageClickListener.onImageClick(holder, circlePostListBean, positon);

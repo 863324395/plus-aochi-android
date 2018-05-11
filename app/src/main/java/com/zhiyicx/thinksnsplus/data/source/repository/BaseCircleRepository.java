@@ -457,6 +457,7 @@ public class BaseCircleRepository implements IBaseCircleRepository {
                     final List<Object> user_ids = new ArrayList<>();
                     List<CirclePostCommentBean> comments = new ArrayList<>();
                     for (CirclePostListBean circlePostListBean : postListBeans) {
+                        circlePostListBean.handleData();
                         user_ids.add(circlePostListBean.getUser_id());
                         if (circlePostListBean.getComments() == null || circlePostListBean.getComments().isEmpty()) {
                             continue;

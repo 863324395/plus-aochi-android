@@ -377,7 +377,7 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
         }
 
         RxView.clicks(view)
-                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)  // 两秒钟之内只取一个点击事件，防抖操作
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .subscribe(aVoid -> {
                     if (mOnImageClickListener != null) {
                         mOnImageClickListener.onImageClick(holder, dynamicBean, positon);
