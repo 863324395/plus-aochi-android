@@ -58,10 +58,10 @@ public interface HomeContract {
         CheckInBean getCheckInData();
 
         /**
-         * 当前位置
+         * 需要聊天消息通知栏提示
          * @return
          */
-        int getCurrentItem();
+        boolean needShowChatNotofication();
     }
 
     interface Presenter extends IBaseTouristPresenter {

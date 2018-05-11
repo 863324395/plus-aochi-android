@@ -139,6 +139,10 @@ public class MessageContainerFragment extends TSViewPagerFragment implements Eas
         });
     }
 
+    public int getCurrentItem(){
+        return mVpFragment.getCurrentItem();
+    }
+
     @Override
     protected View getRightViewOfMusicWindow() {
         return mTsvToolbar.getRightTextView();

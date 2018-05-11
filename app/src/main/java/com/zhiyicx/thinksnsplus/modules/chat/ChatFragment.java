@@ -37,7 +37,9 @@ import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.TSEaseChatFragment;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
+import com.zhiyicx.thinksnsplus.config.JpushMessageTypeConfig;
 import com.zhiyicx.thinksnsplus.data.beans.ChatGroupBean;
+import com.zhiyicx.thinksnsplus.data.beans.JpushMessageBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.modules.chat.call.BaseCallActivity;
 import com.zhiyicx.thinksnsplus.modules.chat.info.ChatInfoActivity;
@@ -52,6 +54,7 @@ import com.zhiyicx.thinksnsplus.modules.chat.item.presenter.TSChatVideoPresenter
 import com.zhiyicx.thinksnsplus.modules.chat.item.presenter.TSChatVoicePresenter;
 import com.zhiyicx.thinksnsplus.modules.chat.location.SendLocationActivity;
 import com.zhiyicx.thinksnsplus.modules.chat.video.ImageGridActivity;
+import com.zhiyicx.thinksnsplus.utils.NotificationUtil;
 
 import org.simple.eventbus.EventBus;
 import org.simple.eventbus.Subscriber;
@@ -439,7 +442,17 @@ public class ChatFragment extends TSEaseChatFragment<ChatContract.Presenter>
                 EaseUI.getInstance().getNotifier().vibrateAndPlayTone(message);
                 conversation.markMessageAsRead(message.getMsgId());
             } else {
-                EaseUI.getInstance().getNotifier().onNewMsg(message);
+                JpushMessageBean jpushMessageBean = new JpushMessageBean();
+                jpushMessageBean.setType(JpushMessageTypeConfig.JPUSH_MESSAGE_TYPE_IM);
+                jpushMessageBean.setExtras(message.getChatType().name());
+                String content = message.getBody().toString();
+                // 目前只有单聊，别的还没定
+                if (message.getBody() instanceof EMTextMessageBody) {
+                    content = ((EMTextMessageBody) message.getBody()).getMessage();
+                }
+                content = mPresenter.getUserName(toChatUsername) + ":" + content;
+                jpushMessageBean.setMessage(content);
+                NotificationUtil.showChatNotifyMessageExceptCurrentConversation(mActivity, jpushMessageBean, message.conversationId());
             }
         }
     }

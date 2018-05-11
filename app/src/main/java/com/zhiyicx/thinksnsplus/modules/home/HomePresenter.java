@@ -222,7 +222,7 @@ class HomePresenter extends AppBasePresenter<HomeContract.View> implements HomeC
     @Subscriber(mode = ThreadMode.MAIN)
     public void onMessageReceived(TSEMMultipleMessagesEvent messagesEvent) {
         List<EMMessage> list = messagesEvent.getMessages();
-        if (list == null || list.isEmpty() || mRootView.getCurrentItem() == 2) {
+        if (list == null || list.isEmpty() || mRootView.needShowChatNotofication()) {
             // 在消息会话列表页不要通知
             return;
         }

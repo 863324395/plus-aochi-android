@@ -322,8 +322,14 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
     }
 
     @Override
-    public int getCurrentItem() {
-        return mVpHome.getCurrentItem();
+    public boolean needShowChatNotofication() {
+        int msgItem = 2;
+        if (mVpHome.getCurrentItem() == msgItem) {
+            MessageContainerFragment messageContainerFragment = (MessageContainerFragment) mFragmentList.get(msgItem);
+            return messageContainerFragment != null && messageContainerFragment.getCurrentItem() == 0;
+        } else {
+            return false;
+        }
     }
 
     @Override
