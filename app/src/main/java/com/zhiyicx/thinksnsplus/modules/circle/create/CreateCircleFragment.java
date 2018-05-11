@@ -535,7 +535,7 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
         mTvNotice.getEtContent().setEnabled(canUpdate);
         mEtCircleIntroduce.getEtContent().setEnabled(canUpdate);
 
-        if (!canUpdate ) {
+        if (!canUpdate) {
             mLlSynchro.setVisibility(View.GONE);
             mLlBlock.setVisibility(View.GONE);
             mTvAttention.setVisibility(View.GONE);
@@ -566,6 +566,9 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
                 break;
             case R.id.ll_block:
             case R.id.ll_free:
+                if (mCircleInfo == null) {
+                    return;
+                }
                 boolean isPaidCircle = CircleInfo.CirclePayMode.PAID.value.equals(mCircleInfo.getMode());
                 if (isPaidCircle) {
                     showSnackErrorMessage(getString(R.string.close_circle_rule));
