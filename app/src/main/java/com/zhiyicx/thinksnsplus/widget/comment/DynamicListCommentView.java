@@ -45,10 +45,6 @@ public class DynamicListCommentView extends LinearLayout {
     private OnCommentClickListener mOnCommentClickListener;
     private DynamicNoPullRecycleView.OnCommentStateClickListener mOnCommentStateClickListener;
     private DynamicDetailBeanV2 mDynamicBean;
-    /**
-     * 标识用户名被点击还是评论被点击了
-     */
-    private boolean mIsUserNameClick = false;
 
     public DynamicListCommentView(Context context) {
         super(context);
@@ -84,40 +80,23 @@ public class DynamicListCommentView extends LinearLayout {
                     }
                 });
         mDynamicNoPullRecycleView.setOnUserNameClickListener(userInfoBean -> {
-
-            if (!mIsUserNameClick) {
-                if (mOnCommentClickListener != null) {
-                    mOnCommentClickListener.onCommentUserInfoClick(userInfoBean);
-                    mIsUserNameClick = true;
-                }
+            if (mOnCommentClickListener != null) {
+                mOnCommentClickListener.onCommentUserInfoClick(userInfoBean);
             }
         });
         mDynamicNoPullRecycleView.setOnIitemClickListener((view, position) -> {
 
-            if (!mIsUserNameClick) {
-                if (mOnCommentClickListener != null) {
-                    mOnCommentClickListener.onCommentContentClick(mDynamicBean, position);
-                }
-            } else {
-                mIsUserNameClick = false;
-
+            if (mOnCommentClickListener != null) {
+                mOnCommentClickListener.onCommentContentClick(mDynamicBean, position);
             }
         });
         mDynamicNoPullRecycleView.setOnIitemLongClickListener((view, position) -> {
-            if (!mIsUserNameClick) {
-                if (mOnCommentClickListener != null) {
-                    mOnCommentClickListener.onCommentContentLongClick(mDynamicBean, position);
-                }
-            } else {
-                mIsUserNameClick = false;
-
+            if (mOnCommentClickListener != null) {
+                mOnCommentClickListener.onCommentContentLongClick(mDynamicBean, position);
             }
 
         });
         mDynamicNoPullRecycleView.setOnUserNameLongClickListener(userInfoBean -> {
-            if (!mIsUserNameClick) {
-                mIsUserNameClick = true;
-            }
         });
         setOnClickListener(v -> {
         });

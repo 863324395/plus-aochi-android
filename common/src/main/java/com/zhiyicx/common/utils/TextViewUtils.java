@@ -186,7 +186,7 @@ public class TextViewUtils {
     }
 
     // clickSpan 的点击事件分发处理
-    private void dealTextViewClickEvent(TextView textView) {
+    public static void dealTextViewClickEvent(TextView textView) {
         textView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {

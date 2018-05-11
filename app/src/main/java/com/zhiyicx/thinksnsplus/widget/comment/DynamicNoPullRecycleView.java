@@ -11,12 +11,10 @@ import android.util.AttributeSet;
 import android.widget.TextView;
 
 import com.klinker.android.link_builder.Link;
-import com.zhiyicx.baseproject.widget.SimpleTextNoPullRecycleView;
 import com.zhiyicx.baseproject.widget.textview.CenterImageSpan;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
-import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -38,7 +38,6 @@ public class CirclePostListCommentView extends LinearLayout {
     private CirclePostNoPullRecyclerView.OnCommentStateClickListener mOnCommentStateClickListener;
     private CirclePostListBean mDynamicBean;
 
-    private boolean mIsUserNameClick = false; // 标识用户名被点击还是评论被点击了
 
     public CirclePostListCommentView(Context context) {
         super(context);
@@ -73,39 +72,23 @@ public class CirclePostListCommentView extends LinearLayout {
                 });
         mCirclePostNoPullRecyclerView.setOnUserNameClickListener(userInfoBean -> {
 
-            if (!mIsUserNameClick) {
                 if (mOnCommentClickListener != null) {
                     mOnCommentClickListener.onCommentUserInfoClick(userInfoBean);
-                    mIsUserNameClick = true;
                 }
-            }
         });
         mCirclePostNoPullRecyclerView.setOnIitemClickListener((view, position) -> {
 
-            if (!mIsUserNameClick) {
                 if (mOnCommentClickListener != null) {
                     mOnCommentClickListener.onCommentContentClick(mDynamicBean, position);
                 }
-            } else {
-                mIsUserNameClick = false;
-
-            }
         });
         mCirclePostNoPullRecyclerView.setOnIitemLongClickListener((view, position) -> {
 
-            if (!mIsUserNameClick) {
                 if (mOnCommentClickListener != null) {
                     mOnCommentClickListener.onCommentContentLongClick(mDynamicBean, position);
                 }
-            } else {
-                mIsUserNameClick = false;
-
-            }
         });
         mCirclePostNoPullRecyclerView.setOnUserNameLongClickListener(userInfoBean -> {
-            if (!mIsUserNameClick) {
-                mIsUserNameClick = true;
-            }
         });
         setOnClickListener(v -> {
         });

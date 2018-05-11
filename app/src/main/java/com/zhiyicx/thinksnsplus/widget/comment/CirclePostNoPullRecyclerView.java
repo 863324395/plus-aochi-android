@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.klinker.android.link_builder.Link;
 import com.zhiyicx.baseproject.widget.textview.CenterImageSpan;
 import com.zhiyicx.common.utils.ConvertUtils;
+import com.zhiyicx.common.utils.TextViewUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.CirclePostCommentBean;
 
@@ -52,7 +53,6 @@ public class CirclePostNoPullRecyclerView extends CommentBaseRecycleView<CircleP
         TextView contentTextView = holder.getView(com.zhiyicx.baseproject.R.id
                 .tv_simple_text_comment);
         contentTextView.setText(setShowText(dynamicCommentBean, contentTextView));
-
         // Add the links and make the links clickable
         ConvertUtils.stringLinkConvert(contentTextView, setLiknks(dynamicCommentBean, position));
 

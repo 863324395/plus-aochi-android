@@ -2,10 +2,18 @@ package com.zhiyicx.thinksnsplus.widget.comment;
 
 import android.content.Context;
 import android.support.annotation.Nullable;
+import android.text.Layout;
+import android.text.Selection;
+import android.text.Spannable;
+import android.text.method.LinkMovementMethod;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
+import android.widget.TextView;
 
+import com.klinker.android.link_builder.TouchableSpan;
 import com.zhiyicx.baseproject.widget.SimpleTextNoPullRecycleView;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.widget.ExpandableTextView;
 
 /**
  * @Author Jliuer
@@ -82,4 +90,5 @@ public class CommentBaseRecycleView<D> extends SimpleTextNoPullRecycleView<D> {
         TopFlagPosition(String desc) {
         }
     }
+
 }

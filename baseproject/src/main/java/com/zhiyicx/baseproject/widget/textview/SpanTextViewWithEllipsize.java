@@ -2,8 +2,12 @@ package com.zhiyicx.baseproject.widget.textview;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.text.Layout;
+import android.text.Spannable;
 import android.text.SpannableStringBuilder;
+import android.text.style.ClickableSpan;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
 
 /**
  * @Describe
