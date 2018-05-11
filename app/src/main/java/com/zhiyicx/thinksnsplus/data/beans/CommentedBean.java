@@ -4,9 +4,12 @@ import android.text.TextUtils;
 
 import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
+import com.klinker.android.link_builder.Link;
 import com.zhiyicx.baseproject.base.BaseListBean;
 import com.zhiyicx.baseproject.config.MarkdownConfig;
 import com.zhiyicx.common.utils.RegexUtils;
+import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
 
 import org.greenrobot.greendao.DaoException;
@@ -115,7 +118,7 @@ public class CommentedBean extends BaseListBean implements Serializable {
     @Generated(hash = 1052592665)
     public CommentedBean(Long id, String channel, Long target_id, String comment_content, String target_title, Long target_image, Long user_id,
                          Long target_user, Long reply_user, String created_at, String updated_at, boolean isDelete, boolean hasVideo, long
-                                     source_id) {
+                                 source_id) {
         this.id = id;
         this.channel = channel;
         this.target_id = target_id;
@@ -296,6 +299,41 @@ public class CommentedBean extends BaseListBean implements Serializable {
         this.comment_content = comment_content;
     }
 
+    public String getDynamicContent(int position) {
+        if (!TextUtils.isEmpty(target_title) || commentable == null) {
+            return this.target_title;
+        }
+        Gson gson = new Gson();
+        if (APP_LIKE_FEED.equals(channel)) {
+            try {
+
+                DynamicDetailBeanV2 dynamicDetailBean = gson.fromJson(gson.toJson(commentable), DynamicDetailBeanV2.class);
+                String content = dynamicDetailBean.getFeed_content();
+                String canLookContent="";
+                if (content != null) {
+                    canLookContent = content.replaceAll(MarkdownConfig.NETSITE_FORMAT, Link.DEFAULT_NET_SITE);
+                    canLookContent = canLookContent.replaceAll(MarkdownConfig.IMAGE_FORMAT, "");
+                }
+                boolean canLookWords = dynamicDetailBean.getPaid_node() == null || dynamicDetailBean.getPaid_node().isPaid();
+                if (!canLookWords) {
+                    if (position < canLookContent.length()) {
+                        canLookContent = canLookContent.substring(0, position + 1);
+                    }
+                    canLookContent += AppApplication.getContext().getString(R.string.words_holder);
+                }
+                target_title = canLookContent;
+            } catch (Exception e) {
+                try {
+                    JSONObject jsonObject = new JSONObject(gson.toJson(commentable));
+                    target_title = jsonObject.getString("feed_content");
+                } catch (Exception ignore) {
+
+                }
+            }
+        }
+        return target_title;
+    }
+
     public String getTarget_title() {
         if (!TextUtils.isEmpty(target_title) || commentable == null) {
             return this.target_title;
@@ -304,9 +342,23 @@ public class CommentedBean extends BaseListBean implements Serializable {
             Gson gson = new Gson();
             switch (channel) {
                 case APP_LIKE_FEED:
+                    try {
 
-                    JSONObject jsonObject = new JSONObject(gson.toJson(commentable));
-                    target_title = jsonObject.getString("feed_content");
+                        DynamicDetailBeanV2 dynamicDetailBean = gson.fromJson(gson.toJson(commentable), DynamicDetailBeanV2.class);
+                        String content = dynamicDetailBean.getFeed_content();
+                        if (content != null) {
+                            content = content.replaceAll(MarkdownConfig.NETSITE_FORMAT, Link.DEFAULT_NET_SITE);
+                            content = content.replaceAll(MarkdownConfig.IMAGE_FORMAT, "");
+                        }
+                        boolean canLookWords = dynamicDetailBean.getPaid_node() == null || dynamicDetailBean.getPaid_node().isPaid();
+                        if (!canLookWords) {
+                            content += AppApplication.getContext().getString(R.string.words_holder);
+                        }
+                        target_title = content;
+                    } catch (Exception e) {
+                        JSONObject jsonObject = new JSONObject(gson.toJson(commentable));
+                        target_title = jsonObject.getString("feed_content");
+                    }
                     break;
                 case APP_LIKE_GROUP_POST:
                     JSONObject jsonObject2 = new JSONObject(gson.toJson(commentable));

@@ -11,7 +11,9 @@ import android.widget.TextView;
 import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.widget.InputLimitView;
+import com.zhiyicx.baseproject.widget.popwindow.PayPopWindow;
 import com.zhiyicx.common.utils.DeviceUtils;
+import com.zhiyicx.common.utils.TextViewUtils;
 import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.common.utils.recycleviewdecoration.CustomLinearDecoration;
 import com.zhiyicx.thinksnsplus.R;
@@ -24,6 +26,7 @@ import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 
+import static com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.POPUPWINDOW_ALPHA;
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 
 /**
@@ -34,7 +37,7 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
  */
 public class MessageCommentFragment extends TSListFragment<MessageCommentContract.Presenter,
         CommentedBean> implements MessageCommentContract.View, InputLimitView
-        .OnSendClickListener, MultiItemTypeAdapter.OnItemClickListener {
+        .OnSendClickListener, MultiItemTypeAdapter.OnItemClickListener, TextViewUtils.OnSpanTextClickListener {
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
     @BindView(R.id.tv_toolbar_center)
@@ -50,10 +53,17 @@ public class MessageCommentFragment extends TSListFragment<MessageCommentContrac
     private long mReplyUserId;// 被评论者的 id ,评论动态 id = 0
     private int mCurrentPostion;// 当前点击的 item 位置
 
+    private PayPopWindow mPayImagePopWindow;
+
     public static MessageCommentFragment newInstance(Bundle bundle) {
         MessageCommentFragment fragment = new MessageCommentFragment();
         fragment.setArguments(bundle);
         return fragment;
+    }
+
+    @Override
+    public void paySuccess() {
+
     }
 
     @Override
@@ -95,8 +105,20 @@ public class MessageCommentFragment extends TSListFragment<MessageCommentContrac
 
     @Override
     protected CommonAdapter<CommentedBean> getAdapter() {
-        CommonAdapter commonAdapter = new MessageCommentAdapter(mActivity, R.layout
-                .item_message_comment_list, mListDatas);
+        MessageCommentAdapter commonAdapter = new MessageCommentAdapter(mActivity, R.layout
+                .item_message_comment_list, mListDatas) {
+            @Override
+            public int getStartPosition() {
+                if (mPresenter.getSystemConfigBean() == null) {
+                    return 10;
+                }
+                if (mPresenter.getSystemConfigBean().getFeed() == null) {
+                    return 10;
+                }
+                return mPresenter.getSystemConfigBean().getFeed().getLimit();
+            }
+        };
+        commonAdapter.setOnSpanTextClickListener(this);
         commonAdapter.setOnItemClickListener(this);
         return commonAdapter;
     }
@@ -155,7 +177,7 @@ public class MessageCommentFragment extends TSListFragment<MessageCommentContrac
     public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
         // 过滤自己的 or 内容被删除的
         if (mListDatas.get(position).getUser_id() == AppApplication.getmCurrentLoginAuth()
-                .getUser_id()||mListDatas.get(position).getIsDelete()) {
+                .getUser_id() || mListDatas.get(position).getIsDelete()) {
 
         } else {
             mReplyUserId = mListDatas.get(position).getUser_id();
@@ -172,5 +194,60 @@ public class MessageCommentFragment extends TSListFragment<MessageCommentContrac
         return false;
     }
 
+    @Override
+    public void setSpanText(int position, int note, long amount, TextView view, boolean canNotRead) {
+        position -= mHeaderAndFooterWrapper.getHeadersCount();
+        initImageCenterPopWindow(position, position, amount,
+                note, R.string.buy_pay_words_desc, false);
+    }
 
+    /**
+     * @param dynamicPosition 动态位置
+     * @param imagePosition   图片位置
+     * @param amout           费用
+     * @param note            支付节点
+     * @param strRes          文字说明
+     * @param isImage         是否是图片收费
+     */
+    private void initImageCenterPopWindow(final int dynamicPosition, final int imagePosition,
+                                          long amout,
+                                          final int note, int strRes, final boolean isImage) {
+
+        mPayImagePopWindow = PayPopWindow.builder()
+                .with(getActivity())
+                .isWrap(true)
+                .isFocus(true)
+                .isOutsideTouch(true)
+                .buildLinksColor1(R.color.themeColor)
+                .buildLinksColor2(R.color.important_for_content)
+                .contentView(R.layout.ppw_for_center)
+                .backgroundAlpha(POPUPWINDOW_ALPHA)
+                .buildDescrStr(String.format(getString(strRes) + getString(R
+                        .string.buy_pay_member), amout, mPresenter.getGoldName()))
+                .buildLinksStr(getString(R.string.buy_pay_member))
+                .buildTitleStr(getString(R.string.buy_pay))
+                .buildItem1Str(getString(R.string.buy_pay_in))
+                .buildItem2Str(getString(R.string.buy_pay_out))
+                .buildMoneyStr(String.format(getString(R.string.buy_pay_integration), amout))
+                .buildCenterPopWindowItem1ClickListener(() -> {
+                    mPresenter.payNote(dynamicPosition,amout, imagePosition, note, isImage);
+                    mPayImagePopWindow.hide();
+                })
+                .buildCenterPopWindowItem2ClickListener(() -> mPayImagePopWindow.hide())
+                .buildCenterPopWindowLinkClickListener(new PayPopWindow
+                        .CenterPopWindowLinkClickListener() {
+                    @Override
+                    public void onLongClick() {
+
+                    }
+
+                    @Override
+                    public void onClicked() {
+
+                    }
+                })
+                .build();
+        mPayImagePopWindow.show();
+
+    }
 }

@@ -20,6 +20,8 @@ public interface MessageCommentContract {
          *
          */
         void closeInputView();
+
+        void paySuccess();
     }
 
     interface Presenter extends ITSListPresenter<CommentedBean> {
@@ -33,6 +35,7 @@ public interface MessageCommentContract {
          */
         void sendComment(int mCurrentPostion, long replyToUserId, String commentContent);
 
+        void payNote(int dynamicPosition,long amout, int imagePosition, int note, boolean isImage);
     }
 
 }

@@ -346,6 +346,12 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
     @Override
     public void onUserInfoClick(UserInfoBean userInfoBean) {
         // 如果当前页面的主页已经是当前这个人了，不就用跳转了
+        if (userInfoBean == null || mUserInfoBean == null) {
+            return;
+        }
+        if (userInfoBean.getUser_id() == null || mUserInfoBean.getUser_id() == null) {
+            return;
+        }
         if (userInfoBean.getUser_id().intValue() != mUserInfoBean.getUser_id().intValue()) {
             PersonalCenterFragment.startToPersonalCenter(getContext(), userInfoBean);
         }

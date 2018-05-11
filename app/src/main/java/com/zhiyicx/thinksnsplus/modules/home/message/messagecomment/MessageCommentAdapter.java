@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.modules.home.message.messagecomment;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
@@ -11,17 +12,24 @@ import android.widget.TextView;
 import com.google.gson.Gson;
 import com.jakewharton.rxbinding.view.RxView;
 import com.klinker.android.link_builder.Link;
+import com.klinker.android.link_builder.LinkMetadata;
+import com.klinker.android.link_builder.NetUrlHandleBean;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.config.ImageZipConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
 import com.zhiyicx.common.utils.ConvertUtils;
+import com.zhiyicx.common.utils.SkinUtils;
+import com.zhiyicx.common.utils.TextViewUtils;
 import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
+import com.zhiyicx.common.utils.log.LogUtils;
+import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.AnswerInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.CirclePostListBean;
 import com.zhiyicx.thinksnsplus.data.beans.CommentedBean;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.GroupDynamicListBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
@@ -72,11 +80,13 @@ public class MessageCommentAdapter extends CommonAdapter<CommentedBean> {
     public static final String BUNDLE_SOURCE_ID = "source_id";
 
     private ImageLoader mImageLoader;
+    private TextViewUtils.OnSpanTextClickListener mOnSpanTextClickListener;
+    private Gson mGson;
 
     public MessageCommentAdapter(Context context, int layoutId, List<CommentedBean> datas) {
         super(context, layoutId, datas);
+        mGson=new Gson();
         mImageLoader = AppApplication.AppComponentHolder.getAppComponent().imageLoader();
-
     }
 
     @Override
@@ -150,7 +160,49 @@ public class MessageCommentAdapter extends CommonAdapter<CommentedBean> {
             }
         } else {
             holder.getView(R.id.fl_detial).setVisibility(View.VISIBLE);
-            holder.setText(R.id.tv_deatil, commentedBean.getTarget_title());
+
+            TextView contentView = holder.getView(R.id.tv_deatil);
+            if (APP_LIKE_FEED.equals(commentedBean.getChannel())){
+                DynamicDetailBeanV2 dynamicBean=mGson.fromJson(mGson.toJson(commentedBean.getCommentable()),DynamicDetailBeanV2.class);
+
+                boolean canLookWords = dynamicBean.getPaid_node() == null || dynamicBean
+                        .getPaid_node().isPaid();
+
+                int startPosition = getStartPosition();
+
+                if (canLookWords) {
+                    TextViewUtils.newInstance(contentView, commentedBean.getDynamicContent(startPosition))
+                            .spanTextColor(SkinUtils.getColor(R
+                                    .color.normal_for_assist_text))
+                            .position(startPosition, commentedBean.getDynamicContent(startPosition).length())
+                            .dataPosition(holder.getAdapterPosition())
+                            .maxLines(mContext.getResources().getInteger(R.integer
+                                    .dynamic_list_content_show_lines))
+                            .onSpanTextClickListener(mOnSpanTextClickListener)
+                            .onTextSpanComplete(() -> ConvertUtils.stringLinkConvert(contentView,
+                                    setLiknks(dynamicBean, contentView.getText().toString()), false))
+                            .disPlayText(true)
+                            .build();
+                } else {
+                    TextViewUtils.newInstance(contentView, commentedBean.getDynamicContent(startPosition))
+                            .spanTextColor(SkinUtils.getColor(R
+                                    .color.normal_for_assist_text))
+                            .position(startPosition, commentedBean.getDynamicContent(startPosition).length())
+                            .dataPosition(holder.getAdapterPosition())
+                            .maxLines(contentView.getResources().getInteger(R.integer
+                                    .dynamic_list_content_show_lines))
+                            .onSpanTextClickListener(mOnSpanTextClickListener)
+                            .note(dynamicBean.getPaid_node().getNode())
+                            .amount(dynamicBean.getPaid_node().getAmount())
+                            .onTextSpanComplete(() -> ConvertUtils.stringLinkConvert(contentView, setLiknks(dynamicBean, contentView.getText()
+                                    .toString()), false))
+                            .disPlayText(false)
+                            .build();
+                }
+                contentView.setVisibility(View.VISIBLE);
+            }else{
+                holder.setText(R.id.tv_deatil, commentedBean.getTarget_title());
+            }
         }
         holder.setTextColorRes(R.id.tv_name, R.color.normal_for_assist_text);
         holder.setText(R.id.tv_name, handleName(commentedBean, holder));
@@ -180,6 +232,10 @@ public class MessageCommentAdapter extends CommonAdapter<CommentedBean> {
                         mOnItemClickListener.onItemClick(holder.getConvertView(), holder, position);
                     }
                 });
+    }
+
+    public int getStartPosition() {
+        return 10;
     }
 
     private List<Link> setLiknks(ViewHolder holder, final CommentedBean commentedBean) {
@@ -363,4 +419,44 @@ public class MessageCommentAdapter extends CommonAdapter<CommentedBean> {
         mContext.startActivity(intent);
     }
 
+    /**
+     * 网页链接
+     *
+     * @param dynamicDetailBeanV2
+     * @param content
+     * @return
+     */
+    protected List<Link> setLiknks(final DynamicDetailBeanV2 dynamicDetailBeanV2, String content) {
+        List<Link> links = new ArrayList<>();
+        if (content.contains(Link.DEFAULT_NET_SITE)) {
+            Link commentNameLink = new Link(Link.DEFAULT_NET_SITE)
+                    .setTextColor(ContextCompat.getColor(mContext, R.color
+                            .themeColor))
+                    .setLinkMetadata(LinkMetadata.builder()
+                            .putSerializableObj(LinkMetadata.METADATA_KEY_COTENT, new NetUrlHandleBean(dynamicDetailBeanV2.getFeed_content()))
+                            .putSerializableObj(LinkMetadata.METADATA_KEY_TYPE, LinkMetadata.SpanType.NET_SITE)
+                            .build())
+                    .setTextColorOfHighlightedLink(ContextCompat.getColor(mContext, R.color
+                            .general_for_hint))
+                    .setHighlightAlpha(CustomPopupWindow.POPUPWINDOW_ALPHA)
+                    .setOnClickListener((clickedText, linkMetadata) -> {
+                        LogUtils.d(clickedText);
+                        Intent intent = new Intent();
+                        intent.setAction("android.intent.action.VIEW");
+                        Uri contentUrl = Uri.parse(clickedText);
+                        intent.setData(contentUrl);
+                        mContext.startActivity(intent);
+                    })
+                    .setOnLongClickListener((clickedText, linkMetadata) -> {
+
+                    })
+                    .setUnderlined(false);
+            links.add(commentNameLink);
+        }
+        return links;
+    }
+
+    public void setOnSpanTextClickListener(TextViewUtils.OnSpanTextClickListener onSpanTextClickListener) {
+        mOnSpanTextClickListener = onSpanTextClickListener;
+    }
 }
