@@ -75,9 +75,39 @@ public class NotificationUtil {
         notiUtil.postChatNotification(jpushMessageBean, chatId);
     }
 
-    public static void cancelAllNotification(Context context){
+    public static void cancelAllNotification(Context context) {
         NotificationUtil notiUtil = new NotificationUtil(context);
         notiUtil.cancelAllNotification();
+    }
+
+    public static void showTextNotification(Context context, String content) {
+        NotificationUtil notiUtil = new NotificationUtil(context);
+        notiUtil.showNormalNotification(content);
+    }
+
+    public void showNormalNotification(String content) {
+
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
+        // 设置图标
+        builder.setSmallIcon(R.mipmap.icon);
+
+        // 设置通知的标题
+        builder.setContentTitle(context.getString(R.string.app_name));
+
+        // 设置通知的内容
+        builder.setContentText(content);
+
+        // 设置通知来到的时间
+        builder.setWhen(System.currentTimeMillis());
+
+        // 第一次提示消失的时候显示在通知栏上的
+        builder.setTicker("new message");
+        builder.setPriority(Notification.PRIORITY_MAX);
+        builder.setNumber(1);
+        builder.setAutoCancel(true);
+        Notification notification = builder.build();
+        notification.flags = Notification.FLAG_AUTO_CANCEL;
+        notificationManager.notify((int) System.currentTimeMillis(), notification);
     }
 
     /**
@@ -143,7 +173,7 @@ public class NotificationUtil {
         builder.setNumber(1);
         Notification notification = builder.build();
         notification.flags = Notification.FLAG_AUTO_CANCEL;
-        notificationManager.notify(chatId,0, notification);
+        notificationManager.notify(chatId, 0, notification);
     }
 
     /**

@@ -29,6 +29,7 @@ import com.zhiyicx.thinksnsplus.i.OnUserInfoClickListener;
 import com.zhiyicx.thinksnsplus.modules.chat.ChatActivity;
 import com.zhiyicx.thinksnsplus.modules.home.message.MessageAdapterV2;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
+import com.zhiyicx.thinksnsplus.utils.NotificationUtil;
 import com.zhiyicx.thinksnsplus.widget.TSSearchView;
 
 import org.jetbrains.annotations.NotNull;
@@ -266,20 +267,29 @@ public class MessageConversationFragment extends TSListFragment<MessageConversat
     public void onTSEMessageEventEventBus(TSEMessageEvent event) {
         LogUtils.d("TSEMessageEvent");
         EMCmdMessageBody body = (EMCmdMessageBody) event.getMessage().getBody();
+        String groupId = event.getMessage().getStringAttribute(TSEMConstants.TS_ATTR_ID, null);
+        String groupName = event.getMessage().getStringAttribute(TSEMConstants.TS_ATTR_NAME, null);
         switch (body.action()) {
+
             case TSEMConstants.TS_ATTR_GROUP_DISBAND:
-                String groupId = event.getMessage().getStringAttribute(TSEMConstants.TS_ATTR_ID, null);
-                String groupName = event.getMessage().getStringAttribute(TSEMConstants.TS_ATTR_NAME, null);
                 if (TextUtils.isEmpty(groupId)) {
                     return;
                 }
-                ToastUtils.showToast(groupName + "解散了");
+                NotificationUtil.showTextNotification(mActivity,groupName + "[群]解散了");
                 EMClient.getInstance().chatManager().deleteConversation(groupId, true);
                 if (mPresenter != null) {
                     mPresenter.deleteGroup(groupId);
                 }
                 break;
             case TSEMConstants.TS_ATTR_GROUP_LAYOFF:
+                if (TextUtils.isEmpty(groupId)) {
+                    return;
+                }
+                NotificationUtil.showTextNotification(mActivity, "你被管理员移出"+groupName+"[群聊]");
+                EMClient.getInstance().chatManager().deleteConversation(groupId, true);
+                if (mPresenter != null) {
+                    mPresenter.deleteGroup(groupId);
+                }
 
             default:
         }

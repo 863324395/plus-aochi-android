@@ -26,7 +26,6 @@ import com.hyphenate.easeui.widget.presenter.EaseChatRowPresenter;
 import com.hyphenate.util.PathUtil;
 import com.zhiyi.richtexteditorlib.view.dialogs.LinkDialog;
 import com.zhiyicx.baseproject.em.manager.eventbus.TSEMRefreshEvent;
-import com.zhiyicx.baseproject.em.manager.eventbus.TSEMessageEvent;
 import com.zhiyicx.baseproject.em.manager.util.TSEMConstants;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.baseproject.widget.popwindow.PermissionPopupWindow;
@@ -393,28 +392,6 @@ public class ChatFragment extends TSEaseChatFragment<ChatContract.Presenter>
         event.getMessage().addBody(textBody);
         EMClient.getInstance().chatManager().saveMessage(event.getMessage());
         resumeRefreshMessageList();
-    }
-
-    @Subscriber(mode = ThreadMode.MAIN)
-    public void onTSEMessageEventEventBus(TSEMessageEvent event) {
-        LogUtils.d("TSEMessageEvent");
-        if (event.getMessage() == null) {
-            return;
-        }
-        EMCmdMessageBody body = (EMCmdMessageBody) event.getMessage().getBody();
-        switch (body.action()) {
-            case TSEMConstants.TS_ATTR_GROUP_DISBAND:
-                String groupId = event.getMessage().getStringAttribute(TSEMConstants.TS_ATTR_ID, null);
-                String groupName = event.getMessage().getStringAttribute(TSEMConstants.TS_ATTR_NAME, null);
-                if (TextUtils.isEmpty(groupId)) {
-                    return;
-                }
-                showSnackWarningMessage(getString(R.string.group_quit_format, groupName));
-                EventBus.getDefault().post(groupId, EVENT_IM_DELETE_QUIT);
-                EMClient.getInstance().chatManager().deleteConversation(groupId, true);
-                break;
-            default:
-        }
     }
 
     @Override
