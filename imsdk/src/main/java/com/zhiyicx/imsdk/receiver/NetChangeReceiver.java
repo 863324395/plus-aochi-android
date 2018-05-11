@@ -50,13 +50,15 @@ public class NetChangeReceiver extends BroadcastReceiver {
             Network[] networks = connMgr.getAllNetworks();
 
             StringBuilder sb = new StringBuilder();
-            for (int i = 0; i < networks.length; i++) {
+            for (Network network : networks) {
                 //获取ConnectivityManager对象对应的NetworkInfo对象
-                NetworkInfo networkInfo = connMgr.getNetworkInfo(networks[i]);
-                if ("WIFI".equals(networkInfo.getTypeName())){
-                    hasWifi = networkInfo.isConnected();
+                NetworkInfo networkInfo = connMgr.getNetworkInfo(network);
+                if (networkInfo.getTypeName() != null) {
+                    if ("WIFI".equals(networkInfo.getTypeName())) {
+                        hasWifi = networkInfo.isConnected();
+                    }
+                    sb.append(networkInfo.getTypeName() + " connect is " + networkInfo.isConnected());
                 }
-                sb.append(networkInfo.getTypeName() + " connect is " + networkInfo.isConnected());
             }
         }
     }
