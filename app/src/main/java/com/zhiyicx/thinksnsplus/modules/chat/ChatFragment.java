@@ -191,7 +191,7 @@ public class ChatFragment extends TSEaseChatFragment<ChatContract.Presenter>
         }
         setRefreshLayoutListener();
         // show forward message if the message is not null
-        String forwardMsgId = getArguments().getString("forward_msg_id");
+        String forwardMsgId = fragmentArgs.getString("forward_msg_id");
         if (forwardMsgId != null) {
             forwardMessage(forwardMsgId);
         }
@@ -219,12 +219,18 @@ public class ChatFragment extends TSEaseChatFragment<ChatContract.Presenter>
         }
     }
 
+    /**
+     * 上层过来的
+     *
+     * @param bundle
+     */
     public void onNewIntent(Bundle bundle) {
-        setArguments(bundle);
-        fragmentArgs = getArguments();
+        fragmentArgs = bundle;
         chatType = fragmentArgs.getInt(EaseConstant.EXTRA_CHAT_TYPE, EaseConstant.CHATTYPE_SINGLE);
         // userId you are chat with or group id
         toChatUsername = fragmentArgs.getString(EaseConstant.EXTRA_USER_ID);
+        getArguments().putInt(EaseConstant.EXTRA_CHAT_TYPE, chatType);
+        getArguments().putString(EaseConstant.EXTRA_USER_ID, toChatUsername);
     }
 
     @Override
