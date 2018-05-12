@@ -8,6 +8,8 @@ import android.text.TextWatcher;
 import android.util.AttributeSet;
 
 import com.zhiyicx.baseproject.R;
+import com.zhiyicx.common.utils.RegexUtils;
+import com.zhiyicx.common.utils.log.LogUtils;
 
 /**
  * @Author Jliuer
@@ -47,21 +49,18 @@ public class ByteLimitEditText extends android.support.v7.widget.AppCompatEditTe
     public void afterTextChanged(Editable editable) {
         if (needWordByteLenghtLimit && wordByteLenghtLimit > 0) {
             String inputStr = editable.toString().trim();
-            byte[] bytes = inputStr.getBytes();
-            int length = bytes.length;
-            try {
-                bytes = inputStr.getBytes("GBK");
-                length = bytes.length;
-            } catch (Exception e) {
 
-            }
+
+            int chineseCount = RegexUtils.getChineseCouns(inputStr);
+            int totalCount = inputStr.length();
+
+            int length = 2 * chineseCount + (totalCount - chineseCount);
+
             if (length > wordByteLenghtLimit) {
                 // 截取取字节
-                byte[] newBytes = new byte[wordByteLenghtLimit];
-                for (int i = 0; i < wordByteLenghtLimit; i++) {
-                    newBytes[i] = bytes[i];
-                }
-                String newStr = new String(newBytes);
+                int surplus = length - wordByteLenghtLimit;
+
+                String newStr = getNeedStr(inputStr, surplus);
                 setText(newStr);
                 //将光标定位到最后
                 Selection.setSelection(getEditableText(), newStr.length());
@@ -72,5 +71,23 @@ public class ByteLimitEditText extends android.support.v7.widget.AppCompatEditTe
     @Override
     public void onTextChanged(CharSequence s, int start, int before, int count) {
 
+    }
+
+    public String getNeedStr(String string, int surplus) {
+        int position = -1;
+        for (int i = string.length() - 1; i >= 0; i--) {
+            char a = string.charAt(i);
+            String b = String.valueOf(a);
+            if (RegexUtils.isContainChinese(b)) {
+                surplus = surplus - 2;
+            } else {
+                surplus = surplus - 1;
+            }
+            if (surplus == 0) {
+                position = i;
+                break;
+            }
+        }
+        return string.subSequence(0, position).toString();
     }
 }
