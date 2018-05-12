@@ -133,7 +133,7 @@ public class ImageBean implements Parcelable, Serializable {
     }
 
     public void setListCacheUrl(GlideUrl listCacheUrl) {
-        if (TextUtils.isEmpty(imgUrl)) {
+        if (TextUtils.isEmpty(imgUrl) && listCacheUrl != null) {
             this.listCacheUrl = listCacheUrl.toStringUrl();
         } else {
             this.listCacheUrl = null;
@@ -177,8 +177,6 @@ public class ImageBean implements Parcelable, Serializable {
 
     public ImageBean() {
     }
-
-
 
 
     @Override
