@@ -1,7 +1,5 @@
 package com.zhiyicx.thinksnsplus.modules.home.message.messagecomment;
 
-import android.os.Bundle;
-
 import com.google.gson.Gson;
 import com.klinker.android.link_builder.Link;
 import com.zhiyicx.baseproject.config.MarkdownConfig;
@@ -11,17 +9,13 @@ import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
-import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.CommentedBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.UserFollowerCountBean;
-import com.zhiyicx.thinksnsplus.data.source.local.CommentedBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.CommentRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
-import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 
 import org.jetbrains.annotations.NotNull;
-import org.simple.eventbus.EventBus;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,21 +28,18 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 
 import static com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2.DYNAMIC_LIST_CONTENT_MAX_SHOW_SIZE;
-import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment.DYNAMIC_DETAIL_DATA;
-import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment.DYNAMIC_LIST_NEED_REFRESH;
-import static com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListBaseItem.DEFALT_IMAGE_WITH;
 
 /**
  * @Describe
  * @Author Jungle68
  * @Date 2017/2/8
  * @Contact master.jungle68@gmail.com
+ * 不在使用缓存 CommentedBeanGreenDaoImpl 2018-5-12 10:23:51 by tym
  */
 @FragmentScoped
 public class MessageCommentPresenter extends AppBasePresenter<MessageCommentContract.View> implements
         MessageCommentContract.Presenter {
-    @Inject
-    CommentedBeanGreenDaoImpl mCommentedBeanGreenDao;
+
     @Inject
     UserInfoRepository mUserInfoRepository;
 
@@ -82,24 +73,12 @@ public class MessageCommentPresenter extends AppBasePresenter<MessageCommentCont
 
     @Override
     public void requestCacheData(Long maxId, boolean isLoadMore) {
-
         mRootView.onCacheResponseSuccess(new ArrayList<>(), true);
-
-//        if (isLoadMore) {
-//            mRootView.onCacheResponseSuccess(new ArrayList<>(), true);
-//
-//        } else {
-//            mRootView.onCacheResponseSuccess(mCommentedBeanGreenDao.getMultiDataFromCache(), false);
-//
-//        }
     }
 
     @Override
     public boolean insertOrUpdateData(@NotNull List<CommentedBean> data, boolean isLoadMore) {
-        if (!isLoadMore) {
-            mCommentedBeanGreenDao.clearTable();
-        }
-        mCommentedBeanGreenDao.saveMultiData(data);
+
         return true;
     }
 
@@ -134,7 +113,7 @@ public class MessageCommentPresenter extends AppBasePresenter<MessageCommentCont
     }
 
     @Override
-    public void payNote(int dynamicPosition,long amount, int imagePosition, int note,final boolean isImage) {
+    public void payNote(int dynamicPosition, long amount, int imagePosition, int note, final boolean isImage) {
         if (handleTouristControl()) {
             return;
         }
@@ -144,8 +123,8 @@ public class MessageCommentPresenter extends AppBasePresenter<MessageCommentCont
 //        } else {
 //            amount = mRootView.getListDatas().get(dynamicPosition).getPaid_node().getAmount();
 //        }
-        Gson gson=new Gson();
-        DynamicDetailBeanV2 dynamicDetailBean=gson.fromJson(gson.toJson(mRootView.getListDatas().get(dynamicPosition).getCommentable()),DynamicDetailBeanV2.class);
+        Gson gson = new Gson();
+        DynamicDetailBeanV2 dynamicDetailBean = gson.fromJson(gson.toJson(mRootView.getListDatas().get(dynamicPosition).getCommentable()), DynamicDetailBeanV2.class);
         Subscription subscribe = handleIntegrationBlance(amount)
                 .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R
                         .string.ts_pay_check_handle_doing)))

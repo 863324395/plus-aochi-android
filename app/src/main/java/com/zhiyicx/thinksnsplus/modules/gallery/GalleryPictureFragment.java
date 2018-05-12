@@ -443,8 +443,6 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
             mFlGalleryPhoto.setBackgroundColor(Color.BLACK);
             DrawableRequestBuilder local = Glide.with(context)
                     .load(imageBean.getImgUrl())
-                    .placeholder(R.drawable.shape_default_image)
-                    .error(R.drawable.shape_default_image)
                     .thumbnail(0.1f);
             local.into(new GallaryGlideDrawableImageViewTarget(rect));
             // 聊天里面用
@@ -696,6 +694,7 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
      * @param backgroundAnimator
      */
     public void animationExit(ObjectAnimator backgroundAnimator) {
+        stopCenterLoading();
         backgroundAnimator.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {

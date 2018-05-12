@@ -309,7 +309,7 @@ public class CommentedBean extends BaseListBean implements Serializable {
 
                 DynamicDetailBeanV2 dynamicDetailBean = gson.fromJson(gson.toJson(commentable), DynamicDetailBeanV2.class);
                 String content = dynamicDetailBean.getFeed_content();
-                String canLookContent="";
+                String canLookContent = "";
                 if (content != null) {
                     canLookContent = content.replaceAll(MarkdownConfig.NETSITE_FORMAT, Link.DEFAULT_NET_SITE);
                     canLookContent = canLookContent.replaceAll(MarkdownConfig.IMAGE_FORMAT, "");
@@ -342,23 +342,8 @@ public class CommentedBean extends BaseListBean implements Serializable {
             Gson gson = new Gson();
             switch (channel) {
                 case APP_LIKE_FEED:
-                    try {
-
-                        DynamicDetailBeanV2 dynamicDetailBean = gson.fromJson(gson.toJson(commentable), DynamicDetailBeanV2.class);
-                        String content = dynamicDetailBean.getFeed_content();
-                        if (content != null) {
-                            content = content.replaceAll(MarkdownConfig.NETSITE_FORMAT, Link.DEFAULT_NET_SITE);
-                            content = content.replaceAll(MarkdownConfig.IMAGE_FORMAT, "");
-                        }
-                        boolean canLookWords = dynamicDetailBean.getPaid_node() == null || dynamicDetailBean.getPaid_node().isPaid();
-                        if (!canLookWords) {
-                            content += AppApplication.getContext().getString(R.string.words_holder);
-                        }
-                        target_title = content;
-                    } catch (Exception e) {
-                        JSONObject jsonObject = new JSONObject(gson.toJson(commentable));
-                        target_title = jsonObject.getString("feed_content");
-                    }
+                    JSONObject jsonObject = new JSONObject(gson.toJson(commentable));
+                    target_title = jsonObject.getString("feed_content");
                     break;
                 case APP_LIKE_GROUP_POST:
                     JSONObject jsonObject2 = new JSONObject(gson.toJson(commentable));

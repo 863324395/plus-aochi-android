@@ -6,7 +6,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
@@ -30,7 +29,6 @@ import com.zhiyicx.thinksnsplus.data.beans.AnswerInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.CirclePostListBean;
 import com.zhiyicx.thinksnsplus.data.beans.CommentedBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
-import com.zhiyicx.thinksnsplus.data.beans.GroupDynamicListBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
 import com.zhiyicx.thinksnsplus.modules.circle.detailv2.post.CirclePostDetailActivity;
@@ -59,8 +57,6 @@ import static com.zhiyicx.baseproject.config.ApiConfig.APP_LIKE_MUSIC;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_LIKE_MUSIC_SPECIALS;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_LIKE_NEWS;
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
-import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment.DYNAMIC_DETAIL_DATA;
-import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment.LOOK_COMMENT_MORE;
 import static com.zhiyicx.thinksnsplus.modules.information.infodetails.InfoDetailsFragment.BUNDLE_INFO;
 import static com.zhiyicx.thinksnsplus.modules.music_fm.music_comment.MusicCommentFragment.CURRENT_COMMENT;
 import static com.zhiyicx.thinksnsplus.modules.music_fm.music_comment.MusicCommentFragment.CURRENT_COMMENT_TYPE;
@@ -85,7 +81,7 @@ public class MessageCommentAdapter extends CommonAdapter<CommentedBean> {
 
     public MessageCommentAdapter(Context context, int layoutId, List<CommentedBean> datas) {
         super(context, layoutId, datas);
-        mGson=new Gson();
+        mGson = new Gson();
         mImageLoader = AppApplication.AppComponentHolder.getAppComponent().imageLoader();
     }
 
@@ -160,10 +156,10 @@ public class MessageCommentAdapter extends CommonAdapter<CommentedBean> {
             }
         } else {
             holder.getView(R.id.fl_detial).setVisibility(View.VISIBLE);
-
             TextView contentView = holder.getView(R.id.tv_deatil);
-            if (APP_LIKE_FEED.equals(commentedBean.getChannel())){
-                DynamicDetailBeanV2 dynamicBean=mGson.fromJson(mGson.toJson(commentedBean.getCommentable()),DynamicDetailBeanV2.class);
+            if (APP_LIKE_FEED.equals(commentedBean.getChannel())) {
+                // 如果是动态，也许涉及付费内容
+                DynamicDetailBeanV2 dynamicBean = mGson.fromJson(mGson.toJson(commentedBean.getCommentable()), DynamicDetailBeanV2.class);
 
                 boolean canLookWords = dynamicBean.getPaid_node() == null || dynamicBean
                         .getPaid_node().isPaid();
@@ -200,7 +196,7 @@ public class MessageCommentAdapter extends CommonAdapter<CommentedBean> {
                             .build();
                 }
                 contentView.setVisibility(View.VISIBLE);
-            }else{
+            } else {
                 holder.setText(R.id.tv_deatil, commentedBean.getTarget_title());
             }
         }
