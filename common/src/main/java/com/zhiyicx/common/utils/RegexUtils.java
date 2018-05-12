@@ -4,8 +4,8 @@ import android.text.InputFilter;
 import android.text.Spanned;
 import android.text.TextUtils;
 
+import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -164,15 +164,13 @@ public class RegexUtils {
      * @return {@code true}: 匹配<br>{@code false}: 不匹配
      */
     public static boolean isUsernameLength(CharSequence input, int minLength, int maxLength) {
-        int chineseCount = getChineseCouns(input.toString());
-        int charLength = "帅".getBytes().length;
-        int currentChineseByteLenght = chineseCount * charLength;
-        int length = input.toString().getBytes().length;
-        if (currentChineseByteLenght > 0) {// 有中文
-            return length >= (currentChineseByteLenght + (minLength - chineseCount)) && (length
-                    <= currentChineseByteLenght + (maxLength - chineseCount));
-        } else {
-            return length >= 4 && length <= maxLength;
+
+        String inputStr = input.toString().trim();
+        try {
+            int totalLength = inputStr.getBytes("GBK").length;
+            return totalLength >= minLength && totalLength <= maxLength;
+        } catch (Exception e) {
+            return false;
         }
     }
 

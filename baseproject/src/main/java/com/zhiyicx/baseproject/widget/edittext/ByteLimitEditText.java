@@ -48,7 +48,14 @@ public class ByteLimitEditText extends android.support.v7.widget.AppCompatEditTe
         if (needWordByteLenghtLimit && wordByteLenghtLimit > 0) {
             String inputStr = editable.toString().trim();
             byte[] bytes = inputStr.getBytes();
-            if (bytes.length > wordByteLenghtLimit) {
+            int length = bytes.length;
+            try {
+                bytes = inputStr.getBytes("GBK");
+                length = bytes.length;
+            } catch (Exception e) {
+
+            }
+            if (length > wordByteLenghtLimit) {
                 // 截取取字节
                 byte[] newBytes = new byte[wordByteLenghtLimit];
                 for (int i = 0; i < wordByteLenghtLimit; i++) {
