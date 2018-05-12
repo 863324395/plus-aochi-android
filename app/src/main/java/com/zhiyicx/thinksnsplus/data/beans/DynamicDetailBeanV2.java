@@ -11,7 +11,6 @@ import com.zhiyicx.baseproject.config.ImageZipConfig;
 import com.zhiyicx.baseproject.config.MarkdownConfig;
 import com.zhiyicx.baseproject.impl.photoselector.Toll;
 import com.zhiyicx.common.utils.ConvertUtils;
-import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
@@ -504,7 +503,8 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable, Ser
             friendlyContent = friendlyContent.replaceAll(MarkdownConfig.IMAGE_FORMAT, "");
             startPosition = friendlyContent.length();
         }
-        boolean canLookWords = paid_node == null || paid_node.isPaid();
+        boolean isMyDynamic = user_id != null && user_id.intValue() == AppApplication.getMyUserIdWithdefault();
+        boolean canLookWords = paid_node == null || paid_node.isPaid() || isMyDynamic;
         if (!canLookWords) {
             friendlyContent += AppApplication.getContext().getString(R.string.words_holder);
         }

@@ -314,8 +314,13 @@ public class CommentedBean extends BaseListBean implements Serializable {
                     canLookContent = content.replaceAll(MarkdownConfig.NETSITE_FORMAT, Link.DEFAULT_NET_SITE);
                     canLookContent = canLookContent.replaceAll(MarkdownConfig.IMAGE_FORMAT, "");
                 }
-                boolean canLookWords = dynamicDetailBean.getPaid_node() == null || dynamicDetailBean.getPaid_node().isPaid();
-                if (!canLookWords) {
+
+                boolean isMyDynamic = dynamicDetailBean.getUser_id() != null && dynamicDetailBean.getUser_id().intValue() == AppApplication.getMyUserIdWithdefault();
+                boolean canNotLookWords = dynamicDetailBean.getPaid_node() != null &&
+                        !dynamicDetailBean.getPaid_node().isPaid()
+                        && !isMyDynamic;
+
+                if (canNotLookWords) {
                     if (position < canLookContent.length()) {
                         canLookContent = canLookContent.substring(0, position + 1);
                     }

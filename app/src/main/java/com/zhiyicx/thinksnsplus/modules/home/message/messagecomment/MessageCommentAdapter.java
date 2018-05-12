@@ -160,13 +160,17 @@ public class MessageCommentAdapter extends CommonAdapter<CommentedBean> {
             if (APP_LIKE_FEED.equals(commentedBean.getChannel())) {
                 // 如果是动态，也许涉及付费内容
                 DynamicDetailBeanV2 dynamicBean = mGson.fromJson(mGson.toJson(commentedBean.getCommentable()), DynamicDetailBeanV2.class);
-
-                boolean canLookWords = dynamicBean.getPaid_node() == null || dynamicBean
-                        .getPaid_node().isPaid();
+                if (dynamicBean == null) {
+                    return;
+                }
+                boolean isMyDynamic = dynamicBean.getUser_id() != null && dynamicBean.getUser_id().intValue() == AppApplication.getMyUserIdWithdefault();
+                boolean canNotLookWords = dynamicBean.getPaid_node() != null &&
+                        !dynamicBean.getPaid_node().isPaid()
+                        && !isMyDynamic;
 
                 int startPosition = getStartPosition();
 
-                if (canLookWords) {
+                if (!canNotLookWords) {
                     TextViewUtils.newInstance(contentView, commentedBean.getDynamicContent(startPosition))
                             .spanTextColor(SkinUtils.getColor(R
                                     .color.normal_for_assist_text))
@@ -196,10 +200,12 @@ public class MessageCommentAdapter extends CommonAdapter<CommentedBean> {
                             .build();
                 }
                 contentView.setVisibility(View.VISIBLE);
+                contentView.setOnClickListener(v -> holder.getConvertView().performClick());
             } else {
                 holder.setText(R.id.tv_deatil, commentedBean.getTarget_title());
             }
         }
+
         holder.setTextColorRes(R.id.tv_name, R.color.normal_for_assist_text);
         holder.setText(R.id.tv_name, handleName(commentedBean, holder));
         List<Link> links = setLiknks(holder, commentedBean);
@@ -219,7 +225,7 @@ public class MessageCommentAdapter extends CommonAdapter<CommentedBean> {
 
         RxView.clicks(holder.getView(R.id.fl_detial))
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
-                .subscribe(aVoid -> toDetail(commentedBean));
+                .subscribe(aVoid -> toDetail(commentedBean,position));
         // 响应事件
         RxView.clicks(holder.getView(R.id.tv_content))
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
@@ -326,7 +332,7 @@ public class MessageCommentAdapter extends CommonAdapter<CommentedBean> {
      *
      * @param commentedBean
      */
-    private void toDetail(CommentedBean commentedBean) {
+    private void toDetail(CommentedBean commentedBean,int position) {
         if (commentedBean.getIsDelete()) {
             return;
         }

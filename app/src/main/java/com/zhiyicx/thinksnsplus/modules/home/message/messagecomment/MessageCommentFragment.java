@@ -196,6 +196,10 @@ public class MessageCommentFragment extends TSListFragment<MessageCommentContrac
 
     @Override
     public void setSpanText(int position, int note, long amount, TextView view, boolean canNotRead) {
+        if (note == 0) {
+            showSnackErrorMessage("完善中..");
+            return;
+        }
         position -= mHeaderAndFooterWrapper.getHeadersCount();
         initImageCenterPopWindow(position, position, amount,
                 note, R.string.buy_pay_words_desc, false);

@@ -1,9 +1,12 @@
 package com.zhiyicx.thinksnsplus.data.beans;
 
 import com.google.gson.Gson;
+import com.klinker.android.link_builder.Link;
 import com.zhiyicx.baseproject.base.BaseListBean;
 import com.zhiyicx.baseproject.config.MarkdownConfig;
 import com.zhiyicx.common.utils.RegexUtils;
+import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
 
 import org.greenrobot.greendao.DaoException;
@@ -261,6 +264,30 @@ public class DigedBean extends BaseListBean {
         } else {
             this.source_cover = getSource_cover();
         }
+    }
+
+    public String getDynamicContent(int position){
+        Gson gson=new Gson();
+        DynamicDetailBeanV2 dynamicDetailBean = gson.fromJson(gson.toJson(likeable), DynamicDetailBeanV2.class);
+        String content = dynamicDetailBean.getFeed_content();
+        String canLookContent = "";
+        if (content != null) {
+            canLookContent = content.replaceAll(MarkdownConfig.NETSITE_FORMAT, Link.DEFAULT_NET_SITE);
+            canLookContent = canLookContent.replaceAll(MarkdownConfig.IMAGE_FORMAT, "");
+        }
+
+        boolean isMyDynamic = dynamicDetailBean.getUser_id() != null && dynamicDetailBean.getUser_id().intValue() == AppApplication.getMyUserIdWithdefault();
+        boolean canNotLookWords = dynamicDetailBean.getPaid_node() != null &&
+                !dynamicDetailBean.getPaid_node().isPaid()
+                && !isMyDynamic;
+
+        if (canNotLookWords) {
+            if (position < canLookContent.length()) {
+                canLookContent = canLookContent.substring(0, position + 1);
+            }
+            canLookContent += AppApplication.getContext().getString(R.string.words_holder);
+        }
+        return canLookContent;
     }
 
     public String getSource_content() {

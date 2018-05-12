@@ -17,10 +17,12 @@ public interface MessageLikeContract {
      */
     interface View extends ITSListView<DigedBean, Presenter> {
 
+        void paySuccess();
     }
 
     interface Presenter extends ITSListPresenter<DigedBean> {
 
+        void payNote(int dynamicPosition, long amout, int imagePosition, int note, boolean isImage);
     }
 
 }
