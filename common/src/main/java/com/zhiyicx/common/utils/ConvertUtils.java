@@ -876,11 +876,24 @@ public class ConvertUtils {
         return bitmap == null ? null : new BitmapDrawable(res, bitmap);
     }
 
-    public static Bitmap drawable2BitmapWithWhiteBg(Context context, Drawable drawable, int defaultRes) {
+    public static Bitmap drawable2BitmapWithWhiteBg(Context context, Drawable source, int defaultRes) {
         // 建立对应 bitmap
         Bitmap bitmap;
         int w, h;
         Bitmap.Config config;
+        Drawable drawable = null;
+        if (source == null) {
+            return null;
+        }
+        if (source.getConstantState() == null) {
+            drawable = source;
+        }
+        if (source.getConstantState() != null) {
+            drawable = source.getConstantState().newDrawable();
+        }
+        if (drawable == null) {
+            return null;
+        }
         try {
             // 取 drawable 的长宽
             w = drawable.getIntrinsicWidth();
@@ -1193,6 +1206,7 @@ public class ConvertUtils {
 
     /**
      * 网页编码  RFC-3986
+     *
      * @param original
      * @return null if fails
      */
@@ -1209,6 +1223,7 @@ public class ConvertUtils {
 
     /**
      * 网页解码  RFC-3986
+     *
      * @param original
      * @return null if fails
      */

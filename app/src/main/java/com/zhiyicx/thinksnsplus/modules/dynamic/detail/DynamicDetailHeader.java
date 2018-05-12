@@ -2,10 +2,8 @@ package com.zhiyicx.thinksnsplus.modules.dynamic.detail;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -30,16 +28,15 @@ import com.bumptech.glide.request.target.Target;
 import com.klinker.android.link_builder.Link;
 import com.klinker.android.link_builder.LinkMetadata;
 import com.klinker.android.link_builder.NetUrlHandleBean;
-import com.zhiyicx.baseproject.config.ImageZipConfig;
-import com.zhiyicx.common.utils.FastBlur;
-import com.zhiyicx.thinksnsplus.modules.shortvideo.helper.ZhiyiVideoView;
 import com.zhiyicx.baseproject.config.ApiConfig;
+import com.zhiyicx.baseproject.config.ImageZipConfig;
 import com.zhiyicx.baseproject.config.MarkdownConfig;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.baseproject.impl.photoselector.Toll;
 import com.zhiyicx.baseproject.widget.imageview.FilterImageView;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.DeviceUtils;
+import com.zhiyicx.common.utils.FastBlur;
 import com.zhiyicx.common.utils.SkinUtils;
 import com.zhiyicx.common.utils.TextViewUtils;
 import com.zhiyicx.common.utils.UIUtils;
@@ -57,6 +54,7 @@ import com.zhiyicx.thinksnsplus.modules.dynamic.detail.dig_list.DigListActivity;
 import com.zhiyicx.thinksnsplus.modules.dynamic.detail.dig_list.DigListFragment;
 import com.zhiyicx.thinksnsplus.modules.gallery.GalleryActivity;
 import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBActivity;
+import com.zhiyicx.thinksnsplus.modules.shortvideo.helper.ZhiyiVideoView;
 import com.zhiyicx.thinksnsplus.modules.wallet.reward.RewardType;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhiyicx.thinksnsplus.widget.DynamicHorizontalStackIconView;
@@ -67,7 +65,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 import cn.jzvd.JZMediaManager;
-import cn.jzvd.JZUtils;
 import cn.jzvd.JZVideoPlayerManager;
 import cn.jzvd.JZVideoPlayerStandard;
 
@@ -275,11 +272,6 @@ public class DynamicDetailHeader {
                     showContentImage(context, photoList, i, i == photoList.size() - 1, mPhotoContainer);
                 }
                 setImageClickListener(photoList, dynamicBean);
-
-                FilterImageView imageView = (FilterImageView) mPhotoContainer.getChildAt(0)
-                        .findViewById(R.id.dynamic_content_img);
-                sharBitmap = ConvertUtils.drawable2BitmapWithWhiteBg(mContext, imageView
-                        .getDrawable(), R.mipmap.icon);
             }
 
         }
@@ -328,6 +320,22 @@ public class DynamicDetailHeader {
     }
 
     Bitmap getSharBitmap() {
+        ImageView imageView;
+        try {
+            if (mPhotoContainer.getChildAt(0) instanceof ZhiyiVideoView) {
+                ZhiyiVideoView videoView = (ZhiyiVideoView) mPhotoContainer.getChildAt(0);
+                imageView = videoView.thumbImageView;
+            } else {
+                imageView = (ImageView) mPhotoContainer.getChildAt(0).findViewById
+                        (R.id.dynamic_content_img);
+            }
+            if (imageView != null) {
+                sharBitmap = ConvertUtils.drawable2BitmapWithWhiteBg(mContext, imageView
+                        .getDrawable(), R.mipmap.icon);
+            }
+        } catch (Exception e) {
+
+        }
         if (sharBitmap == null) {
             sharBitmap = ConvertUtils.drawBg4Bitmap(ContextCompat.getColor(mContext, R.color.white), BitmapFactory.decodeResource(mContent
                     .getResources(), R.mipmap.icon).copy(Bitmap.Config.RGB_565, true));
@@ -349,10 +357,7 @@ public class DynamicDetailHeader {
         for (int i = 0; i < photoList.size(); i++) {
             showContentImage(mContext, photoList, i, i == photoList.size() - 1, mPhotoContainer);
         }
-        FilterImageView imageView = (FilterImageView) mPhotoContainer.getChildAt(0).findViewById
-                (R.id.dynamic_content_img);
-        sharBitmap = ConvertUtils.drawable2BitmapWithWhiteBg(mContext, imageView
-                .getDrawable(), R.mipmap.icon);
+
         setImageClickListener(photoList, dynamicBean);
     }
 
@@ -472,7 +477,8 @@ public class DynamicDetailHeader {
                         .diskCacheStrategy(DiskCacheStrategy.ALL)
                         .override(picWidth, height)
                         .error(R.drawable.shape_default_error_image);
-                if (!canLook) {// 切换展位图防止闪屏
+                if (!canLook) {
+                    // 切换展位图防止闪屏
                     requestBuilder.placeholder(R.drawable.shape_default_image);
                 }
                 requestBuilder.into(imageView);

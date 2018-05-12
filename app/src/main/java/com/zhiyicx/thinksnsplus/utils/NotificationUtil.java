@@ -104,10 +104,16 @@ public class NotificationUtil {
         builder.setTicker("new message");
         builder.setPriority(Notification.PRIORITY_MAX);
         builder.setNumber(1);
+
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, new Intent(), PendingIntent.FLAG_UPDATE_CURRENT);
+        builder.setContentIntent(pendingIntent);
+
         builder.setAutoCancel(true);
         Notification notification = builder.build();
-        notification.flags = Notification.FLAG_AUTO_CANCEL;
+        notification.flags |= Notification.FLAG_AUTO_CANCEL;
         notificationManager.notify((int) System.currentTimeMillis(), notification);
+
+
     }
 
     /**
@@ -171,6 +177,7 @@ public class NotificationUtil {
         builder.setTicker("new message");
         builder.setPriority(Notification.PRIORITY_MAX);
         builder.setNumber(1);
+        builder.setAutoCancel(true);
         Notification notification = builder.build();
         notification.flags = Notification.FLAG_AUTO_CANCEL;
         notificationManager.notify(chatId, 0, notification);

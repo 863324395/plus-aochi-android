@@ -233,7 +233,7 @@ public class TransferImageAnimationUtil {
                         animator.addUpdateListener(animation -> {
                             float progress = animation.getCurrentPlayTime() / animation.getDuration();
                             progress = Math.round(progress * 100) / 100.0f;
-                            progress = progress * 2;
+                            progress = progress * 3;
                             int alpha = Math.round(progress * 255);
                             if (alpha > 255) {
                                 alpha = 255;
