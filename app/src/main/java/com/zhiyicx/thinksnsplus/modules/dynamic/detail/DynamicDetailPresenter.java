@@ -697,9 +697,11 @@ public class DynamicDetailPresenter extends AppBasePresenter<
                         mDynamicDetailBeanV2GreenDao.insertOrReplace(mRootView.getCurrentDynamic());
                         Bundle bundle = new Bundle();
                         DynamicDetailBeanV2 dynamicDetailBeanV2 = mRootView.getCurrentDynamic();
-                        if (mRootView.getCurrentDynamic().getComments().get(0).getComment_mark()
-                                == null) {
-                            dynamicDetailBeanV2.getComments().remove(0);
+                        if (dynamicDetailBeanV2 != null && !mRootView.getCurrentDynamic().getComments().isEmpty()) {
+                            if (mRootView.getCurrentDynamic().getComments().get(0).getComment_mark()
+                                    == null) {
+                                dynamicDetailBeanV2.getComments().remove(0);
+                            }
                         }
                         bundle.putParcelable(DYNAMIC_DETAIL_DATA, dynamicDetailBeanV2);
                         bundle.putBoolean(DYNAMIC_LIST_NEED_REFRESH, true);

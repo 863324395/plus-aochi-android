@@ -307,7 +307,9 @@ public class CirclePostDetailPresenter extends AppBasePresenter<CirclePostDetail
         CirclePostListBean circlePostListBean = mRootView.getCurrentePost();
         circlePostListBean.setComments_count(circlePostListBean.getComments_count() - 1);
         mCirclePostCommentBeanGreenDao.deleteSingleCache(data);
-        mRootView.getCurrentePost().getComments().remove(data);
+        if (!mRootView.getCurrentePost().getComments().isEmpty()){
+            mRootView.getCurrentePost().getComments().remove(data);
+        }
         mRootView.getListDatas().remove(data);
         mRootView.refreshData();
         mRootView.updateCommentView(mRootView.getCurrentePost());

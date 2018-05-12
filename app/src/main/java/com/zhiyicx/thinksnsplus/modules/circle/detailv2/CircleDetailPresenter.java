@@ -301,8 +301,12 @@ public class CircleDetailPresenter extends AppBasePresenter<CircleDetailContract
     public void deleteComment(CirclePostListBean circlePostListBean, int postPositon, Long commentId, int commentPosition) {
         mRootView.getListDatas().get(postPositon).setComments_count(circlePostListBean.getComments_count() - 1);
         mCirclePostListBeanGreenDao.insertOrReplace(mRootView.getListDatas().get(postPositon));
-        mCirclePostCommentBeanGreenDao.deleteSingleCache(circlePostListBean.getComments().get(commentPosition));
-        mRootView.getListDatas().get(postPositon).getComments().remove(commentPosition);
+
+        if (!circlePostListBean.getComments().isEmpty()){
+            mCirclePostCommentBeanGreenDao.deleteSingleCache(circlePostListBean.getComments().get(commentPosition));
+            mRootView.getListDatas().get(postPositon).getComments().remove(commentPosition);
+        }
+
         mRootView.refreshData(postPositon);
         mBaseCircleRepository.deletePostComment(circlePostListBean.getId(), commentId);
     }
