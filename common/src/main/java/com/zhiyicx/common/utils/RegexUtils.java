@@ -165,7 +165,7 @@ public class RegexUtils {
         int chineseCount = getChineseCouns(input.toString());
         int totalCount = input.toString().length();
 
-        float len = chineseCount + (totalCount - chineseCount)/2f;
+        float len = 2 * chineseCount + (totalCount - chineseCount);
         return len >= minLength && len <= maxLength;
     }
 
