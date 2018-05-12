@@ -338,9 +338,7 @@ public class AnswerDetailsFragment extends TSListFragment<AnswerDetailsConstract
                     mReplyUserId = 0;
                     break;
                 case DynamicDetailMenuView.ITEM_POSITION_2:// 分享
-                    Bitmap bitmap = FileUtils.readImgFromFile(getActivity(), "info_share.jpg");
-
-                    mPresenter.shareInfo(bitmap);
+                    mPresenter.shareInfo(mAnswerDetailHeaderView.getSharBitmap());
                     break;
                 case DynamicDetailMenuView.ITEM_POSITION_3:// 更多
                     initDealAnswerPopupWindow(mAnswerInfoBean, mAnswerInfoBean.getCollected());

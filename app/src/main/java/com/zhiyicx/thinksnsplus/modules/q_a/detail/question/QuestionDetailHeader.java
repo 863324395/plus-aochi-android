@@ -3,6 +3,7 @@ package com.zhiyicx.thinksnsplus.modules.q_a.detail.question;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
@@ -69,6 +70,8 @@ public class QuestionDetailHeader implements TagFlowLayout.OnTagClickListener {
     private QAListInfoBean mQaListInfoBean;
     private OnActionClickListener mListener;
     private String mCurrentOrderType = ORDER_DEFAULT;
+
+
 
     private QuestionInviteUserPopWindow mInvitePop; // 邀请回答的弹框
 

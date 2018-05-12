@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.widget;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.annotation.AttrRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -21,6 +22,7 @@ import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.klinker.android.link_builder.Link;
 import com.klinker.android.link_builder.TouchableSpan;
+import com.tym.shortvideo.utils.BitmapUtils;
 import com.zhiyicx.baseproject.config.ImageZipConfig;
 import com.zhiyicx.baseproject.config.MarkdownConfig;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
@@ -36,6 +38,7 @@ import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBActivity;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhiyicx.thinksnsplus.utils.MarkDownRule;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -44,6 +47,8 @@ import java.util.regex.Pattern;
 import br.tiagohm.markdownview.MarkdownView;
 import br.tiagohm.markdownview.css.InternalStyleSheet;
 import br.tiagohm.markdownview.css.styles.Github;
+import rx.Observable;
+import rx.schedulers.Schedulers;
 
 import static com.zhiyicx.baseproject.config.ApiConfig.API_VERSION_2;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_DOMAIN;
@@ -107,11 +112,18 @@ public class QuestionDetailContent extends FrameLayout {
         List<ImageBean> list = new ArrayList<>();
         Pattern pattern = Pattern.compile(IMAGE_FORMAT);
         Matcher matcher = pattern.matcher(content);
+
+        String sharImage = "";
         while (matcher.find()) {
             String imageMarkDown = matcher.group(0);
             String image_id = matcher.group(1);
 
             String imgPath = APP_DOMAIN + "api/" + API_VERSION_2 + "/files/" + image_id/* + "?q=80"*/;
+
+            if (TextUtils.isEmpty(sharImage)){
+                sharImage = imgPath;
+            }
+
             String imageTag = imageMarkDown.replaceAll("\\d+", imgPath).replace("@", "");
             // 先手动加上换行吧 =_，=
             imageTag = "    \n" + imageTag + "    \n";
@@ -124,6 +136,23 @@ public class QuestionDetailContent extends FrameLayout {
             list.add(imageBean);
             AnimationRectBean rect = AnimationRectBean.buildFromImageView(mIvSolid);// 动画矩形
             animationRectBeanArrayList.add(rect);
+        }
+
+        if (!TextUtils.isEmpty(sharImage)) {
+            Observable.just(sharImage)
+                    .observeOn(Schedulers.io())
+                    .subscribe(url -> {
+                        try {
+                            File cacheFile = Glide.with(mContext)
+                                    .load(url)
+                                    .downloadOnly(200, 200)
+                                    .get();
+                            mShareBitmap = BitmapUtils.getBitmapFromFileDescriptor(cacheFile,200,200,true);
+                        } catch (Exception e) {
+                            LogUtils.d(e.getMessage());
+                        }
+                    });
+
         }
 
         if (mTvQuestionContent.getCurrState() != ExpandableTextView.STATE_EXPAND) {
@@ -259,10 +288,6 @@ public class QuestionDetailContent extends FrameLayout {
         }
     }
 
-    public Bitmap getShareBitmap() {
-        return mShareBitmap;
-    }
-
     private List<Link> setLinks() {
         List<Link> links = new ArrayList<>();
         Link followCountLink = new Link(mContext.getString(R.string.qa_topic_open_all)).setTextColor(ContextCompat.getColor(getContext(), R.color
@@ -273,5 +298,13 @@ public class QuestionDetailContent extends FrameLayout {
                 .setUnderlined(false);
         links.add(followCountLink);
         return links;
+    }
+
+    public Bitmap getShareBitmap() {
+        if (mShareBitmap == null) {
+            mShareBitmap = ConvertUtils.drawBg4Bitmap(ContextCompat.getColor(mContext, R.color.white), BitmapFactory.decodeResource(mContext
+                    .getResources(), R.mipmap.icon).copy(Bitmap.Config.RGB_565, true));
+        }
+        return mShareBitmap;
     }
 }

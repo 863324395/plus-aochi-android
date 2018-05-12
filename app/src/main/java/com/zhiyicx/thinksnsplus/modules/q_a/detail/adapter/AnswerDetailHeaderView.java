@@ -3,6 +3,7 @@ package com.zhiyicx.thinksnsplus.modules.q_a.detail.adapter;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
@@ -19,9 +20,11 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.model.GlideUrl;
 import com.jakewharton.rxbinding.view.RxView;
 import com.klinker.android.link_builder.Link;
+import com.tym.shortvideo.utils.BitmapUtils;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.baseproject.impl.photoselector.Toll;
 import com.zhiyicx.baseproject.widget.UserAvatarView;
@@ -47,6 +50,7 @@ import com.zhiyicx.thinksnsplus.utils.MarkDownRule;
 import com.zhiyicx.thinksnsplus.widget.DynamicHorizontalStackIconView;
 import com.zhiyicx.thinksnsplus.widget.ReWardView;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -56,6 +60,8 @@ import java.util.regex.Pattern;
 import br.tiagohm.markdownview.MarkdownView;
 import br.tiagohm.markdownview.css.InternalStyleSheet;
 import br.tiagohm.markdownview.css.styles.Github;
+import rx.Observable;
+import rx.schedulers.Schedulers;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
@@ -253,15 +259,41 @@ public class AnswerDetailHeaderView extends BaseWebLoad{
         // 替换图片id 为地址
         Pattern pattern = Pattern.compile(IMAGE_FORMAT);
         Matcher matcher = pattern.matcher(markDownContent);
+
+
+        String sharImage = "";
         while (matcher.find()) {
             String imageMarkDown = matcher.group(0);
             String id = matcher.group(1);
 
             String imgPath = APP_DOMAIN + "api/" + API_VERSION_2 + "/files/" + id + "?q=80";
+
+            if (TextUtils.isEmpty(sharImage)){
+                sharImage = imgPath;
+            }
             String iamgeTag = imageMarkDown.replaceAll("\\d+", imgPath).replace("@", "");
             markDownContent = markDownContent.replace(imageMarkDown, iamgeTag);
             dealImageList(imgPath, id);
         }
+
+
+        if (!TextUtils.isEmpty(sharImage)) {
+            Observable.just(sharImage)
+                    .observeOn(Schedulers.io())
+                    .subscribe(url -> {
+                        try {
+                            File cacheFile = Glide.with(mContext)
+                                    .load(url)
+                                    .downloadOnly(200, 200)
+                                    .get();
+                            sharBitmap = BitmapUtils.getBitmapFromFileDescriptor(cacheFile,200,200,true);
+                        } catch (Exception e) {
+                            LogUtils.d(e.getMessage());
+                        }
+                    });
+
+        }
+
         return markDownContent;
     }
 
@@ -363,6 +395,13 @@ public class AnswerDetailHeaderView extends BaseWebLoad{
     }
     public void destroyedWeb(){
         destryWeb(mContent);
+    }
 
+    public Bitmap getSharBitmap() {
+        if (sharBitmap == null) {
+            sharBitmap = ConvertUtils.drawBg4Bitmap(ContextCompat.getColor(mContext, R.color.white), BitmapFactory.decodeResource(mContent
+                    .getResources(), R.mipmap.icon).copy(Bitmap.Config.RGB_565, true));
+        }
+        return sharBitmap;
     }
 }

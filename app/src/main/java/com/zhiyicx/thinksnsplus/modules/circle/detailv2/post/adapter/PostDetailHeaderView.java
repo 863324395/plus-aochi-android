@@ -2,6 +2,8 @@ package com.zhiyicx.thinksnsplus.modules.circle.detailv2.post.adapter;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -12,9 +14,13 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.Target;
 import com.jakewharton.rxbinding.view.RxView;
+import com.tym.shortvideo.utils.BitmapUtils;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.baseproject.impl.photoselector.Toll;
+import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.BaseWebLoad;
@@ -35,6 +41,7 @@ import com.zhiyicx.thinksnsplus.widget.DynamicHorizontalStackIconView;
 import com.zhiyicx.thinksnsplus.widget.ReWardView;
 import com.zhy.view.flowlayout.TagFlowLayout;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -42,6 +49,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import br.tiagohm.markdownview.MarkdownView;
+import rx.Observable;
+import rx.schedulers.Schedulers;
 
 import static android.view.View.GONE;
 import static com.zhiyicx.baseproject.config.ApiConfig.API_VERSION_2;
@@ -212,15 +221,37 @@ public class PostDetailHeaderView extends BaseWebLoad {
         // 替换图片id 为地址
         Pattern pattern = Pattern.compile(IMAGE_FORMAT);
         Matcher matcher = pattern.matcher(markDownContent);
+        String sharImage = "";
         while (matcher.find()) {
             String imageMarkDown = matcher.group(0);
             String id = matcher.group(1);
 
             String imgPath = APP_DOMAIN + "api/" + API_VERSION_2 + "/files/" + id + "?q=80";
+            if (TextUtils.isEmpty(sharImage)){
+                sharImage = imgPath;
+            }
             String iamgeTag = imageMarkDown.replaceAll("\\d+", imgPath).replace("@", "");
             markDownContent = markDownContent.replace(imageMarkDown, iamgeTag);
             dealImageList(imgPath, id);
         }
+        if (!TextUtils.isEmpty(sharImage)) {
+                Observable.just(sharImage)
+                        .observeOn(Schedulers.io())
+                        .subscribe(url -> {
+                            try {
+                                File cacheFile = Glide.with(mContext)
+                                        .load(url)
+                                        .downloadOnly(200, 200)
+                                        .get();
+                                sharBitmap = BitmapUtils.getBitmapFromFileDescriptor(cacheFile,200,200,true);
+                            } catch (Exception e) {
+                                LogUtils.d(e.getMessage());
+                            }
+                        });
+
+        }
+
+
         return markDownContent;
     }
 
@@ -347,5 +378,13 @@ public class PostDetailHeaderView extends BaseWebLoad {
 
     public void setCanGotoCircle(boolean canGotoCircle) {
         this.canGotoCircle = canGotoCircle;
+    }
+
+    public Bitmap getSharBitmap() {
+        if (sharBitmap == null) {
+            sharBitmap = ConvertUtils.drawBg4Bitmap(ContextCompat.getColor(mContext, R.color.white), BitmapFactory.decodeResource(mContent
+                    .getResources(), R.mipmap.icon).copy(Bitmap.Config.RGB_565, true));
+        }
+        return sharBitmap;
     }
 }

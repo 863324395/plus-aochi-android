@@ -17,10 +17,14 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.RemoteException;
 import android.provider.MediaStore;
+
 import com.tym.shortvideo.utils.Size;
+import com.zhiyicx.common.utils.log.LogUtils;
 
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -202,6 +206,44 @@ public class BitmapUtils {
                 return BitmapFactory.decodeFile(dst.getPath(), opts);
             } catch (OutOfMemoryError e) {
                 e.printStackTrace();
+            }
+        }
+        return null;
+    }
+
+    public static Bitmap getBitmapFromFileDescriptor(File dst, int width, int height, boolean useImageSize) {
+        if (null != dst && dst.exists()) {
+            BitmapFactory.Options opts = null;
+            if (width > 0 && height > 0) {
+                opts = new BitmapFactory.Options();
+                opts.inJustDecodeBounds = true;
+
+                FileInputStream is = null;
+                Bitmap bitmap = null;
+                try {
+                    is = new FileInputStream(dst.getPath());
+                    BitmapFactory.decodeFileDescriptor(is.getFD(), null, opts);
+                    if (useImageSize) {
+                        width = opts.outWidth;
+                        height = opts.outHeight;
+                    }
+                    opts.inSampleSize = calculateInSampleSize(opts, width, height);
+                    opts.inJustDecodeBounds = false;
+
+                    bitmap = BitmapFactory.decodeFileDescriptor(is.getFD(), null, opts);
+
+                    return bitmap;
+                } catch (Exception e) {
+                    LogUtils.d(e.getMessage());
+                } finally {
+                    if (is != null) {
+                        try {
+                            is.close();
+                        } catch (IOException e) {
+                            // do nothing here
+                        }
+                    }
+                }
             }
         }
         return null;
