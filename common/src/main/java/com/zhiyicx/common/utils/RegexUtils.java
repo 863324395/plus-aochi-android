@@ -156,22 +156,17 @@ public class RegexUtils {
     }
 
     /**
-     * 用户名至少为 length 个英文字符,用户名至少为 length/3 个中文字符 ,至少length个字节
-     * 至少两个文字 一个中文一个英文 , 用户名至少为 4 个英文字符 ，用户名至少为 2 个中文字符
-     * <p>不能以数字开通</p>
+     * 中文 1 ，除外 0.5
      *
      * @param input 待验证文本
      * @return {@code true}: 匹配<br>{@code false}: 不匹配
      */
     public static boolean isUsernameLength(CharSequence input, int minLength, int maxLength) {
+        int chineseCount = getChineseCouns(input.toString());
+        int totalCount = input.toString().length();
 
-        String inputStr = input.toString().trim();
-        try {
-            int totalLength = inputStr.getBytes("GBK").length;
-            return totalLength >= minLength && totalLength <= maxLength;
-        } catch (Exception e) {
-            return false;
-        }
+        float len = chineseCount + (totalCount - chineseCount)/2f;
+        return len >= minLength && len <= maxLength;
     }
 
     /**

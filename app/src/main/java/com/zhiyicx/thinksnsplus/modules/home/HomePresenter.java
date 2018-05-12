@@ -246,7 +246,7 @@ class HomePresenter extends AppBasePresenter<HomeContract.View> implements HomeC
 
             // admin  消息 ，我们后台的发，显示的时候不要名字，只要内容，所以 new UserInfoBean("");搞了个名字是""的用户信息。
             if ("admin".equals(message.getFrom())) {
-                chatItemBean.setUserInfo(new UserInfoBean(""));
+                continue;
             } else {
                 try {
                     chatItemBean.setUserInfo(mUserInfoBeanGreenDao.getSingleDataFromCache

@@ -448,6 +448,9 @@ public class ChatFragment extends TSEaseChatFragment<ChatContract.Presenter>
                 EaseUI.getInstance().getNotifier().vibrateAndPlayTone(message);
                 conversation.markMessageAsRead(message.getMsgId());
             } else {
+                if ("admin".equals(message.getFrom())) {
+                    continue;
+                }
                 JpushMessageBean jpushMessageBean = new JpushMessageBean();
                 jpushMessageBean.setType(JpushMessageTypeConfig.JPUSH_MESSAGE_TYPE_IM);
                 jpushMessageBean.setExtras(message.getChatType().name());
