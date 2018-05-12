@@ -272,7 +272,7 @@ public class UmengSharePolicyImpl implements SharePolicy, OnShareCallbackListene
             public void onCancel(SHARE_MEDIA share_media) {
                 if (l != null) {
                     Share share = changeShare(share_media);
-                    l.onCancel(share);
+//                    l.onCancel(share);
                 }
                 mRecyclerViewPopupWindow.hide();
             }
