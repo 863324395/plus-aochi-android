@@ -755,6 +755,10 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.View>
                     int dynamicPosition = -1;
                     if (isNeedRefresh) {
                         DynamicDetailBeanV2 dynamicBean = bundle.getParcelable(DYNAMIC_DETAIL_DATA);
+                        if (dynamicBean == null) {
+                            return dynamicPosition;
+                        }
+                        dynamicBean.handleData();
                         dynamicPosition = dynamicBean.getFeed_mark() == null ? -1 : getCurrenPosiotnInDataList(dynamicBean.getFeed_mark());
                         // 如果列表有当前评论
                         if (dynamicPosition != -1) {

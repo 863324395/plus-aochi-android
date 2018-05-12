@@ -737,6 +737,10 @@ public class PersonalCenterPresenter extends AppBasePresenter<PersonalCenterCont
 
                         int size = mRootView.getListDatas().size();
                         dynamicPosition = -1;
+                        if (dynamicBean == null) {
+                            return dynamicPosition;
+                        }
+                        dynamicBean.handleData();
                         for (int i = 0; i < size; i++) {
                             if (mRootView.getListDatas().get(i).getFeed_mark().equals(dynamicBean.getFeed_mark())) {
                                 dynamicPosition = i;
