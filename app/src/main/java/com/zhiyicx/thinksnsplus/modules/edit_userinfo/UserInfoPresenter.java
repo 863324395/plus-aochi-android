@@ -237,8 +237,8 @@ public class UserInfoPresenter extends AppBasePresenter<UserInfoContract.View> i
      * @return
      */
     private boolean checkUsername(String name) {
-        if (!RegexUtils.isUsernameLength(name, mContext.getResources().getInteger(R.integer.username_min_length), mContext.getResources()
-                .getInteger(R.integer.username_max_length))) {
+        if (!RegexUtils.isUsernameLength(name, mContext.getResources().getInteger(R.integer.username_min_byte_length), mContext.getResources()
+                .getInteger(R.integer.username_max_byte_length))) {
             mRootView.setChangeUserInfoState(-1, mContext.getString(R.string.username_toast_hint));
             return false;
         }

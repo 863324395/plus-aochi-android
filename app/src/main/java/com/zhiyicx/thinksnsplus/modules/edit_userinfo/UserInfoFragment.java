@@ -400,6 +400,8 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
         mEtUserName.setText(mUserInfoBean.getName());
         // 设置性别
         mTvSex.setText(mUserInfoBean.getSexString());
+        LogUtils.d("initUserInfo::"+mUserInfoBean.getName());
+        LogUtils.d("initUserInfo::"+mEtUserName.getText());
         mTvSex.setTag(R.id.view_data, mUserInfoBean.getSex());// 设置性别编号
 
 

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.support.v4.content.ContextCompat;
 import android.text.Editable;
+import android.text.Selection;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
@@ -19,7 +20,7 @@ import com.zhiyicx.baseproject.R;
  * @date 2017/1/8
  * @contact email:450127106@qq.com
  */
-public class DeleteEditText extends EditText implements OnFocusChangeListener, TextWatcher {
+public class DeleteEditText extends ByteLimitEditText implements OnFocusChangeListener{
     private static final int DEFAULT_DELETE_IMG = R.mipmap.login_inputbox_clean;
     /**
      * 删除按钮的引用
@@ -30,6 +31,8 @@ public class DeleteEditText extends EditText implements OnFocusChangeListener, T
      */
     private boolean hasFoucs;
     private Context mContext;
+
+
 
     public DeleteEditText(Context context) {
         this(context, null);
@@ -62,8 +65,6 @@ public class DeleteEditText extends EditText implements OnFocusChangeListener, T
         setClearIconVisible(false);
         // 设置焦点改变的监听
         setOnFocusChangeListener(this);
-        // 设置输入框里面内容发生改变的监听
-        addTextChangedListener(this);
     }
 
     /**
@@ -119,13 +120,4 @@ public class DeleteEditText extends EditText implements OnFocusChangeListener, T
         }
     }
 
-    @Override
-    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-    }
-
-    @Override
-    public void afterTextChanged(Editable s) {
-
-    }
 }

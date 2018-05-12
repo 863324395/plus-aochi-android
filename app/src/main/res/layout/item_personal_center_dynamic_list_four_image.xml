@@ -43,7 +43,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/spacing_mid"
         android:layout_toRightOf="@id/ll_time_container"
-        android:maxLength="@integer/username_max_length"
+        android:maxLength="@integer/username_max_byte_length"
         android:maxLines="1"
         android:paddingLeft="@dimen/spacing_normal"
         android:paddingStart="@dimen/spacing_normal"

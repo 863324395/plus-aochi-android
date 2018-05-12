@@ -160,4 +160,9 @@
         <!--输入框hint-->
         <attr name="ts_md_hint" format="string"/>
     </declare-styleable>
+
+    <declare-styleable name="ByteLimitEditText">
+        <attr name="need_word_byte_limit" format="boolean" />
+        <attr name="word_byte_limit_lengh" format="dimension|integer" />
+    </declare-styleable>
 </resources>

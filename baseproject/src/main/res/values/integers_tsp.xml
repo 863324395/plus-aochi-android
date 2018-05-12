@@ -11,8 +11,12 @@
     <integer name="password_min_length">6</integer>
     <!--用户名最大长度 ,数量代表字符-->
     <integer name="username_max_length">8</integer>
+    <!--用户名最大长度 ,数量代表字节-->
+    <integer name="username_max_byte_length">24</integer>
     <!--用户名最小长度 ,数量代表字符-->
     <integer name="username_min_length">2</integer>
+    <!--用户名最小长度 ,数量代表字节-->
+    <integer name="username_min_byte_length">6</integer>
     <!--验证码长度-->
     <integer name="vertiry_code_lenght">6</integer>
     <!--验证码长度-->

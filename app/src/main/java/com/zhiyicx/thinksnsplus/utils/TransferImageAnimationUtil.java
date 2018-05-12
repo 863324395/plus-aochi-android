@@ -210,8 +210,8 @@ public class TransferImageAnimationUtil {
 
                         // 位移+缩小
                         ObjectAnimator animator = ObjectAnimator.ofPropertyValuesHolder(imageView,
-                                PropertyValuesHolder.ofFloat("setPivotX", pivotX, pivotX),
-                                PropertyValuesHolder.ofFloat("setPivotY", pivotY, pivotY),
+                                PropertyValuesHolder.ofInt("setPivotX", pivotX, pivotX),
+                                PropertyValuesHolder.ofInt("setPivotY", pivotY, pivotY),
 
                                 PropertyValuesHolder.ofFloat("scaleX", 1 / startScale, 1),
                                 PropertyValuesHolder.ofFloat("scaleY", 1 / startScale, 1),
@@ -291,8 +291,8 @@ public class TransferImageAnimationUtil {
 
 
         ObjectAnimator animator = ObjectAnimator.ofPropertyValuesHolder(imageView,
-                PropertyValuesHolder.ofFloat("setPivotX", pivotX, pivotX),
-                PropertyValuesHolder.ofFloat("setPivotY", pivotY, pivotY),
+                PropertyValuesHolder.ofInt("setPivotX", pivotX, pivotX),
+                PropertyValuesHolder.ofInt("setPivotY", pivotY, pivotY),
 
                 PropertyValuesHolder.ofFloat("scaleX", 1, startWScale),
                 PropertyValuesHolder.ofFloat("scaleY", 1, startHScale),

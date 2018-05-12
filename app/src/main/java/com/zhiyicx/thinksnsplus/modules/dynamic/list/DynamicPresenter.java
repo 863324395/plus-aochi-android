@@ -766,7 +766,7 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.View>
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(integer -> {
                     if (integer != -1) {
-                        mRootView.refreshData();
+                        mRootView.refreshData(integer);
                     }
 
                 }, Throwable::printStackTrace);

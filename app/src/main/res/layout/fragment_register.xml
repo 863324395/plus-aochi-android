@@ -33,10 +33,11 @@
                     <com.zhiyicx.baseproject.widget.edittext.DeleteEditText
                         android:id="@+id/et_regist_username"
                         style="@style/style_edit"
+                        app:need_word_byte_limit="true"
+                        app:word_byte_limit_lengh="@integer/username_max_byte_length"
                         android:layout_marginLeft="0dp"
                         android:hint="@string/username_input_hint"
-                        android:inputType="textPersonName"
-                        android:maxLength="@integer/username_max_length"/>
+                        android:inputType="textPersonName"/>
                 </LinearLayout>
 
                 <ImageView style="@style/style_divider_horizontal_light"/>

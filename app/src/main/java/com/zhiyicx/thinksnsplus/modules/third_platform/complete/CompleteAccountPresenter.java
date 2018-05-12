@@ -117,8 +117,8 @@ public class CompleteAccountPresenter extends AppBasePresenter<CompleteAccountCo
      * @return
      */
     private boolean checkUsername(String name) {
-        if (!RegexUtils.isUsernameLength(name, mContext.getResources().getInteger(R.integer.username_min_length), mContext.getResources()
-                .getInteger(R.integer.username_max_length))) {
+        if (!RegexUtils.isUsernameLength(name, mContext.getResources().getInteger(R.integer.username_min_byte_length), mContext.getResources()
+                .getInteger(R.integer.username_max_byte_length))) {
             mRootView.showErrorTips(mContext.getString(R.string.username_toast_hint));
             return true;
         }
