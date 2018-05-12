@@ -758,10 +758,9 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
         mCurrentPostion = mPresenter.getCurrenPosiotnInDataList(dynamicBean.getFeed_mark());
         if (dynamicBean.getComments().get(position).getUser_id() == AppApplication
                 .getMyUserIdWithdefault()) {
-            if (dynamicBean.getComments().get(position).getComment_id() != null) {
-                initDeletCommentPopupWindow(dynamicBean, mCurrentPostion, position);
-                mDeletCommentPopWindow.show();
-            }
+            initDeletCommentPopupWindow(dynamicBean, mCurrentPostion, position);
+            mDeletCommentPopWindow.show();
+
         } else {
             showCommentView();
             mReplyToUserId = dynamicBean.getComments().get(position).getUser_id();
@@ -887,7 +886,8 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
         mDeletCommentPopWindow = ActionPopupWindow.builder()
                 .item1Str(BuildConfig.USE_TOLL && dynamicBean.getState() == DynamicDetailBeanV2
                         .SEND_SUCCESS && !dynamicBean
-                        .getComments().get(commentPosition).getPinned() ? getString(R
+                        .getComments().get(commentPosition).getPinned() && dynamicBean.getComments().get(commentPosition).getComment_id() != null ?
+                        getString(R
                         .string.dynamic_list_top_comment) : null)
                 .item2Str(getString(R.string.dynamic_list_delete_comment))
                 .bottomStr(getString(R.string.cancel))
@@ -906,7 +906,8 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
                     mDeletCommentPopWindow.hide();
                     showDeleteTipPopupWindow(getString(R.string.delete_comment), () -> {
                         mPresenter.deleteCommentV2(dynamicBean, dynamicPositon, dynamicBean
-                                        .getComments().get(commentPosition).getComment_id(),
+                                        .getComments().get(commentPosition).getComment_id() != null ? dynamicBean
+                                        .getComments().get(commentPosition).getComment_id() : 0,
                                 commentPosition);
                         showBottomView(true);
                     }, true);

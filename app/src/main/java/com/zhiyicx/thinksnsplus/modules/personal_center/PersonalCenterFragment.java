@@ -896,7 +896,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
         mDeletCommentPopWindow = ActionPopupWindow.builder()
                 .item1Str(BuildConfig.USE_TOLL && dynamicBean.getState() == DynamicDetailBeanV2
                         .SEND_SUCCESS && !dynamicBean
-                        .getComments().get(commentPosition).getPinned() ? getString(R
+                        .getComments().get(commentPosition).getPinned()  && dynamicBean.getComments().get(commentPosition).getComment_id() != null ? getString(R
                         .string.dynamic_list_top_comment) : null)
                 .item2Str(getString(R.string.dynamic_list_delete_comment))
                 .bottomStr(getString(R.string.cancel))
@@ -914,7 +914,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
                 .item2ClickListener(() -> {
                     mDeletCommentPopWindow.hide();
                     showDeleteTipPopupWindow(getString(R.string.delete_comment), () -> {
-                        mPresenter.deleteCommentV2(dynamicBean, dynamicPositon, dynamicBean.getComments().get(commentPosition).getComment_id(),
+                        mPresenter.deleteCommentV2(dynamicBean, dynamicPositon, dynamicBean.getComments().get(commentPosition).getComment_id()!=null? dynamicBean.getComments().get(commentPosition).getComment_id():0,
                                 commentPosition);
                     }, true);
 
