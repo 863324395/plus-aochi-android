@@ -71,6 +71,7 @@ public class CheckInPopWindow extends PopupWindow {
         this.mWalletRatio = mWalletRatio;
         this.mCheckInBean = checkInBean;
         this.mGoldName = goldName;
+
         initLayout();
         initData();
     }
@@ -133,6 +134,7 @@ public class CheckInPopWindow extends PopupWindow {
         };
         mRvUserCheckInList.setAdapter(mCommonAdapter);
         setData(mCheckInBean, mWalletRatio, mGoldName);
+        setWindowAlpha(0.8f);
     }
 
     /**

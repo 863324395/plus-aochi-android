@@ -206,6 +206,7 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
                 , ApiConfig.APP_DOMAIN + ApiConfig.APP_PATH_GET_APP_VERSION + "?version_code=" + DeviceUtils.getVersionCode(getContext()) +
                         "&type=android")
                 .startVersionCheck();
+        mPresenter.getCheckInInfoData();
     }
 
     @Override
@@ -546,6 +547,12 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
     @Override
     public CheckInBean getCheckInData() {
         return mCheckInBean;
+    }
+
+
+    @Override
+    public void updateCheckInBean(CheckInBean data) {
+        this.mCheckInBean = data;
     }
 
     @Override

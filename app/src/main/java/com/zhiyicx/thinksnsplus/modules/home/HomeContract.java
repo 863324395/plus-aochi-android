@@ -62,6 +62,12 @@ public interface HomeContract {
          * @return
          */
         boolean needShowChatNotofication();
+
+        /**
+         * 更新签到信息
+         * @param data
+         */
+        void updateCheckInBean(CheckInBean data);
     }
 
     interface Presenter extends IBaseTouristPresenter {
@@ -69,16 +75,6 @@ public interface HomeContract {
          * 初始化 im
          */
         void initIM();
-
-        /**
-         * 是否登录
-         */
-        boolean isLogin();
-
-        /**
-         * 处理游客模式点击处理
-         */
-        boolean handleTouristControl();
 
         /**
          * 签到
@@ -89,6 +85,10 @@ public interface HomeContract {
          * 获取签到信息
          */
         void getCheckInInfo();
+        /**
+         * 获取签到信息,不显示
+         */
+        void getCheckInInfoData();
 
         double getWalletRatio();
 
