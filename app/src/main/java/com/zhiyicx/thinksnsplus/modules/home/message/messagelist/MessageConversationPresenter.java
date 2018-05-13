@@ -348,7 +348,7 @@ public class MessageConversationPresenter extends AppBasePresenter<MessageConver
     }
 
     private void getUserInfoForRefreshList(TSEMRefreshEvent event) {
-        mUserInfoRepository.getUserInfoWithOutLocalByIds(event.getStringExtra())
+        Subscription subscription=mUserInfoRepository.getUserInfoWithOutLocalByIds(event.getStringExtra())
                 .subscribe(new BaseSubscribeForV2<List<UserInfoBean>>() {
                     @Override
                     protected void onSuccess(List<UserInfoBean> data) {
@@ -362,6 +362,7 @@ public class MessageConversationPresenter extends AppBasePresenter<MessageConver
                         mRootView.refreshData();
                     }
                 });
+        addSubscrebe(subscription);
     }
 
     /**

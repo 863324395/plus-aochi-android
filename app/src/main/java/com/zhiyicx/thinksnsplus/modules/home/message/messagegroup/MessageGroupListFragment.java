@@ -140,13 +140,6 @@ public class MessageGroupListFragment extends TSListFragment<MessageGroupContrac
     }
 
     @Override
-    protected RecyclerView.ItemDecoration getItemDecoration() {
-        return new CustomLinearDecoration(0, getResources().getDimensionPixelSize(R.dimen
-                .divider_line), 0, 0, ContextCompat.getDrawable(getContext(), R.drawable
-                .shape_recyclerview_grey_divider));
-    }
-
-    @Override
     public void checkGroupExist(String id, EMGroup data) {
         if (data != null) {
             EMConversation conversation = EMClient.getInstance().chatManager().getConversation(id, EMConversation.EMConversationType.GroupChat, true);
