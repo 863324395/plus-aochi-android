@@ -62,6 +62,13 @@ public interface EasemobClient {
     Observable<List<ChatGroupBean>> getGroupInfo(@Query("im_group_id") String ids);
 
     /**
+     * 批量获取群信息，只返回群头像
+     *
+     * @param ids im_group_id 以逗号隔开
+     */
+    @GET(ApiConfig.APP_PATH_GET_GROUP_INFO_S_FACE)
+    Observable<List<ChatGroupBean>> getGroupInfoOnlyGroupFace(@Query("im_group_id") String ids);
+    /**
      * 添加群组成员
      *
      * @param id     群Id

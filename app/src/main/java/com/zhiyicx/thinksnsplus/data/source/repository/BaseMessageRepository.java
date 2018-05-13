@@ -329,9 +329,27 @@ public class BaseMessageRepository implements IBaseMessageRepository {
                 });
     }
 
+    /**
+     * 获取群组信息
+     *
+     * @param ids 群 id , 以 ， 分割
+     * @return
+     */
     @Override
     public Observable<List<ChatGroupBean>> getGroupInfo(String ids) {
         return mClient.getGroupInfo(ids)
+                .subscribeOn(Schedulers.io());
+    }
+
+    /**
+     * 获取群组信息，只需要群头像
+     *
+     * @param ids 群 id , 以 ， 分割
+     * @return
+     */
+    @Override
+    public Observable<List<ChatGroupBean>> getGroupInfoOnlyGroupFace(String ids) {
+        return mClient.getGroupInfoOnlyGroupFace(ids)
                 .subscribeOn(Schedulers.io());
     }
 

@@ -64,7 +64,7 @@ public class MessageGroupPresenter extends AppBasePresenter<MessageGroupContract
                                 builder.append(group.getGroupId());
                                 builder.append(",");
                             }
-                            return mBaseMessageRepository.getGroupInfo(builder.toString());
+                            return mBaseMessageRepository.getGroupInfoOnlyGroupFace(builder.toString());
                         }
                         return Observable.just(new ArrayList<>());
                     } catch (HyphenateException e) {

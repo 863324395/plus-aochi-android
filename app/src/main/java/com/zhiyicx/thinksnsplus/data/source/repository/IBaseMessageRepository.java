@@ -26,10 +26,25 @@ public interface IBaseMessageRepository {
 
     Observable<List<MessageItemBeanV2>> completeEmConversation(List<MessageItemBeanV2> list);
 
+    /**
+     * 获取多组群信息
+     *
+     * @param ids 群 id , 以 ， 分割
+     * @return
+     */
     Observable<List<ChatGroupBean>> getGroupInfo(String ids);
 
     /**
+     * 获取多组群信息，只有群头像
+     *
+     * @param ids 群 id , 以 ， 分割
+     * @return
+     */
+    Observable<List<ChatGroupBean>> getGroupInfoOnlyGroupFace(String ids);
+
+    /**
      * 完善用户信息 ，在 聊天详情界面
+     *
      * @param id
      * @return
      */
@@ -37,9 +52,11 @@ public interface IBaseMessageRepository {
 
     /**
      * 删除本地群聊信息
+     *
      * @param id
      */
     void deleteLocalChatGoup(String id);
+
     void saveChatGoup(List<ChatGroupBean> groupBeans);
 
     Observable<List<ChatItemBean>> completeUserInfo(List<ChatItemBean> list);
