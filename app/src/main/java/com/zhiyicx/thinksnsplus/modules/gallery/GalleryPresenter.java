@@ -49,7 +49,7 @@ public class GalleryPresenter extends AppBasePresenter<GalleryConstract.View> im
     }
 
     @Override
-    public void payNote(final Long feed_id, final int imagePosition, int note) {
+    public void payNote(final Long feed_id, final int imagePosition, int note,boolean isSavePic) {
 
         DynamicDetailBeanV2 dynamicDetail = mDynamicDetailBeanV2GreenDao.getDynamicByFeedId(feed_id);
         double amount = dynamicDetail.getImages().get(imagePosition).getAmount();
@@ -70,9 +70,11 @@ public class GalleryPresenter extends AppBasePresenter<GalleryConstract.View> im
                         DynamicDetailBeanV2 dynamicDetailBeanV2 = mDynamicDetailBeanV2GreenDao.getDynamicByFeedId(feed_id);
                         dynamicDetailBeanV2.getImages().get(imagePosition).setPaid(true);
                         mRootView.getCurrentImageBean().getToll().setPaid(true);
-                        mRootView.reLoadImage();
+                        mRootView.reLoadImage(isSavePic);
                         mDynamicDetailBeanV2GreenDao.insertOrReplace(dynamicDetailBeanV2);
-                        mRootView.showSnackSuccessMessage(mContext.getString(R.string.transaction_success));
+                        if (!isSavePic){
+                            mRootView.showSnackSuccessMessage(mContext.getString(R.string.transaction_success));
+                        }
                         Bundle bundle = new Bundle();
                         bundle.putBoolean(DYNAMIC_UPDATE_TOLL, true);
                         bundle.putParcelable(DYNAMIC_DETAIL_DATA, dynamicDetailBeanV2);

@@ -15,13 +15,13 @@ public interface GalleryConstract {
 
     interface View extends IBaseView<Presenter>{
         ImageBean getCurrentImageBean();
-        void reLoadImage();
+        void reLoadImage(boolean isSavePic);
     }
 
     interface Presenter extends IBaseTouristPresenter{
         void checkNote(int note);
 
-        void payNote(Long feed_id,int imagePosition,int note);
+        void payNote(Long feed_id,int imagePosition,int note,boolean isSavePic);
     }
 
 }
