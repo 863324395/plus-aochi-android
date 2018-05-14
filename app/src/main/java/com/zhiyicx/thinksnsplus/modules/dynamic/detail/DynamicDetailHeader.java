@@ -68,6 +68,9 @@ import cn.jzvd.JZMediaManager;
 import cn.jzvd.JZVideoPlayerManager;
 import cn.jzvd.JZVideoPlayerStandard;
 
+import static android.support.v4.view.ViewCompat.LAYER_TYPE_HARDWARE;
+import static android.support.v4.view.ViewCompat.LAYER_TYPE_NONE;
+import static android.support.v4.view.ViewCompat.LAYER_TYPE_SOFTWARE;
 import static cn.jzvd.JZVideoPlayer.URL_KEY_DEFAULT;
 
 /**
@@ -428,6 +431,7 @@ public class DynamicDetailHeader {
         DynamicDetailBeanV2.ImagesBean imageBean = photoList.get(position);
         View view = LayoutInflater.from(context).inflate(R.layout.view_dynamic_detail_photos, null);
         FilterImageView imageView = (FilterImageView) view.findViewById(R.id.dynamic_content_img);
+        imageView.setLayerType(LAYER_TYPE_NONE,null);
         // 隐藏最后一张图的下间距
         if (lastImg) {
             view.findViewById(R.id.img_divider).setVisibility(View.GONE);

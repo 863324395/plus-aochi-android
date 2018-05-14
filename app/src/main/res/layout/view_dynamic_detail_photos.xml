@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/white"
+    android:layerType="none"
     android:orientation="vertical">
     <!--动态详情的图片-->
     <com.zhiyicx.baseproject.widget.imageview.FilterImageView
