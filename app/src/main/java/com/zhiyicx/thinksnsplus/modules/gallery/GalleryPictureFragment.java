@@ -609,7 +609,7 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
      * 显示中心进度加载
      */
     private void startLoadProgress() {
-        if (mPbProgressImage != null && getUserVisibleHint() && mPbProgressImage.getVisibility() == View.GONE) {
+        if (mPbProgressImage != null && mPbProgressImage.getVisibility() == View.GONE) {
             mPbProgressImage.setVisibility(View.VISIBLE);
             mPbProgressImage.setAlpha(0.0f);
             mPbProgressImage.animate().alpha(1.0f).setDuration(100).start();
