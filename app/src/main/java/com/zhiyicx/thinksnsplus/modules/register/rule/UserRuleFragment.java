@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.register.rule;
 
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
@@ -24,6 +25,8 @@ public class UserRuleFragment extends TSFragment {
     MarkdownView mMarkdownView;
     @BindView(R.id.tv_content)
     TextView mTvContent;
+    @BindView(R.id.scroll_view)
+    View mScrollContainer;
 
     String mMarkDownRule;
 
@@ -46,8 +49,16 @@ public class UserRuleFragment extends TSFragment {
     @Override
     protected void initView(View rootView) {
         mMarkDownRule = getArguments().getString(RULE, RULE);
-///        mMarkdownView.loadMarkdown(mMarkDownRule);
-        mTvContent.setText(mMarkDownRule);
+        if (!TextUtils.isEmpty(mMarkDownRule) && mMarkDownRule.contains("#")) {
+            // 使用markdonw
+            mMarkdownView.setVisibility(View.VISIBLE);
+            mMarkdownView.loadMarkdown(mMarkDownRule);
+        } else {
+            // 普通文本
+            mScrollContainer.setVisibility(View.VISIBLE);
+            mTvContent.setText(mMarkDownRule);
+        }
+
     }
 
     @Override

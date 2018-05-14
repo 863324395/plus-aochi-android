@@ -240,6 +240,8 @@ public class SendCertificationFragment extends TSFragment<SendCertificationContr
     public void updateSendState(boolean isSending, boolean isSuccess, String message) {
         if (isSending) {
             showSnackLoadingMessage(message);
+            mFlUploadPicOne.setEnabled(false);
+            mFlUploadPicTwo.setEnabled(false);
         } else {
             if (isSuccess) {
                 mNetTip = message;
@@ -247,6 +249,8 @@ public class SendCertificationFragment extends TSFragment<SendCertificationContr
             } else {
                 showSnackErrorMessage(message);
             }
+            mFlUploadPicOne.setEnabled(true);
+            mFlUploadPicTwo.setEnabled(true);
         }
     }
 

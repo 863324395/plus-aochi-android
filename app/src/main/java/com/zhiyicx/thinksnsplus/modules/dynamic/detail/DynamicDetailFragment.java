@@ -154,6 +154,11 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
     }
 
     @Override
+    protected boolean isNeedRequestNetDataWhenCacheDataNull() {
+        return false;
+    }
+
+    @Override
     protected boolean needCenterLoadingDialog() {
         return true;
     }
@@ -252,10 +257,6 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
     @Override
     public void initDynamicDetial(DynamicDetailBeanV2 dynamicBean) {
         mDynamicBean = dynamicBean;
-        if (mPresenter.checkCurrentDynamicIsDeleted(mDynamicBean.getUser_id(), mDynamicBean.getFeed_mark())) {// 检测动态是否已经被删除了
-            dynamicHasBeDeleted();
-            return;
-        }
         if (mDynamicBean.getDigUserInfoList() == null) {
             mPresenter.getDetailAll(mDynamicBean.getId(), DEFAULT_PAGE_MAX_ID, mDynamicBean
                     .getUser_id() + "", mDynamicBean.getTop());
@@ -268,7 +269,7 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
     public void onResume() {
         super.onResume();
         if (mDynamicBean != null && mPresenter.checkCurrentDynamicIsDeleted(mDynamicBean.getUser_id(), mDynamicBean.getFeed_mark())) {// 检测动态是否已经被删除了
-            dynamicHasBeDeleted();
+            mPresenter.getCurrentDynamicDetail(mDynamicBean.getId(),mDynamicBean.getTop());
         }
     }
 

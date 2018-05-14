@@ -100,14 +100,14 @@ public class DynamicDetailBeanV2GreenDaoImpl extends CommonCacheImpl<DynamicDeta
         List<DynamicDetailBeanV2> datas = null;
         switch (type) {
             case ApiConfig.DYNAMIC_TYPE_FOLLOWS:
-                datas = mDynamicDetailBeanV2Dao.queryDeep(" where " + " T." + DynamicDetailBeanV2Dao.Properties.IsFollowed.columnName + " = 1 "); // 0 false 1 true
+                datas = mDynamicDetailBeanV2Dao.queryRaw(" where " + " T." + DynamicDetailBeanV2Dao.Properties.IsFollowed.columnName + " = 1 "); // 0 false 1 true
                 for (DynamicDetailBeanV2 data : datas) {
                     data.setIsFollowed(false);
                 }
 
                 break;
             case ApiConfig.DYNAMIC_TYPE_HOTS:
-                datas = mDynamicDetailBeanV2Dao.queryDeep(" where " + " T." + DynamicDetailBeanV2Dao.Properties.Hot_creat_time.columnName + " < " + System.currentTimeMillis()); // 0 false 1 true
+                datas = mDynamicDetailBeanV2Dao.queryRaw(" where " + " T." + DynamicDetailBeanV2Dao.Properties.Hot_creat_time.columnName + " < " + System.currentTimeMillis()); // 0 false 1 true
                 for (DynamicDetailBeanV2 data : datas) {
                     data.setHot_creat_time(0L);
                 }
@@ -139,7 +139,7 @@ public class DynamicDetailBeanV2GreenDaoImpl extends CommonCacheImpl<DynamicDeta
     }
 
     public DynamicDetailBeanV2 getDynamicByFeedMark(Long feed_mark) {
-        List<DynamicDetailBeanV2> datas = mDynamicDetailBeanV2Dao.queryDeep(" where " + " T." + DynamicDetailBeanV2Dao.Properties.Feed_mark.columnName + " = ? "// feedId倒序
+        List<DynamicDetailBeanV2> datas = mDynamicDetailBeanV2Dao.queryRaw(" where " + " T." + DynamicDetailBeanV2Dao.Properties.Feed_mark.columnName + " = ? "// feedId倒序
                 , String.valueOf(feed_mark));
         if (!datas.isEmpty()) {
             return datas.get(0);
@@ -148,7 +148,7 @@ public class DynamicDetailBeanV2GreenDaoImpl extends CommonCacheImpl<DynamicDeta
     }
 
     public DynamicDetailBeanV2 getDynamicByFeedId(Long feed_id) {
-        List<DynamicDetailBeanV2> datas = mDynamicDetailBeanV2Dao.queryDeep(" where " + " T." + DynamicDetailBeanV2Dao.Properties.Id.columnName + " = ? "// feedId倒序
+        List<DynamicDetailBeanV2> datas = mDynamicDetailBeanV2Dao.queryRaw(" where " + " T." + DynamicDetailBeanV2Dao.Properties.Id.columnName + " = ? "// feedId倒序
                 , String.valueOf(feed_id));
         if (!datas.isEmpty()) {
             return datas.get(0);
@@ -163,7 +163,7 @@ public class DynamicDetailBeanV2GreenDaoImpl extends CommonCacheImpl<DynamicDeta
         if (feed_id == null || feed_id == 0) {
             feed_id = System.currentTimeMillis();
         }
-        return mDynamicDetailBeanV2Dao.queryDeep(" where " + " T." + DynamicDetailBeanV2Dao.Properties.IsFollowed.columnName + " = 1 and " // 0 false 1 true
+        return mDynamicDetailBeanV2Dao.queryRaw(" where " + " T." + DynamicDetailBeanV2Dao.Properties.IsFollowed.columnName + " = 1 and " // 0 false 1 true
                         + " T." + DynamicDetailBeanV2Dao.Properties.Id.columnName + " < ?   ORDER BY "
                         + " T." + DynamicDetailBeanV2Dao.Properties.Id.columnName + " DESC LIMIT " + TSListFragment.DEFAULT_PAGE_DB_SIZE// feedId倒序
                 , String.valueOf(feed_id));
@@ -178,7 +178,7 @@ public class DynamicDetailBeanV2GreenDaoImpl extends CommonCacheImpl<DynamicDeta
         if (id == 0) {
             id = System.currentTimeMillis();
         }
-        return mDynamicDetailBeanV2Dao.queryDeep(" where "
+        return mDynamicDetailBeanV2Dao.queryRaw(" where "
                         + " T." + DynamicDetailBeanV2Dao.Properties.Id.columnName + " < ?  ORDER BY "
                         + " T." + DynamicDetailBeanV2Dao.Properties.Id.columnName + " DESC LIMIT " + TSListFragment.DEFAULT_PAGE_DB_SIZE// 创建时间倒序
                 , String.valueOf(id));
@@ -191,7 +191,7 @@ public class DynamicDetailBeanV2GreenDaoImpl extends CommonCacheImpl<DynamicDeta
         if (feed_id == null || feed_id == 0) {
             feed_id = System.currentTimeMillis();
         }
-        return mDynamicDetailBeanV2Dao.queryDeep(" where " + " T." + DynamicDetailBeanV2Dao.Properties.Id.columnName + " < ?  ORDER BY "
+        return mDynamicDetailBeanV2Dao.queryRaw(" where " + " T." + DynamicDetailBeanV2Dao.Properties.Id.columnName + " < ?  ORDER BY "
                         + " T." + DynamicDetailBeanV2Dao.Properties.Id.columnName + " DESC LIMIT " + TSListFragment.DEFAULT_PAGE_DB_SIZE// feedId倒序
                 , String.valueOf(feed_id));
     }
@@ -202,7 +202,7 @@ public class DynamicDetailBeanV2GreenDaoImpl extends CommonCacheImpl<DynamicDeta
      * @return
      */
     public List<DynamicDetailBeanV2> getMyCollectDynamic() {
-        return mDynamicDetailBeanV2Dao.queryDeep(" where "
+        return mDynamicDetailBeanV2Dao.queryRaw(" where "
                         + " T." + DynamicDetailBeanV2Dao.Properties.Has_collect.columnName + " = ? "
                         + " ORDER BY  T." + DynamicDetailBeanV2Dao.Properties.Id.columnName + " DESC LIMIT " + TSListFragment.DEFAULT_PAGE_DB_SIZE// 按照Feed_id倒序：越新的动态，Feed_id越大
                 , "1");
@@ -213,22 +213,10 @@ public class DynamicDetailBeanV2GreenDaoImpl extends CommonCacheImpl<DynamicDeta
      */
     public List<DynamicDetailBeanV2> getMySendingUnSuccessDynamic(Long userId) {
 
-        return mDynamicDetailBeanV2Dao.queryDeep(" where " + " T." + DynamicDetailBeanV2Dao.Properties.User_id.columnName + " = ? and " + " T." + DynamicDetailBeanV2Dao.Properties.State.columnName + " != " + DynamicDetailBeanV2.SEND_SUCCESS + "  ORDER BY "
+        return mDynamicDetailBeanV2Dao.queryRaw(" where " + " T." + DynamicDetailBeanV2Dao.Properties.User_id.columnName + " = ? and " + " T." + DynamicDetailBeanV2Dao.Properties.State.columnName + " != " + DynamicDetailBeanV2.SEND_SUCCESS + "  ORDER BY "
                         + " T." + DynamicDetailBeanV2Dao.Properties.Id.columnName + " DESC "// feedId倒序
                 , String.valueOf(userId));
     }
 
-    /**
-     * 获取属于我的动态
-     *
-     * @return
-     */
-    public List<DynamicDetailBeanV2> getMyDynamics(Long userId) {
-        return mDynamicDetailBeanV2Dao.queryDeep(" where "
-                        + " T." + DynamicDetailBeanV2Dao.Properties.User_id.columnName + " = ? "
-                        + " ORDER BY  T." + DynamicDetailBeanV2Dao.Properties.Id.columnName + " " +
-                        "DESC LIMIT " + TSListFragment.DEFAULT_PAGE_DB_SIZE// 按照Feed_id倒序：越新的动态，Feed_id越大
-                , String.valueOf(userId));
-    }
 
 }
