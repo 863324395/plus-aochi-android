@@ -462,7 +462,7 @@ public class InfoDetailsPresenter extends AppBasePresenter<InfoDetailsConstract.
         createComment.setFromUserInfoBean(mUserInfoBeanGreenDao.getSingleDataFromCache(
                 AppApplication.getmCurrentLoginAuth().getUser_id()));
         mInfoCommentListBeanDao.insertOrReplace(createComment);
-        if (mRootView.getListDatas().get(0).getComment_content() == null) {
+        if (mRootView.getListDatas()!=null&&mRootView.getListDatas().get(0).getComment_content() == null) {
             mRootView.getListDatas().remove(0);// 去掉占位图
         }
         mRootView.getListDatas().add(0, createComment);

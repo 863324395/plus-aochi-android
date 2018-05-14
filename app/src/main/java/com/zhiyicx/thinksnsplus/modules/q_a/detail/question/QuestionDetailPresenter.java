@@ -339,7 +339,7 @@ public class QuestionDetailPresenter extends AppBasePresenter<QuestionDetailCont
     @Subscriber(tag = EventBusTagConfig.EVENT_PUBLISH_ANSWER)
     public void publishAnswer(AnswerInfoBean data) {
         if (data != null) {
-            if (mRootView.getListDatas().size() > 0 && mRootView.getListDatas().get(0).getUser() == null) {// 占位
+            if (mRootView.getListDatas()!=null&&mRootView.getListDatas().size() > 0 && mRootView.getListDatas().get(0).getUser() == null) {// 占位
                 mRootView.getListDatas().remove(0);
             }
             mRootView.getListDatas().add(data);

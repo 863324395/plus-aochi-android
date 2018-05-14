@@ -190,7 +190,7 @@ public class MusicCommentPresenter extends AppBasePresenter<
                 AppApplication.getmCurrentLoginAuth().getUser_id()));
         createComment.setCreated_at(TimeUtils.getCurrenZeroTimeStr());
         mCommentListBeanGreenDao.insertOrReplace(createComment);
-        if (mRootView.getListDatas().get(0).getComment_content() == null) {
+        if (mRootView.getListDatas()!=null&&mRootView.getListDatas().get(0).getComment_content() == null) {
             mRootView.getListDatas().remove(0);// 去掉占位图
         }
         mRootView.getListDatas().add(0, createComment);
@@ -278,7 +278,7 @@ public class MusicCommentPresenter extends AppBasePresenter<
             path = APP_PATH_MUSIC_ABLUM_COMMENT_FORMAT;
         }
         mCommentListBeanGreenDao.insertOrReplace(createComment);
-        if (mRootView.getListDatas().get(0).getComment_content() == null) {
+        if (mRootView.getListDatas()!=null&&mRootView.getListDatas().get(0).getComment_content() == null) {
             mRootView.getListDatas().remove(0);// 去掉占位图
         }
         mRootView.getListDatas().set(0, createComment);

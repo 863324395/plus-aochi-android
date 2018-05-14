@@ -137,6 +137,11 @@ public class QuestionCommentFragment extends TSListFragment<QuestionCommentContr
     }
 
     @Override
+    protected Long getMaxId(@NotNull List<QuestionCommentBean> data) {
+        return data.get(data.size()-1).getId();
+    }
+
+    @Override
     public void onCommentTextClick(View view, RecyclerView.ViewHolder holder, int position) {
         comment(position);
     }

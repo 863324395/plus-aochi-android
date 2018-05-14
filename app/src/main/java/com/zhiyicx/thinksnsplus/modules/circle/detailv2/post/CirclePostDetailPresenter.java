@@ -285,7 +285,7 @@ public class CirclePostDetailPresenter extends AppBasePresenter<CirclePostDetail
         creatComment.setCommentUser(mUserInfoBeanGreenDao.getSingleDataFromCache(AppApplication.getMyUserIdWithdefault()));
         creatComment.setCreated_at(TimeUtils.getCurrenZeroTimeStr());
 
-        if (mRootView.getListDatas().get(0).getContent() == null) {
+        if (mRootView.getListDatas()!=null&&mRootView.getListDatas().get(0).getContent() == null) {
             // 去掉占位图
             mRootView.getListDatas().remove(0);
         }

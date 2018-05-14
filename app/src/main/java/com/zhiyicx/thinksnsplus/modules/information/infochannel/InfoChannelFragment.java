@@ -194,11 +194,6 @@ public class InfoChannelFragment extends TSFragment<InfoChannelConstract.Present
     }
 
     @Override
-    public void setPresenter(InfoChannelConstract.Presenter presenter) {
-        mPresenter = presenter;
-    }
-
-    @Override
     public void showLoading() {
 
     }
@@ -216,6 +211,7 @@ public class InfoChannelFragment extends TSFragment<InfoChannelConstract.Present
     private void backInfo() {
         Intent intent = new Intent(getActivity(), InfoActivity.class);
         Bundle bundle = new Bundle();
+        mInfoTypeBean.setMy_cates(mMyCatesBeen);
         bundle.putParcelable(SUBSCRIBE_EXTRA, mInfoTypeBean);
         intent.putExtra(SUBSCRIBE_EXTRA, bundle);
         getActivity().setResult(RESULT_CODE, intent);

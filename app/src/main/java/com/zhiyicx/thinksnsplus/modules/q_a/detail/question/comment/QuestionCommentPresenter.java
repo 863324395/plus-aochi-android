@@ -103,7 +103,7 @@ public class QuestionCommentPresenter extends AppBasePresenter< QuestionCommentC
         createComment.setFromUserInfoBean(mUserInfoBeanGreenDao.getSingleDataFromCache(
                 AppApplication.getmCurrentLoginAuth().getUser_id()));
         mQuestionCommentBeanGreenDao.insertOrReplace(createComment);
-        if (mRootView.getListDatas().get(0).getBody() == null) {
+        if (mRootView.getListDatas()!=null&&mRootView.getListDatas().get(0).getBody() == null) {
             mRootView.getListDatas().remove(0);// 去掉占位图
         }
         mRootView.getListDatas().add(0, createComment);
