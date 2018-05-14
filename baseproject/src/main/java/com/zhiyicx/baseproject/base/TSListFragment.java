@@ -391,6 +391,15 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
     }
 
     /**
+     * 当缓存为空的时候自动刷新
+     *
+     * @return
+     */
+    protected boolean isNeedRequestNetDataWhenCacheDataNull() {
+        return true;
+    }
+
+    /**
      * 设置 LayoutManager 区分列表样式
      *
      * @return
@@ -760,7 +769,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
     public void onCacheResponseSuccess(List<T> data, boolean isLoadMore) {
         hideRefreshState(isLoadMore);
         // 如果没有缓存，直接拉取服务器数据
-        if (!isLoadMore && (data == null || data.size() == 0)) {
+        if (!isLoadMore && (data == null || data.size() == 0) && isNeedRequestNetDataWhenCacheDataNull()) {
             getNewDataFromNet();
         } else {
             // 如果数据库有数据就先显示
