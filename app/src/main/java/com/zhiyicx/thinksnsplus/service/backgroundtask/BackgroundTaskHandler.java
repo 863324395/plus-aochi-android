@@ -20,6 +20,7 @@ import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.common.net.UpLoadFile;
 import com.zhiyicx.common.utils.ActivityHandler;
+import com.zhiyicx.common.utils.NetUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.imsdk.entity.IMConfig;
 import com.zhiyicx.rxerrorhandler.functions.RetryWithInterceptDelay;
@@ -68,6 +69,7 @@ import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.simple.eventbus.EventBus;
+import org.simple.eventbus.Subscriber;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -78,6 +80,8 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 import javax.inject.Inject;
 
+import cn.jzvd.JZMediaManager;
+import cn.jzvd.JZVideoPlayerManager;
 import okhttp3.RequestBody;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -153,11 +157,9 @@ public class BackgroundTaskHandler {
 
     private boolean mIsExit = false; // 是否关闭
 
-    private boolean mIsNetConnected;
+    private boolean mIsNetConnected = true;
 
     private Thread mBackTaskDealThread;
-    private NetworkInfo mobNetInfo;
-    private NetworkInfo wifiNetInfo;
 
     public BackgroundTaskHandler() {
         init();
@@ -196,6 +198,7 @@ public class BackgroundTaskHandler {
 
     private void init() {
         AppApplication.AppComponentHolder.getAppComponent().inject(this);
+        mIsNetConnected= NetUtils.netIsConnected(mContext.getApplicationContext());
         getCacheData();
         mBackTaskDealThread = new Thread(handleTaskRunnable);
         mBackTaskDealThread.start();
@@ -224,7 +227,6 @@ public class BackgroundTaskHandler {
 
         while (!mIsExit && ActivityHandler.getActivityStack() != null) {// mIsNetConnected
             // 网络监测可能有问题，待修改
-            mIsNetConnected = checkNetStatus(mContext);
             if (mIsNetConnected && !mTaskBeanConcurrentLinkedQueue.isEmpty()) {
                 handleTask(mTaskBeanConcurrentLinkedQueue.poll());
             }
@@ -240,24 +242,6 @@ public class BackgroundTaskHandler {
         EventBus.getDefault().unregister(BackgroundTaskHandler.this);
     };
 
-    /**
-     * 网络是否连接
-     *
-     * @param context
-     * @return
-     */
-    public boolean checkNetStatus(Context context) {
-        if (mobNetInfo == null) {
-            ConnectivityManager connectMgr = (ConnectivityManager) context.getSystemService
-                    (Context.CONNECTIVITY_SERVICE);
-            //手机网络连接状态
-            mobNetInfo = connectMgr.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
-            //WIFI连接状态
-            wifiNetInfo = connectMgr.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
-        }
-
-        return !(mobNetInfo != null && !mobNetInfo.isConnected() && !wifiNetInfo.isConnected());
-    }
 
     /**
      * 线程休息
@@ -1708,6 +1692,11 @@ public class BackgroundTaskHandler {
                 });
     }
 
+    @Subscriber(tag = EventBusTagConfig.EVENT_NETSTATE_CHANGE)
+    public void netstateChange(boolean hasWifi) {
+      mIsNetConnected= NetUtils.netIsConnected(mContext.getApplicationContext());
+    }
+
     /**
      * 检测是否需要重新请求
      *
@@ -1753,4 +1742,6 @@ public class BackgroundTaskHandler {
 
         void onException(Throwable throwable);
     }
+
+
 }

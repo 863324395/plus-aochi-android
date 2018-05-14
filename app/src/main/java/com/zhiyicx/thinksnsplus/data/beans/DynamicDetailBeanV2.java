@@ -14,8 +14,10 @@ import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.data.beans.qa.QATopicBean;
 import com.zhiyicx.thinksnsplus.data.source.local.data_convert.BaseConvert;
 import com.zhiyicx.thinksnsplus.data.source.local.data_convert.PaidNoteConverter;
+import com.zhiyicx.thinksnsplus.data.source.local.data_convert.UserInfoBeanConvert;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 
 import org.greenrobot.greendao.DaoException;
@@ -115,7 +117,7 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable, Ser
     private PaidNote paid_node;
 
     @SerializedName("user")
-    @ToOne(joinProperty = "user_id")// DynamicBean 的 user_id作为外键
+    @Convert(converter = UserInfoBeanConvert.class, columnType = String.class)
     private UserInfoBean userInfoBean;
     // DynamicBean 的 feed_mark 与 DynamicCommentBean 的 feed_mark 关联
     @ToMany(joinProperties = {@JoinProperty(name = "feed_mark", referencedName = "feed_mark")})
@@ -217,12 +219,10 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable, Ser
         this.sendFailMessage = sendFailMessage;
     }
 
-    @Keep
     public UserInfoBean getUserInfoBean() {
         return userInfoBean;
     }
 
-    @Keep
     public void setUserInfoBean(UserInfoBean userInfoBean) {
         this.userInfoBean = userInfoBean;
     }
@@ -1299,15 +1299,12 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable, Ser
         myDao.update(this);
     }
 
-    @Generated(hash = 935012664)
+    @Generated(hash = 1372778430)
     public DynamicDetailBeanV2(Long id, String created_at, String updated_at, String deleted_at, Long user_id, String feed_content, int feed_from,
-                               int feed_digg_count, int feed_view_count, int feed_comment_count, String feed_latitude, String feed_longtitude,
-                               String feed_geohash, int audit_status,
-                               Long feed_mark, boolean has_digg, boolean has_collect, long amount, List<DynamicLikeBean> likes, boolean paid,
-                               List<ImagesBean> images,
-                               List<Integer> diggs, PaidNote paid_node, Long hot_creat_time, boolean isFollowed, int state, String sendFailMessage,
-                               int top,
-                               List<DynamicDigListBean> digUserInfoList, RewardsCountBean reward, Video video) {
+            int feed_digg_count, int feed_view_count, int feed_comment_count, String feed_latitude, String feed_longtitude, String feed_geohash,
+            int audit_status, Long feed_mark, boolean has_digg, boolean has_collect, long amount, List<DynamicLikeBean> likes, boolean paid,
+            List<ImagesBean> images, List<Integer> diggs, PaidNote paid_node, UserInfoBean userInfoBean, Long hot_creat_time, boolean isFollowed,
+            int state, String sendFailMessage, int top, List<DynamicDigListBean> digUserInfoList, RewardsCountBean reward, Video video) {
         this.id = id;
         this.created_at = created_at;
         this.updated_at = updated_at;
@@ -1331,6 +1328,7 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable, Ser
         this.images = images;
         this.diggs = diggs;
         this.paid_node = paid_node;
+        this.userInfoBean = userInfoBean;
         this.hot_creat_time = hot_creat_time;
         this.isFollowed = isFollowed;
         this.state = state;
@@ -1351,9 +1349,6 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable, Ser
      */
     @Generated(hash = 49871375)
     private transient DynamicDetailBeanV2Dao myDao;
-    @Generated(hash = 1005780391)
-    private transient Long userInfoBean__resolvedKey;
-
     @Override
     public int describeContents() {
         return 0;
