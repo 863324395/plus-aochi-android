@@ -27,7 +27,8 @@ public class TSViewPagerAdapter extends FragmentStatePagerAdapter {
         this.list = list;
         notifyDataSetChanged();
     }
-    public void bindData(List<Fragment> list,String[] titles) {
+
+    public void bindData(List<Fragment> list, String[] titles) {
         this.list = list;
         this.mLitles = titles;
         notifyDataSetChanged();
@@ -40,7 +41,7 @@ public class TSViewPagerAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public CharSequence getPageTitle(int position) {
-        if (mLitles!=null){
+        if (mLitles != null) {
             return mLitles[position];
         }
         return super.getPageTitle(position);
@@ -68,8 +69,11 @@ public class TSViewPagerAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public void destroyItem(ViewGroup container, int position, Object object) {
-        View view = list.get(position).getView();
-        if (view != null) {
+        View view = null;
+        if (position < list.size()) {
+            view = list.get(position).getView();
+        }
+        if (view != null && container!=null) {
             container.removeView(view);
         }
     }
