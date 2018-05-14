@@ -329,7 +329,7 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
             MessageContainerFragment messageContainerFragment = (MessageContainerFragment) mFragmentList.get(msgItem);
             return messageContainerFragment != null && messageContainerFragment.getCurrentItem() == 0;
         } else {
-            return false;
+            return true;
         }
     }
 

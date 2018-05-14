@@ -168,8 +168,9 @@ public class NotificationUtil {
         builder.setContentTitle(context.getString(R.string.app_name));
 
         // 设置通知的内容
-        builder.setContentText(jpushMessageBean.getMessage());
+        String content = jpushMessageBean.getMessage();
 
+        builder.setContentText(content);
         // 设置通知来到的时间
         builder.setWhen(jpushMessageBean.getCreat_time());
 

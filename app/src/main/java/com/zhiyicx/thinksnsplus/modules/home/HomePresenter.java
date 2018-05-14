@@ -299,6 +299,13 @@ class HomePresenter extends AppBasePresenter<HomeContract.View> implements HomeC
                             content = ((EMTextMessageBody) chatItemBean12.getMessage().getBody()).getMessage();
                         }
 
+                        if (content.startsWith("image:")) {
+                            content = "[图片]";
+                        }
+                        if (content.startsWith("voice:")) {
+                            content = "[语音]";
+                        }
+
                         if (TextUtils.isEmpty(chatItemBean12.getUserInfo().getName())) {
                             content = chatItemBean12.getUserInfo().getName() + content;
                         } else {
