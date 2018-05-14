@@ -240,6 +240,11 @@ public class AnswerDetailsFragment extends TSListFragment<AnswerDetailsConstract
     }
 
     @Override
+    protected Long getMaxId(@NotNull List<AnswerCommentListBean> data) {
+        return data.get(data.size()-1).getId();
+    }
+
+    @Override
     public AnswerInfoBean getAnswerInfo() {
         return mAnswerInfoBean;
     }
@@ -284,7 +289,6 @@ public class AnswerDetailsFragment extends TSListFragment<AnswerDetailsConstract
     }
 
     private void initHeaderView() {
-        mHeaderAndFooterWrapper = new HeaderAndFooterWrapper(mAdapter);
         mAnswerDetailHeaderView = new AnswerDetailHeaderView(getContext(), null);
         mAnswerDetailHeaderView.setAnswerHeaderEventListener(this);
         mAnswerDetailHeaderView.setWebLoadListener(this);

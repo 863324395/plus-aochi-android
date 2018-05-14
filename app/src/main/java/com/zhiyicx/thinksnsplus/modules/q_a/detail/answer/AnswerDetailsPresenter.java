@@ -96,8 +96,8 @@ public class AnswerDetailsPresenter extends AppBasePresenter<
 
     @Override
     public void requestNetData(Long maxId, final boolean isLoadMore) {
-
-        getAnswerDetail(mRootView.getAnswerInfo().getId(), maxId, isLoadMore);
+        Long id = mRootView.getAnswerInfo().getId();
+        getAnswerDetail(id, maxId, isLoadMore);
 
 //        if (mRootView.getAnswerInfo().getCommentList() == null) {
 //
@@ -220,7 +220,7 @@ public class AnswerDetailsPresenter extends AppBasePresenter<
 
     @Override
     public void reqReWardsData(int id) {
-        getAnswerDetail(id, 0, false);
+        getAnswerDetail((long)id, 0L, false);
     }
 
     @Override
@@ -251,9 +251,9 @@ public class AnswerDetailsPresenter extends AppBasePresenter<
     }
 
     @Override
-    public void getAnswerDetail(long answer_id, long max_id, boolean isLoadMore) {
-        Subscription subscription = Observable.zip(mBaseQARepository.getAnswerDetail(answer_id),
-                mBaseQARepository.getAnswerCommentList(answer_id, 0L), (answerInfoBean, answerCommentListBeen) -> {
+    public void getAnswerDetail(Long answerId, Long maxId, boolean isLoadMore) {
+        Subscription subscription = Observable.zip(mBaseQARepository.getAnswerDetail(answerId),
+                mBaseQARepository.getAnswerCommentList(answerId, maxId), (answerInfoBean, answerCommentListBeen) -> {
                     answerInfoBean.setCommentList(answerCommentListBeen);
                     return answerInfoBean;
                 })
