@@ -327,6 +327,7 @@ public class CoverFragment extends TSFragment implements MediaPlayerWrapper.IMed
 
                                             mVideoInfo.setPath(result);
                                             mVideoInfo.setCover(cover);
+                                            mVideoInfo.setNeedGetCoverFromVideo(false);
                                             mVideoInfo.setCreateTime(System.currentTimeMillis() + "");
 
                                             mVideoInfo.setWidth(mVideoView.getVideoWidth());

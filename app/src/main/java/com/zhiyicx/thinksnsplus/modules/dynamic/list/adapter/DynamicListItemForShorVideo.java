@@ -140,7 +140,7 @@ public class DynamicListItemForShorVideo extends DynamicListBaseItem {
 
             view.getLayoutParams().height = height;
             Glide.with(mContext)
-                    .load(video.getCover())
+                    .load(videoUrl)
                     .override(with, height)
                     .signature(new StringSignature(video.getCover() + dynamicBean.getCreated_at()))
                     .placeholder(R.drawable.shape_default_image)

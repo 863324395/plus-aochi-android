@@ -66,6 +66,12 @@ public interface SendDynamicContract {
         boolean needCompressVideo();
 
         /**
+         * 需要拿首帧做封面
+         * @return
+         */
+        boolean needGetCoverFromVideo();
+
+        /**
          * 提示弹框
          *
          * @param des

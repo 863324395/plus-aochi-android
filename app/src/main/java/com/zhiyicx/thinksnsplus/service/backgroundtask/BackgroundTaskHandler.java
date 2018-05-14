@@ -202,7 +202,7 @@ public class BackgroundTaskHandler {
 
     private void init() {
         AppApplication.AppComponentHolder.getAppComponent().inject(this);
-        mIsNetConnected= NetUtils.netIsConnected(mContext.getApplicationContext());
+        mIsNetConnected = NetUtils.netIsConnected(mContext.getApplicationContext());
         getCacheData();
         mBackTaskDealThread = new Thread(handleTaskRunnable);
         mBackTaskDealThread.start();
@@ -695,9 +695,11 @@ public class BackgroundTaskHandler {
                             return;
                         }
                         try {
-                            if (mSystemRepository.getBootstrappersInfoFromLocal().getIm_serve().contains("ws:")
+                            if (mSystemRepository.getBootstrappersInfoFromLocal().getIm_serve()
+                                    .contains("ws:")
                                     || mSystemRepository
-                                    .getBootstrappersInfoFromLocal().getIm_serve().contains("wss:")) {
+                                    .getBootstrappersInfoFromLocal().getIm_serve().contains
+                                            ("wss:")) {
                                 imConfig.setWeb_socket_authority(mSystemRepository
                                         .getBootstrappersInfoFromLocal().getIm_serve());
                             } else {
@@ -833,75 +835,47 @@ public class BackgroundTaskHandler {
             // 先处理图片上传，图片上传成功后，在进行动态发布
             List<Observable<BaseJson<Integer>>> upLoadPics = new ArrayList<>();
 
-            for (int i = 0; i < photos.size(); i++) {
-                ImageBean imageBean = photos.get(i);
+            if (videoInfo != null && videoInfo.needGetCoverFromVideo()) {
+                ImageBean imageBean = photos.get(0);
                 String filePath = imageBean.getImgUrl();
                 int photoWidth = (int) imageBean.getWidth();
                 int photoHeight = (int) imageBean.getHeight();
                 String photoMimeType = imageBean.getImgMimeType();
-                upLoadPics.add(mUpLoadRepository.upLoadSingleFileV2(filePath, photoMimeType,
-                        true, photoWidth, photoHeight, position));
-            }
-            SendDynamicDataBeanV2.Video video = new SendDynamicDataBeanV2.Video();
+                TrimVideoUtil.getVideoOneFrame(mContext, Uri.parse(filePath))
+                        .map(bitmap -> com.zhiyicx.common.utils.FileUtils.saveBitmapToFile
+                                (mContext, bitmap,
+                                ParamsManager.VideoCover))
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(s -> {
+                            upLoadPics.add(mUpLoadRepository.upLoadSingleFileV2(s,
+                                    photoMimeType,
+                                    true, photoWidth, photoHeight, position));
 
-            if (videoInfo != null) {
-                if (videoInfo.needCompressVideo()) {
-                    // 需要处理视频
-                    Observable.empty()
-                            .observeOn(Schedulers.io())
-                            .subscribe(new EmptySubscribe<Object>() {
-                                @Override
-                                public void onCompleted() {
-                                    TrimVideoUtil.trim(mContext, Uri.parse(videoInfo.getPath()),
-                                            FileUtils.getPath(ParamsManager.VideoPath, ParamsManager
-                                                    .CompressVideo), 0, videoInfo.getDuration() * 1000,
-                                            new TrimVideoListener() {
-                                                @Override
-                                                public void onStartTrim() {
 
-                                                }
-
-                                                @Override
-                                                public void onFinishTrim(String url) {
-                                                    upLoadPics.add(mUpLoadRepository.upLoadSingleFileV2(url, "",
-                                                            false, videoInfo.getWidth(), videoInfo.getHeight(),
-                                                            position));
-
-                                                    SendDynamicV2(backgroundRequestTaskBean, detailBeanV2, position, getSendDynamicObservable
-                                                            (sendDynamicDataBean, position, photos, videoInfo,
-                                                                    upLoadPics, video));
-
-                                                }
-
-                                                @Override
-                                                public void onCancel() {
-
-                                                }
-                                            });
-                                }
-                            });
-
-                } else {
-                    // 不需要处理视频
-                    upLoadPics.add(mUpLoadRepository.upLoadSingleFileV2(videoInfo.getPath(), "",
-                            false, videoInfo.getWidth(), videoInfo.getHeight(),
-                            position));
-
-                    SendDynamicV2(backgroundRequestTaskBean, detailBeanV2, position,
-                            getSendDynamicObservable(sendDynamicDataBean, position, photos, videoInfo,
-                                    upLoadPics, video));
-                }
+                            dealFile(backgroundRequestTaskBean, sendDynamicDataBean,
+                                    detailBeanV2, position,
+                                    photos, videoInfo, upLoadPics);
+                        });
             } else {
-                // 没有视频的
-                SendDynamicV2(backgroundRequestTaskBean, detailBeanV2, position, getSendDynamicObservable(sendDynamicDataBean, position, photos,
-                        videoInfo,
-                        upLoadPics, video));
+                for (int i = 0; i < photos.size(); i++) {
+                    ImageBean imageBean = photos.get(i);
+                    String filePath = imageBean.getImgUrl();
+                    int photoWidth = (int) imageBean.getWidth();
+                    int photoHeight = (int) imageBean.getHeight();
+                    String photoMimeType = imageBean.getImgMimeType();
+                    upLoadPics.add(mUpLoadRepository.upLoadSingleFileV2(filePath, photoMimeType,
+                            true, photoWidth, photoHeight, position));
+                }
+
+                dealFile(backgroundRequestTaskBean, sendDynamicDataBean, detailBeanV2, position,
+                        photos, videoInfo, upLoadPics);
             }
 
 
         } else {
 
-            SendDynamicV2(backgroundRequestTaskBean, detailBeanV2, position, mSendDynamicRepository.sendDynamicV2(sendDynamicDataBean)
+            SendDynamicV2(backgroundRequestTaskBean, detailBeanV2, position,
+                    mSendDynamicRepository.sendDynamicV2(sendDynamicDataBean)
                     .flatMap(objectBaseJsonV2 -> {
                         BaseJson<Object> baseJson = new BaseJson<>();
                         baseJson.setData((double) objectBaseJsonV2.getId());
@@ -915,8 +889,79 @@ public class BackgroundTaskHandler {
 
     }
 
-    private Observable<BaseJson<Object>> getSendDynamicObservable(SendDynamicDataBeanV2 sendDynamicDataBean, int[] position, List<ImageBean>
-            photos, VideoInfo videoInfo, List<Observable<BaseJson<Integer>>> upLoadPics, SendDynamicDataBeanV2.Video video) {
+    private void dealFile(BackgroundRequestTaskBean backgroundRequestTaskBean,
+                          SendDynamicDataBeanV2 sendDynamicDataBean, DynamicDetailBeanV2
+                                  detailBeanV2, int[] position, List<ImageBean> photos, VideoInfo
+                                  videoInfo, List<Observable<BaseJson<Integer>>> upLoadPics) {
+        SendDynamicDataBeanV2.Video video = new SendDynamicDataBeanV2.Video();
+
+        if (videoInfo != null) {
+            if (videoInfo.needCompressVideo()) {
+                // 需要处理视频
+                Observable.empty()
+                        .observeOn(Schedulers.io())
+                        .subscribe(new EmptySubscribe<Object>() {
+                            @Override
+                            public void onCompleted() {
+                                TrimVideoUtil.trim(mContext, Uri.parse(videoInfo.getPath()),
+                                        FileUtils.getPath(ParamsManager.VideoPath, ParamsManager
+                                                .CompressVideo), 0, videoInfo.getDuration() * 1000,
+                                        new TrimVideoListener() {
+                                            @Override
+                                            public void onStartTrim() {
+
+                                            }
+
+                                            @Override
+                                            public void onFinishTrim(String url) {
+                                                upLoadPics.add(mUpLoadRepository
+                                                        .upLoadSingleFileV2(url, "",
+                                                        false, videoInfo.getWidth(), videoInfo
+                                                                        .getHeight(),
+                                                        position));
+
+                                                SendDynamicV2(backgroundRequestTaskBean,
+                                                        detailBeanV2, position,
+                                                        getSendDynamicObservable
+                                                        (sendDynamicDataBean, position, photos,
+                                                                videoInfo,
+                                                                upLoadPics, video));
+
+                                            }
+
+                                            @Override
+                                            public void onCancel() {
+
+                                            }
+                                        });
+                            }
+                        });
+
+            } else {
+                // 不需要处理视频
+                upLoadPics.add(mUpLoadRepository.upLoadSingleFileV2(videoInfo.getPath(), "",
+                        false, videoInfo.getWidth(), videoInfo.getHeight(),
+                        position));
+
+                SendDynamicV2(backgroundRequestTaskBean, detailBeanV2, position,
+                        getSendDynamicObservable(sendDynamicDataBean, position, photos, videoInfo,
+                                upLoadPics, video));
+            }
+        } else {
+            // 没有视频的
+            SendDynamicV2(backgroundRequestTaskBean, detailBeanV2, position,
+                    getSendDynamicObservable(sendDynamicDataBean, position, photos,
+                    videoInfo,
+                    upLoadPics, video));
+        }
+    }
+
+    private Observable<BaseJson<Object>> getSendDynamicObservable(SendDynamicDataBeanV2
+                                                                          sendDynamicDataBean,
+                                                                  int[] position, List<ImageBean>
+            photos, VideoInfo videoInfo, List<Observable<BaseJson<Integer>>> upLoadPics,
+                                                                  SendDynamicDataBeanV2.Video
+                                                                          video) {
         Observable<BaseJson<Object>> observable;
         observable = Observable.concat(upLoadPics)
                 .map(integerBaseJson -> {
@@ -973,7 +1018,8 @@ public class BackgroundTaskHandler {
         return observable;
     }
 
-    private void SendDynamicV2(BackgroundRequestTaskBean backgroundRequestTaskBean, DynamicDetailBeanV2 detailBeanV2, int[] position,
+    private void SendDynamicV2(BackgroundRequestTaskBean backgroundRequestTaskBean,
+                               DynamicDetailBeanV2 detailBeanV2, int[] position,
                                Observable<BaseJson<Object>> observable) {
         observable.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -1698,7 +1744,7 @@ public class BackgroundTaskHandler {
 
     @Subscriber(tag = EventBusTagConfig.EVENT_NETSTATE_CHANGE)
     public void netstateChange(boolean hasWifi) {
-      mIsNetConnected= NetUtils.netIsConnected(mContext.getApplicationContext());
+        mIsNetConnected = NetUtils.netIsConnected(mContext.getApplicationContext());
     }
 
     /**

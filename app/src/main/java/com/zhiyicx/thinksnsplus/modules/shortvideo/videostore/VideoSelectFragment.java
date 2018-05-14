@@ -160,6 +160,7 @@ public class VideoSelectFragment extends TSListFragment {
                         SendDynamicDataBean sendDynamicDataBean = new SendDynamicDataBean();
                         sendDynamicDataBean.setDynamicBelong(SendDynamicDataBean.NORMAL_DYNAMIC);
                         videoInfo.setNeedCompressVideo(true);
+                        videoInfo.setNeedGetCoverFromVideo(true);
                         List<ImageBean> pic = new ArrayList<>();
                         ImageBean imageBean = new ImageBean();
                         imageBean.setImgUrl(videoInfo.getPath());

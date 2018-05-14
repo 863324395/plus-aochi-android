@@ -629,6 +629,7 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
             }
         }
         if (sendDynamicDataBeanV2.getVideoInfo() != null) {
+            sendDynamicDataBeanV2.getVideoInfo().setNeedGetCoverFromVideo(needGetCoverFromVideo());
             sendDynamicDataBeanV2.getVideoInfo().setNeedCompressVideo(needCompressVideo());
             sendDynamicDataBeanV2.getVideoInfo().setDuration(mSendDynamicDataBean.getVideoInfo().getDuration());
         }
@@ -714,6 +715,14 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
             return false;
         }
         return mSendDynamicDataBean.getVideoInfo().needCompressVideo();
+    }
+
+    @Override
+    public boolean needGetCoverFromVideo() {
+        if (mSendDynamicDataBean == null || mSendDynamicDataBean.getVideoInfo() == null || dynamicType != SendDynamicDataBean.VIDEO_TEXT_DYNAMIC) {
+            return false;
+        }
+        return mSendDynamicDataBean.getVideoInfo().needGetCoverFromVideo();
     }
 
     /**

@@ -39,6 +39,16 @@ public class VideoInfo implements Parcelable, Serializable {
 
     // 视频需要压缩
     public boolean needCompressVideo;
+    // 视频需要获取封面
+    public boolean needGetCoverFromVideo;
+
+    public boolean needGetCoverFromVideo() {
+        return needGetCoverFromVideo;
+    }
+
+    public void setNeedGetCoverFromVideo(boolean needGetCoverFromVideo) {
+        this.needGetCoverFromVideo = needGetCoverFromVideo;
+    }
 
     public long getSize() {
         return size;
@@ -207,6 +217,7 @@ public class VideoInfo implements Parcelable, Serializable {
         this.cutDuration = cutDuration;
     }
 
+
     @Override
     public int describeContents() {
         return 0;
@@ -225,6 +236,7 @@ public class VideoInfo implements Parcelable, Serializable {
         dest.writeInt(this.bitRate);
         dest.writeInt(this.frameRate);
         dest.writeInt(this.frameInterval);
+        dest.writeLong(this.size);
         dest.writeInt(this.expWidth);
         dest.writeInt(this.expHeight);
         dest.writeInt(this.cutPoint);
@@ -232,6 +244,7 @@ public class VideoInfo implements Parcelable, Serializable {
         dest.writeInt(this.storeId);
         dest.writeString(this.dynamicContent);
         dest.writeByte(this.needCompressVideo ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.needGetCoverFromVideo ? (byte) 1 : (byte) 0);
     }
 
     protected VideoInfo(Parcel in) {
@@ -246,6 +259,7 @@ public class VideoInfo implements Parcelable, Serializable {
         this.bitRate = in.readInt();
         this.frameRate = in.readInt();
         this.frameInterval = in.readInt();
+        this.size = in.readLong();
         this.expWidth = in.readInt();
         this.expHeight = in.readInt();
         this.cutPoint = in.readInt();
@@ -253,6 +267,7 @@ public class VideoInfo implements Parcelable, Serializable {
         this.storeId = in.readInt();
         this.dynamicContent = in.readString();
         this.needCompressVideo = in.readByte() != 0;
+        this.needGetCoverFromVideo = in.readByte() != 0;
     }
 
     public static final Creator<VideoInfo> CREATOR = new Creator<VideoInfo>() {
