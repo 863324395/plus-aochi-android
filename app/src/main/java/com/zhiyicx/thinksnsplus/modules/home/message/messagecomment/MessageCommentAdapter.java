@@ -200,7 +200,7 @@ public class MessageCommentAdapter extends CommonAdapter<CommentedBean> {
                             .build();
                 }
                 contentView.setVisibility(View.VISIBLE);
-                contentView.setOnClickListener(v -> holder.getConvertView().performClick());
+                contentView.setOnClickListener(v -> holder.getView(R.id.fl_detial).performClick());
             } else {
                 holder.setText(R.id.tv_deatil, commentedBean.getTarget_title());
             }
@@ -342,6 +342,17 @@ public class MessageCommentAdapter extends CommonAdapter<CommentedBean> {
         switch (commentedBean.getChannel()) {
 
             case ApiConfig.APP_LIKE_FEED:
+                DynamicDetailBeanV2 detailBeanV2 = mGson.fromJson(mGson.toJson(commentedBean.getCommentable()), DynamicDetailBeanV2.class);
+                if (detailBeanV2 != null) {
+                    boolean canNotLookWords = detailBeanV2.getPaid_node() != null &&
+                            !detailBeanV2.getPaid_node().isPaid()
+                            && detailBeanV2.getUser_id().intValue() != AppApplication.getMyUserIdWithdefault();
+                    if (canNotLookWords && mOnSpanTextClickListener != null) {
+                        mOnSpanTextClickListener.setSpanText(position, detailBeanV2.getPaid_node().getNode(),
+                                detailBeanV2.getPaid_node().getAmount(), null, true);
+                        return;
+                    }
+                }
                 intent = new Intent(mContext, DynamicDetailActivity.class);
                 intent.putExtras(bundle);
                 break;
