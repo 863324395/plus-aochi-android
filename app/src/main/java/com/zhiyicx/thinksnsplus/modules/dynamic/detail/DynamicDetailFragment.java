@@ -154,6 +154,11 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
     }
 
     @Override
+    protected boolean isNeedRefreshDataWhenComeIn() {
+        return false;
+    }
+
+    @Override
     protected boolean needCenterLoadingDialog() {
         return true;
     }
@@ -253,7 +258,7 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
     public void initDynamicDetial(DynamicDetailBeanV2 dynamicBean) {
         mDynamicBean = dynamicBean;
         if (mPresenter.checkCurrentDynamicIsDeleted(mDynamicBean.getUser_id(), mDynamicBean.getFeed_mark())) {// 检测动态是否已经被删除了
-            dynamicHasBeDeleted();
+            mPresenter.getCurrentDynamicDetail(mDynamicBean.getId(), mDynamicBean.getTop());
             return;
         }
         if (mDynamicBean.getDigUserInfoList() == null) {
