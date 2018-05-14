@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.service.backgroundtask;
 
 import android.app.Application;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -9,6 +10,7 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.text.TextUtils;
 
+import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 import com.tym.shortvideo.interfaces.TrimVideoListener;
 import com.tym.shortvideo.media.VideoInfo;
@@ -81,6 +83,8 @@ import javax.inject.Inject;
 import okhttp3.RequestBody;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.functions.Func1;
 import rx.functions.FuncN;
 import rx.schedulers.Schedulers;
 

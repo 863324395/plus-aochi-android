@@ -263,7 +263,7 @@ public class ShutterButton extends AppCompatImageView {
     }
 
 
-    private void stopRecord() {
+    public void stopRecord() {
         if (mEnableEncoder) {
             mEnableEncoder = false;
             if (mGestureListener != null) {

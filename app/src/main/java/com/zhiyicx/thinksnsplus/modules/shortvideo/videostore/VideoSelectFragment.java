@@ -114,9 +114,7 @@ public class VideoSelectFragment extends TSListFragment {
                     // 选择列表
                     ImageView coverView = (ImageView) view.findViewById(R.id.iv_cover);
                     if (coverView != null) {
-                        Bitmap cover = ConvertUtils.drawable2BitmapWithWhiteBg(getContext()
-                                , coverView.getDrawable(), R.mipmap.icon);
-                        initReSendDynamicPopupWindow(videoInfo, cover);
+                        initReSendDynamicPopupWindow(videoInfo, null);
                     }
 
                 }
@@ -159,13 +157,12 @@ public class VideoSelectFragment extends TSListFragment {
 
                         BitmapFactory.Options options = new BitmapFactory.Options();
                         options.inPreferredConfig = Bitmap.Config.RGB_565;
-                        videoInfo.setCover(FileUtils.saveBitmapToFile(mActivity, cover, ParamsManager.VideoCover));
                         SendDynamicDataBean sendDynamicDataBean = new SendDynamicDataBean();
                         sendDynamicDataBean.setDynamicBelong(SendDynamicDataBean.NORMAL_DYNAMIC);
                         videoInfo.setNeedCompressVideo(true);
                         List<ImageBean> pic = new ArrayList<>();
                         ImageBean imageBean = new ImageBean();
-                        imageBean.setImgUrl(videoInfo.getCover());
+                        imageBean.setImgUrl(videoInfo.getPath());
                         pic.add(imageBean);
                         sendDynamicDataBean.setDynamicPrePhotos(pic);
 

@@ -21,6 +21,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import rx.Observable;
+import rx.functions.Action1;
+import rx.functions.Func1;
+import rx.schedulers.Schedulers;
+
 /**
  * @author Jliuer
  * @Date 18/04/28 9:46
@@ -68,6 +73,30 @@ public class TrimVideoUtil {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public static Observable<Bitmap> getVideoOneFrame(final Context context,final Uri videoUri){
+
+        return Observable.just(1)
+                .observeOn(Schedulers.io())
+                .flatMap(new Func1<Integer, Observable<Bitmap>>() {
+            @Override
+            public Observable<Bitmap> call(Integer integer) {
+                MediaMetadataRetriever mediaMetadataRetriever =
+                        new MediaMetadataRetriever();
+                mediaMetadataRetriever.setDataSource(context,
+                        videoUri);
+
+                Bitmap bitmap = mediaMetadataRetriever
+                        .getFrameAtTime(1,
+                                MediaMetadataRetriever
+                                        .OPTION_CLOSEST_SYNC);
+
+                mediaMetadataRetriever.release();
+                return Observable.just(bitmap);
+            }
+        });
+
     }
 
     /**

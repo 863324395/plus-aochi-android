@@ -3,6 +3,7 @@ package com.zhiyicx.thinksnsplus.modules.dynamic.send;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
@@ -23,6 +24,8 @@ import com.bumptech.glide.signature.StringSignature;
 import com.jakewharton.rxbinding.widget.RxRadioGroup;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.tym.shortvideo.media.VideoInfo;
+import com.tym.shortvideo.recodrender.ParamsManager;
+import com.tym.shortvideo.utils.TrimVideoUtil;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.config.PayConfig;
@@ -70,6 +73,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 
 import static com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl.TOLLBUNDLE;
 import static com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl.TOLL_TYPE;
@@ -584,7 +589,22 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
         if (isFromGroup) {
             mPresenter.sendGroupDynamic(packageGroupDynamicData());
         } else {
-            mPresenter.sendDynamicV2(packageDynamicData());
+            if (dynamicType == SendDynamicDataBean.VIDEO_TEXT_DYNAMIC ){
+
+                TrimVideoUtil.getVideoOneFrame(mActivity, Uri.parse(selectedPhotos.get(0).getImgUrl()))
+                        .map(bitmap -> {
+                            return com.zhiyicx.common.utils.FileUtils.saveBitmapToFile(mActivity, bitmap, ParamsManager.VideoCover);
+                        })
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new Action1<String>() {
+                    @Override
+                    public void call(String s) {
+                        mPresenter.sendDynamicV2(packageDynamicData());
+                    }
+                });
+            }else{
+                mPresenter.sendDynamicV2(packageDynamicData());
+            }
         }
     }
 

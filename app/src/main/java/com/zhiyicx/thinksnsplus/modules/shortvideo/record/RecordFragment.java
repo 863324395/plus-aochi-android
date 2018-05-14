@@ -831,6 +831,7 @@ public class RecordFragment extends TSFragment implements SurfaceHolder.Callback
      * 初始化登录选择弹框
      */
     private void initWarnPopupWindow() {
+        mBtnTake.stopRecord();
         if (VideoListManager.getInstance().getSubVideoList() == null
                 || VideoListManager.getInstance().getSubVideoList().isEmpty()) {
             mActivity.finish();
