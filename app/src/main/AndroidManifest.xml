@@ -225,8 +225,8 @@
         <activity
             android:name=".modules.dynamic.detail.DynamicDetailActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
-            android:screenOrientation="portrait"
             android:hardwareAccelerated="true"
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize">
         </activity>
         <activity
@@ -235,8 +235,9 @@
         </activity>
         <activity
             android:name=".modules.personal_center.PersonalCenterActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize">
+            android:windowSoftInputMode="adjustResize|stateAlwaysHidden">
         </activity>
         <!-- 查看头像页 -->
         <activity
@@ -434,8 +435,8 @@
             android:screenOrientation="portrait"/>
         <activity
             android:name=".modules.dynamic.send.dynamic_type.SelectDynamicTypeActivity"
-            android:screenOrientation="portrait"
             android:launchMode="singleTop"
+            android:screenOrientation="portrait"
             android:theme="@style/DynamciSelectTheme"/>
         <activity
             android:name=".modules.dynamic.send.picture_toll.PictureTollActivity"
