@@ -114,7 +114,6 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
     private DynamicDetailBeanV2 mDynamicBean;// 上一个页面传进来的数据
     private boolean mIsLookMore = false;
     private DynamicDetailHeader mDynamicDetailHeader;
-    private HeaderAndFooterWrapper mHeaderAndFooterWrapper;
 
     private long mReplyUserId;// 被评论者的 id ,评论动态 id = 0
     private ActionPopupWindow mDeletCommentPopWindow;
@@ -221,7 +220,6 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
     }
 
     private void initHeaderView() {
-        mHeaderAndFooterWrapper = new HeaderAndFooterWrapper(mAdapter);
 
         mDynamicDetailHeader = new DynamicDetailHeader(getContext(), mPresenter.getAdvert());
         mDynamicDetailHeader.setOnImageClickLisenter(this);
