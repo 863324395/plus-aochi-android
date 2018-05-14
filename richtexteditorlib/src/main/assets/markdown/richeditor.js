@@ -195,7 +195,7 @@ var RE = {
 	    // 屏蔽了标题的回车输入
 	    _self.titleLimit.txtNote.onkeypress = function(){
                                         if (event.keyCode == 13 ){
-                                            return;
+                                            return false;
                                         }
 
                                     }
