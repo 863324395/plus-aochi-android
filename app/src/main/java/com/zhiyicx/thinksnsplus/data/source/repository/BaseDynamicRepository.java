@@ -626,7 +626,13 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
                                 userIds.add(dynamicCommentBean.getUser_id());
                             }
                             if (dynamicCommentBean.getReplyUser() == null) {
-                                userIds.add(dynamicCommentBean.getReply_to_user_id());
+                                if (dynamicCommentBean.getReply_to_user_id() == 0) {
+                                    UserInfoBean userInfoBean = new UserInfoBean();
+                                    userInfoBean.setUser_id(0L);
+                                    dynamicCommentBean.setReplyUser(userInfoBean);
+                                } else {
+                                    userIds.add(dynamicCommentBean.getReply_to_user_id());
+                                }
                             }
                             // 评论中增加 feed_mark \和用户标记
                             dynamicCommentBean.setFeed_mark(dynamicBean.getFeed_mark());
