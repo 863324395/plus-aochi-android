@@ -178,6 +178,20 @@ class HomePresenter extends AppBasePresenter<HomeContract.View> implements HomeC
     }
 
     @Override
+    public void getCheckInInfoData() {
+        Subscription subscription = mUserInfoRepository.getCheckInInfo()
+                .subscribe(new BaseSubscribeForV2<CheckInBean>() {
+                    @Override
+                    protected void onSuccess(CheckInBean data) {
+                        mRootView.updateCheckInBean(data);
+                    }
+
+                });
+        addSubscrebe(subscription);
+
+    }
+
+    @Override
     public void getCheckInInfo() {
 
         Subscription subscription = mUserInfoRepository.getCheckInInfo()
@@ -291,7 +305,8 @@ class HomePresenter extends AppBasePresenter<HomeContract.View> implements HomeC
                             content = chatItemBean12.getUserInfo().getName() + ":" + content;
                         }
                         jpushMessageBean.setMessage(content);
-                        NotificationUtil.showChatNotifyMessageExceptCurrentConversation(mContext, jpushMessageBean, chatItemBean12.getMessage().conversationId());
+                        NotificationUtil.showChatNotifyMessageExceptCurrentConversation(mContext, jpushMessageBean, chatItemBean12.getMessage()
+                                .conversationId());
                     });
         }
     }

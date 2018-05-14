@@ -134,8 +134,6 @@ public class MessageConversationFragment extends TSListFragment<MessageConversat
         }
     }
 
-
-
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
@@ -199,8 +197,6 @@ public class MessageConversationFragment extends TSListFragment<MessageConversat
         super.onPause();
         onBlickClick();
     }
-
-
 
     /**
      * 进入聊天页

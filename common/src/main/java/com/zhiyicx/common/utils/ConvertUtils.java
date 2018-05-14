@@ -138,8 +138,7 @@ public class ConvertUtils {
     }
 
     /**
-     * 数字格式转换，超过 9999 用 “1万”
-     * ⦁	数字不展示超过五位数，超过9999则显示1W（W大写），超过11000则显示1.1W、1.2W，超过99999则显示10W、11W
+     * 数字格式转换，超过 9999 用 “1万”，数字不展示超过五位数，超过9999则显示1万，超过11000则显示1.1万、1.2万，超过99999则显示10万、11万
      *
      * @param number
      * @return
@@ -147,9 +146,9 @@ public class ConvertUtils {
     public static String numberConvert(int number) {
         if (number > 9999) {
             if (number >= 100000) {
-                return number / 10000 + "W";
+                return number / 10000 + "万";
             } else {
-                return number / 10000 + "." + ((number - number / 10000 * 10000) / 1000) + "W";
+                return number / 10000 + "." + ((number - number / 10000 * 10000) / 1000) + "万";
             }
         }
         return String.valueOf(number);

@@ -61,6 +61,7 @@
                             <com.zhiyicx.baseproject.widget.edittext.DeleteEditText
                                 android:id="@+id/et_regist_phone"
                                 style="@style/style_edit"
+                                android:layout_marginLeft="0dp"
                                 android:hint="@string/phone_number_input_hint"
                                 android:inputType="phone"
                                 android:maxLength="@integer/phone_number_length"/>

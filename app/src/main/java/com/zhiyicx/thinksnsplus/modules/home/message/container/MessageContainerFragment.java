@@ -129,17 +129,11 @@ public class MessageContainerFragment extends TSViewPagerFragment implements Eas
         mBadgePagerTitleViews = new ArrayList<>();
         CommonNavigatorAdapter commonNavigatorAdapter = getCommonNavigatorAdapter(initTitles());
         mTsvToolbar.initTabView(mVpFragment, initTitles(), commonNavigatorAdapter);
+        mTsvToolbar.setLeftImg(R.mipmap.ico_title_group);
 
-        mVpFragment.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener(){
-            @Override
-            public void onPageSelected(int position) {
-                super.onPageSelected(position);
-                mTsvToolbar.setLeftImg(position==1?R.mipmap.ico_title_group:0);
-            }
-        });
     }
 
-    public int getCurrentItem(){
+    public int getCurrentItem() {
         return mVpFragment.getCurrentItem();
     }
 

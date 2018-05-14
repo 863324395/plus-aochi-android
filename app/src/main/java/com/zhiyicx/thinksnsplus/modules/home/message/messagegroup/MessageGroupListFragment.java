@@ -1,6 +1,5 @@
 package com.zhiyicx.thinksnsplus.modules.home.message.messagegroup;
 
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
@@ -16,7 +15,6 @@ import com.zhiyicx.baseproject.em.manager.util.TSEMConstants;
 import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleTransform;
 import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
-import com.zhiyicx.common.utils.recycleviewdecoration.CustomLinearDecoration;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.ChatGroupBean;
 import com.zhiyicx.thinksnsplus.modules.chat.ChatActivity;
@@ -137,13 +135,6 @@ public class MessageGroupListFragment extends TSListFragment<MessageGroupContrac
             }
         });
         return adapter;
-    }
-
-    @Override
-    protected RecyclerView.ItemDecoration getItemDecoration() {
-        return new CustomLinearDecoration(0, getResources().getDimensionPixelSize(R.dimen
-                .divider_line), 0, 0, ContextCompat.getDrawable(getContext(), R.drawable
-                .shape_recyclerview_grey_divider));
     }
 
     @Override

@@ -228,16 +228,10 @@ public class SelectDynamicTypeFragment extends TSFragment<SelectDynamicTypeContr
                 break;
             case R.id.send_image_dynamic:
                 clickSendPhotoTextDynamic();
-//                SendDynamicDataBean sendImageDynamicDataBean = new SendDynamicDataBean();
-//                sendImageDynamicDataBean.setDynamicBelong(SendDynamicDataBean.NORMAL_DYNAMIC);
-//                sendImageDynamicDataBean.setDynamicType(SendDynamicDataBean.PHOTO_TEXT_DYNAMIC);
-//                SendDynamicActivity.startToSendDynamicActivity(getContext(), sendImageDynamicDataBean);
                 break;
             case R.id.check_in:
-
                 EventBus.getDefault().post(true, EVENT_CHECK_IN_CLICK);
                 getActivity().finish();
-
                 break;
 
             case R.id.im_close_dynamic:

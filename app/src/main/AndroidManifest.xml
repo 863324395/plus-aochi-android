@@ -435,6 +435,7 @@
         <activity
             android:name=".modules.dynamic.send.dynamic_type.SelectDynamicTypeActivity"
             android:screenOrientation="portrait"
+            android:launchMode="singleTop"
             android:theme="@style/DynamciSelectTheme"/>
         <activity
             android:name=".modules.dynamic.send.picture_toll.PictureTollActivity"
