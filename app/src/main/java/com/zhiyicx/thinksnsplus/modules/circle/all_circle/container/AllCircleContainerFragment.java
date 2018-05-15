@@ -166,7 +166,9 @@ public class AllCircleContainerFragment extends TSViewPagerFragment<AllCircleCon
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUST_CODE_CATEGORY && data != null && data.getExtras() != null) {
             mCircleTypeBean = data.getExtras().getParcelable(CircleTypesFragment.BUNDLE_CIRCLE_CATEGORY);
-            mVpFragment.setCurrentItem(mTitle.indexOf(mCircleTypeBean.getName()));
+            if (mCircleTypeBean != null) {
+                mVpFragment.setCurrentItem(mTitle.indexOf(mCircleTypeBean.getName()));
+            }
         }
 
     }
