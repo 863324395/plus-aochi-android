@@ -48,6 +48,11 @@ import static com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.POPUPWI
 public class VideoSelectFragment extends TSListFragment {
     private static final int DEFAUT_CLOUMS = 4;
 
+    /**
+     * 来自动态发布页面，重新选择视频
+     */
+    public static final String IS_RELOAD = "is_reload";
+
     private ActionPopupWindow mPopWindow;
 
     // 分批次加载预留

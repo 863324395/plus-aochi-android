@@ -905,7 +905,6 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                         if (TextUtils.isEmpty(imageBean.getImgUrl())) {
                             if (dynamicType == SendDynamicDataBean.VIDEO_TEXT_DYNAMIC) {
                                 startActivity(new Intent(getActivity(), VideoSelectActivity.class));
-                                mActivity.finish();
                                 return;
                             }
                             ArrayList<String> photos = new ArrayList<>();

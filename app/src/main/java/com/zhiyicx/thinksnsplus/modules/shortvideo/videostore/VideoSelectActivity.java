@@ -1,5 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.shortvideo.videostore;
 
+import android.content.Context;
+import android.content.Intent;
 import android.support.v4.app.Fragment;
 
 import com.zhiyicx.baseproject.base.TSActivity;
@@ -21,5 +23,11 @@ public class VideoSelectActivity extends TSActivity {
     @Override
     protected void componentInject() {
 
+    }
+
+    public static void startVideoSelectActivity(Context context,boolean isRelaod){
+        Intent intent=new Intent(context,VideoSelectActivity.class);
+        intent.putExtra(VideoSelectFragment.IS_RELOAD,isRelaod);
+        context.startActivity(intent);
     }
 }
