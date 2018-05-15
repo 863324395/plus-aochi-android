@@ -58,6 +58,7 @@ public class TSRefreshFooter extends FrameLayout implements RefreshFooter {
         layoutParams.height = getResources().getDimensionPixelOffset(R.dimen.refresh_header_height);
         layoutParams.width = LayoutParams.WRAP_CONTENT;
         layoutParams.gravity = Gravity.CENTER;
+        setBackgroundResource(R.color.general_for_bg_light);
     }
 
     @Override
