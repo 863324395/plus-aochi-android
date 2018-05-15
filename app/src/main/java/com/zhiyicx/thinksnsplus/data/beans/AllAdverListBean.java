@@ -9,6 +9,7 @@ import org.greenrobot.greendao.annotation.Convert;
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.JoinProperty;
+import org.greenrobot.greendao.annotation.OrderBy;
 import org.greenrobot.greendao.annotation.ToMany;
 import org.greenrobot.greendao.annotation.Unique;
 
@@ -38,6 +39,7 @@ public class AllAdverListBean extends BaseListBean {
     @Id
     private Long id;
     @ToMany(joinProperties = {@JoinProperty(name = "id", referencedName = "space_id")})
+    @OrderBy("sort ASC")
     private List<RealAdvertListBean> mRealAdvertListBeen;
     private String channel;
     private String space;

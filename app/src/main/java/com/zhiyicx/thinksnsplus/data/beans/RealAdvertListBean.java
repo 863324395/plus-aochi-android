@@ -11,6 +11,7 @@ import com.zhiyicx.thinksnsplus.data.source.local.data_convert.AdvertFormatConve
 import org.greenrobot.greendao.annotation.Convert;
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
+import org.greenrobot.greendao.annotation.OrderBy;
 import org.greenrobot.greendao.annotation.Transient;
 import org.greenrobot.greendao.annotation.Generated;
 
@@ -36,6 +37,7 @@ public class RealAdvertListBean extends BaseListBean {
     private Long id;
     private Long space_id;
     private String title;
+    private int sort;
     private String type;
     @Transient
     private Object data;
@@ -151,6 +153,10 @@ public class RealAdvertListBean extends BaseListBean {
     }
 
 
+    public RealAdvertListBean() {
+    }
+
+
     @Override
     public int describeContents() {
         return 0;
@@ -162,13 +168,19 @@ public class RealAdvertListBean extends BaseListBean {
         dest.writeValue(this.id);
         dest.writeValue(this.space_id);
         dest.writeString(this.title);
+        dest.writeInt(this.sort);
         dest.writeString(this.type);
         dest.writeString(this.created_at);
         dest.writeString(this.updated_at);
         dest.writeParcelable(this.advertFormat, flags);
     }
 
-    public RealAdvertListBean() {
+    public int getSort() {
+        return this.sort;
+    }
+
+    public void setSort(int sort) {
+        this.sort = sort;
     }
 
     protected RealAdvertListBean(Parcel in) {
@@ -176,6 +188,7 @@ public class RealAdvertListBean extends BaseListBean {
         this.id = (Long) in.readValue(Long.class.getClassLoader());
         this.space_id = (Long) in.readValue(Long.class.getClassLoader());
         this.title = in.readString();
+        this.sort = in.readInt();
         this.type = in.readString();
         this.data = in.readParcelable(Object.class.getClassLoader());
         this.created_at = in.readString();
@@ -183,12 +196,13 @@ public class RealAdvertListBean extends BaseListBean {
         this.advertFormat = in.readParcelable(AdvertFormat.class.getClassLoader());
     }
 
-    @Generated(hash = 1651798827)
-    public RealAdvertListBean(Long id, Long space_id, String title, String type, String created_at,
-                              String updated_at, AdvertFormat advertFormat) {
+    @Generated(hash = 978240395)
+    public RealAdvertListBean(Long id, Long space_id, String title, int sort, String type,
+            String created_at, String updated_at, AdvertFormat advertFormat) {
         this.id = id;
         this.space_id = space_id;
         this.title = title;
+        this.sort = sort;
         this.type = type;
         this.created_at = created_at;
         this.updated_at = updated_at;

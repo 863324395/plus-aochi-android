@@ -3,10 +3,8 @@ package com.zhiyicx.thinksnsplus.data.source.local;
 import android.app.Application;
 
 import com.zhiyicx.baseproject.config.AdvertConfig;
-import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.thinksnsplus.data.beans.AllAdverListBean;
 import com.zhiyicx.thinksnsplus.data.beans.AllAdverListBeanDao;
-import com.zhiyicx.thinksnsplus.data.beans.RealAdvertListBean;
 import com.zhiyicx.thinksnsplus.data.source.local.db.CommonCacheImpl;
 
 import java.util.List;
@@ -22,6 +20,9 @@ import javax.inject.Inject;
 public class AllAdvertListBeanGreenDaoImpl extends CommonCacheImpl<AllAdverListBean> {
 
     private AllAdverListBeanDao mAllAdverListBeanDao;
+
+    @Inject
+    RealAdvertListBeanGreenDaoImpl mRealAdvertListBeanGreenDao;
 
     @Inject
     public AllAdvertListBeanGreenDaoImpl(Application context) {
@@ -161,12 +162,12 @@ public class AllAdvertListBeanGreenDaoImpl extends CommonCacheImpl<AllAdverListB
     }
 
     /**
-     *
      * @return 积分页广告
      */
     public AllAdverListBean getIntegrationAdvert() {
 
-        List<AllAdverListBean> data = mAllAdverListBeanDao.queryBuilder().where(AllAdverListBeanDao.Properties.Space.eq(AdvertConfig.APP_WALLET_INTEGRATION_ADVERT)).build()
+        List<AllAdverListBean> data = mAllAdverListBeanDao.queryBuilder().where(AllAdverListBeanDao.Properties.Space.eq(AdvertConfig.APP_WALLET_INTEGRATION_ADVERT))
+                .build()
                 .list();
         if (data != null && !data.isEmpty()) {
             return data.get(0);
