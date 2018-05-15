@@ -557,7 +557,7 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                                         LogUtils.i(TAG + "加载高清图失败:" + e);
                                         stopCenterLoading();
                                         mTvOriginPhoto.setText(getString(R.string.see_origin_photos_failure));
-                                        mPhotoViewAttacherNormal.setZoomable(false);
+                                        mPhotoViewAttacherNormal.setZoomable(true);
                                         return false;
                                     }
 
