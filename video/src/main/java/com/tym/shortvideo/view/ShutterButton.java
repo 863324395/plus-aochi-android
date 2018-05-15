@@ -651,4 +651,8 @@ public class ShutterButton extends AppCompatImageView {
     public void setEnableOpenned(boolean previewing) {
         mPreviewing = previewing;
     }
+
+    public boolean isRecording(){
+        return mIsRecord && mOpenMode;
+    }
 }

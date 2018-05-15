@@ -5,11 +5,10 @@ package com.tym.shortvideo.recordcore;
  */
 
 
-
-
 import com.tym.shortvideo.utils.FileUtils;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * @author Jliuer
@@ -23,7 +22,8 @@ public class SubVideo implements Serializable {
     // 视频长度
     public int duration;
 
-    public SubVideo() {}
+    public SubVideo() {
+    }
 
     // 删除视频
     public void delete() {
@@ -34,6 +34,7 @@ public class SubVideo implements Serializable {
 
     /**
      * 获取时长
+     *
      * @return
      */
     public int getDuration() {
@@ -42,9 +43,32 @@ public class SubVideo implements Serializable {
 
     /**
      * 获取媒体路径
+     *
      * @return
      */
     public String getMediaPath() {
         return mediaPath;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        SubVideo subVideo = (SubVideo) o;
+        return duration == subVideo.duration &&
+                mediaPath.equals(subVideo.mediaPath);
+    }
+
+
+    @Override
+    public int hashCode() {
+        int result = 1;
+        result = 31 * result + (mediaPath == null ? 0 : mediaPath.hashCode());
+        result = 31 * result;
+        return result;
     }
 }

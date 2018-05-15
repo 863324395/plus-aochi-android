@@ -92,6 +92,9 @@ public class VideoListManager {
         SubVideo subVideo = new SubVideo();
         subVideo.mediaPath = path;
         subVideo.duration = duration;
+        if (mVideoList.contains(subVideo)) {
+            return;
+        }
         mVideoList.add(subVideo);
         save(ParamsManager.context);
     }

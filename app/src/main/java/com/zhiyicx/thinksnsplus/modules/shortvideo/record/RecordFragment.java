@@ -20,12 +20,12 @@ import com.tym.shortvideo.filter.helper.MagicFilterFactory;
 import com.tym.shortvideo.filter.helper.type.GLType;
 import com.tym.shortvideo.filter.helper.type.TextureRotationUtils;
 import com.tym.shortvideo.interfaces.CaptureFrameCallback;
+import com.tym.shortvideo.interfaces.RenderStateChangedListener;
 import com.tym.shortvideo.recodrender.ColorFilterManager;
 import com.tym.shortvideo.recodrender.DrawerManager;
 import com.tym.shortvideo.recodrender.ParamsManager;
 import com.tym.shortvideo.recodrender.RecordManager;
 import com.tym.shortvideo.recodrender.RenderManager;
-import com.tym.shortvideo.interfaces.RenderStateChangedListener;
 import com.tym.shortvideo.recordcore.CountDownManager;
 import com.tym.shortvideo.recordcore.SubVideo;
 import com.tym.shortvideo.recordcore.VideoListManager;
@@ -36,8 +36,8 @@ import com.tym.shortvideo.utils.FileUtils;
 import com.tym.shortvideo.utils.StringUtils;
 import com.tym.shortvideo.view.AspectFrameLayout;
 import com.tym.shortvideo.view.AsyncRecyclerview;
-import com.tym.shortvideo.view.RecordSurfaceView;
 import com.tym.shortvideo.view.ProgressView;
+import com.tym.shortvideo.view.RecordSurfaceView;
 import com.tym.shortvideo.view.ShutterButton;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
@@ -107,6 +107,7 @@ public class RecordFragment extends TSFragment implements SurfaceHolder.Callback
 
     // 是否需要滚动
     private boolean mEffectNeedToMove = false;
+    private boolean mExitFlag = false;
 
     // 当前长宽比值
     private CameraUtils.Ratio mCurrentRatio;
@@ -537,7 +538,7 @@ public class RecordFragment extends TSFragment implements SurfaceHolder.Callback
             mBtnTake.setIsRecorder(false);
         } else if (currentIndex == 2) {
             ParamsManager.sMGLType = GLType.VIDEO;
-            // 录制视频状态
+            // 录制视频
             mBtnTake.setIsRecorder(true);
         }
 
@@ -728,7 +729,7 @@ public class RecordFragment extends TSFragment implements SurfaceHolder.Callback
                     || ParamsManager.sMGLType == GLType.GIF) { // 录制GIF，没有音频
                 // 准备完成，开始录制
                 DrawerManager.getInstance().startRecording();
-
+                mExitFlag = true;
                 // 重置
                 mPreparedCount = 0;
             }
@@ -770,8 +771,8 @@ public class RecordFragment extends TSFragment implements SurfaceHolder.Callback
                 String outputPath = RecordManager.getInstance().getOutputPath();
                 // 添加分段视频，存在时长为0的情况，也就是取消倒计时但不保存时长的情况
                 if (CountDownManager.getInstance().getRealDuration() > 0) {
-                    VideoListManager.getInstance().addSubVideo(outputPath,
-                            (int) CountDownManager.getInstance().getRealDuration());
+//                    VideoListManager.getInstance().addSubVideo(outputPath,
+//                            (int) CountDownManager.getInstance().getRealDuration());
                 } else {    // 移除多余的视频
                     FileUtils.deleteFile(outputPath);
                 }
@@ -806,7 +807,6 @@ public class RecordFragment extends TSFragment implements SurfaceHolder.Callback
                     }
                 });
 
-
             }
 
         }
@@ -831,12 +831,16 @@ public class RecordFragment extends TSFragment implements SurfaceHolder.Callback
      * 初始化登录选择弹框
      */
     private void initWarnPopupWindow() {
-        mBtnTake.stopRecord();
-        if (VideoListManager.getInstance().getSubVideoList() == null
-                || VideoListManager.getInstance().getSubVideoList().isEmpty()) {
-            mActivity.finish();
-            return;
+        mExitFlag = true;
+
+        String outputPath = RecordManager.getInstance().getOutputPath();
+        // 添加分段视频，存在时长为0的情况，也就是取消倒计时但不保存时长的情况
+        // 这个 0 可修改
+        if (CountDownManager.getInstance().getRealDuration() > 0) {
+            VideoListManager.getInstance().addSubVideo(outputPath,
+                    (int) CountDownManager.getInstance().getRealDuration());
         }
+
         if (mWarnPopupWindow == null) {
             mWarnPopupWindow = ActionPopupWindow.builder()
                     .item1Str(getString(R.string.info_publish_hint))
@@ -857,7 +861,19 @@ public class RecordFragment extends TSFragment implements SurfaceHolder.Callback
                     })
                     .build();
         }
+
+        if (mBtnTake.isRecording()) {
+            mBtnTake.stopRecord();
+        } else {
+            if (VideoListManager.getInstance().getSubVideoList() == null
+                    || VideoListManager.getInstance().getSubVideoList().isEmpty()) {
+                mActivity.finish();
+                return;
+            }
+        }
         mWarnPopupWindow.show();
+
+
     }
 
     private void restoreRecord() {
