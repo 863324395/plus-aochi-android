@@ -119,9 +119,9 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
     protected static final String BUNDLE_DYNAMIC_TYPE = "dynamic_type";
 
     /**
-     * item 间距单位 dp
+     * item 间距单位 dp , 由 5L 修改至 10L by tym 2018-5-15 14:55:58
      */
-    public static final long ITEM_SPACING = 5L;
+    public static final long ITEM_SPACING = 10L;
 
     @BindView(R.id.ilv_comment)
     InputLimitView mIlvComment;
