@@ -306,7 +306,7 @@ class HomePresenter extends AppBasePresenter<HomeContract.View> implements HomeC
                         }
 
                         if (TextUtils.isEmpty(chatItemBean12.getUserInfo().getName())) {
-                            content = chatItemBean12.getUserInfo().getName() + content;
+//                            content = chatItemBean12.getUserInfo().getName() + content;
                         } else {
                             content = chatItemBean12.getUserInfo().getName() + ":" + content;
                         }
