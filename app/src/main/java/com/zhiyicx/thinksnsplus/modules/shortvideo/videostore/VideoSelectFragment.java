@@ -187,7 +187,6 @@ public class VideoSelectFragment extends TSListFragment {
                         } else {
                             TrimmerActivity.startTrimmerActivity(mActivity, videoInfo);
                         }
-                        mActivity.finish();
                     })
                     .bottomClickListener(() -> mPopWindow.hide())
                     .build();

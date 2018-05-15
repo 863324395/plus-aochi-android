@@ -154,7 +154,6 @@ public class TrimmerFragment extends TSFragment implements TrimVideoListener {
             arrayList.add(path);
             VideoListManager.getInstance().addSubVideo(path, mVideoTrimmerView.getDuration());
             CoverActivity.startCoverActivity(mActivity, arrayList, false, false,false);
-            mActivity.finish();
         });
     }
 

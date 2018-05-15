@@ -14,6 +14,7 @@ public class SharePreferenceUtils {
     private static SharedPreferences mSharedPreferences;
     public static final String SP_NAME = "sp_name";
     public static final String SP_DOMAIN = "sp_domain";
+    /**视频动态暂存标识*/
     public static final String VIDEO_DYNAMIC = "video_dynamic";
 
     /**

@@ -28,7 +28,6 @@ import com.tym.shortvideo.recodrender.ParamsManager;
 import com.tym.shortvideo.utils.TrimVideoUtil;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
-import com.zhiyicx.baseproject.config.PayConfig;
 import com.zhiyicx.baseproject.impl.photoselector.DaggerPhotoSelectorImplComponent;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl;
@@ -304,8 +303,8 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
             }
             if (amount != null && amount.length > 2) {
                 mSelectMoney.add(0, (float) amount[0]);
-                mSelectMoney.add(1, (float)amount[1]);
-                mSelectMoney.add(2, (float)amount[2]);
+                mSelectMoney.add(1, (float) amount[1]);
+                mSelectMoney.add(2, (float) amount[2]);
             }
         }
         initSelectMoney(mSelectMoney);
@@ -589,7 +588,7 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
         if (isFromGroup) {
             mPresenter.sendGroupDynamic(packageGroupDynamicData());
         } else {
-            if (dynamicType == SendDynamicDataBean.VIDEO_TEXT_DYNAMIC ){
+            if (dynamicType == SendDynamicDataBean.VIDEO_TEXT_DYNAMIC) {
 
                 TrimVideoUtil.getVideoOneFrame(mActivity, Uri.parse(selectedPhotos.get(0).getImgUrl()))
                         .map(bitmap -> {
@@ -597,12 +596,12 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                         })
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(new Action1<String>() {
-                    @Override
-                    public void call(String s) {
-                        mPresenter.sendDynamicV2(packageDynamicData());
-                    }
-                });
-            }else{
+                            @Override
+                            public void call(String s) {
+                                mPresenter.sendDynamicV2(packageDynamicData());
+                            }
+                        });
+            } else {
                 mPresenter.sendDynamicV2(packageDynamicData());
             }
         }
@@ -982,6 +981,9 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
         if (bundle != null) {
             mSendDynamicDataBean = bundle.getParcelable(SendDynamicActivity
                     .SEND_DYNAMIC_DATA);
+            if (mSendDynamicDataBean == null) {
+                throw new IllegalArgumentException("SEND_DYNAMIC_DATA can not be null");
+            }
             dynamicType = mSendDynamicDataBean.getDynamicType();
             restoreVideoDraft(mSendDynamicDataBean);
             List<ImageBean> originPhotos = mSendDynamicDataBean.getDynamicPrePhotos();
@@ -1016,12 +1018,15 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
 
     private void restoreVideoDraft(SendDynamicDataBean sendDynamicDataBean) {
         VideoInfo videoInfo = sendDynamicDataBean.getVideoInfo();
-        if (videoInfo != null && !TextUtils.isEmpty(videoInfo.getDynamicContent())) {
-            String content = videoInfo.getDynamicContent();
-            if (SharePreferenceUtils.VIDEO_DYNAMIC.equals(content)) {
-                return;
+        if (videoInfo != null) {
+            videoInfo.setNeedGetCoverFromVideo(true);
+            if (!TextUtils.isEmpty(videoInfo.getDynamicContent())) {
+                String content = videoInfo.getDynamicContent();
+                if (SharePreferenceUtils.VIDEO_DYNAMIC.equals(content)) {
+                    return;
+                }
+                mEtDynamicContent.setText(content);
             }
-            mEtDynamicContent.setText(content);
         }
 
     }
