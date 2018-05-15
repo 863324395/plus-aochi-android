@@ -2,8 +2,10 @@ package com.zhiyicx.thinksnsplus.modules.home;
 
 import android.text.TextUtils;
 
+import com.hyphenate.chat.EMImageMessageBody;
 import com.hyphenate.chat.EMMessage;
 import com.hyphenate.chat.EMTextMessageBody;
+import com.hyphenate.chat.EMVoiceMessageBody;
 import com.zhiyicx.baseproject.em.manager.eventbus.TSEMMultipleMessagesEvent;
 import com.zhiyicx.baseproject.em.manager.util.TSEMConstants;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
@@ -297,12 +299,9 @@ class HomePresenter extends AppBasePresenter<HomeContract.View> implements HomeC
                         // 目前只有单聊，别的还没定
                         if (chatItemBean12.getMessage().getBody() instanceof EMTextMessageBody) {
                             content = ((EMTextMessageBody) chatItemBean12.getMessage().getBody()).getMessage();
-                        }
-
-                        if (content.startsWith("image:")) {
+                        }else if (chatItemBean12.getMessage().getBody() instanceof EMImageMessageBody){
                             content = "[图片]";
-                        }
-                        if (content.startsWith("voice:")) {
+                        }else if (chatItemBean12.getMessage().getBody() instanceof EMVoiceMessageBody){
                             content = "[语音]";
                         }
 

@@ -15,8 +15,10 @@ import android.widget.Toast;
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMCmdMessageBody;
 import com.hyphenate.chat.EMGroup;
+import com.hyphenate.chat.EMImageMessageBody;
 import com.hyphenate.chat.EMMessage;
 import com.hyphenate.chat.EMTextMessageBody;
+import com.hyphenate.chat.EMVoiceMessageBody;
 import com.hyphenate.easeui.EaseConstant;
 import com.hyphenate.easeui.EaseUI;
 import com.hyphenate.easeui.bean.ChatUserInfoBean;
@@ -455,15 +457,11 @@ public class ChatFragment extends TSEaseChatFragment<ChatContract.Presenter>
                 jpushMessageBean.setType(JpushMessageTypeConfig.JPUSH_MESSAGE_TYPE_IM);
                 jpushMessageBean.setExtras(message.getChatType().name());
                 String content = message.getBody().toString();
-                // 目前只有单聊，别的还没定
                 if (message.getBody() instanceof EMTextMessageBody) {
                     content = ((EMTextMessageBody) message.getBody()).getMessage();
-                }
-
-                if (content.startsWith("image:")) {
+                }else if (message.getBody() instanceof EMImageMessageBody){
                     content = "[图片]";
-                }
-                if (content.startsWith("voice:")) {
+                }else if (message.getBody() instanceof EMVoiceMessageBody){
                     content = "[语音]";
                 }
 
