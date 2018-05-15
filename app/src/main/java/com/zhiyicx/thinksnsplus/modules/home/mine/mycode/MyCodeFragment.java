@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -20,6 +21,7 @@ import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.tbruyelle.rxpermissions.Permission;
 import com.zhiyicx.baseproject.base.TSFragment;
+import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleTransform;
 import com.zhiyicx.baseproject.widget.EmptyView;
 import com.zhiyicx.baseproject.widget.UserAvatarView;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
@@ -33,7 +35,10 @@ import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
+import rx.schedulers.Schedulers;
 
 import static com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.POPUPWINDOW_ALPHA;
 
@@ -132,12 +137,15 @@ public class MyCodeFragment extends TSFragment<MyCodeContract.Presenter> impleme
                 Glide.with(getContext())
                         .load(userInfo.getAvatar())
                         .asBitmap()
+                        .transform(new GlideCircleTransform(getContext()))
                         .error(ImageUtils.getDefaultAvatar(userInfo))
                         .placeholder(ImageUtils.getDefaultAvatar(userInfo))
                         .into(new SimpleTarget<Bitmap>() {
                             @Override
                             public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                                mShareBitmap = resource;
                                 if (resource != null) {
+                                    mShareBitmap=ConvertUtils.drawBg4Bitmap(Color.WHITE,mShareBitmap);
                                     mPresenter.createUserCodePic(resource);
                                 } else {
                                     // 为空那就用默认的头像咯
@@ -186,12 +194,15 @@ public class MyCodeFragment extends TSFragment<MyCodeContract.Presenter> impleme
 
                 })
                 .item2ClickListener(() -> {
+
                     // 分享
                     if (mShareBitmap == null) {
-                        mShareBitmap = ConvertUtils.drawable2BitmapWithWhiteBg(getContext(), mUserAvatar.getIvAvatar().getDrawable(), R.mipmap.icon);
+                        mShareBitmap = ConvertUtils.drawable2BitmapWithWhiteBg(getContext(), mUserAvatar.getIvAvatar()
+                                .getDrawable(), R.mipmap.icon);
                     }
                     mPresenter.shareMyQrCode(mShareBitmap);
                     mScanCodePopupWindow.hide();
+
                 })
                 .bottomClickListener(() -> mScanCodePopupWindow.hide())
                 .build();
