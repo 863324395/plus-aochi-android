@@ -85,6 +85,7 @@ import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
+import static com.zhiyicx.baseproject.config.ApiConfig.DYNAMIC_TYPE_HOTS;
 import static com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.POPUPWINDOW_ALPHA;
 import static com.zhiyicx.thinksnsplus.data.beans.DynamicListAdvert.DEFAULT_ADVERT_FROM_TAG;
 import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment.DYNAMIC_DETAIL_DATA;
@@ -141,6 +142,10 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
     private ActionPopupWindow mReSendCommentPopWindow;
     private ActionPopupWindow mReSendDynamicPopWindow;
     private PayPopWindow mPayImagePopWindow;
+    /**
+     * 是否已经加载过网络数据了
+     */
+    private boolean mIsLoadedNetData = false;
 
     /**
      * 当前评论的动态位置
@@ -193,7 +198,12 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
 
     @Override
     protected boolean isNeedRefreshDataWhenComeIn() {
-        return true;
+        return DYNAMIC_TYPE_HOTS.equals(mDynamicType);
+    }
+
+    @Override
+    protected boolean isNeedRequestNetDataWhenCacheDataNull() {
+        return DYNAMIC_TYPE_HOTS.equals(mDynamicType);
     }
 
     @Override
@@ -201,6 +211,15 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
         super.onStart();
         if (mDynamicBannerHeader != null) {
             mDynamicBannerHeader.startBanner();
+        }
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (isVisibleToUser && mPresenter != null && !mIsLoadedNetData) {
+            startRefrsh();
+            mIsLoadedNetData = true;
         }
     }
 
@@ -311,13 +330,6 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
         return 0;
     }
 
-    @Override
-    protected void initData() {
-        if (mPresenter != null) {
-            super.initData();
-        }
-    }
-
     /**
      * 初始化广告数据
      */
@@ -325,7 +337,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
         if (!com.zhiyicx.common.BuildConfig.USE_ADVERT) {
             return;
         }
-        if (!mDynamicType.equals(ApiConfig.DYNAMIC_TYPE_HOTS)) {
+        if (!mDynamicType.equals(DYNAMIC_TYPE_HOTS)) {
             return;
         }
         mHeaderAdvert = mPresenter.getBannerAdvert();
@@ -423,7 +435,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
      */
     @Override
     protected Long getMaxId(@NotNull List<DynamicDetailBeanV2> data) {
-        if (mDynamicType.equals(ApiConfig.DYNAMIC_TYPE_HOTS)) {
+        if (mDynamicType.equals(DYNAMIC_TYPE_HOTS)) {
             if (DEFAULT_PAGE_SIZE == null) {
                 return (long) mPage * DEFAULT_PAGE_DB_SIZE;
             } else {
@@ -440,6 +452,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
 
     @Override
     public void onNetResponseSuccess(@NotNull List<DynamicDetailBeanV2> data, boolean isLoadMore) {
+        mIsLoadedNetData = true;
         try {// 添加广告
             if (!data.isEmpty() && mListAdvert != null && mListAdvert.size() >= getPage()) {
 
@@ -802,6 +815,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
         }
     }
 
+
     private void showCommentView() {
         showBottomView(false);
 
@@ -888,7 +902,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
                         .SEND_SUCCESS && !dynamicBean
                         .getComments().get(commentPosition).getPinned() && dynamicBean.getComments().get(commentPosition).getComment_id() != null ?
                         getString(R
-                        .string.dynamic_list_top_comment) : null)
+                                .string.dynamic_list_top_comment) : null)
                 .item2Str(getString(R.string.dynamic_list_delete_comment))
                 .bottomStr(getString(R.string.cancel))
                 .isOutsideTouch(true)
