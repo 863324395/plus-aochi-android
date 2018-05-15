@@ -715,7 +715,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
     public void startRefrsh() {
         if (mRefreshlayout != null) {
             mRvList.scrollToPosition(0);
-            mRefreshlayout.autoRefresh(10);
+            mRefreshlayout.autoRefresh(1);
         }
     }
 
