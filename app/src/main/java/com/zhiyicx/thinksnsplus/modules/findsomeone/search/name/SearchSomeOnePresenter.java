@@ -86,7 +86,7 @@ public class SearchSomeOnePresenter extends AppBasePresenter<SearchSomeOneContra
 
     @Override
     public void getRecommentUser() {
-        if (mRecommentUserList != null) {
+        if (mRecommentUserList != null && !mRecommentUserList.isEmpty()) {
             mRootView.onNetResponseSuccess(mRecommentUserList, false);
             return;
         }

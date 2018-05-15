@@ -99,7 +99,7 @@ public class InfoContainerFragment extends TSViewPagerFragment<InfoMainContract.
 
     @Override
     protected void setLeftClick() {
-       onBackPressed();
+        onBackPressed();
     }
 
     @Override
@@ -145,7 +145,7 @@ public class InfoContainerFragment extends TSViewPagerFragment<InfoMainContract.
         mTsvToolbar.initTabView(mVpFragment, initTitles());
         mTsvToolbar.setLeftClickListener(this, this::setLeftClick);
         mTsvToolbar.setRightClickListener(this, () -> {
-            if (mPresenter.handleTouristControl()) {
+            if (mInfoTypeBean == null || mPresenter.handleTouristControl()) {
                 return;
             }
             Intent intent = new Intent(getActivity(), ChannelActivity.class);
@@ -278,7 +278,7 @@ public class InfoContainerFragment extends TSViewPagerFragment<InfoMainContract.
             mPayAlertPopWindow = ActionPopupWindow.builder()
                     .item1Str(getString(R.string.info_publish_hint))
                     .item6Str(getString(R.string.info_publish_go_to_next))
-                    .desStr(getString(R.string.info_publish_hint_pay,mPresenter.getSystemConfigBean().getNewsPayContribute(), mPresenter.getGoldName()))
+                    .desStr(getString(R.string.info_publish_hint_pay, mPresenter.getSystemConfigBean().getNewsPayContribute(), mPresenter.getGoldName()))
                     .bottomStr(getString(R.string.cancel))
                     .isOutsideTouch(true)
                     .isFocus(true)
