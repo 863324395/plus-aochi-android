@@ -255,6 +255,8 @@ public class CirclePostDetailPresenter extends AppBasePresenter<CirclePostDetail
         Bundle bundle = mRootView.getArgumentsBundle();
         if (bundle != null && bundle.containsKey(CirclePostDetailFragment.POST)) {
             mRootView.getCurrentePost().setComments(mRootView.getListDatas());
+            // 数据处理；
+            mRootView.getCurrentePost().handleData();
             bundle.putParcelable(CirclePostDetailFragment.POST_DATA, mRootView.getCurrentePost());
             bundle.putBoolean(CirclePostDetailFragment.POST_LIST_NEED_REFRESH, mIsNeedDynamicListRefresh);
             EventBus.getDefault().post(bundle, EventBusTagConfig.EVENT_UPDATE_CIRCLE_POST);

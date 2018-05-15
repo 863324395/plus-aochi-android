@@ -252,6 +252,30 @@ public class SearchCirclePostFragment extends BaseCircleDetailFragment implement
         checkEmptyView();
     }
 
+    @Override
+    public void refreshData() {
+        super.refreshData();
+        checkEmptyView();
+    }
+
+    @Override
+    public void refreshData(int index) {
+        super.refreshData(index);
+        checkEmptyView();
+    }
+
+    @Override
+    public void refreshData(List<CirclePostListBean> datas) {
+        super.refreshData(datas);
+        checkEmptyView();
+    }
+
+    @Override
+    public void refreshRangeData(int start, int count) {
+        super.refreshRangeData(start, count);
+        checkEmptyView();
+    }
+
     private void checkEmptyView() {
         setEmptyViewVisiable(false);
         mRefreshlayout.setEnableRefresh(!mListDatas.isEmpty());
