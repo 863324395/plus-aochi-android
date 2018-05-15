@@ -17,9 +17,14 @@ public class LinearDecoration extends RecyclerView.ItemDecoration {
     private int left;
     private int right;
     private boolean mIsNeedLastDecoration = true;
+    private boolean mIsNeedFirstDecoration = false;
 
     public void setNeedLastDecoration(boolean needLastDecoration) {
         mIsNeedLastDecoration = needLastDecoration;
+    }
+
+    public void setNeedFirstDecoration(boolean needFirstDecoration) {
+        mIsNeedFirstDecoration = needFirstDecoration;
     }
 
     public LinearDecoration(int top, int bottom, int left, int right) {
@@ -40,11 +45,15 @@ public class LinearDecoration extends RecyclerView.ItemDecoration {
     @Override
     public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
         outRect.top = top;
-        if (!mIsNeedLastDecoration && parent.getChildAdapterPosition(view) == parent.getAdapter().getItemCount() - 1) {// 最后一行
+        outRect.bottom = bottom;
+        boolean isLastItem = parent.getChildAdapterPosition(view) == parent.getAdapter().getItemCount() - 1;
+        boolean isFirstItem = parent.getChildAdapterPosition(view) == 0;
+
+        boolean notNeedOffset = (isFirstItem && !mIsNeedFirstDecoration)||(isLastItem && !mIsNeedLastDecoration);
+        if (notNeedOffset) {
             outRect.bottom = 0;
-        } else {
-            outRect.bottom = bottom;
         }
+
         outRect.left = left;
         outRect.right = right;
 

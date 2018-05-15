@@ -169,10 +169,4 @@
         android:layout_marginRight="@dimen/spacing_normal"
         android:paddingBottom="@dimen/spacing_mid">
     </com.zhiyicx.thinksnsplus.widget.comment.DynamicListCommentView>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/spacing_small"
-        android:layout_below="@id/dcv_comment"
-        android:background="@color/bgColor"/>
 </RelativeLayout>
