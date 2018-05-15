@@ -22,9 +22,6 @@ public class ChatItemBean extends CacheBean implements Parcelable {
     private EMMessage message;
 
     public UserInfoBean getUserInfo() {
-        if (userInfo == null) {
-            return new UserInfoBean();
-        }
         return userInfo;
     }
 

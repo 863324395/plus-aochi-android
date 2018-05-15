@@ -268,7 +268,7 @@ class HomePresenter extends AppBasePresenter<HomeContract.View> implements HomeC
                     chatItemBean.setUserInfo(mUserInfoBeanGreenDao.getSingleDataFromCache
                             (Long.parseLong(message.getFrom())));
                 } catch (NumberFormatException ignore) {
-                    chatItemBean.setUserInfo(new UserInfoBean(""));
+                    continue;
                 }
             }
             if (message.conversationId().equals(TSEMHyphenate.getInstance().getToChatUsername())) {
