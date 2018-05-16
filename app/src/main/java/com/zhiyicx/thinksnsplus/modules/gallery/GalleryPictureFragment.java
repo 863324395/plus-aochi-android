@@ -485,9 +485,9 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                         @Override
                         public boolean onException(Exception e, GlideUrl model, Target<GlideDrawable> target, boolean isFirstResource) {
                             LogUtils.i(TAG + "加载缩略图失败");
+                            mFlGalleryPhoto.setBackgroundColor(Color.BLACK);
                             startLoadProgress();
                             intoImageTarget(mCurrentHDRequestBuilder, imageBean, rect);
-                            mFlGalleryPhoto.setBackgroundColor(Color.BLACK);
                             return false;
                         }
 

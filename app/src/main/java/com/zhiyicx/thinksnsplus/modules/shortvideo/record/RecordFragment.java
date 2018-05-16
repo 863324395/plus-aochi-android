@@ -771,8 +771,8 @@ public class RecordFragment extends TSFragment implements SurfaceHolder.Callback
                 String outputPath = RecordManager.getInstance().getOutputPath();
                 // 添加分段视频，存在时长为0的情况，也就是取消倒计时但不保存时长的情况
                 if (CountDownManager.getInstance().getRealDuration() > 0) {
-//                    VideoListManager.getInstance().addSubVideo(outputPath,
-//                            (int) CountDownManager.getInstance().getRealDuration());
+                    VideoListManager.getInstance().addSubVideo(outputPath,
+                            (int) CountDownManager.getInstance().getRealDuration());
                 } else {    // 移除多余的视频
                     FileUtils.deleteFile(outputPath);
                 }
