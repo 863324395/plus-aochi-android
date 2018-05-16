@@ -588,22 +588,7 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
         if (isFromGroup) {
             mPresenter.sendGroupDynamic(packageGroupDynamicData());
         } else {
-            if (dynamicType == SendDynamicDataBean.VIDEO_TEXT_DYNAMIC) {
-
-                TrimVideoUtil.getVideoOneFrame(mActivity, Uri.parse(selectedPhotos.get(0).getImgUrl()))
-                        .map(bitmap -> {
-                            return com.zhiyicx.common.utils.FileUtils.saveBitmapToFile(mActivity, bitmap, ParamsManager.VideoCover);
-                        })
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(new Action1<String>() {
-                            @Override
-                            public void call(String s) {
-                                mPresenter.sendDynamicV2(packageDynamicData());
-                            }
-                        });
-            } else {
-                mPresenter.sendDynamicV2(packageDynamicData());
-            }
+            mPresenter.sendDynamicV2(packageDynamicData());
         }
     }
 
@@ -1019,7 +1004,6 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
     private void restoreVideoDraft(SendDynamicDataBean sendDynamicDataBean) {
         VideoInfo videoInfo = sendDynamicDataBean.getVideoInfo();
         if (videoInfo != null) {
-            videoInfo.setNeedGetCoverFromVideo(true);
             if (!TextUtils.isEmpty(videoInfo.getDynamicContent())) {
                 String content = videoInfo.getDynamicContent();
                 if (SharePreferenceUtils.VIDEO_DYNAMIC.equals(content)) {
