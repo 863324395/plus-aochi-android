@@ -96,14 +96,16 @@ public class DynamicListItemForOneImage extends DynamicListBaseItem {
                     .into(view);
         } else {
             // 本地
-             BitmapFactory.Options option = DrawableProvider.getPicsWHByFile(imageBean.getImgUrl());
+            BitmapFactory.Options option = DrawableProvider.getPicsWHByFile(imageBean.getImgUrl());
             with = imageBean.getCurrentWith();
             height = imageBean.getHeight();
             if (height == 0 && option.outWidth == 0) {
                 height = with;
             } else {
-                height = with * option.outHeight / option.outWidth;
-                height = height > mImageMaxHeight ? mImageMaxHeight : height;
+                if (option.outWidth != 0) {
+                    height = with * option.outHeight / option.outWidth;
+                    height = height > mImageMaxHeight ? mImageMaxHeight : height;
+                }
             }
             if (height <= 0) {
                 height = DEFALT_IMAGE_HEIGHT;
