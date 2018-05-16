@@ -344,39 +344,49 @@ public class PreviewFragment extends TSFragment implements MediaPlayerWrapper.IM
         mOutputPath = FileUtils.getPath(ParamsManager.SaveVideo, ParamsManager.ClipVideo);
         clipper.setFilterType(mFilterType);
         clipper.setOutputVideoPath(mOutputPath);
-        clipper.setOnVideoCutFinishListener(() -> mSubscription = Observable.empty()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new EmptySubscribe<Object>() {
-                    @Override
-                    public void onCompleted() {
-                        FileUtils.updateMediaStore(mActivity, mOutputPath, (s, uri) -> {
+        clipper.setOnVideoCutFinishListener(new VideoClipper.OnVideoCutFinishListener() {
+            @Override
+            public void onFinish() {
+                mSubscription = Observable.empty()
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new EmptySubscribe<Object>() {
+                            @Override
+                            public void onCompleted() {
+                                FileUtils.updateMediaStore(mActivity, mOutputPath, (s, uri) -> {
 
-                            isLoading = false;
-                            hideCenterLoading();
+                                    isLoading = false;
+                                    hideCenterLoading();
 
-                            mVideoInfo.setPath(mOutputPath);
-                            mVideoInfo.setCreateTime(System.currentTimeMillis() + "");
-                            mVideoInfo.setWidth(mVideoView.getVideoWidth());
-                            mVideoInfo.setHeight(mVideoView.getVideoHeight());
-                            mVideoInfo.setDuration(mVideoView.getVideoDuration());
+                                    mVideoInfo.setPath(mOutputPath);
+                                    mVideoInfo.setCreateTime(System.currentTimeMillis() + "");
+                                    mVideoInfo.setWidth(mVideoView.getVideoWidth());
+                                    mVideoInfo.setHeight(mVideoView.getVideoHeight());
+                                    mVideoInfo.setDuration(mVideoView.getVideoDuration());
 
-                            SendDynamicDataBean sendDynamicDataBean = new SendDynamicDataBean();
-                            sendDynamicDataBean.setDynamicBelong(SendDynamicDataBean
-                                    .NORMAL_DYNAMIC);
-                            List<ImageBean> pic = new ArrayList<>();
-                            ImageBean imageBean = new ImageBean();
-                            imageBean.setImgUrl(mVideoInfo.getCover());
-                            pic.add(imageBean);
-                            sendDynamicDataBean.setDynamicPrePhotos(pic);
-                            sendDynamicDataBean.setDynamicType(SendDynamicDataBean
-                                    .VIDEO_TEXT_DYNAMIC);
-                            sendDynamicDataBean.setVideoInfo(mVideoInfo);
-                            SendDynamicActivity.startToSendDynamicActivity(getContext(),
-                                    sendDynamicDataBean);
-                            mActivity.finish();
+                                    SendDynamicDataBean sendDynamicDataBean = new SendDynamicDataBean();
+                                    sendDynamicDataBean.setDynamicBelong(SendDynamicDataBean
+                                            .NORMAL_DYNAMIC);
+                                    List<ImageBean> pic = new ArrayList<>();
+                                    ImageBean imageBean = new ImageBean();
+                                    imageBean.setImgUrl(mVideoInfo.getCover());
+                                    pic.add(imageBean);
+                                    sendDynamicDataBean.setDynamicPrePhotos(pic);
+                                    sendDynamicDataBean.setDynamicType(SendDynamicDataBean
+                                            .VIDEO_TEXT_DYNAMIC);
+                                    sendDynamicDataBean.setVideoInfo(mVideoInfo);
+                                    SendDynamicActivity.startToSendDynamicActivity(getContext(),
+                                            sendDynamicDataBean);
+                                    mActivity.finish();
+                                });
+                            }
                         });
-                    }
-                }));
+            }
+
+            @Override
+            public void onFailed() {
+
+            }
+        });
         try {
             clipper.clipVideo(0, mVideoView.getVideoDuration() * 1000);
         } catch (IOException e) {

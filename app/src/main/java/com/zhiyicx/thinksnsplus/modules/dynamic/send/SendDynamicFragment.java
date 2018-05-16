@@ -3,7 +3,6 @@ package com.zhiyicx.thinksnsplus.modules.dynamic.send;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
@@ -24,8 +23,6 @@ import com.bumptech.glide.signature.StringSignature;
 import com.jakewharton.rxbinding.widget.RxRadioGroup;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.tym.shortvideo.media.VideoInfo;
-import com.tym.shortvideo.recodrender.ParamsManager;
-import com.tym.shortvideo.utils.TrimVideoUtil;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.impl.photoselector.DaggerPhotoSelectorImplComponent;
@@ -68,12 +65,11 @@ import com.zhiyicx.thinksnsplus.widget.UserInfoInroduceInputView;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 
 import static com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl.TOLLBUNDLE;
 import static com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl.TOLL_TYPE;
@@ -1004,6 +1000,14 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
     private void restoreVideoDraft(SendDynamicDataBean sendDynamicDataBean) {
         VideoInfo videoInfo = sendDynamicDataBean.getVideoInfo();
         if (videoInfo != null) {
+
+            // 如果没有经过选择封面步骤，则cover是 null
+            if (TextUtils.isEmpty(videoInfo.getCover())){
+                videoInfo.setNeedGetCoverFromVideo(true);
+            }else{
+                videoInfo.setNeedGetCoverFromVideo(false);
+            }
+
             if (!TextUtils.isEmpty(videoInfo.getDynamicContent())) {
                 String content = videoInfo.getDynamicContent();
                 if (SharePreferenceUtils.VIDEO_DYNAMIC.equals(content)) {

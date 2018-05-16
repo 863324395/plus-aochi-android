@@ -379,8 +379,10 @@ public class CoverFragment extends TSFragment implements MediaPlayerWrapper.IMed
                         } catch (IOException e) {
                             Observable.error(new IOException());
                         }
-                        clipper.setOnVideoCutFinishListener(() -> mSubscription = Observable.empty()
-                                .subscribe(new EmptySubscribe<Object>() {
+                        clipper.setOnVideoCutFinishListener(new VideoClipper.OnVideoCutFinishListener() {
+                            @Override
+                            public void onFinish() {
+                                mSubscription = Observable.empty() .subscribe(new EmptySubscribe<Object>() {
                                     @Override
                                     public void onCompleted() {
                                         FileUtils.updateMediaStore(mActivity, mOutputPath, (s, uri) -> {
@@ -412,7 +414,16 @@ public class CoverFragment extends TSFragment implements MediaPlayerWrapper.IMed
                                             mActivity.finish();
                                         });
                                     }
-                                }));
+
+
+                                });
+                            }
+
+                            @Override
+                            public void onFailed() {
+
+                            }
+                        });
                     }
 
                     @Override

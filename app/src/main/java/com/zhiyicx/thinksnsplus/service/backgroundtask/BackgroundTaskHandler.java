@@ -931,7 +931,9 @@ public class BackgroundTaskHandler {
 
                                             @Override
                                             public void onCancel() {
-
+                                                detailBeanV2.setSendFailMessage("test");
+                                                sendDynamicByEventBus(SendDynamicDataBean.NORMAL_DYNAMIC, detailBeanV2,
+                                                        false, backgroundRequestTaskBean, null);
                                             }
                                         });
                             }

@@ -159,7 +159,6 @@ public class VideoClipper {
             if (format.getString(MediaFormat.KEY_MIME).startsWith("audio/")) {
                 audioTrackIndex = i;
                 audioFormat = format;
-//                muxAudioTrack = mMediaMuxer.addTrack(format);
                 continue;
             }
         }
@@ -186,11 +185,21 @@ public class VideoClipper {
     private Runnable audioCliper = new Runnable() {
         @Override
         public void run() {
-            mAudioExtractor.selectTrack(audioTrackIndex);
-            initAudioCodec();
-            startAudioCodec(audioDecoder, audioEncoder, mAudioExtractor, mAudioExtractor.getSampleTime(), startPosition, clipDur);
-            audioFinish = true;
-            release();
+            try{
+                mAudioExtractor.selectTrack(audioTrackIndex);
+                initAudioCodec();
+                startAudioCodec(audioDecoder, audioEncoder, mAudioExtractor, mAudioExtractor.getSampleTime(), startPosition, clipDur);
+                audioFinish = true;
+                release();
+            }catch (Exception e){
+                if (listener != null) {
+                    listener.onFinish();
+                }
+            }finally {
+                audioFinish = true;
+                release();
+            }
+
         }
     };
 
@@ -562,5 +571,6 @@ public class VideoClipper {
 
     public interface OnVideoCutFinishListener {
         void onFinish();
+        void onFailed();
     }
 }

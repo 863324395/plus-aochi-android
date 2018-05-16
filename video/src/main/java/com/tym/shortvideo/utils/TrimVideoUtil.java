@@ -66,6 +66,11 @@ public class TrimVideoUtil {
             public void onFinish() {
                 callback.onFinishTrim(tempOutFile);
             }
+
+            @Override
+            public void onFailed() {
+                callback.onCancel();
+            }
         });
         try {
             clipper.clipVideo(startMs, endMs - startMs);
