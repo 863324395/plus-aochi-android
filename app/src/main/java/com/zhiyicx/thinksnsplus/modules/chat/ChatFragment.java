@@ -222,6 +222,7 @@ public class ChatFragment extends TSEaseChatFragment<ChatContract.Presenter>
 
             setCenterText(mPresenter.getGroupName(toChatUsername));
         }
+        setUpView();
     }
 
     /**
