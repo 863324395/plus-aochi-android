@@ -192,12 +192,11 @@ public class VideoClipper {
                 audioFinish = true;
                 release();
             }catch (Exception e){
-                if (listener != null) {
-                    listener.onFinish();
-                }
+
             }finally {
-                audioFinish = true;
-                release();
+                if (listener != null) {
+                    listener.onFailed();
+                }
             }
 
         }

@@ -844,7 +844,7 @@ public class BackgroundTaskHandler {
                 TrimVideoUtil.getVideoOneFrame(mContext, Uri.parse(filePath))
                         .map(bitmap -> com.zhiyicx.common.utils.FileUtils.saveBitmapToFile
                                 (mContext, bitmap,
-                                ParamsManager.VideoCover))
+                                        ParamsManager.VideoCover))
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(s -> {
                             upLoadPics.add(mUpLoadRepository.upLoadSingleFileV2(s,
@@ -876,14 +876,14 @@ public class BackgroundTaskHandler {
 
             SendDynamicV2(backgroundRequestTaskBean, detailBeanV2, position,
                     mSendDynamicRepository.sendDynamicV2(sendDynamicDataBean)
-                    .flatMap(objectBaseJsonV2 -> {
-                        BaseJson<Object> baseJson = new BaseJson<>();
-                        baseJson.setData((double) objectBaseJsonV2.getId());
-                        String msg = objectBaseJsonV2.getMessage().get(0);
-                        baseJson.setStatus(mContext.getString(R.string.send_success).equals(msg));
-                        baseJson.setMessage(msg);
-                        return Observable.just(baseJson);
-                    }));
+                            .flatMap(objectBaseJsonV2 -> {
+                                BaseJson<Object> baseJson = new BaseJson<>();
+                                baseJson.setData((double) objectBaseJsonV2.getId());
+                                String msg = objectBaseJsonV2.getMessage().get(0);
+                                baseJson.setStatus(mContext.getString(R.string.send_success).equals(msg));
+                                baseJson.setMessage(msg);
+                                return Observable.just(baseJson);
+                            }));
         }
 
 
@@ -896,7 +896,9 @@ public class BackgroundTaskHandler {
         SendDynamicDataBeanV2.Video video = new SendDynamicDataBeanV2.Video();
 
         if (videoInfo != null) {
-            if (videoInfo.needCompressVideo()) {
+            // 10M
+            boolean sizeNeedCompress = videoInfo.getSize() > 10485760;
+            if (videoInfo.needCompressVideo() && sizeNeedCompress) {
                 // 需要处理视频
                 Observable.empty()
                         .observeOn(Schedulers.io())
@@ -916,22 +918,22 @@ public class BackgroundTaskHandler {
                                             public void onFinishTrim(String url) {
                                                 upLoadPics.add(mUpLoadRepository
                                                         .upLoadSingleFileV2(url, "",
-                                                        false, videoInfo.getWidth(), videoInfo
+                                                                false, videoInfo.getWidth(), videoInfo
                                                                         .getHeight(),
-                                                        position));
+                                                                position));
 
                                                 SendDynamicV2(backgroundRequestTaskBean,
                                                         detailBeanV2, position,
                                                         getSendDynamicObservable
-                                                        (sendDynamicDataBean, position, photos,
-                                                                videoInfo,
-                                                                upLoadPics, video));
+                                                                (sendDynamicDataBean, position, photos,
+                                                                        videoInfo,
+                                                                        upLoadPics, video));
 
                                             }
 
                                             @Override
                                             public void onCancel() {
-                                                detailBeanV2.setSendFailMessage("test");
+                                                detailBeanV2.setSendFailMessage("抱歉，文件格式错误...");
                                                 sendDynamicByEventBus(SendDynamicDataBean.NORMAL_DYNAMIC, detailBeanV2,
                                                         false, backgroundRequestTaskBean, null);
                                             }
@@ -953,15 +955,15 @@ public class BackgroundTaskHandler {
             // 没有视频的
             SendDynamicV2(backgroundRequestTaskBean, detailBeanV2, position,
                     getSendDynamicObservable(sendDynamicDataBean, position, photos,
-                    videoInfo,
-                    upLoadPics, video));
+                            videoInfo,
+                            upLoadPics, video));
         }
     }
 
     private Observable<BaseJson<Object>> getSendDynamicObservable(SendDynamicDataBeanV2
                                                                           sendDynamicDataBean,
                                                                   int[] position, List<ImageBean>
-            photos, VideoInfo videoInfo, List<Observable<BaseJson<Integer>>> upLoadPics,
+                                                                          photos, VideoInfo videoInfo, List<Observable<BaseJson<Integer>>> upLoadPics,
                                                                   SendDynamicDataBeanV2.Video
                                                                           video) {
         Observable<BaseJson<Object>> observable;
