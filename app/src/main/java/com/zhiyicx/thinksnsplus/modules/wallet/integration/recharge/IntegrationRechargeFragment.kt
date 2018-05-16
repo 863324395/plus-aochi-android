@@ -333,7 +333,7 @@ class IntegrationRechargeFragment : TSFragment<IntegrationRechargeContract.Prese
                 }
                 .item1ClickListener {
                     mPayType = TSPayClient.CHANNEL_BALANCE
-                    mBtRechargeStyle.rightText = getString(R.string.choose_recharge_style_formart, getString(R.string.balance))
+                    mBtRechargeStyle.rightText = getString(R.string.choose_recharge_style_formart, getString(R.string.wallet_balance))
                     mPayStylePopupWindow!!.hide()
                     configSureButton()
                 }
