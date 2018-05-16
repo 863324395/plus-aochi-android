@@ -467,6 +467,9 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                                     || ImageUtils.imageIsGif(imageBean.getImgMimeType())
                                     || ImageUtils.isLongImage((float) imageBean.getHeight(), (float) imageBean.getWidth());
                             if (TextUtils.isEmpty(imageBean.getListCacheUrl()) || isNeedOrin) {
+                                if (mTvOriginPhoto != null && isNeedOrin) {
+                                    mTvOriginPhoto.setVisibility(View.GONE);
+                                }
                                 startLoadProgress();
                                 return ImageUtils.imagePathConvertV2(canLook, mImageBean.getStorage_id(), canLook ? w : 0, canLook ? h : 0,
                                         ImageZipConfig.IMAGE_100_ZIP, AppApplication.getTOKEN());
