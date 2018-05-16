@@ -183,7 +183,7 @@ public class VideoSelectFragment extends TSListFragment {
                             // 因为 3002 ， 3300 等时长就很尴尬
                             ArrayList<String> arrayList = new ArrayList<>();
                             arrayList.add(videoInfo.getPath());
-                            CoverActivity.startCoverActivity(mActivity, arrayList, false, false,false);
+                            CoverActivity.startCoverActivity(mActivity, arrayList, false, false, false);
                         } else {
                             TrimmerActivity.startTrimmerActivity(mActivity, videoInfo);
                         }

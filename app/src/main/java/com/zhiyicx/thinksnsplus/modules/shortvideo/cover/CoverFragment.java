@@ -175,7 +175,7 @@ public class CoverFragment extends TSFragment implements MediaPlayerWrapper.IMed
 
         String cover = com.zhiyicx.common.utils.FileUtils.saveBitmapToFile(mActivity,
                 mCoverBitmap,
-                ParamsManager.VideoCover);
+                System.currentTimeMillis()+ParamsManager.VideoCover);
 
         if (hasFilter) {
             mProgressDialog.dismiss();
@@ -293,7 +293,7 @@ public class CoverFragment extends TSFragment implements MediaPlayerWrapper.IMed
     }
 
     /**
-     * 合并视频
+     * 合并视频,顺道压缩
      */
     private void combineVideo(String cover) {
         final String path = FileUtils.getPath(ParamsManager.AlbumPath, ParamsManager.CombineVideo);
@@ -371,7 +371,7 @@ public class CoverFragment extends TSFragment implements MediaPlayerWrapper.IMed
                         VideoClipper clipper = new VideoClipper();
                         clipper.showBeauty();
                         clipper.setInputVideoPath(mActivity, path);
-                        String mOutputPath = FileUtils.getPath(ParamsManager.SaveVideo, ParamsManager.ClipVideo);
+                        String mOutputPath = FileUtils.getPath(ParamsManager.SaveVideo,System.currentTimeMillis()+ ParamsManager.ClipVideo);
                         clipper.setFilterType(MagicFilterType.NONE);
                         clipper.setOutputVideoPath(mOutputPath);
                         try {

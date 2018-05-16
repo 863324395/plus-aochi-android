@@ -3,6 +3,8 @@ package com.zhiyicx.thinksnsplus.service.backgroundtask;
 import android.app.Application;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.media.MediaExtractor;
+import android.media.MediaFormat;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -844,7 +846,7 @@ public class BackgroundTaskHandler {
                 TrimVideoUtil.getVideoOneFrame(mContext, Uri.parse(filePath))
                         .map(bitmap -> com.zhiyicx.common.utils.FileUtils.saveBitmapToFile
                                 (mContext, bitmap,
-                                        ParamsManager.VideoCover))
+                                        System.currentTimeMillis() + ParamsManager.VideoCover))
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(s -> {
                             upLoadPics.add(mUpLoadRepository.upLoadSingleFileV2(s,
@@ -898,7 +900,23 @@ public class BackgroundTaskHandler {
         if (videoInfo != null) {
             // 10M
             boolean sizeNeedCompress = videoInfo.getSize() > 10485760;
-            if (videoInfo.needCompressVideo() && sizeNeedCompress) {
+            boolean needTranscodingVideo = true;
+
+            try {
+                MediaExtractor videoExtractor = new MediaExtractor();
+                videoExtractor.setDataSource(videoInfo.getPath());
+                if (videoExtractor.getTrackCount() > 0) {
+                    MediaFormat format = videoExtractor.getTrackFormat(0);
+                    String keyMime = format.getString(MediaFormat.KEY_MIME);
+                    if ("video/avc".equals(keyMime)) {
+                        needTranscodingVideo = false;
+                    }
+                }
+            } catch (Exception e) {
+
+            }
+
+            if ((videoInfo.needCompressVideo() && sizeNeedCompress) || needTranscodingVideo) {
                 // 需要处理视频
                 Observable.empty()
                         .observeOn(Schedulers.io())
@@ -906,7 +924,7 @@ public class BackgroundTaskHandler {
                             @Override
                             public void onCompleted() {
                                 TrimVideoUtil.trim(mContext, Uri.parse(videoInfo.getPath()),
-                                        FileUtils.getPath(ParamsManager.VideoPath, ParamsManager
+                                        FileUtils.getPath(ParamsManager.VideoPath, System.currentTimeMillis() + ParamsManager
                                                 .CompressVideo), 0, videoInfo.getDuration() * 1000,
                                         new TrimVideoListener() {
                                             @Override
@@ -921,7 +939,7 @@ public class BackgroundTaskHandler {
                                                                 false, videoInfo.getWidth(), videoInfo
                                                                         .getHeight(),
                                                                 position));
-
+                                                detailBeanV2.getVideo().setUrl(url);
                                                 SendDynamicV2(backgroundRequestTaskBean,
                                                         detailBeanV2, position,
                                                         getSendDynamicObservable

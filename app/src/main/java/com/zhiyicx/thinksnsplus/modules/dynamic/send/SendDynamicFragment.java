@@ -54,6 +54,7 @@ import com.zhiyicx.thinksnsplus.data.beans.GroupSendDynamicDataBean;
 import com.zhiyicx.thinksnsplus.data.beans.SendDynamicDataBean;
 import com.zhiyicx.thinksnsplus.data.beans.SendDynamicDataBeanV2;
 import com.zhiyicx.thinksnsplus.modules.dynamic.send.picture_toll.PictureTollActivity;
+import com.zhiyicx.thinksnsplus.modules.home.HomeActivity;
 import com.zhiyicx.thinksnsplus.modules.photopicker.PhotoAlbumDetailsActivity;
 import com.zhiyicx.thinksnsplus.modules.photopicker.PhotoViewActivity;
 import com.zhiyicx.thinksnsplus.modules.photopicker.PhotoViewFragment;
@@ -559,7 +560,7 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
         if (getView() != null) {
             getView().postDelayed(() -> {
                 if (getActivity() != null) {
-                    getActivity().finish();
+                    startActivity(new Intent(getActivity(),HomeActivity.class));
                     getActivity().overridePendingTransition(0, R.anim.fade_out);
                 }
             }, 100);
