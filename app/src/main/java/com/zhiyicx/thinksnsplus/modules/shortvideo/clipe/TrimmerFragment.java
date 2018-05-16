@@ -149,12 +149,13 @@ public class TrimmerFragment extends TSFragment implements TrimVideoListener {
     @Override
     public void onFinishTrim(String url) {
         mProgressDialog.dismiss();
-        FileUtils.updateMediaStore(mActivity, url, (path, uri) -> {
-            ArrayList<String> arrayList = new ArrayList<>();
-            arrayList.add(path);
-            VideoListManager.getInstance().addSubVideo(path, mVideoTrimmerView.getDuration());
-            CoverActivity.startCoverActivity(mActivity, arrayList, false, false,false);
-        });
+
+        ArrayList<String> arrayList = new ArrayList<>();
+        arrayList.add(url);
+        VideoListManager.getInstance().addSubVideo(url, mVideoTrimmerView.getDuration());
+        CoverActivity.startCoverActivity(mActivity, arrayList, false, false,false);
+        mActivity.finish();
+
     }
 
     @Override

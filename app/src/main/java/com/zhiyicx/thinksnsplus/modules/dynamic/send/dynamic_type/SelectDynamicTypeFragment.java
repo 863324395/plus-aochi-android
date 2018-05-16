@@ -422,8 +422,9 @@ public class SelectDynamicTypeFragment extends TSFragment<SelectDynamicTypeContr
 
         if (sendDynamicDataBean != null) {
             boolean hasVideo = FileUtils.isFileExists(sendDynamicDataBean.getVideoInfo().getPath());
-            boolean hasCover = FileUtils.isFileExists(sendDynamicDataBean.getVideoInfo().getCover());
-            return hasCover && hasVideo;
+//            boolean hasCover = FileUtils.isFileExists(sendDynamicDataBean.getVideoInfo().getCover());
+            return hasVideo;
+//            return hasCover && hasVideo;
         }
         return false;
     }
