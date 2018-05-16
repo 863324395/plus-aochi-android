@@ -185,15 +185,13 @@ public class VideoClipper {
     private Runnable audioCliper = new Runnable() {
         @Override
         public void run() {
-            try{
+            try {
                 mAudioExtractor.selectTrack(audioTrackIndex);
                 initAudioCodec();
                 startAudioCodec(audioDecoder, audioEncoder, mAudioExtractor, mAudioExtractor.getSampleTime(), startPosition, clipDur);
                 audioFinish = true;
                 release();
-            }catch (Exception e){
-
-            }finally {
+            } catch (Exception e) {
                 if (listener != null) {
                     listener.onFailed();
                 }
@@ -570,6 +568,7 @@ public class VideoClipper {
 
     public interface OnVideoCutFinishListener {
         void onFinish();
+
         void onFailed();
     }
 }
