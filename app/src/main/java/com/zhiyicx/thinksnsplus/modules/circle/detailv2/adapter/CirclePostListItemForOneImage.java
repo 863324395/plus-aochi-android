@@ -66,10 +66,16 @@ public class CirclePostListItemForOneImage extends CirclePostListBaseItem {
         int with;
         int height;
         CirclePostListBean.ImagesBean imageBean = circlePostListBean.getImages().get(0);
-
+        if (imageBean.getImageViewWidth() == 0) {
+            circlePostListBean.handleData();
+        }
         if (TextUtils.isEmpty(imageBean.getImgUrl())) {
             with = imageBean.getImageViewWidth();
             height = imageBean.getImageViewHeight();
+            if (with * height == 0) {
+                with = DEFALT_IMAGE_WITH;
+                height = DEFALT_IMAGE_HEIGHT;
+            }
             // 是否是 gif
             view.setIshowGifTag(ImageUtils.imageIsGif(imageBean.getImgMimeType()));
             // 是否是长图

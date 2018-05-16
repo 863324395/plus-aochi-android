@@ -293,20 +293,20 @@ class IntegrationRechargeFragment : TSFragment<IntegrationRechargeContract.Prese
             return
         }
         mPayStylePopupWindow = ActionPopupWindow.builder()
-                .item1Str(if (rechargeTypes.contains(TSPayClient.CHANNEL_ALIPAY))
+                .item2Str(if (rechargeTypes.contains(TSPayClient.CHANNEL_ALIPAY))
                     getString(R.string.choose_pay_style_formart, getString(R.string
                             .alipay))
                 else
                     "")
-                .item2Str(if (rechargeTypes.contains(TSPayClient.CHANNEL_WXPAY) || rechargeTypes.contains(TSPayClient.CHANNEL_WX))
+                .item3Str(if (rechargeTypes.contains(TSPayClient.CHANNEL_WXPAY) || rechargeTypes.contains(TSPayClient.CHANNEL_WX))
                     getString(R.string
                             .choose_pay_style_formart, getString(R.string
                             .wxpay))
                 else
                     "")
-                .item3Str(if (mSystemConfigBean.walletTransform != null && mSystemConfigBean.walletTransform.isOpen)
+                .item1Str(if (mSystemConfigBean.walletTransform != null && mSystemConfigBean.walletTransform.isOpen)
                     getString(R.string
-                            .choose_pay_style_formart, getString(R.string.balance))
+                            .choose_pay_style_formart, getString(R.string.wallet_balance))
                 else
                     "")
                 .item4Str(if (rechargeTypes.size == 0 && (mSystemConfigBean.walletTransform == null || !mSystemConfigBean.walletTransform
@@ -319,19 +319,19 @@ class IntegrationRechargeFragment : TSFragment<IntegrationRechargeContract.Prese
                 .isFocus(true)
                 .backgroundAlpha(CustomPopupWindow.POPUPWINDOW_ALPHA)
                 .with(activity)
-                .item1ClickListener {
+                .item2ClickListener {
                     mPayType = TSPayClient.CHANNEL_ALIPAY
                     mBtRechargeStyle.rightText = getString(R.string.choose_recharge_style_formart, getString(R.string.alipay))
                     mPayStylePopupWindow!!.hide()
                     configSureButton()
                 }
-                .item2ClickListener {
+                .item3ClickListener {
                     mPayType = TSPayClient.CHANNEL_WX
                     mBtRechargeStyle.rightText = getString(R.string.choose_recharge_style_formart, getString(R.string.wxpay))
                     mPayStylePopupWindow!!.hide()
                     configSureButton()
                 }
-                .item3ClickListener {
+                .item1ClickListener {
                     mPayType = TSPayClient.CHANNEL_BALANCE
                     mBtRechargeStyle.rightText = getString(R.string.choose_recharge_style_formart, getString(R.string.balance))
                     mPayStylePopupWindow!!.hide()

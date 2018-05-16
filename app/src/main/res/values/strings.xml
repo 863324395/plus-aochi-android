@@ -991,6 +991,7 @@
     <string name="integration_withdrawals_format">%s提取</string>
     <string name="integration_withdrawals_rule_format">%s提取规则</string>
     <string name="balance">余额</string>
+    <string name="wallet_balance">钱包余额</string>
     <string name="handle_success">操作成功</string>
     <string name="not_invite_expert">邀请的专家呢？</string>
     <string name="fail_format_with_unit">%1$d%2$s</string>

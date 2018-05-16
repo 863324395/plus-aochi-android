@@ -55,6 +55,7 @@ public class PublishPostPresenter extends MarkdownPresenter<PublishPostContract.
                     protected void onSuccess(BaseJsonV2<CirclePostListBean> data) {
                         mRootView.dismissSnackBar();
                         Bundle bundle = new Bundle();
+                        data.getData().handleData();
                         bundle.putParcelable(CirclePostDetailFragment.POST_DATA, data.getData());
                         bundle.putBoolean(CirclePostDetailFragment.POST_LIST_NEED_REFRESH, true);
                         EventBus.getDefault().post(bundle, EventBusTagConfig.EVENT_UPDATE_CIRCLE_POST);
