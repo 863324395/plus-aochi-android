@@ -57,7 +57,6 @@ public class TrimmerFragment extends TSFragment implements TrimVideoListener {
 
     private ProgressDialog mProgressDialog;
     private VideoInfo mVideoInfo;
-    private ArrayList<String> arrayList;
 
     @Override
     public void onPause() {
@@ -105,9 +104,8 @@ public class TrimmerFragment extends TSFragment implements TrimVideoListener {
         mVideoTrimmerView.setMaxDuration(TrimVideoUtil.VIDEO_MAX_DURATION);
         mVideoTrimmerView.setOnTrimVideoListener(this);
         mVideoTrimmerView.setVideoURI(Uri.parse(path));
-        arrayList = new ArrayList<>();
-        arrayList.add(path);
-        getCoverImageList();
+
+        getCoverImageList(path);
 
         mToolbarCenter.setText(R.string.clip_speed);
         mToolbarLeft.setText(R.string.cancel);
@@ -172,8 +170,10 @@ public class TrimmerFragment extends TSFragment implements TrimVideoListener {
         return mProgressDialog;
     }
 
-    private void getCoverImageList() {
+    private void getCoverImageList(String path) {
         List<Uri> videoUris = new ArrayList<>();
+        ArrayList<String> arrayList = new ArrayList<>();
+        arrayList.add(path);
         for (String url : arrayList) {
             videoUris.add(Uri.parse(url));
         }

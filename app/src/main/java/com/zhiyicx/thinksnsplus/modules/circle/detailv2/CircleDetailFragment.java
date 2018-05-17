@@ -537,6 +537,10 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
                 showAuditTipPopupWindow(getString(R.string.circle_member_added_blacklist));
                 return;
             }
+            if (!isJoined) {
+                showAuditTipPopupWindow(getString(R.string.circle_member_comment_join));
+                return;
+            }
             showCommentView();
             mReplyToUserId = postListBean.getComments().get(position).getUser_id();
             String contentHint = getString(R.string.default_input_hint);
