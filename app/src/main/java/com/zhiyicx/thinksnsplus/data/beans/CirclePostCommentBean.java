@@ -60,6 +60,11 @@ public class CirclePostCommentBean extends BaseListBean implements Serializable 
     private int state = SEND_ING;
     private boolean pinned ;// 是否是被固定
 
+    @Override
+    public Long getMaxId() {
+        return id;
+    }
+
     public boolean isPinned() {
         return pinned;
     }
