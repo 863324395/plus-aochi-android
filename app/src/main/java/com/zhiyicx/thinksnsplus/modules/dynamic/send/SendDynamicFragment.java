@@ -868,7 +868,6 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                     Glide.with(getContext())
                             .load(imageBean.getImgUrl())
                             .asBitmap()
-                            .signature(new StringSignature(String.valueOf(System.currentTimeMillis())))
                             .placeholder(R.drawable.shape_default_image)
                             .error(R.drawable.shape_default_error_image)
                             .override(convertView.getLayoutParams().width, convertView.getLayoutParams().height)
