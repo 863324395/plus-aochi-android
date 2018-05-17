@@ -128,8 +128,6 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
     EditText mEtInput;
     @BindView(R.id.sl_send_dynamic)
     ScrollView mSlSendDynamic;
-    @BindView(R.id.v_horizontal_line)
-    View mTitleUnderLine;
     @BindView(R.id.v_line_toll)
     View mTollLine;
     @BindView(R.id.v_horizontal_line)
