@@ -159,7 +159,7 @@
             android:layout_height="wrap_content"
             android:textColor="@color/normal_for_dynamic_list_content"
             android:textSize="@dimen/size_content"
-            app:etv_IsNeedShrink="false"
+            app:etv_IsNeedShrink="true"
             app:etv_MaxLinesOnShrink="2"
             app:etv_ToExpandHint="@string/more_group"
             app:etv_ToShrinkHint=""/>

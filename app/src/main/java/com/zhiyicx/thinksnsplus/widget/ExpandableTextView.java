@@ -42,7 +42,7 @@ public class ExpandableTextView extends AppCompatTextView {
     private static final String GAP_TO_SHRINK_HINT = " ";
     private static final int MAX_LINES_ON_SHRINK = 3; // maxLine
     private static final int TO_EXPAND_HINT_COLOR = 0xFF3498DB;
-    private static final int TO_SHRINK_HINT_COLOR = 0xFFE74C3C;
+    private static final int TO_SHRINK_HINT_COLOR = 0xFF3498DB;
     private static final int TO_EXPAND_HINT_COLOR_BG_PRESSED = 0x55999999;
     private static final int TO_SHRINK_HINT_COLOR_BG_PRESSED = 0x55999999;
     private static final boolean TOGGLE_ENABLE = true;
