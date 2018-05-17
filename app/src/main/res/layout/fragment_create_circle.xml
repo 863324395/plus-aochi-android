@@ -440,7 +440,7 @@
                     android:paddingBottom="@dimen/spacing_mid"
                     android:paddingTop="@dimen/introduce_padding_top"
                     android:visibility="visible"
-                    app:hintContent="@string/edit_circle_notice"
+                    app:hintContent="@string/create_circle_notice"
                     app:limitSize="@integer/circle_notice_input_max_size"
                     app:showLimitSize="@integer/circle__input_size"/>
             </LinearLayout>
