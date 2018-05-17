@@ -56,6 +56,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/create_circle_button_height"
         android:layout_above="@+id/lu_bottom_menu"
+        android:layout_alignParentBottom="true"
         android:layout_marginLeft="@dimen/spacing_normal"
         android:background="@color/white"
         android:button="@drawable/selector_circle_post_synchro"
