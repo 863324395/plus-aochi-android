@@ -21,6 +21,7 @@
     <string name="compressing">正在压缩视频&#8230;</string>
     <string name="compressed_done">视频压缩完成！</string>
     <string name="drop_reord">确定要放弃本次视频录制吗?</string>
+    <string name="drop_last_reord">确定要删除上一段视频吗?</string>
     <string name="is_sure">是的</string>
 
     <string name="next_setup">下一步</string>

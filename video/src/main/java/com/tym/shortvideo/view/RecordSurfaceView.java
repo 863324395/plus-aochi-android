@@ -4,9 +4,12 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
 import android.content.Context;
+import android.graphics.Canvas;
+import android.graphics.Color;
 import android.hardware.Camera;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
+import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -22,7 +25,7 @@ import java.util.List;
  * @Email Jliuer@aliyun.com
  * @Description 视频录制预览 SurfaceView
  */
-public class RecordSurfaceView extends SurfaceView {
+public class RecordSurfaceView extends SurfaceView implements SurfaceHolder.Callback {
 
     private static final String TAG = "RecordSurfaceView";
 
@@ -40,6 +43,7 @@ public class RecordSurfaceView extends SurfaceView {
 
     private final Object mOperation = new Object();
     private boolean mTouchWithoutSwipe = false;
+    private boolean isFirstCreate = true;
 
     // 对焦动画
     private ValueAnimator mFocusAnimator;
@@ -301,5 +305,25 @@ public class RecordSurfaceView extends SurfaceView {
         void onClick(float x, float y);
 
         void doubleClick(float x, float y);
+    }
+
+    @Override
+    public void surfaceCreated(SurfaceHolder holder) {
+//        if (isFirstCreate) {
+//            isFirstCreate = false;
+//            Canvas canvas = holder.lockCanvas();
+//            canvas.drawColor(Color.BLACK);
+//            holder.unlockCanvasAndPost(canvas);
+//        }
+    }
+
+    @Override
+    public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+
+    }
+
+    @Override
+    public void surfaceDestroyed(SurfaceHolder holder) {
+
     }
 }
