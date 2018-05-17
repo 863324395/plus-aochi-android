@@ -48,21 +48,22 @@ import rx.schedulers.Schedulers;
 @FragmentScoped
 public class MinePresenter extends AppBasePresenter<MineContract.View> implements MineContract.Presenter {
 
-    @Inject
     FlushMessageBeanGreenDaoImpl mFlushMessageBeanGreenDao;
 
-    @Inject
     UserInfoRepository mUserInfoRepository;
 
-    @Inject
     UserCertificationInfoGreenDaoImpl mUserCertificationInfoGreenDao;
     private Subscription mCertificationSub;
     private Subscription mUserinfoSub;
     private Subscription mNewMessageSub;
 
     @Inject
-    public MinePresenter(MineContract.View rootView) {
+    public MinePresenter(MineContract.View rootView,FlushMessageBeanGreenDaoImpl flushMessageBeanGreenDao,
+    UserInfoRepository userInfoRepository,UserCertificationInfoGreenDaoImpl userCertificationInfoGreenDao) {
         super(rootView);
+        this.mFlushMessageBeanGreenDao = flushMessageBeanGreenDao;
+        this.mUserInfoRepository = userInfoRepository;
+        this.mUserCertificationInfoGreenDao = userCertificationInfoGreenDao;
     }
 
     @Override
