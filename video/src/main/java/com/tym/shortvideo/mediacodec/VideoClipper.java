@@ -151,14 +151,17 @@ public class VideoClipper {
         //音轨和视轨初始化
         for (int i = 0; i < mVideoExtractor.getTrackCount(); i++) {
             MediaFormat format = mVideoExtractor.getTrackFormat(i);
-            if (format.getString(MediaFormat.KEY_MIME).startsWith("video/")) {
+            String mime = format.getString(MediaFormat.KEY_MIME);
+            if (mime.startsWith("video/")) {
                 videoTrackIndex = i;
                 videoFormat = format;
+                videoDecoder = MediaCodec.createDecoderByType(mime);
                 continue;
             }
-            if (format.getString(MediaFormat.KEY_MIME).startsWith("audio/")) {
+            if (mime.startsWith("audio/")) {
                 audioTrackIndex = i;
                 audioFormat = format;
+                audioDecoder = MediaCodec.createDecoderByType(mime);
                 continue;
             }
         }
@@ -185,18 +188,20 @@ public class VideoClipper {
     private Runnable audioCliper = new Runnable() {
         @Override
         public void run() {
-            try{
+            try {
                 mAudioExtractor.selectTrack(audioTrackIndex);
                 initAudioCodec();
                 startAudioCodec(audioDecoder, audioEncoder, mAudioExtractor, mAudioExtractor.getSampleTime(), startPosition, clipDur);
                 audioFinish = true;
                 release();
-            }catch (Exception e){
+            } catch (Exception e) {
 
-            }finally {
-                if (listener != null) {
-                    listener.onFailed();
-                }
+                audioFinish = true;
+                release();
+
+//                if (listener != null) {
+//                    listener.onFailed();
+//                }
             }
 
         }
@@ -378,7 +383,7 @@ public class VideoClipper {
         encodeH = videoHeight;
         //设置视频的编码参数
         MediaFormat mediaFormat = MediaFormat.createVideoFormat("video/avc", encodeW, encodeH);
-        // 1.5M
+        // 2M
         mediaFormat.setInteger(MediaFormat.KEY_BIT_RATE, 2097152);
         mediaFormat.setInteger(MediaFormat.KEY_FRAME_RATE, 20);
         mediaFormat.setInteger(MediaFormat.KEY_COLOR_FORMAT, MediaCodecInfo.CodecCapabilities.COLOR_FormatSurface);
@@ -408,8 +413,8 @@ public class VideoClipper {
     /**
      * 将两个关键帧之间截取的部分重新编码
      *
-     * @param decoder
-     * @param encoder
+     * @param decoder 解码
+     * @param encoder 编码
      * @param extractor
      * @param inputSurface
      * @param outputSurface
@@ -434,8 +439,10 @@ public class VideoClipper {
                     int readSampleData = extractor.readSampleData(inputBuffer, 0);
                     long dur = extractor.getSampleTime() - firstSampleTime - startPosition;//当前已经截取的视频长度
                     if ((dur < duration) && readSampleData > 0) {
+
                         decoder.queueInputBuffer(inputIndex, 0, readSampleData, extractor.getSampleTime(), 0);
                         extractor.advance();
+
                     } else {
                         decoder.queueInputBuffer(inputIndex, 0, 0, 0, MediaCodec.BUFFER_FLAG_END_OF_STREAM);
                         inputDone = true;
@@ -530,7 +537,8 @@ public class VideoClipper {
             muxAudioTrack = mMediaMuxer.addTrack(mediaFormat);
         }
         synchronized (lock) {
-            if (muxAudioTrack != -1 && muxVideoTrack != -1 && !muxStarted) {
+            // 可以没有音轨 muxAudioTrack != -1 &&
+            if (muxVideoTrack != -1 && !muxStarted) {
                 mMediaMuxer.start();
                 muxStarted = true;
                 lock.notify();
@@ -570,6 +578,7 @@ public class VideoClipper {
 
     public interface OnVideoCutFinishListener {
         void onFinish();
+
         void onFailed();
     }
 }

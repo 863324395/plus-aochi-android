@@ -1,13 +1,13 @@
 package com.zhiyicx.thinksnsplus.modules.q_a.qa_main.qa_listinfo;
 
 import com.trycatch.mysnackbar.Prompt;
+import com.zhiyicx.baseproject.base.SystemConfigBean;
 import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.AnswerInfoBean;
-import com.zhiyicx.baseproject.base.SystemConfigBean;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.QAListInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.BaseQARepository;
@@ -31,19 +31,19 @@ import rx.Subscription;
  */
 public class QA_ListInfoFragmentPresenter extends AppBasePresenter<QA_ListInfoConstact.View> implements QA_ListInfoConstact.Presenter {
 
-    @Inject
     QAListInfoBeanGreenDaoImpl mQAListInfoBeanGreenDao;
-
-    @Inject
     SystemRepository mSystemRepository;
-    @Inject
     BaseQARepository mBaseQARepository;
 
     private SystemConfigBean mSystemConfigBean;
 
     @Inject
-    public QA_ListInfoFragmentPresenter(QA_ListInfoConstact.View rootView) {
+    public QA_ListInfoFragmentPresenter(QA_ListInfoConstact.View rootView, BaseQARepository baseQARepository
+            , SystemRepository systemRepository, QAListInfoBeanGreenDaoImpl qAListInfoBeanGreenDao) {
         super(rootView);
+        this.mBaseQARepository = baseQARepository;
+        this.mSystemRepository = systemRepository;
+        this.mQAListInfoBeanGreenDao = qAListInfoBeanGreenDao;
     }
 
     @Override

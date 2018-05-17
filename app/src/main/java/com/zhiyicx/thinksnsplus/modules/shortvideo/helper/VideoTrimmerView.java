@@ -449,7 +449,7 @@ public class VideoTrimmerView extends FrameLayout {
             ToastUtils.showToast(getResources().getString(R.string.video_duration_limit));
         } else {
             mVideoView.pause();
-            TrimVideoUtil.trim(mContext, mSrc, com.tym.shortvideo.utils.FileUtils.getPath(ParamsManager.VideoPath, ParamsManager.CompressVideo),
+            TrimVideoUtil.trim(mContext, mSrc, com.tym.shortvideo.utils.FileUtils.getPath(ParamsManager.VideoPath,System.currentTimeMillis()+ ParamsManager.CompressVideo),
                     mStartPosition * 1000, mEndPosition * 1000, mOnTrimVideoListener);
         }
     }

@@ -458,6 +458,10 @@ public class CirclePostDetailFragment extends TSListFragment<CirclePostDetailCon
                         showAuditTipPopupWindow(getString(R.string.circle_member_added_blacklist));
                         return;
                     }
+                    if (!isJoined) {
+                        showAuditTipPopupWindow(getString(R.string.circle_member_comment_join));
+                        return;
+                    }
                     showCommentView();
                     String contentHint = getString(R.string.default_input_hint);
                     mIlvComment.setEtContentHint(contentHint);

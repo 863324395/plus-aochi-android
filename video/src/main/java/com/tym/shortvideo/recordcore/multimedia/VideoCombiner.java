@@ -187,8 +187,9 @@ public class VideoCombiner {
             int inAudioTrackIndex = selectTrack(audioExtractor, "audio/");
             if (inAudioTrackIndex < 0) {
                 hasAudio = false;
+            }else{
+                audioExtractor.selectTrack(inAudioTrackIndex);
             }
-            audioExtractor.selectTrack(inAudioTrackIndex);
 
             // 如果存在视频轨道和音频轨道都不存在，则合并失败，文件出错
             if (!hasVideo && !hasAudio) {

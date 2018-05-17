@@ -3,6 +3,7 @@ package com.zhiyicx.thinksnsplus.modules.circle.publish;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.RelativeLayout;
 
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.zhiyicx.common.utils.TimeUtils;
@@ -215,8 +216,17 @@ public class PublishPostFragment extends MarkdownFragment<PostDraftBean, Publish
         if (mCircleInfo == null || mCbSynToDynamic == null) {
             return;
         }
-        mCbSynToDynamic.setVisibility(isVisiable && mCircleInfo.getAllow_feed() == 1 ? View
+
+        mCbSynToDynamic.setVisibility((isVisiable||!isBttomMenuVisible) && mCircleInfo.getAllow_feed() == 1 ? View
                 .VISIBLE : View.GONE);
+
+        if (isBttomMenuVisible){
+            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams)mCbSynToDynamic.getLayoutParams();
+            params.removeRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+        }else{
+            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams)mCbSynToDynamic.getLayoutParams();
+            params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+        }
     }
 
     @Override

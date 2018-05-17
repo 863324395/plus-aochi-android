@@ -49,6 +49,7 @@ public class QA_ListInfoFragment extends TSListFragment<QA_ListInfoConstact.Pres
 
     @Inject
     QA_ListInfoFragmentPresenter mQA_listInfoFragmentPresenter;
+    private boolean mIsLoadedNetData;
 
     public static QA_ListInfoFragment newInstance(String params) {
         QA_ListInfoFragment fragment = new QA_ListInfoFragment();
@@ -154,16 +155,6 @@ public class QA_ListInfoFragment extends TSListFragment<QA_ListInfoConstact.Pres
 
     }
 
-    /**
-     * 是否进入页面进行懒加载
-     *
-     * @return
-     */
-    @Override
-    protected boolean isLayzLoad() {
-        return true;
-    }
-
     @Override
     protected void requestNetData(Long maxId, boolean isLoadMore) {
         requestNetData(null, maxId, mQAInfoType, isLoadMore);
@@ -171,6 +162,21 @@ public class QA_ListInfoFragment extends TSListFragment<QA_ListInfoConstact.Pres
 
     private void requestNetData(String subject, Long maxId, String type, boolean isLoadMore) {
         mPresenter.requestNetData(subject, maxId, type, isLoadMore);
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (isVisibleToUser && mPresenter != null && !mIsLoadedNetData) {
+            startRefrsh();
+            mIsLoadedNetData = true;
+        }
+    }
+
+    @Override
+    public void onNetResponseSuccess(@NotNull List<QAListInfoBean> data, boolean isLoadMore) {
+        mIsLoadedNetData = true;
+        super.onNetResponseSuccess(data, isLoadMore);
     }
 
     @Override

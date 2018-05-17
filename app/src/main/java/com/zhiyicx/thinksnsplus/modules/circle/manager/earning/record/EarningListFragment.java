@@ -170,7 +170,7 @@ public class EarningListFragment extends TSListFragment<EarningListContract.Pres
     @Override
     protected void initData() {
         mTitles = new String[]{getString(R.string.withdraw_all), getString(R.string.circle_earningn_member), getString(R.string.circle_earningn_top)};
-        setCenterTitle(getArguments().getInt(TYPE));
+        mToolbarCenter.setText(getString(R.string.circle_earningn_detail));
         CircleInfo CircleInfo = getArguments().getParcelable(CIRCLE);
         circleId = CircleInfo.getId();
         super.initData();

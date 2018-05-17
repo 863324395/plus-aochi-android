@@ -121,6 +121,7 @@ public class RecordFragment extends TSFragment implements SurfaceHolder.Callback
     private static final int sFocusSize = 100;
 
     private ActionPopupWindow mWarnPopupWindow;
+    private ActionPopupWindow mDeletePopupWindow;
 
     @Override
     protected boolean showToolBarDivider() {
@@ -173,8 +174,8 @@ public class RecordFragment extends TSFragment implements SurfaceHolder.Callback
         mCameraSurfaceView = new RecordSurfaceView(mActivity);
         mCameraSurfaceView.getHolder().addCallback(this);
         mCameraSurfaceView.addClickListener(this);
-        mCameraSurfaceView.setZOrderOnTop(true);
         mCameraSurfaceView.setZOrderMediaOverlay(true);
+        mCameraSurfaceView.setZOrderOnTop(true);
         mLayoutAspect.addView(mCameraSurfaceView);
         mLayoutAspect.requestLayout();
 
@@ -209,7 +210,7 @@ public class RecordFragment extends TSFragment implements SurfaceHolder.Callback
                             if (mTymTest.getSplitList().isEmpty()) {
                                 switchBeauty();
                             } else {
-                                deleteRecordedVideo(false);
+                                initDeletePopWindow();
                             }
                         }
                 );
@@ -261,6 +262,7 @@ public class RecordFragment extends TSFragment implements SurfaceHolder.Callback
         DrawerManager.getInstance().destoryTrhead();
         CountDownManager.getInstance().cancelTimerWithoutSaving();
         dismissPop(mWarnPopupWindow);
+        dismissPop(mDeletePopupWindow);
         // 在停止时需要释放上下文，防止内存泄漏
 //        ParamsManager.context = null;
         super.onDestroyView();
@@ -874,6 +876,32 @@ public class RecordFragment extends TSFragment implements SurfaceHolder.Callback
         mWarnPopupWindow.show();
 
 
+    }
+
+    private void initDeletePopWindow() {
+        deleteRecordedVideo(false);
+        if (mDeletePopupWindow == null) {
+            mDeletePopupWindow = ActionPopupWindow.builder()
+                    .item1Str(getString(R.string.info_publish_hint))
+                    .desStr(getString(R.string.drop_last_reord))
+                    .item2Str(getString(R.string.is_sure))
+                    .bottomStr(getString(R.string.cancel))
+                    .isOutsideTouch(true)
+                    .isFocus(true)
+                    .backgroundAlpha(1.0f)
+                    .with(getActivity())
+                    .item2ClickListener(() -> {
+                        mDeletePopupWindow.dismiss();
+                        deleteRecordedVideo(false);
+                    })
+                    .bottomClickListener(() -> {
+                        mBtnTake.setDeleteMode(false);
+                        mTymTest.setDeleteMode(false);
+                        mDeletePopupWindow.dismiss();
+                    })
+                    .build();
+        }
+        mDeletePopupWindow.show();
     }
 
     private void restoreRecord() {

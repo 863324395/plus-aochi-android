@@ -90,57 +90,70 @@ public class CirclePostDetailPresenter extends AppBasePresenter<CirclePostDetail
 
     @Override
     public void requestNetData(Long maxId, boolean isLoadMore) {
-
-        Subscription subscription = Observable.zip(mBaseCircleRepository.getPostComments(mRootView.getPostId(), 0, maxId.intValue()),
-                mBaseCircleRepository.getPostDetail(mRootView.getCircleId(), mRootView.getPostId()),
-                mBaseCircleRepository.getPostRewardList(mRootView.getPostId(), TSListFragment.DEFAULT_PAGE_SIZE, maxId.intValue(), null, null),
-                mBaseCircleRepository.getPostDigList(mRootView.getPostId(), TSListFragment.DEFAULT_PAGE_SIZE, maxId.intValue()),
-                (circlePostCommentBeans, circlePostDetailBean, postRewardList, postDigListBeans) -> {
-                    circlePostDetailBean.setComments(circlePostCommentBeans);
-                    circlePostDetailBean.setDigList(postDigListBeans);
-                    Observable.empty()
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .subscribe(new EmptySubscribe<Object>() {
-                                @Override
-                                public void onCompleted() {
-                                    mRootView.updateReWardsView(new RewardsCountBean(circlePostDetailBean.getReward_number(),
-                                            "" + PayConfig.realCurrencyFen2Yuan(circlePostDetailBean.getReward_amount()),
-                                            getGoldName()), postRewardList);
-                                }
-                            });
-                    return circlePostDetailBean;
-                })
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new BaseSubscribeForV2<CirclePostListBean>() {
-                    @Override
-                    protected void onSuccess(CirclePostListBean data) {
-                        mRootView.allDataReady(data);
-                        mIsAllDataReady = true;
-                    }
-
-                    @Override
-                    protected void onFailure(String message, int code) {
-                        super.onFailure(message, code);
-                        if (code == ErrorCodeConfig.DATA_HAS_BE_DELETED) {
-                            mCirclePostCommentBeanGreenDao.deleteCommentsByPostId(mRootView.getPostId());
-                            EventBus.getDefault().post(mCirclePostListBeanGreenDao.getSingleDataFromCache(mRootView.getPostId()),
-                                    POST_LIST_DELETE_UPDATE);
-                            mRootView.postHasBeDeleted();
-                            return;
+        if (!isLoadMore){
+            Subscription subscription = Observable.zip(mBaseCircleRepository.getPostComments(mRootView.getPostId(), 0, maxId.intValue()),
+                    mBaseCircleRepository.getPostDetail(mRootView.getCircleId(), mRootView.getPostId()),
+                    mBaseCircleRepository.getPostRewardList(mRootView.getPostId(), TSListFragment.DEFAULT_PAGE_SIZE, maxId.intValue(), null, null),
+                    mBaseCircleRepository.getPostDigList(mRootView.getPostId(), TSListFragment.DEFAULT_PAGE_SIZE, maxId.intValue()),
+                    (circlePostCommentBeans, circlePostDetailBean, postRewardList, postDigListBeans) -> {
+                        circlePostDetailBean.setComments(circlePostCommentBeans);
+                        circlePostDetailBean.setDigList(postDigListBeans);
+                        Observable.empty()
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribe(new EmptySubscribe<Object>() {
+                                    @Override
+                                    public void onCompleted() {
+                                        mRootView.updateReWardsView(new RewardsCountBean(circlePostDetailBean.getReward_number(),
+                                                "" + PayConfig.realCurrencyFen2Yuan(circlePostDetailBean.getReward_amount()),
+                                                getGoldName()), postRewardList);
+                                    }
+                                });
+                        return circlePostDetailBean;
+                    })
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new BaseSubscribeForV2<CirclePostListBean>() {
+                        @Override
+                        protected void onSuccess(CirclePostListBean data) {
+                            mRootView.allDataReady(data);
+                            mIsAllDataReady = true;
                         }
-                        mRootView.showSnackErrorMessage(message);
-                        mRootView.loadAllError();
-                    }
 
-                    @Override
-                    protected void onException(Throwable throwable) {
-                        super.onException(throwable);
-                        mRootView.loadAllError();
-                    }
-                });
+                        @Override
+                        protected void onFailure(String message, int code) {
+                            super.onFailure(message, code);
+                            if (code == ErrorCodeConfig.DATA_HAS_BE_DELETED) {
+                                mCirclePostCommentBeanGreenDao.deleteCommentsByPostId(mRootView.getPostId());
+                                EventBus.getDefault().post(mCirclePostListBeanGreenDao.getSingleDataFromCache(mRootView.getPostId()),
+                                        POST_LIST_DELETE_UPDATE);
+                                mRootView.postHasBeDeleted();
+                                return;
+                            }
+                            mRootView.showSnackErrorMessage(message);
+                            mRootView.loadAllError();
+                        }
 
-        addSubscrebe(subscription);
+                        @Override
+                        protected void onException(Throwable throwable) {
+                            super.onException(throwable);
+                            mRootView.loadAllError();
+                        }
+                    });
+
+            addSubscrebe(subscription);
+        }else{
+            Subscription subscription = mBaseCircleRepository.getPostComments(mRootView.getPostId(), 0, maxId.intValue())
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new BaseSubscribeForV2<List<CirclePostCommentBean>>() {
+                        @Override
+                        protected void onSuccess(List<CirclePostCommentBean> data) {
+                            mRootView.onNetResponseSuccess(data,isLoadMore);
+                        }
+                    });
+            addSubscrebe(subscription);
+        }
+
 
     }
 

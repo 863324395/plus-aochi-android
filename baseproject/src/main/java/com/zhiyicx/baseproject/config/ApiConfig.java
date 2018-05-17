@@ -835,7 +835,7 @@ public class ApiConfig {
      * 帖子收藏
      */
     public static final String APP_PATH_COLLECT_POST_FORMAT = "api/" + API_VERSION_2 + "/plus-group/group-posts/%s/collections";
-    public static final String APP_PATH_UNCOLLECT_POST_FORMAT = "api/" + API_VERSION_2 + "/plus-group/group-posts/&s/uncollect";
+    public static final String APP_PATH_UNCOLLECT_POST_FORMAT = "api/" + API_VERSION_2 + "/plus-group/group-posts/%s/uncollect";
     public static final String APP_PATH_COLLECTLIST_POST_FORMAT = "api/" + API_VERSION_2 + "/plus-group/user-post-collections";
 
     /**

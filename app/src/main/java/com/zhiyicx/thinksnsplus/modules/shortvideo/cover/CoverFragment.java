@@ -9,6 +9,7 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -26,8 +27,11 @@ import com.tym.shortvideo.utils.FileUtils;
 import com.tym.shortvideo.view.VideoPreviewView;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
+import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
+import com.zhiyicx.common.utils.SharePreferenceUtils;
 import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
+import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.base.EmptySubscribe;
@@ -89,6 +93,8 @@ public class CoverFragment extends TSFragment implements MediaPlayerWrapper.IMed
     private VideoInfo mVideoInfo;
     private ArrayList<String> mSrcList;
     private Bitmap mCoverBitmap;
+
+    private ActionPopupWindow mCanclePopupWindow;
 
     public static CoverFragment newInstance(Bundle bundle) {
         CoverFragment fragment = new CoverFragment();
@@ -175,7 +181,7 @@ public class CoverFragment extends TSFragment implements MediaPlayerWrapper.IMed
 
         String cover = com.zhiyicx.common.utils.FileUtils.saveBitmapToFile(mActivity,
                 mCoverBitmap,
-                ParamsManager.VideoCover);
+                System.currentTimeMillis()+ParamsManager.VideoCover);
 
         if (hasFilter) {
             mProgressDialog.dismiss();
@@ -293,7 +299,7 @@ public class CoverFragment extends TSFragment implements MediaPlayerWrapper.IMed
     }
 
     /**
-     * 合并视频
+     * 合并视频,顺道压缩
      */
     private void combineVideo(String cover) {
         final String path = FileUtils.getPath(ParamsManager.AlbumPath, ParamsManager.CombineVideo);
@@ -320,43 +326,36 @@ public class CoverFragment extends TSFragment implements MediaPlayerWrapper.IMed
                                         }
                                         VideoListManager.getInstance().removeAllSubVideo();
 
-                                        // 裁剪 压缩
-                                        // clipVideo(s,cover);
+                                        mVideoInfo.setPath(s);
+                                        mVideoInfo.setCover(cover);
+                                        mVideoInfo.setNeedGetCoverFromVideo(false);
+                                        mVideoInfo.setCreateTime(System.currentTimeMillis() + "");
 
-                                        FileUtils.updateMediaStore(mActivity, s, (result, uri) -> {
+                                        mVideoInfo.setWidth(mVideoView.getVideoWidth());
+                                        mVideoInfo.setHeight(mVideoView.getVideoHeight());
+                                        mVideoInfo.setDuration(mVideoView.getVideoDuration());
 
-                                            mVideoInfo.setPath(result);
-                                            mVideoInfo.setCover(cover);
-                                            mVideoInfo.setNeedGetCoverFromVideo(false);
-                                            mVideoInfo.setCreateTime(System.currentTimeMillis() + "");
+                                        if (mVideoView.getVideoInfo().get(0).getRotation() == 90) {
+                                            mVideoInfo.setWidth(mVideoView.getVideoHeight());
+                                            mVideoInfo.setHeight(mVideoView.getVideoWidth());
+                                        }
 
-                                            mVideoInfo.setWidth(mVideoView.getVideoWidth());
-                                            mVideoInfo.setHeight(mVideoView.getVideoHeight());
-                                            mVideoInfo.setDuration(mVideoView.getVideoDuration());
+                                        SendDynamicDataBean sendDynamicDataBean = new SendDynamicDataBean();
+                                        sendDynamicDataBean.setDynamicBelong(SendDynamicDataBean
+                                                .NORMAL_DYNAMIC);
+                                        List<ImageBean> pic = new ArrayList<>();
+                                        ImageBean imageBean = new ImageBean();
+                                        imageBean.setImgUrl(mVideoInfo.getCover());
+                                        pic.add(imageBean);
+                                        sendDynamicDataBean.setDynamicPrePhotos(pic);
+                                        sendDynamicDataBean.setDynamicType(SendDynamicDataBean
+                                                .VIDEO_TEXT_DYNAMIC);
+                                        sendDynamicDataBean.setVideoInfo(mVideoInfo);
+                                        SendDynamicActivity.startToSendDynamicActivity(getContext(),
+                                                sendDynamicDataBean);
 
-                                            if (mVideoView.getVideoInfo().get(0).getRotation() == 90) {
-                                                mVideoInfo.setWidth(mVideoView.getVideoHeight());
-                                                mVideoInfo.setHeight(mVideoView.getVideoWidth());
-                                            }
-
-                                            SendDynamicDataBean sendDynamicDataBean = new SendDynamicDataBean();
-                                            sendDynamicDataBean.setDynamicBelong(SendDynamicDataBean
-                                                    .NORMAL_DYNAMIC);
-                                            List<ImageBean> pic = new ArrayList<>();
-                                            ImageBean imageBean = new ImageBean();
-                                            imageBean.setImgUrl(mVideoInfo.getCover());
-                                            pic.add(imageBean);
-                                            sendDynamicDataBean.setDynamicPrePhotos(pic);
-                                            sendDynamicDataBean.setDynamicType(SendDynamicDataBean
-                                                    .VIDEO_TEXT_DYNAMIC);
-                                            sendDynamicDataBean.setVideoInfo(mVideoInfo);
-                                            SendDynamicActivity.startToSendDynamicActivity(getContext(),
-                                                    sendDynamicDataBean);
-
-                                            mProgressDialog.dismiss();
-                                            mActivity.finish();
-                                        });
-
+                                        mProgressDialog.dismiss();
+                                        mActivity.finish();
                                     }
                                 }));
 
@@ -371,7 +370,7 @@ public class CoverFragment extends TSFragment implements MediaPlayerWrapper.IMed
                         VideoClipper clipper = new VideoClipper();
                         clipper.showBeauty();
                         clipper.setInputVideoPath(mActivity, path);
-                        String mOutputPath = FileUtils.getPath(ParamsManager.SaveVideo, ParamsManager.ClipVideo);
+                        String mOutputPath = FileUtils.getPath(ParamsManager.SaveVideo,System.currentTimeMillis()+ ParamsManager.ClipVideo);
                         clipper.setFilterType(MagicFilterType.NONE);
                         clipper.setOutputVideoPath(mOutputPath);
                         try {

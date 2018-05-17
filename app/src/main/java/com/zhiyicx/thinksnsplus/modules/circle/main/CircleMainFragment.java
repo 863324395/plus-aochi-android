@@ -134,6 +134,12 @@ public class CircleMainFragment extends TSListFragment<CircleMainContract.Presen
     }
 
     @Override
+    protected void setLoadingViewHolderClick() {
+        super.setLoadingViewHolderClick();
+        mPresenter.requestNetData(0L,false);
+    }
+
+    @Override
     protected void setRightLeftClick() {
         super.setRightLeftClick();
         CircleSearchContainerActivity.startCircelSearchActivity(mActivity, CircleSearchContainerViewPagerFragment.PAGE_CIRCLE);

@@ -41,6 +41,16 @@ public class VideoInfo implements Parcelable, Serializable {
     public boolean needCompressVideo;
     // 视频需要获取封面
     public boolean needGetCoverFromVideo;
+    // 视频需要转码
+    public boolean needTranscodingVideo;
+
+    public boolean needTranscodingVideo() {
+        return needTranscodingVideo;
+    }
+
+    public void setNeedTranscodingVideo(boolean needTranscodingVideo) {
+        this.needTranscodingVideo = needTranscodingVideo;
+    }
 
     public boolean needGetCoverFromVideo() {
         return needGetCoverFromVideo;
@@ -245,6 +255,7 @@ public class VideoInfo implements Parcelable, Serializable {
         dest.writeString(this.dynamicContent);
         dest.writeByte(this.needCompressVideo ? (byte) 1 : (byte) 0);
         dest.writeByte(this.needGetCoverFromVideo ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.needTranscodingVideo ? (byte) 1 : (byte) 0);
     }
 
     protected VideoInfo(Parcel in) {
@@ -268,6 +279,7 @@ public class VideoInfo implements Parcelable, Serializable {
         this.dynamicContent = in.readString();
         this.needCompressVideo = in.readByte() != 0;
         this.needGetCoverFromVideo = in.readByte() != 0;
+        this.needTranscodingVideo = in.readByte() != 0;
     }
 
     public static final Creator<VideoInfo> CREATOR = new Creator<VideoInfo>() {

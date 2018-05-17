@@ -4,6 +4,8 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.media.MediaExtractor;
+import android.media.MediaFormat;
 import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 import android.provider.MediaStore;
@@ -22,7 +24,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import rx.Observable;
-import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
@@ -80,27 +81,27 @@ public class TrimVideoUtil {
         }
     }
 
-    public static Observable<Bitmap> getVideoOneFrame(final Context context,final Uri videoUri){
+    public static Observable<Bitmap> getVideoOneFrame(final Context context, final Uri videoUri) {
 
         return Observable.just(1)
                 .observeOn(Schedulers.io())
                 .flatMap(new Func1<Integer, Observable<Bitmap>>() {
-            @Override
-            public Observable<Bitmap> call(Integer integer) {
-                MediaMetadataRetriever mediaMetadataRetriever =
-                        new MediaMetadataRetriever();
-                mediaMetadataRetriever.setDataSource(context,
-                        videoUri);
+                    @Override
+                    public Observable<Bitmap> call(Integer integer) {
+                        MediaMetadataRetriever mediaMetadataRetriever =
+                                new MediaMetadataRetriever();
+                        mediaMetadataRetriever.setDataSource(context,
+                                videoUri);
 
-                Bitmap bitmap = mediaMetadataRetriever
-                        .getFrameAtTime(1,
-                                MediaMetadataRetriever
-                                        .OPTION_CLOSEST_SYNC);
+                        Bitmap bitmap = mediaMetadataRetriever
+                                .getFrameAtTime(1,
+                                        MediaMetadataRetriever
+                                                .OPTION_CLOSEST_SYNC);
 
-                mediaMetadataRetriever.release();
-                return Observable.just(bitmap);
-            }
-        });
+                        mediaMetadataRetriever.release();
+                        return Observable.just(bitmap);
+                    }
+                });
 
     }
 
@@ -319,6 +320,8 @@ public class TrimVideoUtil {
                                                        MediaMetadataRetriever mediaMetadataRetriever =
                                                                new MediaMetadataRetriever();
                                                        mediaMetadataRetriever.setDataSource(mContext, Uri.parse(video.getPath()));
+
+
                                                        try {
                                                            int rotation = Integer.parseInt(mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_ROTATION));
                                                            w = Integer.parseInt(mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH));
@@ -363,11 +366,10 @@ public class TrimVideoUtil {
                                                            continue;
                                                        }
                                                        videos.add(video);
-//                                                       if (videos.size() >= 3) {
-//                                                           callback.onSingleCallback(new
-// ArrayList<>(videos), 3);
-//                                                           videos.clear();
-//                                                       }
+                                                       if (videos.size() >= 20) {
+                                                           callback.onSingleCallback(new ArrayList<>(videos), 20);
+                                                           videos.clear();
+                                                       }
 
                                                    }
                                                    cursor.close();
