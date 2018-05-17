@@ -423,6 +423,7 @@ public class RegexUtils {
 
     }
 
+    // 感觉这里应该用dom解析，正则限制太多了 2018-5-17 10:39:59 by tym
     public static String getMarkdownWords(String source) {
         Pattern pattern = Pattern.compile("<div [^>]*class=\"block\"[^>]*>(<div[^>]*>(<div[^>]*>((<div[^>]*>[\\s\\S]*?</div>|[\\s\\S])*?</div>)|[\\s\\S])*?</div>|[\\s\\S])*?</div>");
         Matcher matcher = pattern.matcher(source);
@@ -439,6 +440,10 @@ public class RegexUtils {
                     return source;
                 }
                 source = matcher.replaceFirst(imgTag);
+            } else {
+                // 图片失败
+                source = source.replace(need, "");
+                source = pattern.matcher(source).replaceFirst("");
             }
             matcher = pattern.matcher(source);
         }
@@ -446,7 +451,11 @@ public class RegexUtils {
         source = source.replaceAll("<p>", " <p>");
         source = source.replaceAll("\n", "");
         source = source.replaceFirst("<p>", "");
-        return source;
+        source = source.replaceFirst("</p>", "");
+
+        String result = source.replaceAll("<br>| |<p>|</p>|", "");
+
+        return TextUtils.isEmpty(result) ? result : source;
     }
 
 }
