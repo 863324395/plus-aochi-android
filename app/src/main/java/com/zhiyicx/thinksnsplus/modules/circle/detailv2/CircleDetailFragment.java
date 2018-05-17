@@ -673,6 +673,10 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
                     showAuditTipPopupWindow(getString(R.string.circle_member_added_blacklist));
                     return;
                 }
+                if (!isJoined) {
+                    showAuditTipPopupWindow(getString(R.string.circle_member_comment_join));
+                    return;
+                }
                 canNotDeal = (!TouristConfig.DYNAMIC_CAN_COMMENT && mPresenter.handleTouristControl()) ||
                         mListDatas.get(dataPosition).getId() == null || mListDatas.get
                         (dataPosition).getId() == 0;
