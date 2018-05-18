@@ -317,12 +317,11 @@ public class TrimVideoUtil {
                                                        video.setSize(cursor.getLong(cursor.getColumnIndex(MediaStore.MediaColumns.SIZE)));
 
                                                        int w, h;
-                                                       MediaMetadataRetriever mediaMetadataRetriever =
-                                                               new MediaMetadataRetriever();
-                                                       mediaMetadataRetriever.setDataSource(mContext, Uri.parse(video.getPath()));
-
-
+                                                       MediaMetadataRetriever mediaMetadataRetriever=null;
                                                        try {
+                                                           mediaMetadataRetriever =
+                                                                   new MediaMetadataRetriever();
+                                                           mediaMetadataRetriever.setDataSource(video.getPath());
                                                            int rotation = Integer.parseInt(mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_ROTATION));
                                                            w = Integer.parseInt(mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH));
                                                            h = Integer.parseInt(mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT));
@@ -337,7 +336,9 @@ public class TrimVideoUtil {
                                                        } catch (Exception e) {
                                                            continue;
                                                        } finally {
-                                                           mediaMetadataRetriever.release();
+                                                           if (mediaMetadataRetriever!=null){
+                                                               mediaMetadataRetriever.release();
+                                                           }
                                                        }
 
                                                        if (w * h == 0) {
