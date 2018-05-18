@@ -90,11 +90,14 @@ public class CirclePostDetailPresenter extends AppBasePresenter<CirclePostDetail
 
     @Override
     public void requestNetData(Long maxId, boolean isLoadMore) {
-        if (!isLoadMore){
-            Subscription subscription = Observable.zip(mBaseCircleRepository.getPostComments(mRootView.getPostId(), 0, maxId.intValue()),
+        if (!isLoadMore) {
+            Subscription subscription = Observable.zip(mBaseCircleRepository.getPostComments(mRootView.getPostId(), 0, maxId == null ? 0 : maxId
+                            .intValue()),
                     mBaseCircleRepository.getPostDetail(mRootView.getCircleId(), mRootView.getPostId()),
-                    mBaseCircleRepository.getPostRewardList(mRootView.getPostId(), TSListFragment.DEFAULT_PAGE_SIZE, maxId.intValue(), null, null),
-                    mBaseCircleRepository.getPostDigList(mRootView.getPostId(), TSListFragment.DEFAULT_PAGE_SIZE, maxId.intValue()),
+                    mBaseCircleRepository.getPostRewardList(mRootView.getPostId(), TSListFragment.DEFAULT_PAGE_SIZE, maxId == null ? 0 : maxId
+                            .intValue(), null, null),
+                    mBaseCircleRepository.getPostDigList(mRootView.getPostId(), TSListFragment.DEFAULT_PAGE_SIZE, maxId == null ? 0 : maxId
+                            .intValue()),
                     (circlePostCommentBeans, circlePostDetailBean, postRewardList, postDigListBeans) -> {
                         circlePostDetailBean.setComments(circlePostCommentBeans);
                         circlePostDetailBean.setDigList(postDigListBeans);
@@ -141,14 +144,14 @@ public class CirclePostDetailPresenter extends AppBasePresenter<CirclePostDetail
                     });
 
             addSubscrebe(subscription);
-        }else{
-            Subscription subscription = mBaseCircleRepository.getPostComments(mRootView.getPostId(), 0, maxId.intValue())
+        } else {
+            Subscription subscription = mBaseCircleRepository.getPostComments(mRootView.getPostId(), 0, maxId == null ? 0 : maxId.intValue())
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new BaseSubscribeForV2<List<CirclePostCommentBean>>() {
                         @Override
                         protected void onSuccess(List<CirclePostCommentBean> data) {
-                            mRootView.onNetResponseSuccess(data,isLoadMore);
+                            mRootView.onNetResponseSuccess(data, isLoadMore);
                         }
                     });
             addSubscrebe(subscription);
@@ -300,7 +303,7 @@ public class CirclePostDetailPresenter extends AppBasePresenter<CirclePostDetail
         creatComment.setCommentUser(mUserInfoBeanGreenDao.getSingleDataFromCache(AppApplication.getMyUserIdWithdefault()));
         creatComment.setCreated_at(TimeUtils.getCurrenZeroTimeStr());
 
-        if (mRootView.getListDatas()!=null&&mRootView.getListDatas().get(0).getContent() == null) {
+        if (mRootView.getListDatas() != null && mRootView.getListDatas().get(0).getContent() == null) {
             // 去掉占位图
             mRootView.getListDatas().remove(0);
         }
@@ -322,7 +325,7 @@ public class CirclePostDetailPresenter extends AppBasePresenter<CirclePostDetail
         CirclePostListBean circlePostListBean = mRootView.getCurrentePost();
         circlePostListBean.setComments_count(circlePostListBean.getComments_count() - 1);
         mCirclePostCommentBeanGreenDao.deleteSingleCache(data);
-        if (!mRootView.getCurrentePost().getComments().isEmpty()){
+        if (!mRootView.getCurrentePost().getComments().isEmpty()) {
             mRootView.getCurrentePost().getComments().remove(data);
         }
         mRootView.getListDatas().remove(data);
@@ -373,6 +376,7 @@ public class CirclePostDetailPresenter extends AppBasePresenter<CirclePostDetail
 
     /**
      * 分享帖子
+     *
      * @param shareBitMap
      */
     @Override

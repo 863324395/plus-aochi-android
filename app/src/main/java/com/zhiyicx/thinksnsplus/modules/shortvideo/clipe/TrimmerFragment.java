@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.shortvideo.clipe;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 import android.os.Bundle;
@@ -56,8 +57,6 @@ public class TrimmerFragment extends TSFragment implements TrimVideoListener {
 
 
     private ProgressDialog mProgressDialog;
-    private VideoInfo mVideoInfo;
-    private ArrayList<String> arrayList;
 
     @Override
     public void onPause() {
@@ -100,14 +99,16 @@ public class TrimmerFragment extends TSFragment implements TrimVideoListener {
 
     @Override
     protected void initView(View rootView) {
+        setUpView();
+    }
+
+    private void setUpView() {
         String path = getArguments().getString(PATH);
-        mVideoInfo = getArguments().getParcelable(VIDEO);
         mVideoTrimmerView.setMaxDuration(TrimVideoUtil.VIDEO_MAX_DURATION);
         mVideoTrimmerView.setOnTrimVideoListener(this);
         mVideoTrimmerView.setVideoURI(Uri.parse(path));
-        arrayList = new ArrayList<>();
-        arrayList.add(path);
-        getCoverImageList();
+
+        getCoverImageList(path);
 
         mToolbarCenter.setText(R.string.clip_speed);
         mToolbarLeft.setText(R.string.cancel);
@@ -154,8 +155,6 @@ public class TrimmerFragment extends TSFragment implements TrimVideoListener {
         arrayList.add(url);
         VideoListManager.getInstance().addSubVideo(url, mVideoTrimmerView.getDuration());
         CoverActivity.startCoverActivity(mActivity, arrayList, false, false,false);
-        mActivity.finish();
-
     }
 
     @Override
@@ -172,8 +171,10 @@ public class TrimmerFragment extends TSFragment implements TrimVideoListener {
         return mProgressDialog;
     }
 
-    private void getCoverImageList() {
+    private void getCoverImageList(String path) {
         List<Uri> videoUris = new ArrayList<>();
+        ArrayList<String> arrayList = new ArrayList<>();
+        arrayList.add(path);
         for (String url : arrayList) {
             videoUris.add(Uri.parse(url));
         }
@@ -217,5 +218,10 @@ public class TrimmerFragment extends TSFragment implements TrimVideoListener {
         })
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(bitmaps -> mVideoTrimmerView.addImages(bitmaps));
+    }
+
+    public void onNewIntent(Intent intent) {
+        setArguments(intent.getExtras());
+        setUpView();
     }
 }

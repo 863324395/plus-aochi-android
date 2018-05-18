@@ -1,28 +1,21 @@
 package com.zhiyicx.thinksnsplus.modules.shortvideo.videostore;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.net.Uri;
-import android.provider.MediaStore;
+import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.PopupWindow;
 
-import com.tym.shortvideo.interfaces.SingleCallback;
 import com.tym.shortvideo.media.VideoInfo;
-import com.tym.shortvideo.recodrender.ParamsManager;
-import com.tym.shortvideo.recordcore.CountDownManager;
 import com.tym.shortvideo.utils.TrimVideoUtil;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
-import com.zhiyicx.common.utils.ConvertUtils;
-import com.zhiyicx.common.utils.DrawableProvider;
-import com.zhiyicx.common.utils.FileUtils;
 import com.zhiyicx.common.utils.recycleviewdecoration.TGridDecoration;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.SendDynamicDataBean;
@@ -30,7 +23,6 @@ import com.zhiyicx.thinksnsplus.modules.dynamic.send.SendDynamicActivity;
 import com.zhiyicx.thinksnsplus.modules.shortvideo.adapter.VideoGridViewAdapter;
 import com.zhiyicx.thinksnsplus.modules.shortvideo.clipe.TrimmerActivity;
 import com.zhiyicx.thinksnsplus.modules.shortvideo.cover.CoverActivity;
-import com.zhiyicx.thinksnsplus.modules.shortvideo.preview.PreviewActivity;
 import com.zhiyicx.thinksnsplus.modules.shortvideo.record.RecordActivity;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 
@@ -48,6 +40,8 @@ import static com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.POPUPWI
 public class VideoSelectFragment extends TSListFragment {
     private static final int DEFAUT_CLOUMS = 4;
 
+    public static final int RECHOSE_VIDEO = 9999;
+
     /**
      * 来自动态发布页面，重新选择视频
      */
@@ -57,6 +51,12 @@ public class VideoSelectFragment extends TSListFragment {
 
     // 分批次加载预留
     private List<VideoInfo> copyData;
+
+    public static VideoSelectFragment newInstance(Bundle bundle) {
+        VideoSelectFragment videoSelectFragment = new VideoSelectFragment();
+        videoSelectFragment.setArguments(bundle);
+        return videoSelectFragment;
+    }
 
     @Override
     protected boolean isLoadingMoreEnable() {
@@ -148,58 +148,66 @@ public class VideoSelectFragment extends TSListFragment {
      * 初始化重发动态选择弹框
      */
     private void initReSendDynamicPopupWindow(VideoInfo videoInfo, Bitmap cover) {
-        if (mPopWindow == null) {
-            mPopWindow = ActionPopupWindow.builder()
-                    .item1Str(videoInfo.getDuration() >= 300000 ? "" : getString(R.string.direct_upload))
-                    .item2Str(getString(R.string.edite_upload))
-                    .bottomStr(getString(R.string.cancel))
-                    .isOutsideTouch(true)
-                    .isFocus(true)
-                    .backgroundAlpha(POPUPWINDOW_ALPHA)
-                    .with(getActivity())
-                    .item1ClickListener(() -> {
-                        mPopWindow.hide();
+        mPopWindow = ActionPopupWindow.builder()
+                .item1Str(videoInfo.getDuration() >= 300000 ? "" : getString(R.string.direct_upload))
+                .item2Str(getString(R.string.edite_upload))
+                .bottomStr(getString(R.string.cancel))
+                .isOutsideTouch(true)
+                .isFocus(true)
+                .backgroundAlpha(POPUPWINDOW_ALPHA)
+                .with(getActivity())
+                .item1ClickListener(() -> {
+                    mPopWindow.hide();
 
-                        BitmapFactory.Options options = new BitmapFactory.Options();
-                        options.inPreferredConfig = Bitmap.Config.RGB_565;
-                        SendDynamicDataBean sendDynamicDataBean = new SendDynamicDataBean();
-                        sendDynamicDataBean.setDynamicBelong(SendDynamicDataBean.NORMAL_DYNAMIC);
-                        videoInfo.setNeedCompressVideo(true);
-                        videoInfo.setNeedGetCoverFromVideo(true);
-                        List<ImageBean> pic = new ArrayList<>();
-                        ImageBean imageBean = new ImageBean();
-                        imageBean.setImgUrl(videoInfo.getPath());
-                        pic.add(imageBean);
-                        sendDynamicDataBean.setDynamicPrePhotos(pic);
+                    BitmapFactory.Options options = new BitmapFactory.Options();
+                    options.inPreferredConfig = Bitmap.Config.RGB_565;
+                    SendDynamicDataBean sendDynamicDataBean = new SendDynamicDataBean();
+                    sendDynamicDataBean.setDynamicBelong(SendDynamicDataBean.NORMAL_DYNAMIC);
+                    videoInfo.setNeedCompressVideo(true);
+                    videoInfo.setNeedGetCoverFromVideo(true);
+                    List<ImageBean> pic = new ArrayList<>();
+                    ImageBean imageBean = new ImageBean();
+                    imageBean.setImgUrl(videoInfo.getPath());
+                    pic.add(imageBean);
+                    sendDynamicDataBean.setDynamicPrePhotos(pic);
 
-                        sendDynamicDataBean.setDynamicType(SendDynamicDataBean.VIDEO_TEXT_DYNAMIC);
-                        sendDynamicDataBean.setVideoInfo(videoInfo);
-                        SendDynamicActivity.startToSendDynamicActivity(getContext(), sendDynamicDataBean);
-                        mActivity.finish();
-                    })
-                    .item2ClickListener(() -> {
-                        mPopWindow.hide();
-                        if (videoInfo.getDuration() <= 4000) {
-                            // 因为 3002 ， 3300 等时长就很尴尬
-                            ArrayList<String> arrayList = new ArrayList<>();
-                            arrayList.add(videoInfo.getPath());
-                            CoverActivity.startCoverActivity(mActivity, arrayList, false, false, false);
-                        } else {
-                            TrimmerActivity.startTrimmerActivity(mActivity, videoInfo);
+                    sendDynamicDataBean.setDynamicType(SendDynamicDataBean.VIDEO_TEXT_DYNAMIC);
+                    sendDynamicDataBean.setVideoInfo(videoInfo);
+
+                    if (getArguments() != null) {
+                        boolean isReload = getArguments().getBoolean(IS_RELOAD);
+                        if (isReload) {
+                            Intent intent = new Intent();
+                            Bundle bundle = new Bundle();
+                            bundle.putParcelable(SendDynamicActivity.SEND_DYNAMIC_DATA, sendDynamicDataBean);
+                            intent.putExtras(bundle);
+                            mActivity.setResult(Activity.RESULT_OK, intent);
+                            mActivity.finish();
+                            return;
                         }
-                    })
-                    .bottomClickListener(() -> mPopWindow.hide())
-                    .build();
-        }
+                    }
+                    SendDynamicActivity.startToSendDynamicActivity(getContext(), sendDynamicDataBean);
+                    mActivity.finish();
+                })
+                .item2ClickListener(() -> {
+                    mPopWindow.hide();
+                    if (videoInfo.getDuration() <= 4000) {
+                        // 因为 3002 ， 3300 等时长就很尴尬
+                        ArrayList<String> arrayList = new ArrayList<>();
+                        arrayList.add(videoInfo.getPath());
+                        CoverActivity.startCoverActivity(mActivity, arrayList, false, false, false);
+                    } else {
+                        TrimmerActivity.startTrimmerActivity(mActivity, videoInfo.getPath());
+                    }
+                })
+                .bottomClickListener(() -> mPopWindow.hide())
+                .build();
         mPopWindow.show();
-
     }
 
     @Override
     public void onDestroyView() {
         dismissPop(mPopWindow);
         super.onDestroyView();
-
     }
-
 }

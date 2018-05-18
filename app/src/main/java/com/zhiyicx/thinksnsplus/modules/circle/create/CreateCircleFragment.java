@@ -31,6 +31,7 @@ import com.zhiyicx.baseproject.impl.photoselector.PhotoSeletorImplModule;
 import com.zhiyicx.baseproject.widget.edittext.DeleteEditText;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.AndroidBug5497Workaround;
+import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.GeoHash;
 import com.zhiyicx.common.utils.RegexUtils;
 import com.zhiyicx.thinksnsplus.R;
@@ -345,14 +346,23 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
                 });
 
 
+
         RxTextView.textChanges(mTvLocation)
                 .filter(charSequence -> !charSequence.toString().isEmpty() && !charSequence.equals(mTvLocation.getText()))
                 .subscribe(charSequence -> createCirclepreHandle(emptyFlag != 0));
 
+        mEtCircleAmount.setFocusable(false);
         mCbToll.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            mEtCircleAmount.setFocusable(isChecked);
+            mEtCircleAmount.setFocusableInTouchMode(isChecked);
+            mEtCircleAmount.requestFocus();
             if (isChecked) {
+                DeviceUtils.showSoftKeyboard(mActivity,mEtCircleAmount);
                 mCbFree.setChecked(false);
                 createCirclepreHandle(emptyFlag != 0 && mEtCircleAmount.getText().toString().length() > 0);
+            }else{
+                DeviceUtils.hideSoftKeyboard(mActivity,mEtCircleAmount);
+                mEtCircleAmount.setText("");
             }
         });
 
@@ -365,6 +375,7 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
                 mCbToll.setChecked(false);
                 mEtCircleAmount.setText("");
                 createCirclepreHandle(emptyFlag != 0);
+                DeviceUtils.hideSoftKeyboard(mActivity,mEtCircleAmount);
             }
         });
 
@@ -374,6 +385,7 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
                 createCirclepreHandle(emptyFlag != 0);
                 mLlCharge.setVisibility(View.GONE);
                 mLlFree.setVisibility(View.GONE);
+                mCbToll.setChecked(false);
             } else {
                 if (mPresenter != null && !TextUtils.isEmpty(mPresenter.getGoldUnit())) {
                     mTvCurrencyUnit.setText(mPresenter.getGoldUnit());

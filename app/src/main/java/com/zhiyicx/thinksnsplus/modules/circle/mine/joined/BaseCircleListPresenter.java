@@ -17,7 +17,9 @@ import com.zhiyicx.thinksnsplus.data.beans.circle.CircleSearchHistoryBean;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QASearchHistoryBean;
 import com.zhiyicx.thinksnsplus.data.source.local.CircleInfoGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.CircleSearchBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.remote.CircleClient;
 import com.zhiyicx.thinksnsplus.data.source.repository.BaseCircleRepository;
+import com.zhiyicx.thinksnsplus.modules.circle.main.CircleMainFragment;
 
 import org.jetbrains.annotations.NotNull;
 import org.simple.eventbus.Subscriber;
@@ -61,6 +63,20 @@ public class BaseCircleListPresenter extends AppBasePresenter<BaseCircleListCont
         mCircleInfoGreenDao = circleInfoGreenDao;
         mCircleSearchBeanGreenDao = circleSearchBeanGreenDao;
         mBaseCircleRepository = baseCircleRepository;
+    }
+
+    @Override
+    public void getRecommendCircle(Integer limit, int offet, String type) {
+        mBaseCircleRepository.getRecommendCircle(CircleMainFragment.DATALIMIT, 0, CircleClient.MineCircleType.RANDOM.value)
+                .subscribe(new BaseSubscribeForV2<List<CircleInfo>>() {
+                    @Override
+                    protected void onSuccess(List<CircleInfo> data) {
+                        if (data.isEmpty()) {
+                            return;
+                        }
+                        mRootView.onNetResponseSuccess(data, false);
+                    }
+                });
     }
 
     @Override
@@ -236,7 +252,11 @@ public class BaseCircleListPresenter extends AppBasePresenter<BaseCircleListCont
 
     @Override
     public List<CircleSearchHistoryBean> getFirstShowHistory() {
-        return mCircleSearchBeanGreenDao.getFristShowData(DEFAULT_FIRST_SHOW_HISTORY_SIZE, QASearchHistoryBean.TYPE_QA, true);
+        List<CircleSearchHistoryBean> historyBeans = mCircleSearchBeanGreenDao.getFristShowData(DEFAULT_FIRST_SHOW_HISTORY_SIZE, QASearchHistoryBean.TYPE_QA, true);
+        if (historyBeans == null || historyBeans.isEmpty()) {
+            getRecommendCircle(TSListFragment.DEFAULT_PAGE_DB_SIZE, 0, CircleClient.MineCircleType.RANDOM.value);
+        }
+        return historyBeans;
     }
 
     @Override

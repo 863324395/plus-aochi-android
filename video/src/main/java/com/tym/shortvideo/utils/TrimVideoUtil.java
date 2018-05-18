@@ -37,7 +37,7 @@ public class TrimVideoUtil {
 
     private static final String TAG = TrimVideoUtil.class.getSimpleName();
     public static final int VIDEO_MAX_DURATION = 15;
-    public static final int MIN_TIME_FRAME = 3;
+    public static final int MIN_TIME_FRAME = 4;
 
     // 总宽度 15 s
     private static int thumb_Width = (DeviceUtils.getScreenWidth() - DeviceUtils.dipToPX(20)) / VIDEO_MAX_DURATION;
@@ -317,12 +317,11 @@ public class TrimVideoUtil {
                                                        video.setSize(cursor.getLong(cursor.getColumnIndex(MediaStore.MediaColumns.SIZE)));
 
                                                        int w, h;
-                                                       MediaMetadataRetriever mediaMetadataRetriever =
-                                                               new MediaMetadataRetriever();
-                                                       mediaMetadataRetriever.setDataSource(mContext, Uri.parse(video.getPath()));
-
-
+                                                       MediaMetadataRetriever mediaMetadataRetriever=null;
                                                        try {
+                                                           mediaMetadataRetriever =
+                                                                   new MediaMetadataRetriever();
+                                                           mediaMetadataRetriever.setDataSource(video.getPath());
                                                            int rotation = Integer.parseInt(mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_ROTATION));
                                                            w = Integer.parseInt(mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH));
                                                            h = Integer.parseInt(mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT));
@@ -337,7 +336,9 @@ public class TrimVideoUtil {
                                                        } catch (Exception e) {
                                                            continue;
                                                        } finally {
-                                                           mediaMetadataRetriever.release();
+                                                           if (mediaMetadataRetriever!=null){
+                                                               mediaMetadataRetriever.release();
+                                                           }
                                                        }
 
                                                        if (w * h == 0) {
@@ -362,7 +363,7 @@ public class TrimVideoUtil {
                                                            continue;
                                                        }
 
-                                                       if (video.getDuration() < 3000) {
+                                                       if (video.getDuration() < 4000) {
                                                            continue;
                                                        }
                                                        videos.add(video);

@@ -18,7 +18,7 @@ import com.zhiyicx.thinksnsplus.modules.shortvideo.cover.CoverActivity;
  */
 public class TrimmerActivity extends TSActivity {
 
-    private static void startTrimmerActivity(Context context, String videoPath) {
+    public static void startTrimmerActivity(Context context, String videoPath) {
         if (!TextUtils.isEmpty(videoPath)) {
             Bundle bundle = new Bundle();
             bundle.putString(TrimmerFragment.PATH, videoPath);
@@ -38,7 +38,16 @@ public class TrimmerActivity extends TSActivity {
     }
 
     @Override
-    protected Fragment getFragment() {
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        if (mContanierFragment instanceof TrimmerFragment){
+            TrimmerFragment fragment=(TrimmerFragment)mContanierFragment;
+            fragment.onNewIntent(intent);
+        }
+    }
+
+    @Override
+    protected TrimmerFragment getFragment() {
         return TrimmerFragment.newInstance(getIntent().getExtras());
     }
 

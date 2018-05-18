@@ -25,7 +25,7 @@
         android:paddingLeft="@dimen/spacing_normal"
         android:layout_toRightOf="@id/iv_left_img"
         android:textColor="@color/important_for_content"
-        android:textSize="@dimen/size_content_assist"
+        android:textSize="@dimen/size_content"
         skin:enable="true"
         tools:text="我的订阅"
         />

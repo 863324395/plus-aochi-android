@@ -26,6 +26,7 @@ import android.widget.TextView;
 import com.bumptech.glide.DrawableRequestBuilder;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.Priority;
+import com.bumptech.glide.RequestManager;
 import com.bumptech.glide.load.data.DataFetcher;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.model.GlideUrl;
@@ -312,7 +313,7 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                 v.invalidate();
             }
         });
-        if (isSavePic){
+        if (isSavePic) {
             saveImage();
         }
     }
@@ -370,7 +371,7 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                         mActionPopupWindow.hide();
                         if (mImageBean.getToll() != null && mImageBean.getToll().getToll_type_string().equals(Toll.DOWNLOAD_TOLL_TYPE)
                                 && !mImageBean.getToll().getPaid()) {
-                            initCenterPopWindow(R.string.buy_pay_downlaod_desc,true);
+                            initCenterPopWindow(R.string.buy_pay_downlaod_desc, true);
                             return;
                         }
                         saveImage();
@@ -453,23 +454,29 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                 startLoadProgress();
             }
         } else {
-
             createHDimageLoader(imageBean, canLook, w, h);
 
+            boolean isNeedOrin = ImageUtils.isWithOrHeightOutOfBounds(w, h)
+                    || ImageUtils.imageIsGif(imageBean.getImgMimeType())
+                    || ImageUtils.isLongImage((float) imageBean.getHeight(), (float) imageBean.getWidth());
+
+
             // 缩略图
-            DrawableRequestBuilder thumbnailBuilder = Glide
-                    .with(context)
-                    .using(LIST_CACHE_ONLY_STREAM_LOADER)
+            RequestManager thumbnailRequestManager = Glide
+                    .with(context);
+
+            if (!isNeedOrin){
+                thumbnailRequestManager.using(LIST_CACHE_ONLY_STREAM_LOADER);
+            }
+            DrawableRequestBuilder thumbnailBuilder = thumbnailRequestManager
                     .load(new CustomImageSizeModelImp(imageBean) {
                         @Override
                         public GlideUrl requestGlideUrl() {
-                            boolean isNeedOrin = ImageUtils.isWithOrHeightOutOfBounds(w, h)
-                                    || ImageUtils.imageIsGif(imageBean.getImgMimeType())
-                                    || ImageUtils.isLongImage((float) imageBean.getHeight(), (float) imageBean.getWidth());
                             if (TextUtils.isEmpty(imageBean.getListCacheUrl()) || isNeedOrin) {
                                 if (mTvOriginPhoto != null && isNeedOrin) {
                                     mTvOriginPhoto.setVisibility(View.GONE);
                                 }
+                                mFlGalleryPhoto.setBackgroundColor(Color.BLACK);
                                 startLoadProgress();
                                 return ImageUtils.imagePathConvertV2(canLook, mImageBean.getStorage_id(), canLook ? w : 0, canLook ? h : 0,
                                         ImageZipConfig.IMAGE_100_ZIP, AppApplication.getTOKEN());
@@ -479,7 +486,6 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
 
                         }
                     }
-
                     .requestGlideUrl())
                     .listener(new RequestListener<GlideUrl, GlideDrawable>() {
                         @Override
@@ -496,7 +502,9 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                                 isFromMemoryCache, boolean isFirstResource) {
                             LogUtils.i(TAG + "加载缩略图成功");
                             // 获取到模糊图进行放大动画
-                            startInAnim(imageBean, rect);
+                            if (!isNeedOrin){
+                                startInAnim(imageBean, rect);
+                            }
                             return false;
                         }
                     })
@@ -521,7 +529,6 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                 .placeholder(mIvPager.getDrawable())
                 .skipMemoryCache(false)
                 .dontAnimate()
-                .error(R.drawable.shape_default_image)
                 .listener(new RequestListener<String, GlideDrawable>() {
                     // 没有缓存到原图
                     @Override
@@ -732,7 +739,7 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
             // 退出隐藏查看原图按钮，防止显示在透明背景上
             mTvOriginPhoto.setVisibility(View.GONE);
             AnimationRectBean rect = getArguments().getParcelable("rect");
-            TransferImageAnimationUtil.animateClose(backgroundAnimator,mFlGalleryPhoto, rect, mIvPager);
+            TransferImageAnimationUtil.animateClose(backgroundAnimator, mFlGalleryPhoto, rect, mIvPager);
 
         }
         // 原图可见，退出就是用原图
@@ -745,7 +752,7 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
             // 退出隐藏查看原图按钮，防止显示在透明背景上
             mTvOriginPhoto.setVisibility(View.GONE);
             AnimationRectBean rect = getArguments().getParcelable("rect");
-            TransferImageAnimationUtil.animateClose(backgroundAnimator,mFlGalleryPhoto, rect, mIvOriginPager);
+            TransferImageAnimationUtil.animateClose(backgroundAnimator, mFlGalleryPhoto, rect, mIvOriginPager);
         }
     }
 
@@ -849,7 +856,7 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.tv_to_pay:
-                initCenterPopWindow(R.string.buy_pay_desc,false);
+                initCenterPopWindow(R.string.buy_pay_desc, false);
                 break;
             case R.id.tv_to_vip:
 
@@ -946,7 +953,7 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
         @Override
         public InputStream loadData(Priority priority) throws Exception {
             // 如果是从网络获取图片肯定会走这儿，直接抛出异常，缓存从其他方法获取
-            throw new IOException("intercupt net by own");
+            throw new IOException("缩略图没有缓存");
         }
 
         @Override
@@ -982,7 +989,7 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
         }
     }
 
-    private void initCenterPopWindow(int resId,boolean isSavePic) {
+    private void initCenterPopWindow(int resId, boolean isSavePic) {
         if (mPresenter == null) {
             return;
         }
@@ -1008,7 +1015,7 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                 .buildMoneyStr(String.format(getString(R.string.buy_pay_integration), mImageBean.getToll()
                         .getToll_money()))
                 .buildCenterPopWindowItem1ClickListener(() -> {
-                    mPresenter.payNote(mImageBean.getFeed_id(), mImageBean.getPosition(), mImageBean.getToll().getPaid_node(),isSavePic);
+                    mPresenter.payNote(mImageBean.getFeed_id(), mImageBean.getPosition(), mImageBean.getToll().getPaid_node(), isSavePic);
                     mPayPopWindow.hide();
                 })
                 .buildCenterPopWindowItem2ClickListener(() -> mPayPopWindow.hide())

@@ -325,6 +325,10 @@ public class BaseCircleDetailFragment extends TSListFragment<CircleDetailContrac
                 showAuditTipPopupWindow(getString(R.string.circle_member_added_blacklist));
                 return;
             }
+            if (!isJoined) {
+                showAuditTipPopupWindow(getString(R.string.circle_member_comment_join));
+                return;
+            }
             showCommentView();
             mReplyToUserId = dynamicBean.getComments().get(position).getUser_id();
             String contentHint = getString(R.string.default_input_hint);
@@ -495,6 +499,10 @@ public class BaseCircleDetailFragment extends TSListFragment<CircleDetailContrac
             case 1:
                 if (isBlackList) {
                     showAuditTipPopupWindow(getString(R.string.circle_member_added_blacklist));
+                    return;
+                }
+                if (!isJoined) {
+                    showAuditTipPopupWindow(getString(R.string.circle_member_comment_join));
                     return;
                 }
                 canNotDeal = (!TouristConfig.DYNAMIC_CAN_COMMENT && mPresenter.handleTouristControl()) ||

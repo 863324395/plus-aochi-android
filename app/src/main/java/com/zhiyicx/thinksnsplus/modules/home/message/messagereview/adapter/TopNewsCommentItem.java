@@ -104,7 +104,7 @@ public class TopNewsCommentItem extends BaseTopItem implements BaseTopItem.TopRe
                 : dynamicCommentBean.getNews().getContent());
 
         holder.setText(R.id.tv_content,
-                String.format(Locale.getDefault(), holder.itemView.getContext().getString(R.string.stick_type_dynamic_commnet_message),
+                String.format(Locale.getDefault(), holder.itemView.getContext().getString(R.string.stick_type_news_commnet_message),
                         commentIsDeleted ?" ": RegexUtils.replaceImageIdAndNeedSpaceString(MarkdownConfig.IMAGE_FORMAT,
                         dynamicCommentBean.getComment().getComment_content())));
 

@@ -445,10 +445,6 @@ public class CirclePostDetailFragment extends TSListFragment<CirclePostDetailCon
             switch (position) {
                 // 点赞
                 case DynamicDetailMenuView.ITEM_POSITION_0:
-                    if (isBlackList) {
-                        showAuditTipPopupWindow(getString(R.string.circle_member_added_blacklist));
-                        return;
-                    }
                     mPresenter.handleLike(!mCirclePostDetailBean.getLiked(),
                             mCirclePostDetailBean.getId());
                     break;
@@ -469,10 +465,6 @@ public class CirclePostDetailFragment extends TSListFragment<CirclePostDetailCon
                     break;
                 // 分享
                 case DynamicDetailMenuView.ITEM_POSITION_2:
-                    if (isBlackList) {
-                        showAuditTipPopupWindow(getString(R.string.circle_member_added_blacklist));
-                        return;
-                    }
                     mPresenter.shareInfo(mPostDetailHeaderView.getSharBitmap());
                     break;
                 // 更多

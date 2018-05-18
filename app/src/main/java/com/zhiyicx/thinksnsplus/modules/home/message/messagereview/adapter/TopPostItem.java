@@ -111,7 +111,7 @@ public class TopPostItem extends BaseTopItem implements BaseTopItem.TopReviewEve
                 : postListBean.getPost().getSummary());
 
         holder.setText(R.id.tv_content,
-                String.format(Locale.getDefault(), holder.itemView.getContext().getString(R.string.stick_type_dynamic_commnet_message),
+                String.format(Locale.getDefault(), holder.itemView.getContext().getString(R.string.stick_type_group_message),
                         postIsDeleted ? " " : TextUtils.isEmpty(postListBean.getPost().getTitle()) ? "" + " " : postListBean.getPost().getTitle()));
 
         if (postIsDeleted) {

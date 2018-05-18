@@ -51,7 +51,6 @@ public class VideoGridViewAdapter extends CommonAdapter<VideoInfo> {
 
             Glide.with(mContext)
                     .load(video.getPath())
-                    .signature(new StringSignature(video.getPath() + video.getCreateTime()))
                     .placeholder(R.drawable.shape_default_image)
                     .error(R.drawable.shape_default_image)
                     .diskCacheStrategy(DiskCacheStrategy.NONE)

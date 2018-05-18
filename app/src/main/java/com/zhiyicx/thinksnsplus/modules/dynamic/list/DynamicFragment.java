@@ -516,6 +516,9 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
         ArrayList<AnimationRectBean> animationRectBeanArrayList
                 = new ArrayList<>();
         for (int i = 0; i < tasks.size(); i++) {
+            if (i >= 9) {
+                continue;
+            }
             DynamicDetailBeanV2.ImagesBean task = tasks.get(i);
             int id = UIUtils.getResourceByName("siv_" + i, "id", getContext());
             ImageView imageView = holder.getView(id);
