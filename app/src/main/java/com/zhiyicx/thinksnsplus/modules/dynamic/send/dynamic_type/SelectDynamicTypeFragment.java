@@ -263,7 +263,7 @@ public class SelectDynamicTypeFragment extends TSFragment<SelectDynamicTypeContr
                                         SendDynamicActivity.startToSendDynamicActivity(getContext(),
                                                 sendDynamicDataBean);
                                     } else {
-                                        startActivity(new Intent(getActivity(), VideoSelectActivity.class));
+                                        VideoSelectActivity.startVideoSelectActivity(mActivity,false);
                                     }
                                     closeActivity();
                                 } else {

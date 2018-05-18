@@ -58,14 +58,15 @@ import com.zhiyicx.thinksnsplus.modules.photopicker.PhotoAlbumDetailsActivity;
 import com.zhiyicx.thinksnsplus.modules.photopicker.PhotoViewActivity;
 import com.zhiyicx.thinksnsplus.modules.photopicker.PhotoViewFragment;
 import com.zhiyicx.thinksnsplus.modules.shortvideo.cover.CoverActivity;
+import com.zhiyicx.thinksnsplus.modules.shortvideo.cover.CoverFragment;
 import com.zhiyicx.thinksnsplus.modules.shortvideo.videostore.VideoSelectActivity;
+import com.zhiyicx.thinksnsplus.modules.shortvideo.videostore.VideoSelectFragment;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhiyicx.thinksnsplus.widget.IconTextView;
 import com.zhiyicx.thinksnsplus.widget.UserInfoInroduceInputView;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -275,7 +276,6 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
             AndroidBug5497Workaround.assistActivity(getActivity());
         }
     }
-
 
 
     private void initTollState() {
@@ -546,10 +546,28 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
             }
             mPhotoSelector.onActivityResult(requestCode, resultCode, data);
         } else if (dynamicType == SendDynamicDataBean.VIDEO_TEXT_DYNAMIC && resultCode == Activity.RESULT_OK) {
-            selectedPhotos.clear();
-            addPlaceHolder();
-            setSendDynamicState();// 每次刷新图片后都要判断发布按钮状态
-            mCommonAdapter.notifyDataSetChanged();
+            if (requestCode == CoverFragment.REQUEST_COVER_CODE) {
+                // 删除视频
+                selectedPhotos.clear();
+                addPlaceHolder();
+                setSendDynamicState();// 每次刷新图片后都要判断发布按钮状态
+                mCommonAdapter.notifyDataSetChanged();
+            } else if (requestCode == VideoSelectFragment.RECHOSE_VIDEO) {
+                // 重选视频
+                if (data != null && data.getExtras() != null) {
+                    SendDynamicDataBean sendDynamicDataBean = data.getExtras().getParcelable(SendDynamicActivity
+                            .SEND_DYNAMIC_DATA);
+                    if (sendDynamicDataBean != null) {
+                        mSendDynamicDataBean = sendDynamicDataBean;
+                        List<ImageBean> originPhotos = sendDynamicDataBean.getDynamicPrePhotos();
+                        selectedPhotos.clear();
+                        selectedPhotos.addAll(originPhotos);
+                        addPlaceHolder();
+                        mCommonAdapter.notifyDataSetChanged();
+                    }
+                }
+            }
+
         }
     }
 
@@ -667,7 +685,7 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
             }
             isToll = !isToll;
             mTvToll.setRightImage(isToll ? R.mipmap.btn_open : R.mipmap.btn_close);
-            mTollLine.setVisibility(isToll && dynamicType == TEXT_ONLY_DYNAMIC ||dynamicType == VIDEO_TEXT_DYNAMIC ? View.GONE : View.VISIBLE);
+            mTollLine.setVisibility(isToll && dynamicType == TEXT_ONLY_DYNAMIC || dynamicType == VIDEO_TEXT_DYNAMIC ? View.GONE : View.VISIBLE);
             if (dynamicType == TEXT_ONLY_DYNAMIC) {
                 mLLToll.setVisibility(isToll ? View.VISIBLE : View.GONE);
                 if (!isToll) {
@@ -891,8 +909,7 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                         DeviceUtils.hideSoftKeyboard(getContext(), v);
                         if (TextUtils.isEmpty(imageBean.getImgUrl())) {
                             if (dynamicType == SendDynamicDataBean.VIDEO_TEXT_DYNAMIC) {
-                                startActivity(new Intent(getActivity(), VideoSelectActivity.class));
-                                mActivity.finish();
+                                VideoSelectActivity.startVideoSelectActivity(mActivity, true);
                                 return;
                             }
                             ArrayList<String> photos = new ArrayList<>();
