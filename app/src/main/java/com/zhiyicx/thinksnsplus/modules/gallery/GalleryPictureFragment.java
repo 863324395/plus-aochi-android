@@ -256,6 +256,11 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
      */
     public void preLoadData() {
         mImageBean = getArguments() != null ? (ImageBean) getArguments().getParcelable("url") : null;
+        if (mImageBean != null) {
+            if (TextUtils.isEmpty(mImageBean.getListCacheUrl())) {
+                mFlGalleryPhoto.setBackgroundColor(Color.BLACK);
+            }
+        }
         if (!mIsLoaded) {
             checkAndLoadImage(false);
         }
@@ -312,7 +317,7 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                 v.invalidate();
             }
         });
-        if (isSavePic){
+        if (isSavePic) {
             saveImage();
         }
     }
@@ -370,7 +375,7 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                         mActionPopupWindow.hide();
                         if (mImageBean.getToll() != null && mImageBean.getToll().getToll_type_string().equals(Toll.DOWNLOAD_TOLL_TYPE)
                                 && !mImageBean.getToll().getPaid()) {
-                            initCenterPopWindow(R.string.buy_pay_downlaod_desc,true);
+                            initCenterPopWindow(R.string.buy_pay_downlaod_desc, true);
                             return;
                         }
                         saveImage();
@@ -453,8 +458,12 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                 startLoadProgress();
             }
         } else {
-
             createHDimageLoader(imageBean, canLook, w, h);
+
+            if (TextUtils.isEmpty(imageBean.getListCacheUrl())) {
+                startLoadProgress();
+                intoImageTarget(mCurrentHDRequestBuilder, imageBean, rect);
+            }
 
             // 缩略图
             DrawableRequestBuilder thumbnailBuilder = Glide
@@ -480,14 +489,11 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                         }
                     }
 
-                    .requestGlideUrl())
+                            .requestGlideUrl())
                     .listener(new RequestListener<GlideUrl, GlideDrawable>() {
                         @Override
                         public boolean onException(Exception e, GlideUrl model, Target<GlideDrawable> target, boolean isFirstResource) {
                             LogUtils.i(TAG + "加载缩略图失败");
-                            mFlGalleryPhoto.setBackgroundColor(Color.BLACK);
-                            startLoadProgress();
-                            intoImageTarget(mCurrentHDRequestBuilder, imageBean, rect);
                             return false;
                         }
 
@@ -732,7 +738,7 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
             // 退出隐藏查看原图按钮，防止显示在透明背景上
             mTvOriginPhoto.setVisibility(View.GONE);
             AnimationRectBean rect = getArguments().getParcelable("rect");
-            TransferImageAnimationUtil.animateClose(backgroundAnimator,mFlGalleryPhoto, rect, mIvPager);
+            TransferImageAnimationUtil.animateClose(backgroundAnimator, mFlGalleryPhoto, rect, mIvPager);
 
         }
         // 原图可见，退出就是用原图
@@ -745,7 +751,7 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
             // 退出隐藏查看原图按钮，防止显示在透明背景上
             mTvOriginPhoto.setVisibility(View.GONE);
             AnimationRectBean rect = getArguments().getParcelable("rect");
-            TransferImageAnimationUtil.animateClose(backgroundAnimator,mFlGalleryPhoto, rect, mIvOriginPager);
+            TransferImageAnimationUtil.animateClose(backgroundAnimator, mFlGalleryPhoto, rect, mIvOriginPager);
         }
     }
 
@@ -849,7 +855,7 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.tv_to_pay:
-                initCenterPopWindow(R.string.buy_pay_desc,false);
+                initCenterPopWindow(R.string.buy_pay_desc, false);
                 break;
             case R.id.tv_to_vip:
 
@@ -982,7 +988,7 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
         }
     }
 
-    private void initCenterPopWindow(int resId,boolean isSavePic) {
+    private void initCenterPopWindow(int resId, boolean isSavePic) {
         if (mPresenter == null) {
             return;
         }
@@ -1008,7 +1014,7 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                 .buildMoneyStr(String.format(getString(R.string.buy_pay_integration), mImageBean.getToll()
                         .getToll_money()))
                 .buildCenterPopWindowItem1ClickListener(() -> {
-                    mPresenter.payNote(mImageBean.getFeed_id(), mImageBean.getPosition(), mImageBean.getToll().getPaid_node(),isSavePic);
+                    mPresenter.payNote(mImageBean.getFeed_id(), mImageBean.getPosition(), mImageBean.getToll().getPaid_node(), isSavePic);
                     mPayPopWindow.hide();
                 })
                 .buildCenterPopWindowItem2ClickListener(() -> mPayPopWindow.hide())
