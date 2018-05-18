@@ -26,6 +26,7 @@ import android.widget.TextView;
 import com.bumptech.glide.DrawableRequestBuilder;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.Priority;
+import com.bumptech.glide.RequestManager;
 import com.bumptech.glide.load.data.DataFetcher;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.model.GlideUrl;
@@ -256,11 +257,6 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
      */
     public void preLoadData() {
         mImageBean = getArguments() != null ? (ImageBean) getArguments().getParcelable("url") : null;
-        if (mImageBean != null) {
-            if (TextUtils.isEmpty(mImageBean.getListCacheUrl())) {
-                mFlGalleryPhoto.setBackgroundColor(Color.BLACK);
-            }
-        }
         if (!mIsLoaded) {
             checkAndLoadImage(false);
         }
@@ -460,25 +456,27 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
         } else {
             createHDimageLoader(imageBean, canLook, w, h);
 
-            if (TextUtils.isEmpty(imageBean.getListCacheUrl())) {
-                startLoadProgress();
-                intoImageTarget(mCurrentHDRequestBuilder, imageBean, rect);
-            }
+            boolean isNeedOrin = ImageUtils.isWithOrHeightOutOfBounds(w, h)
+                    || ImageUtils.imageIsGif(imageBean.getImgMimeType())
+                    || ImageUtils.isLongImage((float) imageBean.getHeight(), (float) imageBean.getWidth());
+
 
             // 缩略图
-            DrawableRequestBuilder thumbnailBuilder = Glide
-                    .with(context)
-                    .using(LIST_CACHE_ONLY_STREAM_LOADER)
+            RequestManager thumbnailRequestManager = Glide
+                    .with(context);
+
+            if (!isNeedOrin){
+                thumbnailRequestManager.using(LIST_CACHE_ONLY_STREAM_LOADER);
+            }
+            DrawableRequestBuilder thumbnailBuilder = thumbnailRequestManager
                     .load(new CustomImageSizeModelImp(imageBean) {
                         @Override
                         public GlideUrl requestGlideUrl() {
-                            boolean isNeedOrin = ImageUtils.isWithOrHeightOutOfBounds(w, h)
-                                    || ImageUtils.imageIsGif(imageBean.getImgMimeType())
-                                    || ImageUtils.isLongImage((float) imageBean.getHeight(), (float) imageBean.getWidth());
                             if (TextUtils.isEmpty(imageBean.getListCacheUrl()) || isNeedOrin) {
                                 if (mTvOriginPhoto != null && isNeedOrin) {
                                     mTvOriginPhoto.setVisibility(View.GONE);
                                 }
+                                mFlGalleryPhoto.setBackgroundColor(Color.BLACK);
                                 startLoadProgress();
                                 return ImageUtils.imagePathConvertV2(canLook, mImageBean.getStorage_id(), canLook ? w : 0, canLook ? h : 0,
                                         ImageZipConfig.IMAGE_100_ZIP, AppApplication.getTOKEN());
@@ -488,12 +486,14 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
 
                         }
                     }
-
-                            .requestGlideUrl())
+                    .requestGlideUrl())
                     .listener(new RequestListener<GlideUrl, GlideDrawable>() {
                         @Override
                         public boolean onException(Exception e, GlideUrl model, Target<GlideDrawable> target, boolean isFirstResource) {
                             LogUtils.i(TAG + "加载缩略图失败");
+                            mFlGalleryPhoto.setBackgroundColor(Color.BLACK);
+                            startLoadProgress();
+                            intoImageTarget(mCurrentHDRequestBuilder, imageBean, rect);
                             return false;
                         }
 
@@ -502,7 +502,9 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                                 isFromMemoryCache, boolean isFirstResource) {
                             LogUtils.i(TAG + "加载缩略图成功");
                             // 获取到模糊图进行放大动画
-                            startInAnim(imageBean, rect);
+                            if (!isNeedOrin){
+                                startInAnim(imageBean, rect);
+                            }
                             return false;
                         }
                     })
@@ -527,7 +529,6 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                 .placeholder(mIvPager.getDrawable())
                 .skipMemoryCache(false)
                 .dontAnimate()
-                .error(R.drawable.shape_default_image)
                 .listener(new RequestListener<String, GlideDrawable>() {
                     // 没有缓存到原图
                     @Override
@@ -952,7 +953,7 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
         @Override
         public InputStream loadData(Priority priority) throws Exception {
             // 如果是从网络获取图片肯定会走这儿，直接抛出异常，缓存从其他方法获取
-            throw new IOException("intercupt net by own");
+            throw new IOException("缩略图没有缓存");
         }
 
         @Override
