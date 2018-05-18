@@ -78,6 +78,7 @@ import static com.zhiyicx.baseproject.impl.photoselector.Toll.DOWNLOAD_TOLL_TYPE
 import static com.zhiyicx.baseproject.impl.photoselector.Toll.LOOK_TOLL;
 import static com.zhiyicx.baseproject.impl.photoselector.Toll.LOOK_TOLL_TYPE;
 import static com.zhiyicx.thinksnsplus.data.beans.SendDynamicDataBean.TEXT_ONLY_DYNAMIC;
+import static com.zhiyicx.thinksnsplus.data.beans.SendDynamicDataBean.VIDEO_TEXT_DYNAMIC;
 
 
 /**
@@ -665,7 +666,7 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
             }
             isToll = !isToll;
             mTvToll.setRightImage(isToll ? R.mipmap.btn_open : R.mipmap.btn_close);
-            mTollLine.setVisibility(isToll && dynamicType == TEXT_ONLY_DYNAMIC ? View.GONE : View.VISIBLE);
+            mTollLine.setVisibility(isToll && dynamicType == TEXT_ONLY_DYNAMIC ||dynamicType == VIDEO_TEXT_DYNAMIC ? View.GONE : View.VISIBLE);
             if (dynamicType == TEXT_ONLY_DYNAMIC) {
                 mLLToll.setVisibility(isToll ? View.VISIBLE : View.GONE);
                 if (!isToll) {
@@ -846,6 +847,8 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                     imageView.setImageResource(dynamicType == SendDynamicDataBean.VIDEO_TEXT_DYNAMIC ?
                             R.mipmap.ico_video_remake : R.mipmap.img_edit_photo_frame);
                     holder.setVisible(R.id.tv_record, dynamicType == SendDynamicDataBean.VIDEO_TEXT_DYNAMIC ? View.VISIBLE : View.GONE);
+                    imageView.setIshowGifTag(false);
+
                 } else {
                     holder.setVisible(R.id.iv_dynamic_img_video, dynamicType == SendDynamicDataBean.VIDEO_TEXT_DYNAMIC ? View.VISIBLE : View.GONE);
                     paintView.setVisibility(isToll ? View.VISIBLE : View.GONE);
