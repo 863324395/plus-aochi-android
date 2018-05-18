@@ -19,7 +19,6 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.signature.StringSignature;
 import com.jakewharton.rxbinding.widget.RxRadioGroup;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.tym.shortvideo.media.VideoInfo;
@@ -276,6 +275,8 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
             AndroidBug5497Workaround.assistActivity(getActivity());
         }
     }
+
+
 
     private void initTollState() {
         boolean canPay = mPresenter.getSystemConfigBean().getFeed().hasPaycontrol();
@@ -891,6 +892,7 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                         if (TextUtils.isEmpty(imageBean.getImgUrl())) {
                             if (dynamicType == SendDynamicDataBean.VIDEO_TEXT_DYNAMIC) {
                                 startActivity(new Intent(getActivity(), VideoSelectActivity.class));
+                                mActivity.finish();
                                 return;
                             }
                             ArrayList<String> photos = new ArrayList<>();
