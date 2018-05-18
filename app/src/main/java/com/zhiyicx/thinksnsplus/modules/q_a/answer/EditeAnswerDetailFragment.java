@@ -80,6 +80,7 @@ public class EditeAnswerDetailFragment extends EditeQuestionDetailFragment {
             noMarkdown = noMarkdown.replaceAll(MarkdownConfig.HTML_FORMAT, "");
             if (TextUtils.isEmpty(noMarkdown)) {
                 mActivity.finish();
+                return;
             }
             initEditWarningPop(title, markdwon, noMarkdown, html);
             return;
