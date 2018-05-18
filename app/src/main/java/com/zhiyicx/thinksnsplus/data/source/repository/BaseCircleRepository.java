@@ -623,7 +623,7 @@ public class BaseCircleRepository implements IBaseCircleRepository {
 
     @Override
     public Observable<CircleCommentZip> getPostCommentList(long postId, Long maxId) {
-        return mCircleClient.getPostComments(postId, TSListFragment.DEFAULT_PAGE_SIZE, maxId.intValue())
+        return mCircleClient.getPostComments(postId, TSListFragment.DEFAULT_PAGE_SIZE, maxId == null ? 0 : maxId.intValue())
                 .subscribeOn(Schedulers.io())
                 .flatMap(circleCommentZip -> {
                     final List<Object> user_ids = new ArrayList<>();
