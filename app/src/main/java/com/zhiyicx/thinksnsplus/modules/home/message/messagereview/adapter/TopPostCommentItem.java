@@ -111,7 +111,7 @@ public class TopPostCommentItem extends BaseTopItem implements BaseTopItem.TopRe
                 : postCommentListBean.getPost().getSummary());
 
         holder.setText(R.id.tv_content,
-                String.format(Locale.getDefault(),holder.itemView.getContext().getString(R.string.stick_type_dynamic_commnet_message),
+                String.format(Locale.getDefault(),holder.itemView.getContext().getString(R.string.stick_type_group_commnet_message),
                         commentIsDeleted ?" ":RegexUtils.replaceImageIdAndNeedSpaceString(MarkdownConfig.IMAGE_FORMAT,
                                 postCommentListBean.getComment().getComment_content())));
 
