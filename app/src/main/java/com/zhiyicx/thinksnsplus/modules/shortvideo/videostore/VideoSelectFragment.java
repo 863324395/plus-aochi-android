@@ -3,26 +3,17 @@ package com.zhiyicx.thinksnsplus.modules.shortvideo.videostore;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.net.Uri;
-import android.provider.MediaStore;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.PopupWindow;
 
-import com.tym.shortvideo.interfaces.SingleCallback;
 import com.tym.shortvideo.media.VideoInfo;
-import com.tym.shortvideo.recodrender.ParamsManager;
-import com.tym.shortvideo.recordcore.CountDownManager;
 import com.tym.shortvideo.utils.TrimVideoUtil;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
-import com.zhiyicx.common.utils.ConvertUtils;
-import com.zhiyicx.common.utils.DrawableProvider;
-import com.zhiyicx.common.utils.FileUtils;
 import com.zhiyicx.common.utils.recycleviewdecoration.TGridDecoration;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.SendDynamicDataBean;
@@ -30,7 +21,6 @@ import com.zhiyicx.thinksnsplus.modules.dynamic.send.SendDynamicActivity;
 import com.zhiyicx.thinksnsplus.modules.shortvideo.adapter.VideoGridViewAdapter;
 import com.zhiyicx.thinksnsplus.modules.shortvideo.clipe.TrimmerActivity;
 import com.zhiyicx.thinksnsplus.modules.shortvideo.cover.CoverActivity;
-import com.zhiyicx.thinksnsplus.modules.shortvideo.preview.PreviewActivity;
 import com.zhiyicx.thinksnsplus.modules.shortvideo.record.RecordActivity;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 
@@ -148,7 +138,6 @@ public class VideoSelectFragment extends TSListFragment {
      * 初始化重发动态选择弹框
      */
     private void initReSendDynamicPopupWindow(VideoInfo videoInfo, Bitmap cover) {
-        if (mPopWindow == null) {
             mPopWindow = ActionPopupWindow.builder()
                     .item1Str(videoInfo.getDuration() >= 300000 ? "" : getString(R.string.direct_upload))
                     .item2Str(getString(R.string.edite_upload))
@@ -190,9 +179,7 @@ public class VideoSelectFragment extends TSListFragment {
                     })
                     .bottomClickListener(() -> mPopWindow.hide())
                     .build();
-        }
         mPopWindow.show();
-
     }
 
     @Override

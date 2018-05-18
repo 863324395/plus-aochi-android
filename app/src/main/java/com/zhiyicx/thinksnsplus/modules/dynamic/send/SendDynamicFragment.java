@@ -131,6 +131,8 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
     ScrollView mSlSendDynamic;
     @BindView(R.id.v_line_toll)
     View mTollLine;
+    @BindView(R.id.v_horizontal_line)
+    View mTitleUnderLine;
 
     @BindView(R.id.tv_custom_money)
     TextView mCustomMoney;
