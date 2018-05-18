@@ -59,7 +59,9 @@ public class DynamicListItemForNineImage extends DynamicListBaseItem {
         initImageView(holder, holder.getView(R.id.siv_8), dynamicBean, 8, 1);
 
         TextView size = holder.getTextView(R.id.tv_numshadow);
-        size.setVisibility(View.GONE);
+        int iamgeSize = dynamicBean.getImages().size();
+        size.setVisibility(iamgeSize > 9 ? View.VISIBLE : View.GONE);
+        size.setText("+" + iamgeSize);
         LogUtils.d("------------image 9  = " + (System.currentTimeMillis() - start));
 
     }
