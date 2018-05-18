@@ -132,8 +132,6 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
     View mTitleUnderLine;
     @BindView(R.id.v_line_toll)
     View mTollLine;
-    @BindView(R.id.v_horizontal_line)
-    View mHoriLine;
 
     @BindView(R.id.tv_custom_money)
     TextView mCustomMoney;
@@ -282,7 +280,7 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
         boolean canPay = mPresenter.getSystemConfigBean().getFeed().hasPaycontrol();
         mTvToll.setVisibility(canPay && dynamicType != SendDynamicDataBean.VIDEO_TEXT_DYNAMIC ? View.VISIBLE : View.GONE);
         if (dynamicType == SendDynamicDataBean.VIDEO_TEXT_DYNAMIC) {
-            mHoriLine.setVisibility(View.GONE);
+            mTitleUnderLine.setVisibility(View.GONE);
             mTollLine.setVisibility(View.GONE);
         }
     }
