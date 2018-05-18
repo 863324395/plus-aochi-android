@@ -57,6 +57,7 @@ import com.zhiyicx.thinksnsplus.modules.home.HomeActivity;
 import com.zhiyicx.thinksnsplus.modules.photopicker.PhotoAlbumDetailsActivity;
 import com.zhiyicx.thinksnsplus.modules.photopicker.PhotoViewActivity;
 import com.zhiyicx.thinksnsplus.modules.photopicker.PhotoViewFragment;
+import com.zhiyicx.thinksnsplus.modules.shortvideo.clipe.TrimmerActivity;
 import com.zhiyicx.thinksnsplus.modules.shortvideo.cover.CoverActivity;
 import com.zhiyicx.thinksnsplus.modules.shortvideo.cover.CoverFragment;
 import com.zhiyicx.thinksnsplus.modules.shortvideo.videostore.VideoSelectActivity;
@@ -447,11 +448,13 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                             SharePreferenceUtils.saveObject(mActivity, SharePreferenceUtils.VIDEO_DYNAMIC, mSendDynamicDataBean);
                         }
                         mCanclePopupWindow.hide();
+                        ActivityHandler.getInstance().removeActivity(VideoSelectActivity.class);
                         mActivity.finish();
                     })
                     .bottomClickListener(() -> {
                         SharePreferenceUtils.remove(mActivity, SharePreferenceUtils.VIDEO_DYNAMIC);
                         mCanclePopupWindow.hide();
+                        ActivityHandler.getInstance().removeActivity(VideoSelectActivity.class);
                         mActivity.finish();
                     })
                     .build();

@@ -169,7 +169,7 @@ public class PreviewFragment extends TSFragment implements MediaPlayerWrapper.IM
                     if (TextUtils.isEmpty(mVideoInfo.getCover())) {
                         mVideoView.takePic((bitmap, integer) -> {
                             mVideoInfo.setCover(com.zhiyicx.common.utils.FileUtils
-                                    .saveBitmapToFile(mActivity, bitmap, System.currentTimeMillis()+ParamsManager.VideoCover));
+                                    .saveBitmapToFile(mActivity, bitmap, System.currentTimeMillis() + ParamsManager.VideoCover));
                             combineVideo();
                         });
                     } else {
@@ -189,7 +189,7 @@ public class PreviewFragment extends TSFragment implements MediaPlayerWrapper.IM
         RxView.clicks(mCover)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .compose(this.bindToLifecycle())
-                .subscribe(aVoid -> CoverActivity.startCoverActivity(mActivity, srcList, false,false,true));
+                .subscribe(aVoid -> CoverActivity.startCoverActivity(mActivity, srcList, false, false, true));
 
         mVideoView.setOnFilterChangeListener(this);
     }
@@ -306,7 +306,7 @@ public class PreviewFragment extends TSFragment implements MediaPlayerWrapper.IM
      * 合并视频
      */
     private void combineVideo() {
-        final String path = FileUtils.getPath(ParamsManager.AlbumPath,ParamsManager.CombineVideo);
+        final String path = FileUtils.getPath(ParamsManager.AlbumPath, System.currentTimeMillis() + ParamsManager.CombineVideo);
         VideoCombineManager.getInstance()
                 .startVideoCombiner(VideoListManager.getInstance().getSubVideoPathList(),
                         path, new VideoCombiner.VideoCombineListener() {
@@ -341,7 +341,7 @@ public class PreviewFragment extends TSFragment implements MediaPlayerWrapper.IM
         VideoClipper clipper = new VideoClipper();
         clipper.showBeauty();
         clipper.setInputVideoPath(mActivity, path);
-        mOutputPath = FileUtils.getPath(ParamsManager.SaveVideo,System.currentTimeMillis()+ ParamsManager.ClipVideo);
+        mOutputPath = FileUtils.getPath(ParamsManager.SaveVideo, System.currentTimeMillis() + ParamsManager.ClipVideo);
         clipper.setFilterType(mFilterType);
         clipper.setOutputVideoPath(mOutputPath);
         clipper.setOnVideoCutFinishListener(new VideoClipper.OnVideoCutFinishListener() {

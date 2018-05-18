@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.shortvideo.clipe;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 import android.os.Bundle;
@@ -56,7 +57,6 @@ public class TrimmerFragment extends TSFragment implements TrimVideoListener {
 
 
     private ProgressDialog mProgressDialog;
-    private VideoInfo mVideoInfo;
 
     @Override
     public void onPause() {
@@ -99,8 +99,11 @@ public class TrimmerFragment extends TSFragment implements TrimVideoListener {
 
     @Override
     protected void initView(View rootView) {
+        setUpView();
+    }
+
+    private void setUpView() {
         String path = getArguments().getString(PATH);
-        mVideoInfo = getArguments().getParcelable(VIDEO);
         mVideoTrimmerView.setMaxDuration(TrimVideoUtil.VIDEO_MAX_DURATION);
         mVideoTrimmerView.setOnTrimVideoListener(this);
         mVideoTrimmerView.setVideoURI(Uri.parse(path));
@@ -152,8 +155,6 @@ public class TrimmerFragment extends TSFragment implements TrimVideoListener {
         arrayList.add(url);
         VideoListManager.getInstance().addSubVideo(url, mVideoTrimmerView.getDuration());
         CoverActivity.startCoverActivity(mActivity, arrayList, false, false,false);
-        mActivity.finish();
-
     }
 
     @Override
@@ -217,5 +218,10 @@ public class TrimmerFragment extends TSFragment implements TrimVideoListener {
         })
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(bitmaps -> mVideoTrimmerView.addImages(bitmaps));
+    }
+
+    public void onNewIntent(Intent intent) {
+        setArguments(intent.getExtras());
+        setUpView();
     }
 }

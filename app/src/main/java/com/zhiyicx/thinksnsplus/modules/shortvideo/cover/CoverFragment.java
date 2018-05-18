@@ -9,7 +9,6 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -28,15 +27,15 @@ import com.tym.shortvideo.view.VideoPreviewView;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
-import com.zhiyicx.common.utils.SharePreferenceUtils;
+import com.zhiyicx.common.utils.ActivityHandler;
 import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
-import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.base.EmptySubscribe;
 import com.zhiyicx.thinksnsplus.data.beans.SendDynamicDataBean;
 import com.zhiyicx.thinksnsplus.modules.dynamic.send.SendDynamicActivity;
+import com.zhiyicx.thinksnsplus.modules.shortvideo.clipe.TrimmerActivity;
 import com.zhiyicx.thinksnsplus.modules.shortvideo.helper.VideoCoverView;
 import com.zhiyicx.thinksnsplus.modules.shortvideo.record.RecordActivity;
 
@@ -181,7 +180,7 @@ public class CoverFragment extends TSFragment implements MediaPlayerWrapper.IMed
 
         String cover = com.zhiyicx.common.utils.FileUtils.saveBitmapToFile(mActivity,
                 mCoverBitmap,
-                System.currentTimeMillis()+ParamsManager.VideoCover);
+                System.currentTimeMillis() + ParamsManager.VideoCover);
 
         if (hasFilter) {
             mProgressDialog.dismiss();
@@ -302,7 +301,7 @@ public class CoverFragment extends TSFragment implements MediaPlayerWrapper.IMed
      * 合并视频,顺道压缩
      */
     private void combineVideo(String cover) {
-        final String path = FileUtils.getPath(ParamsManager.AlbumPath, ParamsManager.CombineVideo);
+        final String path = FileUtils.getPath(ParamsManager.AlbumPath, System.currentTimeMillis() + ParamsManager.CombineVideo);
         mSubscription = Observable.just(path)
                 .subscribe(s -> VideoCombineManager.getInstance()
                         .startVideoCombiner(VideoListManager.getInstance().getSubVideoPathList(),
@@ -351,10 +350,11 @@ public class CoverFragment extends TSFragment implements MediaPlayerWrapper.IMed
                                         sendDynamicDataBean.setDynamicType(SendDynamicDataBean
                                                 .VIDEO_TEXT_DYNAMIC);
                                         sendDynamicDataBean.setVideoInfo(mVideoInfo);
+                                        mProgressDialog.dismiss();
+                                        ActivityHandler.getInstance().removeActivity(TrimmerActivity.class);
+                                        ActivityHandler.getInstance().removeActivity(SendDynamicActivity.class);
                                         SendDynamicActivity.startToSendDynamicActivity(getContext(),
                                                 sendDynamicDataBean);
-
-                                        mProgressDialog.dismiss();
                                         mActivity.finish();
                                     }
                                 }));
@@ -370,7 +370,7 @@ public class CoverFragment extends TSFragment implements MediaPlayerWrapper.IMed
                         VideoClipper clipper = new VideoClipper();
                         clipper.showBeauty();
                         clipper.setInputVideoPath(mActivity, path);
-                        String mOutputPath = FileUtils.getPath(ParamsManager.SaveVideo,System.currentTimeMillis()+ ParamsManager.ClipVideo);
+                        String mOutputPath = FileUtils.getPath(ParamsManager.SaveVideo, System.currentTimeMillis() + ParamsManager.ClipVideo);
                         clipper.setFilterType(MagicFilterType.NONE);
                         clipper.setOutputVideoPath(mOutputPath);
                         try {
@@ -381,7 +381,7 @@ public class CoverFragment extends TSFragment implements MediaPlayerWrapper.IMed
                         clipper.setOnVideoCutFinishListener(new VideoClipper.OnVideoCutFinishListener() {
                             @Override
                             public void onFinish() {
-                                mSubscription = Observable.empty() .subscribe(new EmptySubscribe<Object>() {
+                                mSubscription = Observable.empty().subscribe(new EmptySubscribe<Object>() {
                                     @Override
                                     public void onCompleted() {
                                         FileUtils.updateMediaStore(mActivity, mOutputPath, (s, uri) -> {

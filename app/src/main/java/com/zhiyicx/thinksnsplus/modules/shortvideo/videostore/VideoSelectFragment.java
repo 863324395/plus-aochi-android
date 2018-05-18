@@ -210,9 +210,4 @@ public class VideoSelectFragment extends TSListFragment {
         dismissPop(mPopWindow);
         super.onDestroyView();
     }
-
-    @Override
-    protected void setLeftClick() {
-        super.setLeftClick();
-    }
 }
