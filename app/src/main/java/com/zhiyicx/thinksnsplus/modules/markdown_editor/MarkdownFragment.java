@@ -578,12 +578,16 @@ public class MarkdownFragment<Draft extends BaseDraftBean, P extends MarkdownCon
      */
     @Override
     public void onUploading(long id, String filePath, int progress, int imgeId) {
-        getActivity().runOnUiThread(() -> {
-            if (progress == 100) {
-                mImages.add(imgeId);
-            }
-            mRichTextView.setImageUploadProcess(id, progress, imgeId);
-        });
+        if (mActivity != null) {
+            mActivity.runOnUiThread(() -> {
+                if (mRichTextView != null && mImages != null) {
+                    if (progress == 100) {
+                        mImages.add(imgeId);
+                    }
+                    mRichTextView.setImageUploadProcess(id, progress, imgeId);
+                }
+            });
+        }
     }
 
     /**
@@ -594,11 +598,15 @@ public class MarkdownFragment<Draft extends BaseDraftBean, P extends MarkdownCon
      */
     @Override
     public void onFailed(String filePath, long id) {
-        getActivity().runOnUiThread(() -> {
-            mRichTextView.setImageFailed(id);
-            mInsertedImages.remove(id);
-            mFailedImages.put(id, filePath);
-        });
+        if (mActivity != null) {
+            mActivity.runOnUiThread(() -> {
+                if (mRichTextView != null && mInsertedImages != null && mFailedImages != null) {
+                    mRichTextView.setImageFailed(id);
+                    mInsertedImages.remove(id);
+                    mFailedImages.put(id, filePath);
+                }
+            });
+        }
     }
 
     /**
@@ -889,17 +897,19 @@ public class MarkdownFragment<Draft extends BaseDraftBean, P extends MarkdownCon
 
     /**
      * 设置默认的标题文字
+     *
      * @param title
      */
-    protected void setDefalutTitlePlaceHolder(String title){
+    protected void setDefalutTitlePlaceHolder(String title) {
         mRichTextView.setDefalutTitlePlaceHolder(title);
     }
 
     /**
      * 设置默认的正文文字
+     *
      * @param content
      */
-    protected void setDefalutContentPlaceHolder(String content){
+    protected void setDefalutContentPlaceHolder(String content) {
         mRichTextView.setDefalutContentPlaceHolder(content);
     }
 
