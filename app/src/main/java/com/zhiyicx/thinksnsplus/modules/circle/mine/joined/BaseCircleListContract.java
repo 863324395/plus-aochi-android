@@ -37,6 +37,8 @@ public interface BaseCircleListContract {
         void cleaerAllSearchHistory();
 
         void deleteSearchHistory(CircleSearchHistoryBean circleSearchHistoryBean);
+
+        void getRecommendCircle(Integer limit, int offet, String type);
     }
 
 }
