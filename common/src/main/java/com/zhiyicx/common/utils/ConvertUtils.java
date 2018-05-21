@@ -24,8 +24,6 @@ import com.klinker.android.link_builder.LinkBuilder;
 import com.zhiyicx.common.config.ConstantConfig;
 
 import org.jetbrains.annotations.NotNull;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -1238,27 +1236,6 @@ public class ConvertUtils {
             //  Logger.e(e.toString());
         }
         return "";
-    }
-
-    /**
-     * 封装JSON格式的数据，上传给服务器
-     * @param map
-     * @return
-     */
-    public static String buildJSONDataToServer(Map map) {
-        if (map == null || map.isEmpty()) {
-            return null;
-        }
-        Set<String> keys = map.keySet();
-        JSONObject jsonObject = new JSONObject();
-        for (String value : keys) {
-            try {
-                jsonObject.put(value, map.get(value));
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
-        return jsonObject.toString();
     }
 
 

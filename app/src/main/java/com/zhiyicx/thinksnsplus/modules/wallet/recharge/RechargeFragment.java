@@ -31,7 +31,6 @@ import com.zhiyicx.thinksnsplus.data.beans.RechargeSuccessBean;
 import com.zhiyicx.thinksnsplus.data.beans.WalletConfigBean;
 import com.zhiyicx.tspay.TSPayClient;
 
-import org.jetbrains.annotations.NotNull;
 import org.simple.eventbus.EventBus;
 
 import java.util.ArrayList;
@@ -134,11 +133,6 @@ public class RechargeFragment extends TSFragment<RechargeContract.Presenter> imp
     }
 
     @Override
-    public void payCredentialsResult(@NotNull String payStrBean) {
-
-    }
-
-    @Override
     protected void snackViewDismissWhenTimeOut(Prompt prompt, String message) {
         super.snackViewDismissWhenTimeOut(prompt);
         if (getActivity() != null && Prompt.SUCCESS == prompt && getString(R.string.recharge_success).equals(message)) {
@@ -188,12 +182,6 @@ public class RechargeFragment extends TSFragment<RechargeContract.Presenter> imp
     @Override
     public double getMoney() {
         return mRechargeMoney;
-    }
-
-    @NotNull
-    @Override
-    public Activity getCurrentActivity() {
-        return mActivity;
     }
 
     private void initRechargeLables() {
@@ -255,7 +243,7 @@ public class RechargeFragment extends TSFragment<RechargeContract.Presenter> imp
                 .compose(this.bindToLifecycle())
                 .subscribe(aVoid -> {
                     mBtTop.setEnabled(false);
-                    mPresenter.getPayStrV2(mPayType, PayConfig.realCurrencyYuan2Fen(mRechargeMoney));
+                    mPresenter.getPayStr(mPayType, PayConfig.realCurrencyYuan2Fen(mRechargeMoney));
                 });// 传入的是真实货币分单位
 
         RxTextView.textChanges(mEtInput).subscribe(charSequence -> {
@@ -337,13 +325,13 @@ public class RechargeFragment extends TSFragment<RechargeContract.Presenter> imp
                 .backgroundAlpha(CustomPopupWindow.POPUPWINDOW_ALPHA)
                 .with(getActivity())
                 .item2ClickListener(() -> {
-                    mPayType = TSPayClient.CHANNEL_ALIPAY_V2;
+                    mPayType = TSPayClient.CHANNEL_ALIPAY;
                     mBtRechargeStyle.setRightText(getString(R.string.choose_recharge_style_formart, getString(R.string.alipay)));
                     mPayStylePopupWindow.hide();
                     configSureButton();
                 })
                 .item3ClickListener(() -> {
-                    mPayType = TSPayClient.CHANNEL_WXPAY_V2;
+                    mPayType = TSPayClient.CHANNEL_WX;
                     mBtRechargeStyle.setRightText(getString(R.string.choose_recharge_style_formart, getString(R.string.wxpay)));
                     mPayStylePopupWindow.hide();
                     configSureButton();

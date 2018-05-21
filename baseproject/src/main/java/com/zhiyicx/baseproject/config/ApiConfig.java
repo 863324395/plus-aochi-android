@@ -1039,11 +1039,6 @@ public class ApiConfig {
     //    钱包余额转积分
     public static final String APP_PAHT_WALLET_BALANCE_TO_INTEGRATION = "api/" + API_VERSION_2 + "/plus-pay/transform";
 
-    // 支付宝充值
-    public static final String APP_PAHT_WALLET_RECHARGE_V2 = "api/" + API_VERSION_2 + "/walletRecharge/orders";
-
-    // 充值验证
-    public static final String APP_PAHT_WALLET_VERIFY_V2 = "api/" + API_VERSION_2 + "/walletRecharge/checkOrders";
 
     /**
      * 积分
