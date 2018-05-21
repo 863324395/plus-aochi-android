@@ -85,12 +85,20 @@ public class RewardListPresenter extends AppBasePresenter<RewardListContract.Vie
 
             @Override
             protected void onFailure(String message, int code) {
-                mRootView.showMessage(message);
+                if(!isLoadMore&&mRootView.getCacheData()!=null) {
+                    mRootView.onNetResponseSuccess(mRootView.getCacheData(), isLoadMore);
+                }else {
+                    mRootView.showMessage(message);
+                }
             }
 
             @Override
             protected void onException(Throwable throwable) {
-                mRootView.onResponseError(throwable, isLoadMore);
+                if(!isLoadMore&&mRootView.getCacheData()!=null) {
+                    mRootView.onNetResponseSuccess(mRootView.getCacheData(), isLoadMore);
+                }else {
+                    mRootView.onResponseError(throwable, isLoadMore);
+                }
             }
         });
         addSubscrebe(subscription);
@@ -99,7 +107,7 @@ public class RewardListPresenter extends AppBasePresenter<RewardListContract.Vie
 
     @Override
     public void requestCacheData(Long maxId, boolean isLoadMore) {
-        mRootView.onCacheResponseSuccess(mRootView.getCacheData(), isLoadMore);
+        mRootView.onCacheResponseSuccess(new ArrayList<>(), isLoadMore);
 
     }
 
