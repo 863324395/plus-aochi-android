@@ -252,7 +252,7 @@ public class BaseCircleListPresenter extends AppBasePresenter<BaseCircleListCont
 
     @Override
     public List<CircleSearchHistoryBean> getFirstShowHistory() {
-        List<CircleSearchHistoryBean> historyBeans = mCircleSearchBeanGreenDao.getFristShowData(DEFAULT_FIRST_SHOW_HISTORY_SIZE, QASearchHistoryBean.TYPE_QA, true);
+        List<CircleSearchHistoryBean> historyBeans = mCircleSearchBeanGreenDao.getFristShowData(DEFAULT_FIRST_SHOW_HISTORY_SIZE, CircleSearchHistoryBean.TYPE_CIRCLE, true);
         if (historyBeans == null || historyBeans.isEmpty()) {
             getRecommendCircle(TSListFragment.DEFAULT_PAGE_DB_SIZE, 0, CircleClient.MineCircleType.RANDOM.value);
         }
