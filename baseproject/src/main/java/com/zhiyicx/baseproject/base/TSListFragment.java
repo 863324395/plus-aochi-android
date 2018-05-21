@@ -899,6 +899,14 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
         return DEFAULT_PAGE_SIZE;
     }
 
+    /**
+     * 偏移量
+     * @return
+     */
+    protected int getOffset() {
+        return getPage() * (DEFAULT_PAGE_SIZE == null ? DEFAULT_PAGE_DB_SIZE : DEFAULT_PAGE_SIZE);
+    }
+
 
     /**
      * 没有更多数据了的提示

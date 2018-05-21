@@ -750,8 +750,7 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
 
     @Override
     protected Long getMaxId(@NotNull List<CirclePostListBean> data) {
-        int pinnedCount = mCircleZipBean == null ? 0 : mCircleZipBean.getPinnedCount();
-        return (long) mListDatas.size() - pinnedCount;
+        return (long) getOffset();
     }
 
     @Override
@@ -832,7 +831,7 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
                     boolean sourceIsMine = AppApplication.getMyUserIdWithdefault() == circlePostListBean.getUser_id();
 
                     StickTopFragment.startSticTopActivity(getActivity(), StickTopFragment.TYPE_POST, circlePostListBean.getId(), circlePostListBean
-                            .getComments().get(commentPosition).getId(),sourceIsMine);
+                            .getComments().get(commentPosition).getId(), sourceIsMine);
 
                 })
                 .item2ClickListener(() -> {
@@ -1412,9 +1411,9 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
                     mPresenter.dealCircleJoinOrExit(mCircleInfo);
                 }
                 break;
-                /*
-                 * 举报圈子
-                 */
+            /*
+             * 举报圈子
+             */
             case R.id.bt_report_circle:
                 if (mPresenter.handleTouristControl()) {
                     return;
