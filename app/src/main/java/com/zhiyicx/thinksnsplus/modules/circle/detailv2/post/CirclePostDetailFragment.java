@@ -414,6 +414,7 @@ public class CirclePostDetailFragment extends TSListFragment<CirclePostDetailCon
         mPostDetailHeaderView = new PostDetailHeaderView(getContext(), mPresenter.getAdvert());
         mPostDetailHeaderView.setWebLoadListener(this);
         mPostDetailHeaderView.setCanGotoCircle(canGotoCircle);
+        mPostDetailHeaderView.setShowMessageListener(this::showSnackErrorMessage);
         mHeaderAndFooterWrapper.addHeaderView(mPostDetailHeaderView.getInfoDetailHeader());
         View mFooterView = new View(getContext());
         mFooterView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams
