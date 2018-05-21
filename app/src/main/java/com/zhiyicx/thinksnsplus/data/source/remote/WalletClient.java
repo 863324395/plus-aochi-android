@@ -30,6 +30,8 @@ import static com.zhiyicx.baseproject.config.ApiConfig.APP_PAHT_WALLET_RECHARGE;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PAHT_WALLET_RECHARGE_SUCCESS;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PAHT_WALLET_RECHARGE_SUCCESS_CALLBACK;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PAHT_WALLET_RECHARGE_SUCCESS_LIST;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PAHT_WALLET_RECHARGE_V2;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PAHT_WALLET_VERIFY_V2;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PAHT_WALLET_WITHDRAW;
 
 
@@ -94,6 +96,22 @@ public interface WalletClient {
     @FormUrlEncoded
     @POST(APP_PAHT_WALLET_RECHARGE)
     Observable<PayStrV2Bean> getPayStr(@Field("type") String channel, @Field("amount") long amount, @Field("extra") String extra);
+
+    /**
+     * 发起充值V2 2018-5-21 09:55:47 by tym
+     */
+    @FormUrlEncoded
+    @POST(APP_PAHT_WALLET_RECHARGE_V2)
+    Observable<BaseJsonV2<String>> getPayStrV2(@Field("type") String channel, @Field("amount") long amount, @Field("from") String from);
+
+
+    /**
+     * 支付宝充值验证V2 2018-5-21 09:55:47 by tym
+     * 三个参数信息是支付宝返回来的
+     */
+    @FormUrlEncoded
+    @POST(APP_PAHT_WALLET_VERIFY_V2)
+    Observable<BaseJsonV2<String>> aliPayVerify(@Field("memo") String memo, @Field("result") String result, @Field("resultStatus") String resultStatus);
 
     /**
      * 钱包余额转积分

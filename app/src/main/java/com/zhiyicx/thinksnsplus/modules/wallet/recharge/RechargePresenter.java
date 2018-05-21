@@ -1,21 +1,24 @@
 package com.zhiyicx.thinksnsplus.modules.wallet.recharge;
 
-import com.zhiyicx.baseproject.config.ApiConfig;
-import com.zhiyicx.thinksnsplus.BuildConfig;
+import com.alipay.sdk.app.PayTask;
+import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.thinksnsplus.R;
-import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
-import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
-import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
 import com.zhiyicx.thinksnsplus.data.beans.PayStrV2Bean;
 import com.zhiyicx.thinksnsplus.data.beans.RechargeSuccessBean;
 import com.zhiyicx.thinksnsplus.data.source.local.BackgroundRequestTaskBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.BillRepository;
 
+import org.jetbrains.annotations.NotNull;
+
+import java.util.Map;
+
 import javax.inject.Inject;
 
+import rx.Observable;
 import rx.Subscription;
+import rx.functions.Func1;
 
 /**
  * @Describe
@@ -66,6 +69,44 @@ public class RechargePresenter extends AppBasePresenter<RechargeContract.View> i
             }
 
         });
+    }
+
+    @Override
+    public void getPayStrV2(@NotNull String channel, double amount) {
+        if (mRootView.getMoney() != (int) mRootView.getMoney() && mRootView.useInputMonye()) {
+            mRootView.initmRechargeInstructionsPop();
+            return;
+        }
+        mBillRepository.getPayStrV2(channel, 1)
+                .doOnSubscribe(() -> {
+                    mRootView.configSureBtn(false);
+                    mRootView.showSnackLoadingMessage(mContext.getString(R.string.recharge_credentials_ing));
+                })
+                .flatMap((Func1<BaseJsonV2<String>, Observable<Map<String, String>>>) stringBaseJsonV2 -> {
+                    String orderInfo = stringBaseJsonV2.getData();
+                    PayTask alipay = new PayTask(mRootView.getCurrentActivity());
+                    return Observable.just(alipay.payV2(orderInfo, true));
+                }).flatMap((Func1<Map<String, String>, Observable<BaseJsonV2<String>>>) stringStringMap -> mBillRepository.aliPayVerify(stringStringMap.get("memo"),
+                        stringStringMap.get("result"), stringStringMap.get("resultStatus"))).subscribe(new BaseSubscribeForV2<BaseJsonV2<String>>() {
+            @Override
+            protected void onSuccess(BaseJsonV2<String> data) {
+                mRootView.showSnackSuccessMessage(data.getMessage().get(0));
+            }
+
+            @Override
+            protected void onFailure(String message, int code) {
+                super.onFailure(message, code);
+                mRootView.showSnackErrorMessage(message);
+            }
+
+            @Override
+            protected void onException(Throwable throwable) {
+                super.onException(throwable);
+                mRootView.showSnackErrorMessage(throwable.getMessage());
+            }
+        });
+
+
     }
 
     @Override

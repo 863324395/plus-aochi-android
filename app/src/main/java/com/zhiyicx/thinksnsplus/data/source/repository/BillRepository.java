@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.data.source.repository;
 
 import com.zhiyicx.baseproject.base.TSListFragment;
+import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.rxerrorhandler.functions.RetryWithDelay;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
@@ -23,7 +24,6 @@ import javax.inject.Inject;
 
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 import static com.zhiyicx.thinksnsplus.data.source.repository.MessageRepository.MAX_RETRY_COUNTS;
@@ -145,6 +145,25 @@ public class BillRepository implements IBillRepository {
         return mWalletClient.getPayStr(channel, (long) amount, null)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    @Override
+    public Observable<BaseJsonV2<String>> getPayStrV2(String channel, double amount) {
+        return mWalletClient.getPayStrV2(channel, (long) amount, "" + ApiConfig.ANDROID_PLATFORM)
+                .subscribeOn(Schedulers.io())
+                .observeOn(Schedulers.io());
+    }
+
+    @Override
+    public Observable<BaseJsonV2<String>> aliPayVerify(String memo, String result, String resultStatus) {
+        return mWalletClient.aliPayVerify(memo, result, resultStatus)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    @Override
+    public Observable<BaseJsonV2<String>> wxPayVerify(String memo, String result, String resultStatus) {
+        return null;
     }
 
     /**

@@ -21,6 +21,7 @@ public class TSPayClient {
      * 手机支付宝 APP 支付
      */
     public static final String CHANNEL_ALIPAY = "alipay";
+    public static final String CHANNEL_ALIPAY_V2 = "AlipayOrder";
     /**
      * 手机支付宝扫码支付
      */
@@ -34,6 +35,7 @@ public class TSPayClient {
      * 充值用 wx \ 提现用 wechat
      */
     public static final String CHANNEL_WXPAY = "wechat";
+    public static final String CHANNEL_WXPAY_V2 = "WechatOrder";
     public static final String CHANNEL_WX = "wx";
     /**
      * 余额支付
@@ -51,7 +53,9 @@ public class TSPayClient {
         PAY_KEYS_TYPE.put(CHANNEL_ALIPAY, R.string.alipay);
         PAY_KEYS_TYPE.put(CHANNEL_ALIQRPAY, R.string.alipay);
         PAY_KEYS_TYPE.put(CHANNEL_ALIWAPPAY, R.string.alipay);
+        PAY_KEYS_TYPE.put(CHANNEL_ALIPAY_V2, R.string.alipay);
         PAY_KEYS_TYPE.put(CHANNEL_WXPAY, R.string.wxpay);
+        PAY_KEYS_TYPE.put(CHANNEL_WXPAY_V2, R.string.wxpay);
         PAY_KEYS_TYPE.put(CHANNEL_WX, R.string.wxpay);
         PAY_KEYS_TYPE.put(CHANNEL_WXWAPPAY, R.string.wxpay);
     }
