@@ -15,6 +15,7 @@ import android.widget.TextView;
 import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyi.richtexteditorlib.view.dialogs.LinkDialog;
 import com.zhiyicx.baseproject.base.TSListFragment;
+import com.zhiyicx.baseproject.config.MarkdownConfig;
 import com.zhiyicx.baseproject.widget.DynamicDetailMenuView;
 import com.zhiyicx.baseproject.widget.InputLimitView;
 import com.zhiyicx.baseproject.widget.UserAvatarView;
@@ -22,6 +23,7 @@ import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.BuildConfig;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.FileUtils;
+import com.zhiyicx.common.utils.RegexUtils;
 import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
@@ -656,11 +658,15 @@ public class CirclePostDetailFragment extends TSListFragment<CirclePostDetailCon
                                             .getDimensionPixelOffset(R.dimen.report_resource_img),
                                     100);
                         }
-
+                        // 预览的文字
+                        String des = circlePostListBean.getSummary();
+                        if (TextUtils.isEmpty(des)) {
+                            des = RegexUtils.replaceImageId(MarkdownConfig.IMAGE_FORMAT, circlePostListBean.getSummary());
+                        }
                         ReportActivity.startReportActivity(mActivity, new ReportResourceBean
                                 (circlePostListBean.getUser(), String.valueOf
                                         (circlePostListBean.getId()),
-                                        circlePostListBean.getTitle(), img, circlePostListBean.getSummary(), ReportType.CIRCLE_POST));
+                                        circlePostListBean.getTitle(), img, des, ReportType.CIRCLE_POST));
                         mDealPostPopWindow.hide();
                     }
                 })
