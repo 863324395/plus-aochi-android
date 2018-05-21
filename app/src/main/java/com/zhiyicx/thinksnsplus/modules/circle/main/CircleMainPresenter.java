@@ -88,6 +88,13 @@ public class CircleMainPresenter extends AppBasePresenter<CircleMainContract.Vie
                         myJoinedCircle.add(0, moreJoined);
                     }
 
+                    // 当没有推荐时，不显示推荐一栏
+                    if (recommendCircle.isEmpty()) {
+                        mRootView.setJoinedCircles(new ArrayList<>(myJoinedCircle));
+                        mRootView.setRecommendCircles(new ArrayList<>(recommendCircle));
+                        return myJoinedCircle;
+                    }
+
                     CircleInfo changeCircle = new CircleInfo();
                     changeCircle.setName(mContext.getString(R.string.recommend_group));
                     changeCircle.setSummary(mContext.getString(R.string.exchange_group));

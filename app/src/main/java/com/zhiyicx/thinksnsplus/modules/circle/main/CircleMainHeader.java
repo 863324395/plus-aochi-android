@@ -8,6 +8,8 @@ import android.text.style.ForegroundColorSpan;
 import android.text.style.RelativeSizeSpan;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 import com.zhiyicx.baseproject.widget.button.CombinationButton;
 import com.zhiyicx.common.utils.SkinUtils;
@@ -46,6 +48,9 @@ public class CircleMainHeader {
         mCircleMainHeader = LayoutInflater.from(context).inflate(R.layout
                 .circle_main_header, null);
 
+        LinearLayout advertLinearLayout = (LinearLayout) mCircleMainHeader.findViewById(R.id.ll_advert);
+        LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) advertLinearLayout.getLayoutParams();
+        params.setMargins(0, 0, 0, 0);
         mCircleCount = (CombinationButton) mCircleMainHeader.findViewById(R.id.tv_circle_count);
         mAdvertTag = mCircleMainHeader.findViewById(R.id.ll_advert_tag);
         mAdvertTag.setVisibility(View.GONE);
