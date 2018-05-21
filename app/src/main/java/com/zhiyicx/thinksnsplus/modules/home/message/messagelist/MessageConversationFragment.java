@@ -124,7 +124,7 @@ public class MessageConversationFragment extends TSListFragment<MessageConversat
         if (mPresenter != null) {
             if (mListDatas.isEmpty()) {
                 mRefreshlayout.autoRefresh(0);
-            }else{
+            } else {
                 mPresenter.requestNetData(DEFAULT_PAGE_MAX_ID, false);
             }
             mPresenter.refreshConversationReadMessage();
@@ -137,7 +137,7 @@ public class MessageConversationFragment extends TSListFragment<MessageConversat
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
-        if (isVisibleToUser){
+        if (isVisibleToUser && mSearchView != null) {
             mSearchView.setText("");
         }
 
@@ -271,7 +271,7 @@ public class MessageConversationFragment extends TSListFragment<MessageConversat
                 if (TextUtils.isEmpty(groupId)) {
                     return;
                 }
-                NotificationUtil.showTextNotification(mActivity,groupName + "[群]解散了");
+                NotificationUtil.showTextNotification(mActivity, groupName + "[群]解散了");
                 EMClient.getInstance().chatManager().deleteConversation(groupId, true);
                 if (mPresenter != null) {
                     mPresenter.deleteGroup(groupId);
@@ -281,7 +281,7 @@ public class MessageConversationFragment extends TSListFragment<MessageConversat
                 if (TextUtils.isEmpty(groupId)) {
                     return;
                 }
-                NotificationUtil.showTextNotification(mActivity, "你被管理员移出"+groupName+"[群聊]");
+                NotificationUtil.showTextNotification(mActivity, "你被管理员移出" + groupName + "[群聊]");
                 EMClient.getInstance().chatManager().deleteConversation(groupId, true);
                 if (mPresenter != null) {
                     mPresenter.deleteGroup(groupId);
