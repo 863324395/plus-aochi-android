@@ -135,7 +135,7 @@ public class CircleReportItem extends BaseTopItem implements BaseTopItem.TopRevi
         if (contentIsNull) {
             detailContentView.setText(R.string.review_content_deleted);
         } else {
-            String detailContent = isPost ? postListBean.getSummary() : commentBean.getContent();
+            String detailContent = isPost ? RegexUtils.replaceImageId(MarkdownConfig.IMAGE_FORMAT, postListBean.getSummary()) : commentBean.getContent();
             detailContentView.setText(detailContent);
         }
         contentView.setText(circleReportListBean.getContent());
