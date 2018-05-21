@@ -881,7 +881,7 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
                 .item2ClickListener(() -> {
                     // 收藏
                     handleCollect(position);
-                    mOtherPostPopWindow.hide();
+                    mMyPostPopWindow.hide();
                     showBottomView(true);
                 })
                 .item3ClickListener(() -> {
