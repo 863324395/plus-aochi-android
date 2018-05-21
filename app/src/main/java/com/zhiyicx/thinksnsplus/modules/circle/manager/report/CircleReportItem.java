@@ -98,22 +98,22 @@ public class CircleReportItem extends BaseTopItem implements BaseTopItem.TopRevi
         ImageUtils.loadCircleUserHeadPic(circleReportListBean.getUser(), holder.getView(R
                 .id.iv_headpic));
 
-        TextView review_flag = holder.getTextView(R.id.tv_review);
-        review_flag.setVisibility(contentIsNull ? View.GONE : View.VISIBLE);
+        TextView reviewFlag = holder.getTextView(R.id.tv_review);
+        reviewFlag.setVisibility(contentIsNull ? View.GONE : View.VISIBLE);
         if (circleReportListBean.getStatus() == CircleReportListBean.TOP_REVIEW) {
-            review_flag.setTextColor(holder.itemView.getResources().getColor(R.color
+            reviewFlag.setTextColor(holder.itemView.getResources().getColor(R.color
                     .dyanmic_top_flag));
-            review_flag.setText(holder.itemView.getResources().getString(R.string.review_ing));
+            reviewFlag.setText(holder.itemView.getResources().getString(R.string.review_ing));
         } else {
             if (circleReportListBean.getStatus() == CircleReportListBean.TOP_REFUSE) {
-                review_flag.setTextColor(holder.itemView.getResources().getColor(R.color
+                reviewFlag.setTextColor(holder.itemView.getResources().getColor(R.color
                         .message_badge_bg));
-                review_flag.setText(holder.itemView.getResources().getString(R.string
+                reviewFlag.setText(holder.itemView.getResources().getString(R.string
                         .circle_report_refuse));
             } else {
-                review_flag.setTextColor(holder.itemView.getResources().getColor(R.color
+                reviewFlag.setTextColor(holder.itemView.getResources().getColor(R.color
                         .general_for_hint));
-                review_flag.setText(holder.itemView.getResources().getString(R.string
+                reviewFlag.setText(holder.itemView.getResources().getString(R.string
                         .circle_report_done));
             }
         }
@@ -189,7 +189,7 @@ public class CircleReportItem extends BaseTopItem implements BaseTopItem.TopRevi
                     toDetail(circleId, postId, isComment);
                 });
 
-        RxView.clicks(review_flag)
+        RxView.clicks(reviewFlag)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .subscribe(aVoid -> {
                     if (circleReportListBean.getStatus() == 0) {
