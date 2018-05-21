@@ -597,10 +597,11 @@ public class CirclePostDetailFragment extends TSListFragment<CirclePostDetailCon
         mDealPostPopWindow = ActionPopupWindow.builder()
                 .item1Str(isMine && !isBlackList && !isManager ? getString(R.string.post_apply_for_top) : "")
                 .item2Str(getString(isManager ? (isPinned ? R.string.post_undo_top : R.string.post_apply_top) : R.string.empty))
-                .item3Str(isMine ? getString(R.string.delete_post) : (!isBlackList ? getString(isCollected ? R
+                .item3Str((!isBlackList ? getString(isCollected ? R
                         .string.dynamic_list_uncollect_dynamic : R.string.dynamic_list_collect_dynamic) : null))
-                .item4Str(getString(isManager && !isMine ? R.string.delete_post : R.string.empty))
-                .item5Str(isMine || isBlackList || isManager ? getString(R.string.empty) : getString(R.string.report))
+                .item4Str(isMine ? getString(R.string.delete_post) : null)
+                .item5Str(getString(isManager && !isMine ? R.string.delete_post : R.string.empty))
+                .item6Str(isMine || isBlackList || isManager ? getString(R.string.empty) : getString(R.string.report))
                 .bottomStr(getString(R.string.cancel))
                 .isOutsideTouch(true)
                 .isFocus(true)
@@ -627,21 +628,21 @@ public class CirclePostDetailFragment extends TSListFragment<CirclePostDetailCon
                 })
                 .item3ClickListener(() -> {
                     // 收藏
-                    // 如果是自己发布的，则不能收藏只能删除
-                    if (isMine) {
-                        showDeleteTipPopupWindow(getString(R.string.delete_post), true, circlePostListBean);
-                    } else {
-                        mPresenter.handleCollect(!circlePostListBean.getCollected(),
-                                circlePostListBean.getId());
-                    }
+                    mPresenter.handleCollect(!circlePostListBean.getCollected(),
+                            circlePostListBean.getId());
+
                     mDealPostPopWindow.hide();
                 })
                 .item4ClickListener(() -> {
-                    // 管理员删除
                     showDeleteTipPopupWindow(getString(R.string.delete_post), true, circlePostListBean);
                     mDealPostPopWindow.hide();
                 })
                 .item5ClickListener(() -> {
+                    // 管理员删除
+                    showDeleteTipPopupWindow(getString(R.string.delete_post), true, circlePostListBean);
+                    mDealPostPopWindow.hide();
+                })
+                .item6ClickListener(() -> {
                     // 举报
                     if (!mPresenter.handleTouristControl()) {
                         String img = "";
