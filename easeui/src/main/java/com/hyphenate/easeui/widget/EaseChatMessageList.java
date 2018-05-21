@@ -54,6 +54,10 @@ public class EaseChatMessageList extends RelativeLayout {
         LayoutInflater.from(context).inflate(R.layout.ease_chat_message_list, this);
         swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.chat_swipe_layout);
         listView = (ListView) findViewById(R.id.list);
+        View view = new View(getContext());
+        view.setLayoutParams(new AbsListView.LayoutParams(AbsListView.LayoutParams.MATCH_PARENT, getResources().getDimensionPixelOffset(R.dimen
+                .chat_bottom_footer_height)));
+        listView.addFooterView(view);
     }
 
     /**
@@ -67,10 +71,6 @@ public class EaseChatMessageList extends RelativeLayout {
             onTipMsgClickListener) {
         this.chatType = chatType;
         this.toChatUsername = toChatUsername;
-        View view = new View(getContext());
-        view.setLayoutParams(new AbsListView.LayoutParams(AbsListView.LayoutParams.MATCH_PARENT, getResources().getDimensionPixelOffset(R.dimen
-                .chat_bottom_footer_height)));
-        listView.addFooterView(view);
         conversation = EMClient.getInstance().chatManager().getConversation(toChatUsername, EaseCommonUtils.getConversationType(chatType), true);
         messageAdapter = new EaseMessageAdapter(context, toChatUsername, chatType, listView, onTipMsgClickListener);
         messageAdapter.setItemStyle(itemStyle);

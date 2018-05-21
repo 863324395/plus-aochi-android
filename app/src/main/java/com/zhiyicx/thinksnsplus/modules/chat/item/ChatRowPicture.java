@@ -8,6 +8,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
+import com.bumptech.glide.load.model.GlideUrl;
 import com.hyphenate.chat.EMImageMessageBody;
 import com.hyphenate.chat.EMMessage;
 import com.hyphenate.easeui.bean.ChatUserInfoBean;
@@ -20,6 +21,7 @@ import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.DrawableProvider;
 import com.zhiyicx.common.utils.FileUtils;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.TSEaseChatFragment;
 import com.zhiyicx.thinksnsplus.data.beans.AnimationRectBean;
 import com.zhiyicx.thinksnsplus.modules.chat.ChatActivity;
@@ -182,6 +184,7 @@ public class ChatRowPicture extends ChatBaseRow {
                         ArrayList<AnimationRectBean> animationRectBeanArrayList
                                 = new ArrayList<>();
                         ImageBean imageBean = new ImageBean();
+                        imageBean.setListCacheUrl(new GlideUrl(url));
                         imageBean.setImgUrl(url);
                         imageBean.setStorage_id(0);
                         imageBean.setWidth(finalWidth);

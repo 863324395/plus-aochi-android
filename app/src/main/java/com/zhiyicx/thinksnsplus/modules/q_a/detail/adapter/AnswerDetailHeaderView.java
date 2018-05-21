@@ -304,6 +304,7 @@ public class AnswerDetailHeaderView extends BaseWebLoad{
             }
         }
         ImageBean imageBean = new ImageBean();
+        imageBean.setListCacheUrl(new GlideUrl(imgPath));
         imageBean.setImgUrl(imgPath);// 本地地址，也许有
         Toll toll = new Toll(); // 收费信息
         toll.setPaid(true);// 是否已經付費
@@ -312,7 +313,6 @@ public class AnswerDetailHeaderView extends BaseWebLoad{
         toll.setPaid_node(0);// 付费节点
         imageBean.setToll(toll);
         imageBean.setStorage_id(Integer.parseInt(id));// 图片附件id
-        imageBean.setListCacheUrl(new GlideUrl(imgPath));
         mImgList.add(imageBean);
         try {
             AnimationRectBean rect = AnimationRectBean.buildFromImageView(mIvDetail);// 动画矩形

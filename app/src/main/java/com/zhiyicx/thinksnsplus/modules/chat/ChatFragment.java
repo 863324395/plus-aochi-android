@@ -222,7 +222,6 @@ public class ChatFragment extends TSEaseChatFragment<ChatContract.Presenter>
 
             setCenterText(mPresenter.getGroupName(toChatUsername));
         }
-        setUpView();
     }
 
     /**
@@ -237,6 +236,7 @@ public class ChatFragment extends TSEaseChatFragment<ChatContract.Presenter>
         toChatUsername = fragmentArgs.getString(EaseConstant.EXTRA_USER_ID);
         getArguments().putInt(EaseConstant.EXTRA_CHAT_TYPE, chatType);
         getArguments().putString(EaseConstant.EXTRA_USER_ID, toChatUsername);
+        setUpView();
     }
 
     @Override
