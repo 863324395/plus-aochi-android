@@ -1,16 +1,24 @@
 package com.zhiyicx.thinksnsplus.modules.wallet.recharge;
 
 import com.alipay.sdk.app.PayTask;
+import com.tencent.mm.opensdk.modelpay.PayReq;
+import com.tencent.mm.opensdk.openapi.IWXAPI;
+import com.tencent.mm.opensdk.openapi.WXAPIFactory;
+import com.zhiyicx.baseproject.config.UmengConfig;
 import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
+import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.PayStrV2Bean;
 import com.zhiyicx.thinksnsplus.data.beans.RechargeSuccessBean;
+import com.zhiyicx.thinksnsplus.data.beans.WXPayInfo;
+import com.zhiyicx.thinksnsplus.data.beans.WXPayResult;
 import com.zhiyicx.thinksnsplus.data.source.local.BackgroundRequestTaskBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.BillRepository;
 
 import org.jetbrains.annotations.NotNull;
+import org.simple.eventbus.Subscriber;
 
 import java.util.Map;
 
@@ -39,6 +47,11 @@ public class RechargePresenter extends AppBasePresenter<RechargeContract.View> i
     @Inject
     public RechargePresenter(RechargeContract.View rootView) {
         super(rootView);
+    }
+
+    @Override
+    protected boolean useEventBus() {
+        return true;
     }
 
     @Override
@@ -72,12 +85,12 @@ public class RechargePresenter extends AppBasePresenter<RechargeContract.View> i
     }
 
     @Override
-    public void getPayStrV2(@NotNull String channel, double amount) {
+    public void getAliPayStr(@NotNull String channel, double amount) {
         if (mRootView.getMoney() != (int) mRootView.getMoney() && mRootView.useInputMonye()) {
             mRootView.initmRechargeInstructionsPop();
             return;
         }
-        mBillRepository.getPayStrV2(channel, 1)
+        mBillRepository.getAliPayStr(channel, 1)
                 .doOnSubscribe(() -> {
                     mRootView.configSureBtn(false);
                     mRootView.showSnackLoadingMessage(mContext.getString(R.string.recharge_credentials_ing));
@@ -87,7 +100,7 @@ public class RechargePresenter extends AppBasePresenter<RechargeContract.View> i
                     PayTask alipay = new PayTask(mRootView.getCurrentActivity());
                     return Observable.just(alipay.payV2(orderInfo, true));
                 }).flatMap((Func1<Map<String, String>, Observable<BaseJsonV2<String>>>) stringStringMap -> mBillRepository.aliPayVerify(stringStringMap.get("memo"),
-                        stringStringMap.get("result"), stringStringMap.get("resultStatus"))).subscribe(new BaseSubscribeForV2<BaseJsonV2<String>>() {
+                stringStringMap.get("result"), stringStringMap.get("resultStatus"))).subscribe(new BaseSubscribeForV2<BaseJsonV2<String>>() {
             @Override
             protected void onSuccess(BaseJsonV2<String> data) {
                 mRootView.showSnackSuccessMessage(data.getMessage().get(0));
@@ -105,7 +118,55 @@ public class RechargePresenter extends AppBasePresenter<RechargeContract.View> i
                 mRootView.showSnackErrorMessage(throwable.getMessage());
             }
         });
+    }
 
+    @Override
+    public void getWXPayStr(@NotNull String channel, double amount) {
+        if (mRootView.getMoney() != (int) mRootView.getMoney() && mRootView.useInputMonye()) {
+            mRootView.initmRechargeInstructionsPop();
+            return;
+        }
+        mBillRepository.getWXPayStr(channel, 1)
+                .doOnSubscribe(() -> {
+                    mRootView.configSureBtn(false);
+                    mRootView.showSnackLoadingMessage(mContext.getString(R.string.recharge_credentials_ing));
+                })
+                .subscribe(new BaseSubscribeForV2<WXPayInfo>() {
+                    @Override
+                    protected void onSuccess(WXPayInfo wxPayInfo) {
+                        IWXAPI api = WXAPIFactory.createWXAPI(mContext, UmengConfig.WEIXIN_APPID, false);
+                        api.registerApp(UmengConfig.WEIXIN_APPID);
+                        PayReq request = new PayReq();
+                        request.appId = UmengConfig.WEIXIN_APPID;
+                        request.partnerId = wxPayInfo.getPartnerid();
+                        request.prepayId = wxPayInfo.getPrepayid();
+                        request.packageValue = wxPayInfo.getPackagestr();
+                        request.nonceStr = wxPayInfo.getNoncestr();
+                        request.timeStamp = wxPayInfo.getTimestamp();
+                        request.sign = wxPayInfo.getSign();
+                        api.sendReq(request);
+                    }
+
+                    @Override
+                    protected void onFailure(String message, int code) {
+                        super.onFailure(message, code);
+                        mRootView.showSnackErrorMessage(message);
+                    }
+
+                    @Override
+                    protected void onException(Throwable throwable) {
+                        super.onException(throwable);
+                        mRootView.showSnackErrorMessage(throwable.getMessage());
+                    }
+                });
+    }
+
+    @Subscriber(tag = EventBusTagConfig.EVENT_WX_PAY_RESULT)
+    public void wxPayResult(WXPayResult wxPayResult) {
+        mRootView.dismissSnackBar();
+    }
+
+    public void test() {
 
     }
 

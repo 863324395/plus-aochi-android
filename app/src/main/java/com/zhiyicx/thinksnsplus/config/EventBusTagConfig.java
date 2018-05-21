@@ -242,6 +242,7 @@ public class EventBusTagConfig {
      * 签到
      */
     public static final String EVENT_CHECK_IN_CLICK = "check_in_click";
+    public static final String EVENT_WX_PAY_RESULT = "event_wx_pay_result";
 
     /**
      * 附近的人

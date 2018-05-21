@@ -8,6 +8,7 @@ import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.PayStrV2Bean;
 import com.zhiyicx.thinksnsplus.data.beans.RechargeSuccessBean;
 import com.zhiyicx.thinksnsplus.data.beans.RechargeSuccessV2Bean;
+import com.zhiyicx.thinksnsplus.data.beans.WXPayInfo;
 import com.zhiyicx.thinksnsplus.data.beans.WalletConfigBean;
 import com.zhiyicx.thinksnsplus.data.beans.WithdrawResultBean;
 import com.zhiyicx.thinksnsplus.data.beans.WithdrawalsListBean;
@@ -148,8 +149,15 @@ public class BillRepository implements IBillRepository {
     }
 
     @Override
-    public Observable<BaseJsonV2<String>> getPayStrV2(String channel, double amount) {
-        return mWalletClient.getPayStrV2(channel, (long) amount, "" + ApiConfig.ANDROID_PLATFORM)
+    public Observable<BaseJsonV2<String>> getAliPayStr(String channel, double amount) {
+        return mWalletClient.getAliPayStr(channel, (long) amount, "" + ApiConfig.ANDROID_PLATFORM)
+                .subscribeOn(Schedulers.io())
+                .observeOn(Schedulers.io());
+    }
+
+    @Override
+    public Observable<WXPayInfo> getWXPayStr(String channel, double amount) {
+        return mWalletClient.getWXPayStr(channel, (long) amount, "" + ApiConfig.ANDROID_PLATFORM)
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io());
     }

@@ -14,7 +14,6 @@ import android.widget.TextView
 
 import com.jakewharton.rxbinding.view.RxView
 import com.jakewharton.rxbinding.widget.RxTextView
-import com.pingplusplus.android.Pingpp
 import com.trycatch.mysnackbar.Prompt
 import com.zhiyicx.baseproject.base.TSFragment
 import com.zhiyicx.baseproject.config.PayConfig
@@ -360,30 +359,30 @@ class IntegrationRechargeFragment : TSFragment<IntegrationRechargeContract.Prese
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == Pingpp.REQUEST_CODE_PAYMENT) {
-            if (resultCode == Activity.RESULT_OK) {
-                configSureBtn(true)
-                val result = data!!.extras!!.getString("pay_result", "")
-                /* 处理返回值
-                 * "success" - 支付成功
-                 * "fail"    - 支付失败
-                 * "cancel"  - 取消支付
-                 * "invalid" - 支付插件未安装（一般是微信客户端未安装的情况）
-                 * "unknown" - app进程异常被杀死(一般是低内存状态下,app进程被杀死)
-                 */
-                val errorMsg = data.extras!!.getString("error_msg") // 错误信息
-                val extraMsg = data.extras!!.getString("extra_msg") // 错误信息
-                val id = UIUtils.getResourceByName("pay_" + result, "string", context)
-                if (result.contains("success")) {
-                    showSnackSuccessMessage(getString(id))
-                } else {
-                    showSnackErrorMessage(getString(id))
-                }
-                if (result == "success") {
-                    mPresenter.rechargeSuccess(mPayChargeId!!, money)
-                }
-            }
-        }
+//        if (requestCode == Pingpp.REQUEST_CODE_PAYMENT) {
+//            if (resultCode == Activity.RESULT_OK) {
+//                configSureBtn(true)
+//                val result = data!!.extras!!.getString("pay_result", "")
+//                /* 处理返回值
+//                 * "success" - 支付成功
+//                 * "fail"    - 支付失败
+//                 * "cancel"  - 取消支付
+//                 * "invalid" - 支付插件未安装（一般是微信客户端未安装的情况）
+//                 * "unknown" - app进程异常被杀死(一般是低内存状态下,app进程被杀死)
+//                 */
+//                val errorMsg = data.extras!!.getString("error_msg") // 错误信息
+//                val extraMsg = data.extras!!.getString("extra_msg") // 错误信息
+//                val id = UIUtils.getResourceByName("pay_" + result, "string", context)
+//                if (result.contains("success")) {
+//                    showSnackSuccessMessage(getString(id))
+//                } else {
+//                    showSnackErrorMessage(getString(id))
+//                }
+//                if (result == "success") {
+//                    mPresenter.rechargeSuccess(mPayChargeId!!, money)
+//                }
+//            }
+//        }
     }
 
     override fun payCredentialsResult(payStrBean: PayStrV2Bean, amount: Double) {

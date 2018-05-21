@@ -30,7 +30,8 @@ interface RechargeContract {
 
     interface Presenter : IBaseTouristPresenter {
         fun getPayStr(@TSPayClient.PayKey channel: String, amount: Double)
-        fun getPayStrV2(@TSPayClient.PayKey channel: String, amount: Double)
+        fun getAliPayStr(@TSPayClient.PayKey channel: String, amount: Double)
+        fun getWXPayStr(@TSPayClient.PayKey channel: String, amount: Double)
         fun rechargeSuccess(charge: String)
         fun rechargeSuccessCallBack(charge: String)
     }

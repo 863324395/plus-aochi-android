@@ -41,8 +41,9 @@ dependencies {
     compile supportDependences.appcompatV7
     testCompile testDependences.junit
     // pay
-    compile dataDependences.pingPayCore
-    compile dataDependences.pingWxPay
-    compile dataDependences.pingAliPay
+//    compile dataDependences.pingPayCore
+//    compile dataDependences.pingWxPay
+//    compile dataDependences.pingAliPay
     compile files('lips/alipaySdk-20180403.jar')
+    compile 'com.tencent.mm.opensdk:wechat-sdk-android-with-mta:+'
 }

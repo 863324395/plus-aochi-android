@@ -1,11 +1,9 @@
 package com.zhiyicx.tspay;
 
 import android.app.Activity;
-import android.support.annotation.RestrictTo;
 import android.support.annotation.StringDef;
 import android.support.v4.util.ArrayMap;
 
-import com.pingplusplus.android.Pingpp;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -66,6 +64,6 @@ public class TSPayClient {
     }
 
     public static void pay(String payCredentials, Activity activity) {
-        Pingpp.createPayment(activity, payCredentials);
+//        Pingpp.createPayment(activity, payCredentials);
     }
 }

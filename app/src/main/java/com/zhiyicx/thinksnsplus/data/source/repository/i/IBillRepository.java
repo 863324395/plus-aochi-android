@@ -4,6 +4,7 @@ import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.thinksnsplus.data.beans.PayStrV2Bean;
 import com.zhiyicx.thinksnsplus.data.beans.RechargeSuccessBean;
 import com.zhiyicx.thinksnsplus.data.beans.RechargeSuccessV2Bean;
+import com.zhiyicx.thinksnsplus.data.beans.WXPayInfo;
 import com.zhiyicx.thinksnsplus.data.beans.WalletConfigBean;
 import com.zhiyicx.thinksnsplus.data.beans.WithdrawResultBean;
 import com.zhiyicx.thinksnsplus.data.beans.WithdrawalsListBean;
@@ -57,13 +58,21 @@ public interface IBillRepository {
     Observable<PayStrV2Bean> getPayStr(String channel, double amount);
 
     /**
-     * 获取支付信息V2
+     * 获取ali支付信息V2
      * 不在调用 ping++
      * @param channel 支付渠道
      * @param amount  支付金额
      * @return
      */
-    Observable<BaseJsonV2<String>> getPayStrV2(String channel, double amount);
+    Observable<BaseJsonV2<String>> getAliPayStr(String channel, double amount);
+
+    /**
+     * 获取wx支付信息V2
+     * @param channel
+     * @param amount
+     * @return
+     */
+    Observable<WXPayInfo> getWXPayStr(String channel, double amount);
 
     /**
      * 支付宝支付验证，3个参数都是支付宝返回

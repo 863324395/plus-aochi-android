@@ -4,6 +4,7 @@ import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.thinksnsplus.data.beans.PayStrV2Bean;
 import com.zhiyicx.thinksnsplus.data.beans.RechargeSuccessBean;
 import com.zhiyicx.thinksnsplus.data.beans.RechargeSuccessV2Bean;
+import com.zhiyicx.thinksnsplus.data.beans.WXPayInfo;
 import com.zhiyicx.thinksnsplus.data.beans.WalletConfigBean;
 import com.zhiyicx.thinksnsplus.data.beans.WithdrawResultBean;
 import com.zhiyicx.thinksnsplus.data.beans.WithdrawalsListBean;
@@ -102,7 +103,11 @@ public interface WalletClient {
      */
     @FormUrlEncoded
     @POST(APP_PAHT_WALLET_RECHARGE_V2)
-    Observable<BaseJsonV2<String>> getPayStrV2(@Field("type") String channel, @Field("amount") long amount, @Field("from") String from);
+    Observable<BaseJsonV2<String>> getAliPayStr(@Field("type") String channel, @Field("amount") long amount, @Field("from") String from);
+
+    @FormUrlEncoded
+    @POST(APP_PAHT_WALLET_RECHARGE_V2)
+    Observable<WXPayInfo> getWXPayStr(@Field("type") String channel, @Field("amount") long amount, @Field("from") String from);
 
 
     /**

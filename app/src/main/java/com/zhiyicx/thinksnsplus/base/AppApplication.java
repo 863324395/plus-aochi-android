@@ -11,7 +11,6 @@ import com.danikula.videocache.HttpProxyCacheServer;
 import com.github.tamir7.contacts.Contacts;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
-import com.pingplusplus.android.Pingpp;
 import com.tym.shortvideo.media.IJKMediaplayer;
 import com.tym.shortvideo.recodrender.ParamsManager;
 import com.zhiyicx.baseproject.base.TSActivity;
@@ -145,7 +144,7 @@ public class AppApplication extends TSApplication {
         BackgroundTaskManager.getInstance(getContext()).startBackgroundTask();
         registerActivityCallBacks();
         // ping++
-        Pingpp.enableDebugLog(BuildConfig.USE_LOG);
+//        Pingpp.enableDebugLog(BuildConfig.USE_LOG);
         // 通讯录
         Contacts.initialize(this);
 
