@@ -922,7 +922,7 @@
     <string name="to_publish_circle">创建圈子</string>
     <string name="not_find_joined_circle">未找相关圈子，去加入感兴趣圈子吧</string>
     <string name="join_circle">加入圈子</string>
-    <string name="circle_publish_hint_certification">认证用户才能创建圈子，去认证?</string>
+    <string name="circle_publish_hint_certification">认证用户才可以创建圈子，去认证?</string>
 
     <!--举报-->
     <string name="report">举报</string>
