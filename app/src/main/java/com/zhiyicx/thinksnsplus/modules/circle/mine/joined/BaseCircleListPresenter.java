@@ -173,7 +173,8 @@ public class BaseCircleListPresenter extends AppBasePresenter<BaseCircleListCont
             mRootView.showSnackErrorMessage(mContext.getString(R.string.reviewing_circle));
             return;
         }
-        boolean isJoined = circleInfo.getJoined() != null;
+        boolean isJoined = circleInfo.getJoined() != null && circleInfo.getJoined().getAudit() == CircleJoinedBean.AuditStatus.PASS.value;
+
         boolean isPaid = CircleInfo.CirclePayMode.PAID.value.equals(circleInfo.getMode());
 
         Observable<BaseJsonV2<Object>> observable;

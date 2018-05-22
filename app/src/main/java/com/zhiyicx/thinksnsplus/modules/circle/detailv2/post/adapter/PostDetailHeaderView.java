@@ -27,6 +27,7 @@ import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.BaseWebLoad;
 import com.zhiyicx.thinksnsplus.data.beans.AnimationRectBean;
 import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
+import com.zhiyicx.thinksnsplus.data.beans.CircleJoinedBean;
 import com.zhiyicx.thinksnsplus.data.beans.CirclePostListBean;
 import com.zhiyicx.thinksnsplus.data.beans.RealAdvertListBean;
 import com.zhiyicx.thinksnsplus.data.beans.RewardsCountBean;
@@ -141,7 +142,8 @@ public class PostDetailHeaderView extends BaseWebLoad {
                         .subscribe(aVoid -> {
                             boolean isClosedCircle = CircleInfo.CirclePayMode.PAID.value.equals(circleInfo.getMode())
                                     || CircleInfo.CirclePayMode.PRIVATE.value.equals(circleInfo.getMode());
-                            boolean isJoined = circleInfo.getJoined() != null;
+                            boolean isJoined = circleInfo.getJoined() != null && circleInfo.getJoined().getAudit() == CircleJoinedBean.AuditStatus.PASS.value;
+
 
                             if (isClosedCircle && !isJoined) {
                                 showSnackErrorMessage(mContext.getString(R.string.circle_blocked));

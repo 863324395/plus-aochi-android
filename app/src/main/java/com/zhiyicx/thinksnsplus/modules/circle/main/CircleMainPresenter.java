@@ -179,7 +179,8 @@ public class CircleMainPresenter extends AppBasePresenter<CircleMainContract.Vie
             mRootView.showSnackErrorMessage(mContext.getString(R.string.reviewing_circle));
             return;
         }
-        boolean isJoined = circleInfo.getJoined() != null;
+        boolean isJoined = circleInfo.getJoined() != null && circleInfo.getJoined().getAudit() == CircleJoinedBean.AuditStatus.PASS.value;
+
 
         boolean isPaid = CircleInfo.CirclePayMode.PAID.value.equals(circleInfo.getMode());
         boolean isPrivate = CircleInfo.CirclePayMode.PRIVATE.value.equals(circleInfo.getMode());

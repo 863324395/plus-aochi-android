@@ -32,6 +32,7 @@ import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.AnimationRectBean;
 import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
+import com.zhiyicx.thinksnsplus.data.beans.CircleJoinedBean;
 import com.zhiyicx.thinksnsplus.data.beans.CircleMembers;
 import com.zhiyicx.thinksnsplus.data.beans.CirclePostCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.CirclePostListBean;
@@ -316,7 +317,8 @@ public class BaseCircleDetailFragment extends TSListFragment<CircleDetailContrac
     public void onCommentContentClick(CirclePostListBean dynamicBean, int position) {
         mCurrentPostion = mPresenter.getCurrenPosiotnInDataList(dynamicBean.getId());
         CircleInfo mCircleInfo = dynamicBean.getGroup();
-        boolean isJoined = mCircleInfo.getJoined() != null;
+        boolean isJoined = mCircleInfo.getJoined() != null && mCircleInfo.getJoined().getAudit() == CircleJoinedBean.AuditStatus.PASS.value;
+
         boolean isBlackList = isJoined && CircleMembers.BLACKLIST.equals(mCircleInfo.getJoined().getRole());
 
         if (dynamicBean.getComments().get(position).getUser_id() == AppApplication.getmCurrentLoginAuth().getUser_id()) {
@@ -348,7 +350,8 @@ public class BaseCircleDetailFragment extends TSListFragment<CircleDetailContrac
             return;
         }
         CircleInfo mCircleInfo = dynamicBean.getGroup();
-        boolean isJoined = mCircleInfo.getJoined() != null;
+        boolean isJoined = mCircleInfo.getJoined() != null && mCircleInfo.getJoined().getAudit() == CircleJoinedBean.AuditStatus.PASS.value;
+
         boolean isBlackList = isJoined && CircleMembers.BLACKLIST.equals(mCircleInfo.getJoined().getRole());
 
         if (isBlackList) {
@@ -422,7 +425,8 @@ public class BaseCircleDetailFragment extends TSListFragment<CircleDetailContrac
     @Override
     public void onPostFromClick(int position) {
         CircleInfo circleInfo = mListDatas.get(position).getGroup();
-        boolean isJoined = circleInfo.getJoined() != null;
+        boolean isJoined = circleInfo.getJoined() != null && circleInfo.getJoined().getAudit() == CircleJoinedBean.AuditStatus.PASS.value;
+
         boolean isPaid = CircleInfo.CirclePayMode.PAID.value.equals(circleInfo.getMode());
         String moneyStr;
         String descStr;
@@ -478,7 +482,8 @@ public class BaseCircleDetailFragment extends TSListFragment<CircleDetailContrac
         dataPosition -= mHeaderAndFooterWrapper.getHeadersCount();// 减去 header
         mCurrentPostion = dataPosition;
         CircleInfo mCircleInfo = mListDatas.get(dataPosition).getGroup();
-        boolean isJoined = mCircleInfo.getJoined() != null;
+        boolean isJoined = mCircleInfo.getJoined() != null && mCircleInfo.getJoined().getAudit() == CircleJoinedBean.AuditStatus.PASS.value;
+
         boolean isBlackList = isJoined && CircleMembers.BLACKLIST.equals(mCircleInfo.getJoined().getRole());
         boolean canNotDeal;
         switch (viewPosition) { // 0 1 2 3 代表 view item 位置

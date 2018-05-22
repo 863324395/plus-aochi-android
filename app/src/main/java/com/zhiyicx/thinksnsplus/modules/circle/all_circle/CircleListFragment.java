@@ -8,6 +8,7 @@ import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
+import com.zhiyicx.thinksnsplus.data.beans.CircleJoinedBean;
 import com.zhiyicx.thinksnsplus.modules.circle.detailv2.CircleDetailActivity;
 import com.zhiyicx.thinksnsplus.modules.circle.main.adapter.BaseCircleItem;
 import com.zhiyicx.thinksnsplus.modules.circle.main.adapter.CircleListItem;
@@ -132,7 +133,8 @@ public class CircleListFragment extends TSListFragment<CircleListContract.Presen
     public void toCircleDetail(CircleInfo circleInfo) {
         boolean isClosedCircle = CircleInfo.CirclePayMode.PAID.value.equals(circleInfo.getMode())
                 || CircleInfo.CirclePayMode.PRIVATE.value.equals(circleInfo.getMode());
-        boolean isJoined = circleInfo.getJoined() != null;
+        boolean isJoined = circleInfo.getJoined() != null && circleInfo.getJoined().getAudit() == CircleJoinedBean.AuditStatus.PASS.value;
+
 
         if (isClosedCircle && !isJoined) {
             showSnackErrorMessage(getString(R.string.circle_blocked));

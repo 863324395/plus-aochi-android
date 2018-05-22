@@ -432,6 +432,7 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
             mCircleInfo.setUser_id((int) circleMembers.getUser_id());
             CircleJoinedBean joinedBean = mCircleInfo.getJoined();
             joinedBean.setRole(CircleMembers.MEMBER);
+            joinedBean.setAudit(CircleJoinedBean.AuditStatus.PASS.value);
             mCircleInfo.setJoined(joinedBean);
             mCircleInfo.getFounder().setUser(circleMembers.getUser());
             mCircleInfo.getFounder().setUser_id((int) circleMembers.getUser_id());
@@ -527,7 +528,8 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
     @Override
     public void onCommentContentClick(CirclePostListBean postListBean, int position) {
         mCurrentPostion = mPresenter.getCurrenPosiotnInDataList(postListBean.getId());
-        boolean isJoined = mCircleInfo.getJoined() != null;
+        boolean isJoined = mCircleInfo.getJoined() != null && mCircleInfo.getJoined().getAudit() == CircleJoinedBean.AuditStatus.PASS.value;
+
         boolean isBlackList = isJoined && CircleMembers.BLACKLIST.equals(mCircleInfo.getJoined().getRole());
 
         if (postListBean.getComments().get(position).getUser_id() == AppApplication.getmCurrentLoginAuth().getUser_id()) {
@@ -557,7 +559,8 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
         if (mPresenter.handleTouristControl()) {
             return;
         }
-        boolean isJoined = mCircleInfo.getJoined() != null;
+        boolean isJoined = mCircleInfo.getJoined() != null && mCircleInfo.getJoined().getAudit() == CircleJoinedBean.AuditStatus.PASS.value;
+
         boolean isBlackList = isJoined && CircleMembers.BLACKLIST.equals(mCircleInfo.getJoined().getRole());
 
         if (isBlackList) {
@@ -649,7 +652,8 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
 
     @Override
     public void onMenuItemClick(View view, int dataPosition, int viewPosition) {
-        boolean isJoined = mCircleInfo.getJoined() != null;
+        boolean isJoined = mCircleInfo.getJoined() != null && mCircleInfo.getJoined().getAudit() == CircleJoinedBean.AuditStatus.PASS.value;
+
         boolean isBlackList = isJoined && CircleMembers.BLACKLIST.equals(mCircleInfo.getJoined().getRole());
         // 减去 header
         dataPosition -= mHeaderAndFooterWrapper.getHeadersCount();
@@ -1333,7 +1337,8 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
             R.id.ll_permission_container, R.id.ll_report_container, R.id.iv_back, R.id.iv_serach,
             R.id.iv_share, R.id.iv_setting, R.id.tv_circle_subscrib, R.id.tv_exit_circle, R.id.bt_report_circle})
     public void onViewClicked(View view) {
-        boolean isJoing = mCircleInfo.getJoined() != null;
+        boolean isJoing = mCircleInfo.getJoined() != null && mCircleInfo.getJoined().getAudit() == CircleJoinedBean.AuditStatus.PASS.value;
+
         boolean isBlackList = isJoing && CircleMembers.BLACKLIST.equals(mCircleInfo.getJoined().getRole());
         switch (view.getId()) {
             case R.id.ll_member_container:
