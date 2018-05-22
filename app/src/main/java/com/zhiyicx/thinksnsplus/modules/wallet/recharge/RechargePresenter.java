@@ -164,7 +164,15 @@ public class RechargePresenter extends AppBasePresenter<RechargeContract.View> i
 
     @Subscriber(tag = EventBusTagConfig.EVENT_WX_PAY_RESULT)
     public void wxPayResult(WXPayResult wxPayResult) {
-        mRootView.dismissSnackBar();
+        if (wxPayResult.getCode() == 0) {
+            // 0 ,微信交易成功
+            mRootView.showSnackSuccessMessage(mContext.getString(R.string.recharge_success));
+        } else if (wxPayResult.getCode() == -2) {
+            // -2 ,取消交易
+            mRootView.showSnackSuccessMessage(mContext.getString(R.string.recharge_cancle));
+        } else {
+            mRootView.dismissSnackBar();
+        }
     }
 
     public void test() {
