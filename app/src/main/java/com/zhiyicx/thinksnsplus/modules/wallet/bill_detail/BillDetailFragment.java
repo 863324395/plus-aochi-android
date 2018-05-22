@@ -103,7 +103,7 @@ public class BillDetailFragment extends TSFragment {
                 mBillUser.setText(getString(action > 0 ? R.string.account_to_name : R.string.account_form_name));
                 break;
             default:
-                mBillUser.setText(getString(action > 0 ? R.string.account_to_name : R.string.account_form_name));
+                mBillUser.setText(getString(action < 0 ? R.string.account_to_name : R.string.account_form_name));
         }
         mBillStatus.setText(getString(status == 0 ? R.string.transaction_doing : (status == 1 ? R.string.transaction_success : R.string
                 .transaction_fail)));
