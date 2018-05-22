@@ -372,7 +372,6 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
     @Override
     public void allDataReady(CircleZipBean circleZipBean) {
         closeLoadingView();
-        myAppBarLayoutBehavoir.setRefreshing(false);
         ((AnimationDrawable) mIvRefresh.getDrawable()).stop();
         mIvRefresh.setVisibility(View.INVISIBLE);
         CircleInfo detail = circleZipBean.getCircleInfo();
