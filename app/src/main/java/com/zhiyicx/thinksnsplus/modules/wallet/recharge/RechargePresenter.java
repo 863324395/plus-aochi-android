@@ -131,9 +131,10 @@ public class RechargePresenter extends AppBasePresenter<RechargeContract.View> i
                     mRootView.configSureBtn(false);
                     mRootView.showSnackLoadingMessage(mContext.getString(R.string.recharge_credentials_ing));
                 })
-                .subscribe(new BaseSubscribeForV2<WXPayInfo>() {
+                .subscribe(new BaseSubscribeForV2<BaseJsonV2<WXPayInfo>>() {
                     @Override
-                    protected void onSuccess(WXPayInfo wxPayInfo) {
+                    protected void onSuccess(BaseJsonV2<WXPayInfo> data) {
+                        WXPayInfo wxPayInfo = data.getData();
                         IWXAPI api = WXAPIFactory.createWXAPI(mContext, UmengConfig.WEIXIN_APPID, false);
                         api.registerApp(UmengConfig.WEIXIN_APPID);
                         PayReq request = new PayReq();

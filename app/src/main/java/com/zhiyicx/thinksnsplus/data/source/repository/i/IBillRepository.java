@@ -72,7 +72,7 @@ public interface IBillRepository {
      * @param amount
      * @return
      */
-    Observable<WXPayInfo> getWXPayStr(String channel, double amount);
+    Observable<BaseJsonV2<WXPayInfo>> getWXPayStr(String channel, double amount);
 
     /**
      * 支付宝支付验证，3个参数都是支付宝返回

@@ -12,6 +12,7 @@ import com.tencent.mm.opensdk.openapi.IWXAPI;
 import com.tencent.mm.opensdk.openapi.IWXAPIEventHandler;
 import com.tencent.mm.opensdk.openapi.WXAPIFactory;
 import com.zhiyicx.baseproject.config.UmengConfig;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.WXPayResult;
 
@@ -30,7 +31,7 @@ public class WXPayEntryActivity extends Activity implements IWXAPIEventHandler {
 
     @Override
     public void onReq(BaseReq req) {
-
+        LogUtils.d(req);
     }
 
     @Override
@@ -49,6 +50,7 @@ public class WXPayEntryActivity extends Activity implements IWXAPIEventHandler {
             wxPayResult.setPrepayId(payResp.prepayId);
             wxPayResult.setReturnKey(payResp.returnKey);
             wxPayResult.setType(payResp.getType());
+            wxPayResult.setCode(payResp.errCode);
             EventBus.getDefault().post(wxPayResult, EventBusTagConfig.EVENT_WX_PAY_RESULT);
             finish();
         }

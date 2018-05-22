@@ -17,7 +17,7 @@ public class WXPayResult implements Parcelable,Serializable{
     private String returnKey;
     private String extData;
     private int type;
-    private int code; // 0 失败 ， 1 成功
+    private int code;
 
     public String getPrepayId() {
         return prepayId;

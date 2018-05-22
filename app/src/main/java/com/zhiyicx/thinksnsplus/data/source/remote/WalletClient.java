@@ -107,7 +107,7 @@ public interface WalletClient {
 
     @FormUrlEncoded
     @POST(APP_PAHT_WALLET_RECHARGE_V2)
-    Observable<WXPayInfo> getWXPayStr(@Field("type") String channel, @Field("amount") long amount, @Field("from") String from);
+    Observable<BaseJsonV2<WXPayInfo>> getWXPayStr(@Field("type") String channel, @Field("amount") long amount, @Field("from") String from);
 
 
     /**

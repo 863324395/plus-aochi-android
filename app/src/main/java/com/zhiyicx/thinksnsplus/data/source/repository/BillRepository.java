@@ -156,7 +156,7 @@ public class BillRepository implements IBillRepository {
     }
 
     @Override
-    public Observable<WXPayInfo> getWXPayStr(String channel, double amount) {
+    public Observable<BaseJsonV2<WXPayInfo>> getWXPayStr(String channel, double amount) {
         return mWalletClient.getWXPayStr(channel, (long) amount, "" + ApiConfig.ANDROID_PLATFORM)
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io());
