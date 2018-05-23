@@ -1262,7 +1262,7 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
         mTvCircleDec.setText(String.format(Locale.getDefault(), getString(R.string.circle_detail_location), location));
         mTvCircleMember.setText(String.format(Locale.getDefault(), getString(R.string.circle_detail_usercount), detail.getUsers_count()));
         mTvCirclePostCount.setText(String.format(Locale.getDefault(), getString(R.string.circle_detail_postcount), detail.getPosts_count()));
-        mLlBlackContainer.setLeftText(""+mCircleInfo.getBlacklist_count());
+        mLlBlackContainer.setRightText(""+mCircleInfo.getBlacklist_count());
         mTvOwnerName.setText(detail.getFounder().getUser().getName());
         mTvCircleIntroduce.setText(detail.getSummary());
         mLlIntroCountContainer.setVisibility(TextUtils.isEmpty(detail.getSummary()) ? View.GONE : View.VISIBLE);
