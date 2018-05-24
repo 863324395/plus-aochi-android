@@ -41,6 +41,8 @@
 
     <!-- tool -->
     <include
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/toolbar_height_75"
         layout="@layout/toolbar_video"/>
 
     <!-- 显示倒计时 -->

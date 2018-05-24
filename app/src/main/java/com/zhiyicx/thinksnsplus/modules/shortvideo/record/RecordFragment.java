@@ -124,13 +124,18 @@ public class RecordFragment extends TSFragment implements SurfaceHolder.Callback
     private ActionPopupWindow mDeletePopupWindow;
 
     @Override
+    protected int setToolBarBackgroud() {
+        return R.color.black_deep;
+    }
+
+    @Override
     protected boolean showToolBarDivider() {
         return false;
     }
 
     @Override
     protected boolean setUseSatusbar() {
-        return false;
+        return true;
     }
 
     @Override

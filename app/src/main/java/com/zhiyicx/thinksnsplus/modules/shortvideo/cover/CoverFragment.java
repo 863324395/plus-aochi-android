@@ -102,6 +102,11 @@ public class CoverFragment extends TSFragment implements MediaPlayerWrapper.IMed
     }
 
     @Override
+    protected int setToolBarBackgroud() {
+        return R.color.black_deep;
+    }
+
+    @Override
     public void onBackPressed() {
         mToolbarLeft.performClick();
     }
@@ -109,11 +114,6 @@ public class CoverFragment extends TSFragment implements MediaPlayerWrapper.IMed
     @Override
     protected boolean setUseSatusbar() {
         return true;
-    }
-
-    @Override
-    protected boolean setUseStatusView() {
-        return false;
     }
 
     @Override

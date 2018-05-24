@@ -113,6 +113,11 @@ public class PreviewFragment extends TSFragment implements MediaPlayerWrapper.IM
     }
 
     @Override
+    protected int setToolBarBackgroud() {
+        return R.color.black_deep;
+    }
+
+    @Override
     protected boolean needCenterLoadingDialog() {
         return true;
     }
@@ -124,11 +129,6 @@ public class PreviewFragment extends TSFragment implements MediaPlayerWrapper.IM
 
     @Override
     protected boolean setStatusbarGrey() {
-        return false;
-    }
-
-    @Override
-    protected boolean setUseStatusView() {
         return false;
     }
 
