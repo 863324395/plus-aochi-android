@@ -130,7 +130,7 @@ public class RecordFragment extends TSFragment implements SurfaceHolder.Callback
 
     @Override
     protected boolean setUseSatusbar() {
-        return false;
+        return true;
     }
 
     @Override

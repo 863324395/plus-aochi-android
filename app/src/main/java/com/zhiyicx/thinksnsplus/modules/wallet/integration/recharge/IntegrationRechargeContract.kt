@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.wallet.integration.recharge
 
+import android.app.Activity
 import com.zhiyicx.baseproject.base.IBaseTouristPresenter
 import com.zhiyicx.common.mvp.i.IBaseView
 import com.zhiyicx.thinksnsplus.data.beans.PayStrV2Bean
@@ -19,7 +20,6 @@ interface IntegrationRechargeContract {
     interface View : IBaseView<Presenter> {
 
         val money: Double
-        fun payCredentialsResult(payStrV2Bean: PayStrV2Bean,amount: Double)
         fun configSureBtn(enable: Boolean)
         fun rechargeSuccess(amount: Double)
         fun initmRechargeInstructionsPop()
@@ -36,6 +36,8 @@ interface IntegrationRechargeContract {
          * @param isShow true ,show loading
          */
         fun handleLoading(isShow: Boolean)
+
+        fun getCurrentActivity(): Activity
     }
 
     interface Presenter : IBaseTouristPresenter {
@@ -44,5 +46,8 @@ interface IntegrationRechargeContract {
         fun rechargeSuccess(charge: String,amount: Double)
         fun rechargeSuccessCallBack(charge: String,amount: Double)
         fun getIntegrationConfigBean()
+
+        fun getAliPayStr(@TSPayClient.PayKey channel: String, amount: Double)
+        fun getWXPayStr(@TSPayClient.PayKey channel: String, amount: Double)
     }
 }

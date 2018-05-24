@@ -99,8 +99,10 @@ public class RechargePresenter extends AppBasePresenter<RechargeContract.View> i
                     String orderInfo = stringBaseJsonV2.getData();
                     PayTask alipay = new PayTask(mRootView.getCurrentActivity());
                     return Observable.just(alipay.payV2(orderInfo, true));
-                }).flatMap((Func1<Map<String, String>, Observable<BaseJsonV2<String>>>) stringStringMap -> mBillRepository.aliPayVerify(stringStringMap.get("memo"),
-                stringStringMap.get("result"), stringStringMap.get("resultStatus"))).subscribe(new BaseSubscribeForV2<BaseJsonV2<String>>() {
+                })
+                .flatMap((Func1<Map<String, String>, Observable<BaseJsonV2<String>>>) stringStringMap -> mBillRepository.aliPayVerify(stringStringMap.get("memo"),
+                        stringStringMap.get("result"), stringStringMap.get("resultStatus")))
+                .subscribe(new BaseSubscribeForV2<BaseJsonV2<String>>() {
             @Override
             protected void onSuccess(BaseJsonV2<String> data) {
                 mRootView.showSnackSuccessMessage(data.getMessage().get(0));
@@ -173,10 +175,6 @@ public class RechargePresenter extends AppBasePresenter<RechargeContract.View> i
         } else {
             mRootView.dismissSnackBar();
         }
-    }
-
-    public void test() {
-
     }
 
     @Override

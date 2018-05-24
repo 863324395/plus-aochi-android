@@ -170,6 +170,13 @@ public class BillRepository implements IBillRepository {
     }
 
     @Override
+    public Observable<BaseJsonV2<String>> aliPayIntegrationVerify(String memo, String result, String resultStatus) {
+        return mWalletClient.aliPayIntegrationVerify(memo, result, resultStatus)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    @Override
     public Observable<BaseJsonV2<String>> wxPayVerify(String memo, String result, String resultStatus) {
         return null;
     }
@@ -202,14 +209,31 @@ public class BillRepository implements IBillRepository {
      *
      * @param type   充值方式 （见「启动信息接口」或者「钱包信息」）
      * @param amount 用户充值金额，单位为真实货币「分」单位，充值完成后会根据积分兑换比例增加相应数量的积分
-     * @param extra  object,array 拓展信息字段，见 支付渠道-extra-参数说明
+     * @param from  来源
      * @return
      */
     @Override
-    public Observable<PayStrV2Bean> getIntegrationPayStr(String type, long amount, String extra) {
-        return mWalletClient.getIntegrationPayStr(type, amount, extra)
+    @Deprecated
+    public Observable<PayStrV2Bean> getIntegrationPayStr(String type, long amount, String from) {
+        return mWalletClient.getIntegrationPayStr(type, amount, from)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
+    }
+
+
+
+    @Override
+    public Observable<BaseJsonV2<String>> getIntegrationAliPayStr(String channel, double amount) {
+        return mWalletClient.getIntegrationAliPayStr(channel, (long) amount, "" + ApiConfig.ANDROID_PLATFORM)
+                .subscribeOn(Schedulers.io())
+                .observeOn(Schedulers.io());
+    }
+
+    @Override
+    public Observable<BaseJsonV2<WXPayInfo>> getIntegrationWXPayStr(String channel, double amount) {
+        return mWalletClient.getIntegrationWXPayStr(channel, (long) amount, "" + ApiConfig.ANDROID_PLATFORM)
+                .subscribeOn(Schedulers.io())
+                .observeOn(Schedulers.io());
     }
 
     /**

@@ -83,6 +83,9 @@ public interface IBillRepository {
      */
     Observable<BaseJsonV2<String>> aliPayVerify(String memo, String result, String resultStatus);
 
+
+    Observable<BaseJsonV2<String>> aliPayIntegrationVerify(String memo, String result, String resultStatus);
+
     /**
      * 微信支付验证，3个参数都是支付宝返回
      * @param memo
@@ -121,7 +124,8 @@ public interface IBillRepository {
      */
     Observable<PayStrV2Bean> getIntegrationPayStr(String type, long amount, String extra);
 
-
+    Observable<BaseJsonV2<String>> getIntegrationAliPayStr(String channel, double amount);
+    Observable<BaseJsonV2<WXPayInfo>> getIntegrationWXPayStr(String channel, double amount);
     /**
      * @param order
      * @return 取回凭据

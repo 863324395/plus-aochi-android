@@ -159,6 +159,10 @@ class IntegrationRechargeFragment : TSFragment<IntegrationRechargeContract.Prese
         }
     }
 
+    override fun getCurrentActivity(): Activity {
+        return mActivity
+    }
+
 
     private fun updateData() {
         initListener()
@@ -261,6 +265,8 @@ class IntegrationRechargeFragment : TSFragment<IntegrationRechargeContract.Prese
 
     }
 
+
+
     /**
      * 设置自定义金额数量
      */
@@ -319,13 +325,13 @@ class IntegrationRechargeFragment : TSFragment<IntegrationRechargeContract.Prese
                 .backgroundAlpha(CustomPopupWindow.POPUPWINDOW_ALPHA)
                 .with(activity)
                 .item2ClickListener {
-                    mPayType = TSPayClient.CHANNEL_ALIPAY
+                    mPayType = TSPayClient.CHANNEL_ALIPAY_V2
                     mBtRechargeStyle.rightText = getString(R.string.choose_recharge_style_formart, getString(R.string.alipay))
                     mPayStylePopupWindow!!.hide()
                     configSureButton()
                 }
                 .item3ClickListener {
-                    mPayType = TSPayClient.CHANNEL_WX
+                    mPayType = TSPayClient.CHANNEL_WXPAY_V2
                     mBtRechargeStyle.rightText = getString(R.string.choose_recharge_style_formart, getString(R.string.wxpay))
                     mPayStylePopupWindow!!.hide()
                     configSureButton()
@@ -385,12 +391,6 @@ class IntegrationRechargeFragment : TSFragment<IntegrationRechargeContract.Prese
 //        }
     }
 
-    override fun payCredentialsResult(payStrBean: PayStrV2Bean, amount: Double) {
-        mPayChargeId = payStrBean.order.id.toString() + ""
-        LogUtils.json(ConvertUtils.object2JsonStr<PayStrV2Bean.ChargeBean>(payStrBean.pingpp_order))
-        TSPayClient.pay(ConvertUtils.object2JsonStr<PayStrV2Bean.ChargeBean>(payStrBean.pingpp_order), activity)
-    }
-
     override fun configSureBtn(enable: Boolean) {
         mBtSure.isEnabled = enable
     }
@@ -400,7 +400,6 @@ class IntegrationRechargeFragment : TSFragment<IntegrationRechargeContract.Prese
                 mIntegrationConfigBean!!
                         .rechargeratio).toLong(), mGoldName))
 
-        EventBus.getDefault().post("", EventBusTagConfig.EVENT_INTEGRATION_RECHARGE)
     }
 
     override fun snackViewDismissWhenTimeOut(prompt: Prompt, message: String) {

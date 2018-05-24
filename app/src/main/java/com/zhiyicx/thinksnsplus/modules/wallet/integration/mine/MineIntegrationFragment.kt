@@ -322,11 +322,6 @@ class MineIntegrationFragment : TSFragment<MineIntegrationContract.Presenter>(),
         dismissPop(mRulePop)
     }
 
-    @Subscriber(tag = EVENT_INTEGRATION_RECHARGE, mode = ThreadMode.MAIN)
-    fun onRechargeSuccessUpdate(result: String) {
-        initData()
-    }
-
     companion object {
 
         fun newInstance(): MineIntegrationFragment {
