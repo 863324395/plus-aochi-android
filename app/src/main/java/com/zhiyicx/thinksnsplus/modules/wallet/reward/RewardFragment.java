@@ -130,7 +130,7 @@ public class RewardFragment extends TSFragment<RewardContract.Presenter> impleme
     @Override
     protected void initData() {
         initRechargeLables();
-        mCustomMoney.setText(getString(R.string.yuan));
+        mCustomMoney.setText(mPresenter.getGoldName());
     }
 
     @Override
@@ -159,9 +159,9 @@ public class RewardFragment extends TSFragment<RewardContract.Presenter> impleme
             e.printStackTrace();
         }
         if (amount.length > 0) {// 配置的打赏金额
-            mRechargeLables.add((float) PayConfig.realCurrencyFen2Yuan(Float.parseFloat(amount[0])));
-            mRechargeLables.add((float) PayConfig.realCurrencyFen2Yuan(Float.parseFloat(amount[1])));
-            mRechargeLables.add((float) PayConfig.realCurrencyFen2Yuan(Float.parseFloat(amount[2])));
+            mRechargeLables.add( Float.parseFloat(amount[0]));
+            mRechargeLables.add(Float.parseFloat(amount[1]));
+            mRechargeLables.add(Float.parseFloat(amount[2]));
         } else {
             mRechargeLables.add(1f);
             mRechargeLables.add(5f);
@@ -178,13 +178,13 @@ public class RewardFragment extends TSFragment<RewardContract.Presenter> impleme
             case 4:
             case 3:
                 mRbThree.setVisibility(View.VISIBLE);
-                mRbThree.setText(String.format(getString(R.string.money_format), mRechargeLables.get(2)));
+                mRbThree.setText(String.format(getString(R.string.dynamic_send_toll_select_money), mRechargeLables.get(2)));
             case 2:
                 mRbTwo.setVisibility(View.VISIBLE);
-                mRbTwo.setText(String.format(getString(R.string.money_format), mRechargeLables.get(1)));
+                mRbTwo.setText(String.format(getString(R.string.dynamic_send_toll_select_money), mRechargeLables.get(1)));
             case 1:
                 mRbOne.setVisibility(View.VISIBLE);
-                mRbOne.setText(String.format(getString(R.string.money_format), mRechargeLables.get(0)));
+                mRbOne.setText(String.format(getString(R.string.dynamic_send_toll_select_money), mRechargeLables.get(0)));
                 mLlRechargeChooseMoneyItem.setVisibility(View.VISIBLE);
                 break;
             case 0:
@@ -214,7 +214,7 @@ public class RewardFragment extends TSFragment<RewardContract.Presenter> impleme
                         initStickTopInstructionsPop();
                     } else {
                         setSureBtEnable(false);
-                        mPresenter.reward(PayConfig.realCurrencyYuan2Fen(mRewardMoney), mRewardType, mSourceId);
+                        mPresenter.reward(mRewardMoney, mRewardType, mSourceId);
                     }
                 });// 传入的是真实货币分单位
 

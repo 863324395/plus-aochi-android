@@ -139,11 +139,8 @@ public class ReWardView extends FrameLayout {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        // 目前打赏使用钱包，故显示元
-        moneyName = getResources().getString(R.string.yuan);
-
         String result = getResources().getString(R.string.reward_show, "<" + ConvertUtils.numberConvert(rewardsCountBean.getCount()) + ">", "<" +
-                getResources().getString(R.string.money_format, PayConfig.realCurrencyFen2Yuan(amout)) + ">", moneyName);
+                getResources().getString(R.string.dynamic_send_toll_select_money,amout) + ">", moneyName);
         CharSequence charSequence = ColorPhrase.from(result).withSeparator("<>")
                 .innerColor(ContextCompat.getColor(getContext(), R.color.money))
                 .outerColor(ContextCompat.getColor(getContext(), R.color.normal_for_assist_text))
