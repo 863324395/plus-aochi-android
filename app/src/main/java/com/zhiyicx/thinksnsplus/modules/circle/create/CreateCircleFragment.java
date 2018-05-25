@@ -48,7 +48,6 @@ import com.zhiyicx.thinksnsplus.modules.usertag.TagFrom;
 import com.zhiyicx.thinksnsplus.widget.EnableCheckBox;
 import com.zhiyicx.thinksnsplus.widget.EnableSwitchCompat;
 import com.zhiyicx.thinksnsplus.widget.UserInfoInroduceInputView;
-import com.zhiyicx.thinksnsplus.widget.listener.OnTouchEventListener;
 import com.zhy.view.flowlayout.TagFlowLayout;
 
 import java.util.ArrayList;
@@ -369,8 +368,26 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
             isRestoreData = false;
         });
 
-        mCbFree.setOnTouchEventListener(isEnabled -> isEnabled);
-        mCbToll.setOnTouchEventListener(isEnabled -> isEnabled);
+        mCbFree.setOnTouchEventListener(isEnabled -> {
+            if (mCircleInfo == null) {
+                return isEnabled;
+            }
+            boolean isPaidCircle = CircleInfo.CirclePayMode.PAID.value.equals(mCircleInfo.getMode());
+            if (isPaidCircle) {
+                showSnackErrorMessage(getString(R.string.close_circle_rule));
+            }
+            return isEnabled;
+        });
+        mCbToll.setOnTouchEventListener(isEnabled -> {
+            if (mCircleInfo == null) {
+                return isEnabled;
+            }
+            boolean isPaidCircle = CircleInfo.CirclePayMode.PAID.value.equals(mCircleInfo.getMode());
+            if (isPaidCircle) {
+                showSnackErrorMessage(getString(R.string.close_circle_rule));
+            }
+            return isEnabled;
+        });
         mWcBlock.setOnTouchEventListener(isEnabled -> isEnabled);
 
         mCbFree.setOnCheckedChangeListener((buttonView, isChecked) -> {
