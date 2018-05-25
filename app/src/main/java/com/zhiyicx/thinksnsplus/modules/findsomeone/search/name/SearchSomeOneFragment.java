@@ -102,10 +102,9 @@ public class SearchSomeOneFragment extends TSListFragment<SearchSomeOneContract.
     protected void initView(View rootView) {
         super.initView(rootView);
         setEmptyViewVisiable(false);
-
+        mRvList.setBackgroundColor(getColor(R.color.white));
         mFindSomeOneListAdapter = new FindSomeOneListAdapter(getActivity(), R.layout.item_find_some_list, mListDatas, mPresenter);
         mFindSomeOneListAdapter.setOnItemClickListener(this);
-
 
         RxTextView.editorActionEvents(mFragmentInfoSearchEdittext).subscribe(textViewEditorActionEvent -> {
             if (textViewEditorActionEvent.actionId() == EditorInfo.IME_ACTION_SEARCH) {
@@ -115,24 +114,18 @@ public class SearchSomeOneFragment extends TSListFragment<SearchSomeOneContract.
                     useGridLayoutManager = false;
                     mRvList.setAdapter(mFindSomeOneListAdapter);
                     mRvList.setLayoutManager(new LinearLayoutManager(mActivity));
-                    mRootView.setBackgroundColor(getColor(R.color.bgColor));
+                    mRvList.setBackgroundColor(getColor(R.color.bgColor));
                     mRecommentUser.setVisibility(View.GONE);
                 } else {
                     useGridLayoutManager = true;
                     mRvList.setAdapter(mRecommentAdapter);
                     mRvList.setLayoutManager(mGridLayoutManager);
-                    mRootView.setBackgroundColor(getColor(R.color.white));
+                    mRvList.setBackgroundColor(getColor(R.color.white));
                     mPresenter.getRecommentUser();
                 }
-
             }
         });
-        mRvList.setBackgroundResource(R.color.bgColor);
         mLlContainer.setBackgroundResource(R.color.white);
-//        RxTextView.afterTextChangeEvents(mFragmentInfoSearchEdittext)
-//                .subscribe(textViewAfterTextChangeEvent -> {
-//                    mPresenter.searchUser(textViewAfterTextChangeEvent.editable().toString());
-//                });
     }
 
     @Override
