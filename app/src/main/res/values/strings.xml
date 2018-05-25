@@ -51,6 +51,7 @@
     <string name="follow">关注</string>
     <string name="friends">好友</string>
     <string name="fans">粉丝</string>
+    <string name="fans_count">粉丝：%1$s</string>
     <string name="system_info">系统消息</string>
     <string name="my_qr_code_content">uid=%d</string>
     <string name="my_qr_code_title">扫一扫</string>
