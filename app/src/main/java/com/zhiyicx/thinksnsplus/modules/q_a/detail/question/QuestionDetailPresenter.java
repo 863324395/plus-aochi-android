@@ -223,7 +223,7 @@ public class QuestionDetailPresenter extends AppBasePresenter<QuestionDetailCont
 
     @Override
     public void applyForExcellent(Long question_id) {
-        Subscription subscription = handleWalletBlance((long) getSystemConfig().getExcellentQuestion())
+        Subscription subscription = handleIntegrationBlance((long) getSystemConfig().getExcellentQuestion())
                 .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R
                         .string.apply_doing)))
                 .flatMap(o -> mBaseQARepository.applyForExcellent(question_id))
@@ -242,7 +242,7 @@ public class QuestionDetailPresenter extends AppBasePresenter<QuestionDetailCont
                     @Override
                     protected void onException(Throwable throwable) {
                         super.onException(throwable);
-                        if (isBalanceCheck(throwable)) {
+                        if (isIntegrationBalanceCheck(throwable)) {
                             return;
                         }
                         mRootView.handleLoading(false, false, throwable.getMessage());
@@ -263,7 +263,7 @@ public class QuestionDetailPresenter extends AppBasePresenter<QuestionDetailCont
     @Override
     public void payForOnlook(long answer_id, int position) {
 
-        Subscription subscription = handleWalletBlance((long) getSystemConfig().getOnlookQuestion())
+        Subscription subscription = handleIntegrationBlance((long) getSystemConfig().getOnlookQuestion())
                 .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R
                         .string.pay_alert_ing)))
                 .flatMap(o -> mBaseQARepository.payForOnlook(answer_id))
@@ -288,7 +288,7 @@ public class QuestionDetailPresenter extends AppBasePresenter<QuestionDetailCont
                     @Override
                     protected void onException(Throwable throwable) {
                         super.onException(throwable);
-                        if (isBalanceCheck(throwable)) {
+                        if (isIntegrationBalanceCheck(throwable)) {
                             return;
                         }
                         LogUtils.d("Cathy", "payForOnlook // " + throwable.toString());

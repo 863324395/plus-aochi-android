@@ -469,7 +469,7 @@ public class CircleDetailPresenter extends AppBasePresenter<CircleDetailContract
 
         Observable<BaseJsonV2<Object>> observable;
         if (isPaid && !isJoined) {
-            observable = handleWalletBlance(circleInfo.getMoney())
+            observable = handleIntegrationBlance(circleInfo.getMoney())
                     .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R
                             .string.pay_alert_ing)))
                     .flatMap(o -> mBaseCircleRepository.dealCircleJoinOrExit(circleInfo));
@@ -522,7 +522,7 @@ public class CircleDetailPresenter extends AppBasePresenter<CircleDetailContract
                     @Override
                     protected void onException(Throwable throwable) {
                         super.onException(throwable);
-                        if (isBalanceCheck(throwable)) {
+                        if (isIntegrationBalanceCheck(throwable)) {
                             return;
                         }
                         mRootView.showSnackErrorMessage(mContext.getString(R.string.bill_doing_fialed));
