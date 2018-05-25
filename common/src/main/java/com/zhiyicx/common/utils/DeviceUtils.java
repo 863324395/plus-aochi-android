@@ -125,13 +125,13 @@ public class DeviceUtils {
             sbar = context.getResources()
                     .getDimensionPixelSize(x);
 
-            LogUtils.d("getStatuBarHeight::"+sbar);
+            LogUtils.d("getStatuBarHeight::" + sbar);
 
         } catch (Exception e1) {
             e1.printStackTrace();
         }
-        int h=getHeight(ActivityHandler.getInstance().currentActivity());
-        return Math.max(h,sbar);
+        int h = getHeight(ActivityHandler.getInstance().currentActivity());
+        return Math.max(h, sbar);
     }
 
     /**
@@ -862,15 +862,17 @@ public class DeviceUtils {
         return str.substring(0, measurennums) + "..." + defaultWord;
     }
 
+    // 刘海区域可用
     public static void openFullScreenModel(Activity mAc) {
-        mAc.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        WindowManager.LayoutParams lp = mAc.getWindow().getAttributes();
         if (Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O_MR1) {
+            mAc.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            WindowManager.LayoutParams lp = mAc.getWindow().getAttributes();
             lp.layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES;
+            mAc.getWindow().setAttributes(lp);
         }
-        mAc.getWindow().setAttributes(lp);
     }
 
+    // 刘海高度
     public static int getHeight(Activity mAc) {
         View decorView = mAc.getWindow().getDecorView();
         if (decorView != null) {
