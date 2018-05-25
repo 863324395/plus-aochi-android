@@ -118,12 +118,12 @@ public class PreviewFragment extends TSFragment implements MediaPlayerWrapper.IM
     }
 
     @Override
-    protected boolean needCenterLoadingDialog() {
-        return true;
+    protected boolean setUseSatusbar() {
+        return false;
     }
 
     @Override
-    protected boolean setUseSatusbar() {
+    protected boolean needCenterLoadingDialog() {
         return true;
     }
 

@@ -113,7 +113,7 @@ public class CoverFragment extends TSFragment implements MediaPlayerWrapper.IMed
 
     @Override
     protected boolean setUseSatusbar() {
-        return true;
+        return false;
     }
 
     @Override

@@ -113,7 +113,7 @@ class IntegrationRechargeFragment : TSFragment<IntegrationRechargeContract.Prese
 
     override fun initView(rootView: View) {
         setStatusPlaceholderViewBackgroundColor(android.R.color.transparent)
-        mIvRefresh = mRootView.findViewById(R.id.iv_refresh) as ImageView
+        mIvRefresh = mRootView.findViewById(R.id.iv_refresh)
         mToolbar.setBackgroundResource(android.R.color.transparent)
         (mToolbar.layoutParams as LinearLayout.LayoutParams).setMargins(0, DeviceUtils.getStatuBarHeight(mActivity), 0, 0)
         mTvToolbarCenter.setTextColor(ContextCompat.getColor(mActivity, R.color.white))

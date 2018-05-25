@@ -1,8 +1,10 @@
 package com.zhiyicx.thinksnsplus.modules.guide;
 
 import android.content.Intent;
+import android.os.Bundle;
 
 import com.zhiyicx.baseproject.base.TSActivity;
+import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 /**
  * @Describe
@@ -31,5 +33,11 @@ public class GuideActivity extends TSActivity<GuidePresenter, GuideFragment_v2> 
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         mContanierFragment.onNewIntent(intent);
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        DeviceUtils.openFullScreenModel(this);
+        super.onCreate(savedInstanceState);
     }
 }

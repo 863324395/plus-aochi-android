@@ -63,21 +63,15 @@ public class GuideFragment_v2 extends TSFragment<GuideContract.Presenter> implem
     }
 
     @Override
-    protected boolean setStatusbarGrey() {
-        return false;
+    protected boolean setUseSatusbar() {
+        return true;
     }
-
 
     @Override
     protected boolean showToolbar() {
         return false;
     }
 
-
-    @Override
-    protected boolean setUseStatusView() {
-        return false;
-    }
 
     @Override
     protected int getBodyLayoutId() {

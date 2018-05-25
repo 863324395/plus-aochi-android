@@ -129,13 +129,13 @@ public class RecordFragment extends TSFragment implements SurfaceHolder.Callback
     }
 
     @Override
-    protected boolean showToolBarDivider() {
+    protected boolean setUseSatusbar() {
         return false;
     }
 
     @Override
-    protected boolean setUseSatusbar() {
-        return true;
+    protected boolean showToolBarDivider() {
+        return false;
     }
 
     @Override
