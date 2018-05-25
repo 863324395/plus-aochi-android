@@ -187,7 +187,7 @@ public class CircleMainPresenter extends AppBasePresenter<CircleMainContract.Vie
 
         Observable<BaseJsonV2<Object>> observable;
         if (isPaid) {
-            observable = handleWalletBlance(circleInfo.getMoney())
+            observable = handleIntegrationBlance(circleInfo.getMoney())
                     .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R
                             .string.pay_alert_ing)))
                     .flatMap(o -> mBaseCircleRepository.dealCircleJoinOrExit(circleInfo));
@@ -241,7 +241,7 @@ public class CircleMainPresenter extends AppBasePresenter<CircleMainContract.Vie
                     @Override
                     protected void onException(Throwable throwable) {
                         super.onException(throwable);
-                        if (isBalanceCheck(throwable)) {
+                        if (isIntegrationBalanceCheck(throwable)) {
                             return;
                         }
                         mRootView.showSnackErrorMessage(mContext.getString(R.string.bill_doing_fialed));
