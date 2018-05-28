@@ -210,8 +210,6 @@ public class TransferImageAnimationUtil {
 
                         // 位移+缩小
                         ObjectAnimator animator = ObjectAnimator.ofPropertyValuesHolder(imageView,
-                                PropertyValuesHolder.ofInt("setPivotX", pivotX, pivotX),
-                                PropertyValuesHolder.ofInt("setPivotY", pivotY, pivotY),
 
                                 PropertyValuesHolder.ofFloat("scaleX", 1 / startScale, 1),
                                 PropertyValuesHolder.ofFloat("scaleY", 1 / startScale, 1),
@@ -254,19 +252,19 @@ public class TransferImageAnimationUtil {
                 });
     }
 
-
     /**
      * 退出时的控件缩放处理
      *
      * @param rect      转场动画初始时，由上一个界面传递过来的图片控件属性
      * @param imageView 当前界面要进行缩放的图片控件
      */
-    public static void animateClose(android.animation.ObjectAnimator backgroundAnimator, final FrameLayout viewGroup, AnimationRectBean rect, final ImageView imageView) {
+    public static void animateClose(final FrameLayout viewGroup,
+                                    AnimationRectBean rect, final ImageView imageView,final Runnable endAction) {
 
         // 没有大图退出动画，直接关闭activity
         if (rect == null) {
             imageView.animate().alpha(0);
-            backgroundAnimator.start();
+            endAction.run();
             return;
         }
         // 小图rect属性
@@ -276,7 +274,7 @@ public class TransferImageAnimationUtil {
         // 没有大图退出动画，直接关闭activity
         if (finalBounds == null || startBounds == null) {
             imageView.animate().alpha(0);
-            backgroundAnimator.start();
+            endAction.run();
             return;
         }
 
@@ -295,15 +293,13 @@ public class TransferImageAnimationUtil {
 
 
         ObjectAnimator animator = ObjectAnimator.ofPropertyValuesHolder(imageView,
-                PropertyValuesHolder.ofInt("setPivotX", pivotX, pivotX),
-                PropertyValuesHolder.ofInt("setPivotY", pivotY, pivotY),
 
                 PropertyValuesHolder.ofFloat("scaleX", 1, startWScale),
                 PropertyValuesHolder.ofFloat("scaleY", 1, startHScale),
 
                 PropertyValuesHolder.ofFloat("translationX", 0, deltaLeft),
                 PropertyValuesHolder.ofFloat("translationY", 0, deltaTop)
-        ).setDuration(ANIMATION_DURATION);
+        ).setDuration(4000);
 
         animator.setInterpolator(new AccelerateDecelerateInterpolator());
 
@@ -329,12 +325,14 @@ public class TransferImageAnimationUtil {
                 String color = "#00000000";
                 viewGroup.setBackgroundColor(Color.parseColor(color));
             }
+
+            @Override
+            public void onAnimationEnd(com.nineoldandroids.animation.Animator animation) {
+                super.onAnimationEnd(animation);
+                endAction.run();
+            }
         });
         animator.start();
-        backgroundAnimator.setInterpolator(new AccelerateDecelerateInterpolator());
-        backgroundAnimator.setDuration(ANIMATION_DURATION);
-        backgroundAnimator.start();
-
-
     }
+
 }

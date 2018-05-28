@@ -21,7 +21,6 @@ import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.baseproject.widget.indicator_expand.ScaleCircleNavigator;
 import com.zhiyicx.common.utils.DeviceUtils;
-import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.AnimationRectBean;
 
@@ -94,7 +93,7 @@ public class GalleryFragment extends TSFragment {
         if (allImages != null && allImages.size() > 1) {
             addCircleNavigator();
             mMiIndicator.onPageSelected(currentItem);
-        }else{
+        } else {
             mMiIndicator.setVisibility(View.GONE);
         }
         mVpPhotos.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
@@ -187,7 +186,7 @@ public class GalleryFragment extends TSFragment {
                 boolean isFirstLoadPage = currentItem == position || Math.abs(currentItem - position) == 1;
                 fragment = GalleryPictureFragment
                         .newInstance(allImages.get(position), rectList.get(position), animateIn,
-                                isFirstLoadPage,mNeedStartLoading);
+                                isFirstLoadPage, mNeedStartLoading);
                 alreadyAnimateIn = true;
                 fragmentMap.put(position, fragment);
             }
@@ -244,8 +243,8 @@ public class GalleryFragment extends TSFragment {
         // 退出隐藏圆点指示器，防止显示在透明背景上
         mMiIndicator.setVisibility(View.INVISIBLE);
         GalleryPictureFragment fragment = fragmentMap.get(mVpPhotos.getCurrentItem());
-        ObjectAnimator bgAnim = ObjectAnimator.ofInt(backgroundColor, "alpha", 0);
-        fragment.animationExit(bgAnim);
+        backgroundColor.setAlpha(0);
+        fragment.animationExit();
     }
 
     private void addCircleNavigator() {
