@@ -2,6 +2,7 @@ package com.zhiyicx.baseproject.widget.textview;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.text.DynamicLayout;
 import android.text.Layout;
 import android.text.Selection;
 import android.text.Spannable;
@@ -15,8 +16,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
 
-import com.klinker.android.link_builder.Link;
-import com.klinker.android.link_builder.TouchableSpan;
 import com.zhiyicx.baseproject.R;
 
 /**
@@ -27,9 +26,12 @@ import com.zhiyicx.baseproject.R;
  */
 public class SpanTextViewWithEllipsize extends android.support.v7.widget.AppCompatTextView {
     private int mLastCharDown = 0;
-    private SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder();
+    private SpannableStringBuilder spannableStringBuilder;
     private TouchableSpan mTouchableSpan = new TouchableSpan();
     private CharSequence mCharSequence;
+    private TextView.BufferType mBufferType = TextView.BufferType.NORMAL;
+    private int mLayoutWidth;
+    private int mFutureTextViewWidth;
 
     public SpanTextViewWithEllipsize(Context context) {
         this(context, null);
@@ -42,6 +44,67 @@ public class SpanTextViewWithEllipsize extends android.support.v7.widget.AppComp
     public SpanTextViewWithEllipsize(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         setMovementMethod(new LinkTouchMovementMethod());
+        spannableStringBuilder
+                = new SpannableStringBuilder();
+    }
+
+    @Override
+    public void setText(CharSequence text, BufferType type) {
+        mCharSequence = text;
+        mBufferType = type;
+        setTextInternal(dealText(), type);
+    }
+
+    private CharSequence dealText() {
+        if (spannableStringBuilder == null) {
+            spannableStringBuilder
+                    = new SpannableStringBuilder();
+        }
+        spannableStringBuilder.clear();
+        spannableStringBuilder.append(mCharSequence);
+        try {
+            if (mLayoutWidth <= 0) {
+                if (getWidth() == 0) {
+                    if (mFutureTextViewWidth == 0) {
+                        return spannableStringBuilder;
+                    } else {
+                        mLayoutWidth = mFutureTextViewWidth - getPaddingLeft() - getPaddingRight();
+                    }
+                } else {
+                    mLayoutWidth = getWidth() - getPaddingLeft() - getPaddingRight();
+                }
+            }
+            DynamicLayout mLayout = new DynamicLayout(spannableStringBuilder, getPaint(), mLayoutWidth, Layout.Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
+            int lineCount = mLayout.getLineCount();
+            int needCount = getContext().getResources().getInteger(R.integer.dynamic_list_content_show_lines) - 2;
+            mLastCharDown = mLayout.getLineVisibleEnd(Math.min(lineCount, needCount));
+        } catch (Exception ignored) {
+            mLastCharDown = 0;
+        }
+        if (mLastCharDown > 0 && mCharSequence.length() > mLastCharDown) {
+            spannableStringBuilder.clear();
+
+            spannableStringBuilder
+                    .append(mCharSequence.subSequence(0, mLastCharDown));
+            TouchableSpan[] touchableSpans = spannableStringBuilder.getSpans(0, spannableStringBuilder.length(), TouchableSpan.class);
+            if (touchableSpans == null || touchableSpans.length == 0) {
+                String lookMore = "『..查看更多』";
+                spannableStringBuilder
+                        .append(lookMore);
+                spannableStringBuilder.setSpan(mTouchableSpan, spannableStringBuilder.length() - lookMore.length(),
+                        spannableStringBuilder.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            }
+        }
+        return spannableStringBuilder;
+    }
+
+    public void updateForRecyclerView(CharSequence text, int futureTextViewWidth) {
+        mFutureTextViewWidth = futureTextViewWidth;
+        setText(text);
+    }
+
+    private void setTextInternal(CharSequence text, TextView.BufferType type) {
+        super.setText(text, type);
     }
 
     /**
@@ -49,27 +112,7 @@ public class SpanTextViewWithEllipsize extends android.support.v7.widget.AppComp
      */
     @Override
     protected void onDraw(Canvas canvas) {
-        mCharSequence = getText();
-        try {
-            // 最多显示 3 行
-            int lineCount = getLineCount();
-            int needCount = getContext().getResources().getInteger(R.integer.dynamic_list_content_show_lines) - 2;
-            mLastCharDown = getLayout().getLineVisibleEnd(Math.min(lineCount, needCount));
-        } catch (Exception ignored) {
-            mLastCharDown = 0;
-        }
-        if (mLastCharDown > 0 && mCharSequence.length() > mLastCharDown) {
-            spannableStringBuilder.clear();
-            String lookMore = "『..查看更多』";
-            spannableStringBuilder
-                    .append(mCharSequence.subSequence(0, mLastCharDown))
-                    .append(lookMore);
 
-            spannableStringBuilder.setSpan(mTouchableSpan, spannableStringBuilder.length() - lookMore.length(),
-                    spannableStringBuilder.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-
-            setText(spannableStringBuilder);
-        }
         super.onDraw(canvas);
     }
 

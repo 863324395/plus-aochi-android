@@ -18,6 +18,7 @@ import com.klinker.android.link_builder.LinkMetadata;
 import com.klinker.android.link_builder.NetUrlHandleBean;
 import com.zhiyicx.baseproject.widget.DynamicListMenuView;
 import com.zhiyicx.baseproject.widget.imageview.FilterImageView;
+import com.zhiyicx.baseproject.widget.textview.SpanTextViewWithEllipsize;
 import com.zhiyicx.common.BuildConfig;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.DeviceUtils;
@@ -188,8 +189,7 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
 
             holder.setText(R.id.tv_time, dynamicBean.getFriendlyTime());
             holder.setVisible(R.id.tv_title, View.GONE);
-            TextView contentView = holder.getView(R.id.tv_content);
-
+            SpanTextViewWithEllipsize contentView = holder.getView(R.id.tv_content);
             // 置顶标识 ,防止没有置顶布局错误
             try {
                 // 待审核 也隐藏
@@ -230,8 +230,11 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
                             .maxLines(contentView.getResources().getInteger(R.integer
                                     .dynamic_list_content_show_lines))
                             .onSpanTextClickListener(mOnSpanTextClickListener)
-                            .onTextSpanComplete(() -> ConvertUtils.stringLinkConvert(contentView, setLiknks(dynamicBean, contentView.getText()
-                                    .toString()), false))
+                            .onTextSpanComplete(() -> {
+                                ConvertUtils.stringLinkConvert(contentView, setLiknks(dynamicBean, contentView.getText()
+                                        .toString()), false);
+                                contentView.post(() -> contentView.updateForRecyclerView(contentView.getText(),contentView.getWidth()));
+                            })
                             .disPlayText(true)
                             .build();
                 } else {
@@ -245,8 +248,11 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
                             .onSpanTextClickListener(mOnSpanTextClickListener)
                             .note(dynamicBean.getPaid_node().getNode())
                             .amount(dynamicBean.getPaid_node().getAmount())
-                            .onTextSpanComplete(() -> ConvertUtils.stringLinkConvert(contentView, setLiknks(dynamicBean, contentView.getText()
-                                    .toString()), false))
+                            .onTextSpanComplete(() -> {
+                                ConvertUtils.stringLinkConvert(contentView, setLiknks(dynamicBean, contentView.getText()
+                                        .toString()), false);
+                                contentView.post(() -> contentView.updateForRecyclerView(contentView.getText(),contentView.getWidth()));
+                            })
                             .disPlayText(false)
                             .build();
                 }
@@ -254,7 +260,6 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
             }
 
             contentView.setOnClickListener(v -> holder.getConvertView().performClick());
-
             holder.setVisible(R.id.dlmv_menu, showToolMenu ? View.VISIBLE : View.GONE);
             // 分割线跟随工具栏显示隐藏
             holder.setVisible(R.id.v_line, showToolMenu ? View.VISIBLE : View.GONE);
