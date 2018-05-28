@@ -42,6 +42,7 @@ public class AppBarLayoutOverScrollViewBehavior extends AppBarLayout.Behavior {
     private int mSeccondTop;
     private boolean isRecovering = false;//是否正在自动回弹中
     private boolean isRefreshing = false;
+    private boolean isDoRefresh = false;
 
     private final float MAX_REFRESH_LIMIT = 0.3f;//达到这个下拉临界值就开始刷新动画
 
@@ -73,9 +74,6 @@ public class AppBarLayoutOverScrollViewBehavior extends AppBarLayout.Behavior {
         abl.addOnOffsetChangedListener((appBarLayout, i) -> {
                     float point = (float) Math.abs(i) / (float) appBarLayout.getTotalScrollRange();
                     middleLayout.setAlpha(1f - point);
-                    ViewHelper.setPivotX(middleLayout, 0);
-                    ViewHelper.setPivotY(middleLayout,
-                            mMiddleHeight / 3);
                     if (onRefreshChangeListener != null) {
                         onRefreshChangeListener.alphaChange(point);
                     }
@@ -96,6 +94,9 @@ public class AppBarLayoutOverScrollViewBehavior extends AppBarLayout.Behavior {
         if (!isRecovering) {
             if (mTargetView != null && ((dy < 0 && child.getBottom() >= mParentHeight)
                     || (dy > 0 && child.getBottom() > mParentHeight))) {
+                if (dy > 0) {
+                    consumed[1] = dy;
+                }
                 scale(child, target, dy);
                 return;
             }
@@ -128,9 +129,13 @@ public class AppBarLayoutOverScrollViewBehavior extends AppBarLayout.Behavior {
         mTargetViewHeight = mTargetView.getHeight();
         mMiddleHeight = middleLayout.getHeight();
         mFirstTop = middleLayout.getTop();
+        setRefreshing(false);
     }
 
     private void scale(AppBarLayout abl, View target, int dy) {
+        if (isRecovering || isDoRefresh) {
+            return;
+        }
         mTotalDy += -dy;
         mTotalDy = Math.min(mTotalDy, TARGET_HEIGHT);
         mLastScale = Math.max(1f, 1f + mTotalDy / TARGET_HEIGHT);
@@ -174,6 +179,7 @@ public class AppBarLayoutOverScrollViewBehavior extends AppBarLayout.Behavior {
         }
 
         if (onRefreshChangeListener != null && isRefreshing) {
+            isDoRefresh = true;
             onRefreshChangeListener.doRefresh();
         }
 
@@ -224,5 +230,6 @@ public class AppBarLayoutOverScrollViewBehavior extends AppBarLayout.Behavior {
 
     public void setRefreshing(boolean refreshing) {
         isRefreshing = refreshing;
+        isDoRefresh = refreshing;
     }
 }

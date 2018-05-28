@@ -122,7 +122,7 @@ public class SelectDynamicTypeFragment extends TSFragment<SelectDynamicTypeContr
 
     @Override
     protected boolean setUseSatusbar() {
-        return false;
+        return true;
     }
 
     @Override

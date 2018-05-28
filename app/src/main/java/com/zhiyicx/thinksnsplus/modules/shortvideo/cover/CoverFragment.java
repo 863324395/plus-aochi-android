@@ -28,6 +28,7 @@ import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.ActivityHandler;
+import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
@@ -102,18 +103,18 @@ public class CoverFragment extends TSFragment implements MediaPlayerWrapper.IMed
     }
 
     @Override
+    protected int setToolBarBackgroud() {
+        return R.color.black_deep;
+    }
+
+    @Override
     public void onBackPressed() {
         mToolbarLeft.performClick();
     }
 
     @Override
     protected boolean setUseSatusbar() {
-        return true;
-    }
-
-    @Override
-    protected boolean setUseStatusView() {
-        return false;
+        return DeviceUtils.getHeight(mActivity) == 0;
     }
 
     @Override

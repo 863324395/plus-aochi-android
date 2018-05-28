@@ -159,9 +159,7 @@ public class PublishPostFragment extends MarkdownFragment<PostDraftBean, Publish
         super.onActivityResultForChooseCircle(circleInfo);
         mCircleInfo = circleInfo;
         mCircleName.setText(mCircleInfo.getName());
-        if (isBttomMenuVisible) {
-            setSynToDynamicCbVisiable(true);
-        }
+        setSynToDynamicCbVisiable(true);
     }
 
     @Override

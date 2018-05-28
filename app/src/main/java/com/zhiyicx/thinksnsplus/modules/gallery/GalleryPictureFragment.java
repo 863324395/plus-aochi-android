@@ -702,32 +702,9 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
 
     /**
      * 退出动画，在返回操作中调用
-     *
-     * @param backgroundAnimator
      */
-    public void animationExit(ObjectAnimator backgroundAnimator) {
+    public void animationExit() {
         stopCenterLoading();
-        backgroundAnimator.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                if (getActivity() != null) {
-                    getActivity().finish();
-                    getActivity().overridePendingTransition(-1, -1);
-                }
-            }
-
-
-            @Override
-            public void onAnimationStart(Animator animation) {
-                super.onAnimationStart(animation);
-                if (mIvOriginPager.getVisibility() == View.VISIBLE) {
-                    mIvOriginPager.setBackgroundColor(ContextCompat.getColor(getContext(), android.R.color.transparent));
-                } else {
-                    mIvPager.setBackgroundColor(ContextCompat.getColor(getContext(), android.R.color.transparent));
-                }
-
-            }
-        });
         // 高清图片可见，那就高清图片退出动画
         if (mIvPager.getVisibility() == View.VISIBLE) {
             // 图片处于放大状态，先让它复原
@@ -738,7 +715,12 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
             // 退出隐藏查看原图按钮，防止显示在透明背景上
             mTvOriginPhoto.setVisibility(View.GONE);
             AnimationRectBean rect = getArguments().getParcelable("rect");
-            TransferImageAnimationUtil.animateClose(backgroundAnimator, mFlGalleryPhoto, rect, mIvPager);
+            TransferImageAnimationUtil.animateClose(mFlGalleryPhoto, rect, mIvPager, () -> {
+                if (getActivity() != null) {
+                    getActivity().finish();
+                    getActivity().overridePendingTransition(-1, -1);
+                }
+            });
 
         }
         // 原图可见，退出就是用原图
@@ -751,7 +733,12 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
             // 退出隐藏查看原图按钮，防止显示在透明背景上
             mTvOriginPhoto.setVisibility(View.GONE);
             AnimationRectBean rect = getArguments().getParcelable("rect");
-            TransferImageAnimationUtil.animateClose(backgroundAnimator, mFlGalleryPhoto, rect, mIvOriginPager);
+            TransferImageAnimationUtil.animateClose(mFlGalleryPhoto, rect, mIvOriginPager, () -> {
+                if (getActivity() != null) {
+                    getActivity().finish();
+                    getActivity().overridePendingTransition(-1, -1);
+                }
+            });
         }
     }
 

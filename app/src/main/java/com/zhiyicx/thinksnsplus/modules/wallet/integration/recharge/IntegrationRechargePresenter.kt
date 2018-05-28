@@ -108,7 +108,7 @@ constructor(rootView: IntegrationRechargeContract.View) : AppBasePresenter<Integ
             mRootView.initmRechargeInstructionsPop()
             return
         }
-        mBillRepository.getIntegrationAliPayStr(channel, 1.0)
+        mBillRepository.getIntegrationAliPayStr(channel, amount)
                 .doAfterTerminate { mRootView.configSureBtn(true) }
 
                 .doOnSubscribe {
@@ -164,7 +164,7 @@ constructor(rootView: IntegrationRechargeContract.View) : AppBasePresenter<Integ
             mRootView.initmRechargeInstructionsPop()
             return
         }
-        mBillRepository.getIntegrationWXPayStr(channel, 1.0)
+        mBillRepository.getIntegrationWXPayStr(channel, amount)
                 .doOnSubscribe {
                     mRootView.configSureBtn(false)
                     mRootView.showSnackLoadingMessage(mContext.getString(R.string.recharge_credentials_ing))

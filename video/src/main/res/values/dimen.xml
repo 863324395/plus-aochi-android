@@ -65,5 +65,7 @@
     <dimen name="switch_min_width">40dp</dimen>
 
     <dimen name="frames_video_height">60dip</dimen>
+    <dimen name="toolbar_height_75">75dp</dimen>
+
 
 </resources>

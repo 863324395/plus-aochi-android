@@ -16,6 +16,7 @@
         android:layout_height="@dimen/full_button_height"
         android:layout_marginTop="@dimen/spacing_small_4dp"
         app:dividerLeftMargin="@dimen/spacing_normal"
+        app:showLine="false"
         app:dividerRightMargin="@dimen/spacing_normal"
         app:rightImage="@mipmap/ic_arrow_smallgrey"/>
 </LinearLayout>

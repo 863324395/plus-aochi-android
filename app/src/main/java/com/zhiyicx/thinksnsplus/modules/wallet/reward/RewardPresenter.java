@@ -59,7 +59,7 @@ public class RewardPresenter extends AppBasePresenter< RewardContract.View> impl
     }
 
     private void hanldeRewardResult(Observable<Object> result, WalletBean walletBean, double rewardMoney) {
-        Subscription subscription = handleWalletBlance((long) rewardMoney)
+        Subscription subscription = handleIntegrationBlance((long) rewardMoney)
                 .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R
                         .string.ts_pay_check_handle_doing)))
                 .flatMap(o -> result).doAfterTerminate(() -> mRootView.setSureBtEnable(true))
@@ -78,7 +78,7 @@ public class RewardPresenter extends AppBasePresenter< RewardContract.View> impl
 
                     @Override
                     protected void onException(Throwable throwable) {
-                        if (isBalanceCheck(throwable)) {
+                        if (isIntegrationBalanceCheck(throwable)) {
                             return;
                         }
                         mRootView.showSnackErrorMessage(mContext.getString(R.string.reward_failed));

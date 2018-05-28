@@ -79,6 +79,7 @@
             android:layout_marginTop="@dimen/spacing_normal"
             app:leftImage="@mipmap/ico_integral_mall"
             app:leftText="@string/integration_shop"
+            android:visibility="gone"
             app:leftTextLeftPadding="@dimen/spacing_mid"
             android:layout_marginBottom="@dimen/spacing_small"
             app:rightImage="@mipmap/ic_arrow_smallgrey"

@@ -58,6 +58,7 @@
         android:layout_above="@+id/lu_bottom_menu"
         android:layout_alignParentBottom="true"
         android:layout_marginLeft="@dimen/spacing_normal"
+        android:visibility="gone"
         android:background="@color/white"
         android:button="@drawable/selector_circle_post_synchro"
         android:paddingLeft="@dimen/spacing_small"

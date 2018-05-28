@@ -296,6 +296,8 @@ public class CircleLocationFragment extends TSListFragment<CircleLocationContrac
                 .subscribe(aVoid -> {
                     Intent intent = new Intent();
                     Bundle bundle = new Bundle();
+                    PoiItem poiItem = new PoiItem("",null,getString(R.string.create_circle_nolocation),"");
+                    bundle.putParcelable(BUNDLE_DATA, poiItem);
                     intent.putExtras(bundle);
                     getActivity().setResult(RESULT_OK, intent);
                     getActivity().finish();

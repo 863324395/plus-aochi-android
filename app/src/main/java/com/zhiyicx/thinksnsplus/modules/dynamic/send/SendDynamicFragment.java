@@ -883,10 +883,12 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                     if (imageBean.getToll_type() > 0) {
                         hasTollPic = true;
                         filterView.setVisibility(View.VISIBLE);
-                        paintView.setIconRes(R.mipmap.ico_lock);
+                        paintView.setIconRes(R.mipmap.ico_coins);
+                        paintView.setText(imageBean.getToll_monye()+"");
                     } else {
                         paintView.setIconRes(R.mipmap.ico_edit_pen);
                         filterView.setVisibility(View.GONE);
+                        paintView.setText(getString(R.string.dynamic_send_toll_quick));
                     }
                     Glide.with(getContext())
                             .load(imageBean.getImgUrl())

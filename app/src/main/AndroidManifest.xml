@@ -717,7 +717,7 @@
         <activity
             android:name=".modules.shortvideo.record.RecordActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/GalleryTheme"/>
+            android:theme="@style/DynamciSelectTheme"/>
         <activity
             android:name=".modules.shortvideo.videostore.VideoSelectActivity"
             android:screenOrientation="portrait"/>

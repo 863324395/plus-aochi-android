@@ -41,6 +41,7 @@ import com.tym.shortvideo.view.RecordSurfaceView;
 import com.tym.shortvideo.view.ShutterButton;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
+import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
@@ -124,13 +125,18 @@ public class RecordFragment extends TSFragment implements SurfaceHolder.Callback
     private ActionPopupWindow mDeletePopupWindow;
 
     @Override
-    protected boolean showToolBarDivider() {
-        return false;
+    protected int setToolBarBackgroud() {
+        return R.color.black_deep;
     }
 
     @Override
     protected boolean setUseSatusbar() {
-        return true;
+        return DeviceUtils.getHeight(mActivity) == 0;
+    }
+
+    @Override
+    protected boolean showToolBarDivider() {
+        return false;
     }
 
     @Override

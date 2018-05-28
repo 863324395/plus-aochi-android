@@ -90,7 +90,7 @@ public class RechargePresenter extends AppBasePresenter<RechargeContract.View> i
             mRootView.initmRechargeInstructionsPop();
             return;
         }
-        mBillRepository.getAliPayStr(channel, 1)
+        mBillRepository.getAliPayStr(channel, amount)
                 .doOnSubscribe(() -> {
                     mRootView.configSureBtn(false);
                     mRootView.showSnackLoadingMessage(mContext.getString(R.string.recharge_credentials_ing));
@@ -128,7 +128,7 @@ public class RechargePresenter extends AppBasePresenter<RechargeContract.View> i
             mRootView.initmRechargeInstructionsPop();
             return;
         }
-        mBillRepository.getWXPayStr(channel, 1)
+        mBillRepository.getWXPayStr(channel, amount)
                 .doOnSubscribe(() -> {
                     mRootView.configSureBtn(false);
                     mRootView.showSnackLoadingMessage(mContext.getString(R.string.recharge_credentials_ing));

@@ -1,6 +1,9 @@
 package com.zhiyicx.thinksnsplus.modules.dynamic.send.dynamic_type;
 
+import android.os.Bundle;
+
 import com.zhiyicx.baseproject.base.TSActivity;
+import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 
 import static com.zhiyicx.thinksnsplus.modules.dynamic.send.dynamic_type.SelectDynamicTypeFragment.SEND_OPTION;
@@ -30,5 +33,11 @@ public class SelectDynamicTypeActivity extends TSActivity<SelectDynamicTypePrese
     @Override
     public void onBackPressed() {
         mContanierFragment.onBackPressed();
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        DeviceUtils.openFullScreenModel(this);
+        super.onCreate(savedInstanceState);
     }
 }

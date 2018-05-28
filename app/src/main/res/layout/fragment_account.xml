@@ -97,7 +97,7 @@
             <TextView
                 android:layout_width="@dimen/withdrawal_detail_width"
                 android:layout_height="match_parent"
-                android:gravity="center"
+                android:gravity="left|center"
                 android:text="@string/transaction_description"
                 android:textColor="@color/general_for_hint"
                 android:textSize="@dimen/size_content"
@@ -129,7 +129,7 @@
             <TextView
                 android:layout_width="@dimen/withdrawal_detail_width"
                 android:layout_height="match_parent"
-                android:gravity="center"
+                android:gravity="left|center"
                 android:text="@string/transaction_account"
                 android:textColor="@color/general_for_hint"
                 android:textSize="@dimen/size_content"
@@ -158,7 +158,7 @@
             <TextView
                 android:layout_width="@dimen/withdrawal_detail_width"
                 android:layout_height="match_parent"
-                android:gravity="center"
+                android:gravity="left|center"
                 android:text="@string/transaction_time"
                 android:textColor="@color/general_for_hint"
                 android:textSize="@dimen/size_content"

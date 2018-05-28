@@ -5,12 +5,10 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v7.widget.SwitchCompat;
 import android.text.InputFilter;
 import android.text.TextUtils;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -50,7 +48,6 @@ import com.zhiyicx.thinksnsplus.modules.usertag.TagFrom;
 import com.zhiyicx.thinksnsplus.widget.EnableCheckBox;
 import com.zhiyicx.thinksnsplus.widget.EnableSwitchCompat;
 import com.zhiyicx.thinksnsplus.widget.UserInfoInroduceInputView;
-import com.zhiyicx.thinksnsplus.widget.listener.OnTouchEventListener;
 import com.zhy.view.flowlayout.TagFlowLayout;
 
 import java.util.ArrayList;
@@ -164,6 +161,8 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
      * 有没有头像
      */
     private boolean hasHeadImage;
+
+    private boolean isRestoreData;
 
     public static CreateCircleFragment newInstance(Bundle bundle) {
         CreateCircleFragment createCircleFragment = new CreateCircleFragment();
@@ -346,28 +345,49 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
                 });
 
 
-
         RxTextView.textChanges(mTvLocation)
                 .filter(charSequence -> !charSequence.toString().isEmpty() && !charSequence.equals(mTvLocation.getText()))
                 .subscribe(charSequence -> createCirclepreHandle(emptyFlag != 0));
 
         mEtCircleAmount.setFocusable(false);
         mCbToll.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            mEtCircleAmount.setFocusable(isChecked);
-            mEtCircleAmount.setFocusableInTouchMode(isChecked);
-            mEtCircleAmount.requestFocus();
             if (isChecked) {
-                DeviceUtils.showSoftKeyboard(mActivity,mEtCircleAmount);
-                mCbFree.setChecked(false);
-                createCirclepreHandle(emptyFlag != 0 && mEtCircleAmount.getText().toString().length() > 0);
-            }else{
-                DeviceUtils.hideSoftKeyboard(mActivity,mEtCircleAmount);
+                if (!isRestoreData) {
+                    mEtCircleAmount.setFocusable(true);
+                    mEtCircleAmount.setFocusableInTouchMode(true);
+                    mEtCircleAmount.requestFocus();
+                    DeviceUtils.showSoftKeyboard(mActivity, mEtCircleAmount);
+                    mCbFree.setChecked(false);
+                    createCirclepreHandle(emptyFlag != 0 && mEtCircleAmount.getText().toString().length() > 0);
+                }
+
+            } else {
+                DeviceUtils.hideSoftKeyboard(mActivity, mEtCircleAmount);
                 mEtCircleAmount.setText("");
             }
+            isRestoreData = false;
         });
 
-        mCbFree.setOnTouchEventListener(isEnabled -> isEnabled);
-        mCbToll.setOnTouchEventListener(isEnabled -> isEnabled);
+        mCbFree.setOnTouchEventListener(isEnabled -> {
+            if (mCircleInfo == null) {
+                return isEnabled;
+            }
+            boolean isPaidCircle = CircleInfo.CirclePayMode.PAID.value.equals(mCircleInfo.getMode());
+            if (isPaidCircle) {
+                showSnackErrorMessage(getString(R.string.close_circle_rule));
+            }
+            return isEnabled;
+        });
+        mCbToll.setOnTouchEventListener(isEnabled -> {
+            if (mCircleInfo == null) {
+                return isEnabled;
+            }
+            boolean isPaidCircle = CircleInfo.CirclePayMode.PAID.value.equals(mCircleInfo.getMode());
+            if (isPaidCircle) {
+                showSnackErrorMessage(getString(R.string.close_circle_rule));
+            }
+            return isEnabled;
+        });
         mWcBlock.setOnTouchEventListener(isEnabled -> isEnabled);
 
         mCbFree.setOnCheckedChangeListener((buttonView, isChecked) -> {
@@ -375,7 +395,7 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
                 mCbToll.setChecked(false);
                 mEtCircleAmount.setText("");
                 createCirclepreHandle(emptyFlag != 0);
-                DeviceUtils.hideSoftKeyboard(mActivity,mEtCircleAmount);
+                DeviceUtils.hideSoftKeyboard(mActivity, mEtCircleAmount);
             }
         });
 
@@ -436,13 +456,21 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
         mCreateCircleBean = new CreateCircleBean();
         mCreateCircleBean.setName(mEtCircleName.getText().toString());
         if (mPoiItem != null) {
-            String geoHash = GeoHash.getInstance()
-                    .setLocation(new GeoHash.LocationBean(mPoiItem.getLatLonPoint().getLatitude(),
-                            mPoiItem.getLatLonPoint().getLongitude())).getGeoHashBase32();
-            mCreateCircleBean.setLatitude(mPoiItem.getLatLonPoint().getLatitude() + "");
-            mCreateCircleBean.setLongitude(mPoiItem.getLatLonPoint().getLongitude() + "");
-            mCreateCircleBean.setGeo_hash(geoHash);
-            mCreateCircleBean.setLocation(mTvLocation.getText().toString());
+            if (mPoiItem.getLatLonPoint() == null) {
+                // 不显示位置
+                mCreateCircleBean.setLatitude("");
+                mCreateCircleBean.setLongitude("");
+                mCreateCircleBean.setGeo_hash("");
+                mCreateCircleBean.setLocation("");
+            } else {
+                String geoHash = GeoHash.getInstance()
+                        .setLocation(new GeoHash.LocationBean(mPoiItem.getLatLonPoint().getLatitude(),
+                                mPoiItem.getLatLonPoint().getLongitude())).getGeoHashBase32();
+                mCreateCircleBean.setLatitude(mPoiItem.getLatLonPoint().getLatitude() + "");
+                mCreateCircleBean.setLongitude(mPoiItem.getLatLonPoint().getLongitude() + "");
+                mCreateCircleBean.setGeo_hash(geoHash);
+                mCreateCircleBean.setLocation(mTvLocation.getText().toString());
+            }
         }
 
         mCreateCircleBean.setAllow_feed(mWcSynchro.isChecked() ? 1 : 0);
@@ -495,6 +523,7 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
 
     private void restoreData() {
         hasHeadImage = true;
+        isRestoreData = true;
         mToolbarRight.setText(setRightTitle());
         mToolbarCenter.setText(setCenterTitle());
         Glide.with(getActivity())
@@ -556,7 +585,7 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
     }
 
     @OnClick({R.id.rl_change_head_container, R.id.ll_type_container, R.id.ll_tag_container, R.id.ll_location_container,
-            R.id.ll_synchro, R.id.ll_block, R.id.tv_user_agreement, R.id.ll_free})
+            R.id.ll_synchro, R.id.ll_block, R.id.tv_user_agreement, R.id.ll_free, R.id.cb_toll})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.rl_change_head_container:
@@ -578,6 +607,7 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
                 break;
             case R.id.ll_block:
             case R.id.ll_free:
+            case R.id.cb_toll:
                 if (mCircleInfo == null) {
                     return;
                 }

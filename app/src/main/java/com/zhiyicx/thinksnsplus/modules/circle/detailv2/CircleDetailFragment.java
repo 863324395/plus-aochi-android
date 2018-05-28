@@ -372,7 +372,6 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
     @Override
     public void allDataReady(CircleZipBean circleZipBean) {
         closeLoadingView();
-        myAppBarLayoutBehavoir.setRefreshing(false);
         ((AnimationDrawable) mIvRefresh.getDrawable()).stop();
         mIvRefresh.setVisibility(View.INVISIBLE);
         CircleInfo detail = circleZipBean.getCircleInfo();
@@ -432,6 +431,7 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
             mCircleInfo.setUser_id((int) circleMembers.getUser_id());
             CircleJoinedBean joinedBean = mCircleInfo.getJoined();
             joinedBean.setRole(CircleMembers.MEMBER);
+            joinedBean.setAudit(CircleJoinedBean.AuditStatus.PASS.value);
             mCircleInfo.setJoined(joinedBean);
             mCircleInfo.getFounder().setUser(circleMembers.getUser());
             mCircleInfo.getFounder().setUser_id((int) circleMembers.getUser_id());
@@ -457,8 +457,7 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
             mLlMemberContainer.setRightText(String.valueOf(mCircleInfo.getUsers_count()));
 
             mCircleInfo.setBlacklist_count(blackListCount);
-            mLlBlackContainer.setLeftText(String.format(Locale.getDefault(), getString(R.string.circle_blacklist_format), mCircleInfo
-                    .getBlacklist_count()));
+            mLlBlackContainer.setRightText("" + mCircleInfo.getBlacklist_count());
         }
     }
 
@@ -528,7 +527,8 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
     @Override
     public void onCommentContentClick(CirclePostListBean postListBean, int position) {
         mCurrentPostion = mPresenter.getCurrenPosiotnInDataList(postListBean.getId());
-        boolean isJoined = mCircleInfo.getJoined() != null;
+        boolean isJoined = mCircleInfo.getJoined() != null && mCircleInfo.getJoined().getAudit() == CircleJoinedBean.AuditStatus.PASS.value;
+
         boolean isBlackList = isJoined && CircleMembers.BLACKLIST.equals(mCircleInfo.getJoined().getRole());
 
         if (postListBean.getComments().get(position).getUser_id() == AppApplication.getmCurrentLoginAuth().getUser_id()) {
@@ -558,7 +558,8 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
         if (mPresenter.handleTouristControl()) {
             return;
         }
-        boolean isJoined = mCircleInfo.getJoined() != null;
+        boolean isJoined = mCircleInfo.getJoined() != null && mCircleInfo.getJoined().getAudit() == CircleJoinedBean.AuditStatus.PASS.value;
+
         boolean isBlackList = isJoined && CircleMembers.BLACKLIST.equals(mCircleInfo.getJoined().getRole());
 
         if (isBlackList) {
@@ -650,7 +651,8 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
 
     @Override
     public void onMenuItemClick(View view, int dataPosition, int viewPosition) {
-        boolean isJoined = mCircleInfo.getJoined() != null;
+        boolean isJoined = mCircleInfo.getJoined() != null && mCircleInfo.getJoined().getAudit() == CircleJoinedBean.AuditStatus.PASS.value;
+
         boolean isBlackList = isJoined && CircleMembers.BLACKLIST.equals(mCircleInfo.getJoined().getRole());
         // 减去 header
         dataPosition -= mHeaderAndFooterWrapper.getHeadersCount();
@@ -880,7 +882,7 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
                 .item2ClickListener(() -> {
                     // 收藏
                     handleCollect(position);
-                    mOtherPostPopWindow.hide();
+                    mMyPostPopWindow.hide();
                     showBottomView(true);
                 })
                 .item3ClickListener(() -> {
@@ -1260,8 +1262,7 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
         mTvCircleDec.setText(String.format(Locale.getDefault(), getString(R.string.circle_detail_location), location));
         mTvCircleMember.setText(String.format(Locale.getDefault(), getString(R.string.circle_detail_usercount), detail.getUsers_count()));
         mTvCirclePostCount.setText(String.format(Locale.getDefault(), getString(R.string.circle_detail_postcount), detail.getPosts_count()));
-        mLlBlackContainer.setLeftText(String.format(Locale.getDefault(), getString(R.string.circle_blacklist_format), mCircleInfo
-                .getBlacklist_count()));
+        mLlBlackContainer.setRightText(""+mCircleInfo.getBlacklist_count());
         mTvOwnerName.setText(detail.getFounder().getUser().getName());
         mTvCircleIntroduce.setText(detail.getSummary());
         mLlIntroCountContainer.setVisibility(TextUtils.isEmpty(detail.getSummary()) ? View.GONE : View.VISIBLE);
@@ -1335,7 +1336,8 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
             R.id.ll_permission_container, R.id.ll_report_container, R.id.iv_back, R.id.iv_serach,
             R.id.iv_share, R.id.iv_setting, R.id.tv_circle_subscrib, R.id.tv_exit_circle, R.id.bt_report_circle})
     public void onViewClicked(View view) {
-        boolean isJoing = mCircleInfo.getJoined() != null;
+        boolean isJoing = mCircleInfo.getJoined() != null && mCircleInfo.getJoined().getAudit() == CircleJoinedBean.AuditStatus.PASS.value;
+
         boolean isBlackList = isJoing && CircleMembers.BLACKLIST.equals(mCircleInfo.getJoined().getRole());
         switch (view.getId()) {
             case R.id.ll_member_container:

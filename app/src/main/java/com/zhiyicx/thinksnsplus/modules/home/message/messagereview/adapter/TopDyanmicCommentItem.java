@@ -42,11 +42,6 @@ public class TopDyanmicCommentItem extends BaseTopItem implements BaseTopItem.To
     }
 
     @Override
-    public int getItemViewLayoutId() {
-        return R.layout.item_message_review_list;
-    }
-
-    @Override
     public boolean isForViewType(BaseListBean item, int position) {
         return item instanceof TopDynamicCommentBean;
     }

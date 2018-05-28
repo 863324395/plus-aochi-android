@@ -27,6 +27,7 @@ import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.TextViewUtils;
 import com.zhiyicx.common.utils.UIUtils;
+import com.zhiyicx.common.utils.recycleviewdecoration.LinearDecoration;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.AnimationRectBean;
@@ -121,7 +122,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
     /**
      * item 间距单位 dp , 由 5L 修改至 10L by tym 2018-5-15 14:55:58
      */
-    public static final long ITEM_SPACING = 5L;
+    public static final long ITEM_SPACING = 10L;
 
     @BindView(R.id.ilv_comment)
     InputLimitView mIlvComment;
@@ -160,6 +161,8 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
     private DynamicBannerHeader mDynamicBannerHeader;
     private List<RealAdvertListBean> mListAdvert;
     private List<RealAdvertListBean> mHeaderAdvert;
+
+    private LinearDecoration mLinearDecoration;
 
     public void setOnCommentClickListener(OnCommentClickListener onCommentClickListener) {
         mOnCommentClickListener = onCommentClickListener;
@@ -212,6 +215,12 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
         if (mDynamicBannerHeader != null) {
             mDynamicBannerHeader.startBanner();
         }
+    }
+
+    @Override
+    protected RecyclerView.ItemDecoration getItemDecoration() {
+        mLinearDecoration = new LinearDecoration(0, ConvertUtils.dp2px(getContext(), getItemDecorationSpacing()), 0, 0);
+        return mLinearDecoration;
     }
 
     @Override
@@ -375,6 +384,8 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
         });
         mDynamicBannerHeader.setHeadInfo(headerInfo);
         mHeaderAndFooterWrapper.addHeaderView(mDynamicBannerHeader.getDynamicBannerHeader());
+        mLinearDecoration.setHeaderCount(mHeaderAndFooterWrapper.getHeadersCount());
+        mLinearDecoration.setFooterCount(mHeaderAndFooterWrapper.getFootersCount());
     }
 
     /**
