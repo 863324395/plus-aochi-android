@@ -862,7 +862,7 @@ public class DeviceUtils {
         return str.substring(0, measurennums) + "..." + defaultWord;
     }
 
-    // 刘海区域可用
+    // 设置刘海区域可用
     public static void openFullScreenModel(Activity mAc) {
         if (Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O_MR1) {
             mAc.requestWindowFeature(Window.FEATURE_NO_TITLE);
