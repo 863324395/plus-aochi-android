@@ -299,7 +299,7 @@ public class TransferImageAnimationUtil {
 
                 PropertyValuesHolder.ofFloat("translationX", 0, deltaLeft),
                 PropertyValuesHolder.ofFloat("translationY", 0, deltaTop)
-        ).setDuration(4000);
+        ).setDuration(ANIMATION_DURATION);
 
         animator.setInterpolator(new AccelerateDecelerateInterpolator());
 
