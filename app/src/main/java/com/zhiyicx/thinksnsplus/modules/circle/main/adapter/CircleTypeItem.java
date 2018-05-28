@@ -1,12 +1,12 @@
 package com.zhiyicx.thinksnsplus.modules.circle.main.adapter;
 
 import android.graphics.drawable.Drawable;
-import android.text.TextUtils;
 import android.widget.RelativeLayout;
 
 import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.widget.button.CombinationButton;
 import com.zhiyicx.common.utils.ConvertUtils;
+import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.SkinUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
@@ -47,16 +47,16 @@ public class CircleTypeItem extends BaseCircleItem {
 
         if (circleInfo.getId() == RECOMMENDCIRCLE) {
             button.setRightImage(0);
-            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) button.getCombinedButtonRightTextView().getLayoutParams();
+            RelativeLayout.LayoutParams params=(RelativeLayout.LayoutParams)button.getCombinedButtonRightTextView().getLayoutParams();
             params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-            params.addRule(1, 1);
+            params.addRule(1,1);
             params.setMargins(button.getContext().getResources().getDimensionPixelOffset(R.dimen.spacing_normal),
-                    0, button.getContext().getResources().getDimensionPixelOffset(R.dimen.spacing_mid), 0);
+                    0,button.getContext().getResources().getDimensionPixelOffset(R.dimen.spacing_mid),0);
             Drawable change = button.getContext().getResources().getDrawable(R.mipmap.ico_circle_exchange);
-            button.getCombinedButtonRightTextView().setCompoundDrawablePadding(ConvertUtils.dp2px(button.getContext(), 4));
+            button.getCombinedButtonRightTextView().setCompoundDrawablePadding(ConvertUtils.dp2px(button.getContext(),4));
             button.getCombinedButtonRightTextView().setCompoundDrawablesWithIntrinsicBounds(change, null, null, null);
         } else if (circleInfo.getId() == MYJOINEDCIRCLE) {
-            button.setRightImage(TextUtils.isEmpty(circleInfo.getSummary()) ? 0 : R.mipmap.ic_arrow_smallgrey);
+            button.setRightImage(R.mipmap.ic_arrow_smallgrey);
             button.getCombinedButtonRightTextView().setCompoundDrawablesWithIntrinsicBounds(null, null, null, null);
         }
 
