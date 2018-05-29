@@ -36,7 +36,7 @@ import static android.app.Activity.RESULT_OK;
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class ChooseCircleFragment extends MyJoinedCircleFragment{
+public class ChooseCircleFragment extends MyJoinedCircleFragment {
 
     public static final String BUNDLE_CIRCLE = "circle";
     private static final int DEFAULT_COLUMN = 4;
@@ -57,6 +57,12 @@ public class ChooseCircleFragment extends MyJoinedCircleFragment{
     }
 
     @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mIsNeedToolBar = true;
+    }
+
+    @Override
     protected int getBodyLayoutId() {
         return R.layout.fragment_info_publish_add_category;
     }
@@ -67,8 +73,8 @@ public class ChooseCircleFragment extends MyJoinedCircleFragment{
     }
 
     @Override
-    protected boolean showToolbar() {
-        return true;
+    protected boolean setUseStatusView() {
+        return false;
     }
 
     @Override

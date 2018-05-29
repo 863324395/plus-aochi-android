@@ -43,7 +43,7 @@ public class BaseCircleListFragment extends TSListFragment<BaseCircleListContrac
 
     private CircleListItem mCircleListItem;
 
-    private boolean mIsNeedToolBar;
+    protected boolean mIsNeedToolBar;
 
     public static BaseCircleListFragment newInstance(boolean isNeedToolBar) {
         BaseCircleListFragment circleListFragment = new BaseCircleListFragment();
