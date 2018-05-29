@@ -17,7 +17,7 @@ ext {
     targetSdkVersion = 25
     versionCode = 197
     versionName = "1.9.0-alpha"
-    compileSdkVersion = "android-P"
+    compileSdkVersion = 27
     buildToolsVersion = "26.0.2"
 
     //Libraries
