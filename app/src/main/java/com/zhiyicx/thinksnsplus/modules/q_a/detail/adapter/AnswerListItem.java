@@ -134,7 +134,7 @@ public class AnswerListItem implements ItemViewDelegate<AnswerInfoBean> {
         content = content.replaceAll(MarkdownConfig.NETSITE_FORMAT,  Link.DEFAULT_NET_SITE);
 
         TextView contentView = holder.getView(R.id.tv_content);
-
+        contentView.setOnClickListener(v -> holder.itemView.performClick());
         if (!canNotLook) {
             TextViewUtils.newInstance(contentView, content)
                     .spanTextColor(SkinUtils.getColor(R
