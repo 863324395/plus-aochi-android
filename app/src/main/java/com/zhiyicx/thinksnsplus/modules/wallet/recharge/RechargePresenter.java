@@ -16,6 +16,7 @@ import com.zhiyicx.thinksnsplus.data.beans.WXPayInfo;
 import com.zhiyicx.thinksnsplus.data.beans.WXPayResult;
 import com.zhiyicx.thinksnsplus.data.source.local.BackgroundRequestTaskBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.BillRepository;
+import com.zhiyicx.tspay.TSPayClient;
 
 import org.jetbrains.annotations.NotNull;
 import org.simple.eventbus.Subscriber;
@@ -26,6 +27,7 @@ import javax.inject.Inject;
 
 import rx.Observable;
 import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 
 /**
@@ -100,8 +102,14 @@ public class RechargePresenter extends AppBasePresenter<RechargeContract.View> i
                     PayTask alipay = new PayTask(mRootView.getCurrentActivity());
                     return Observable.just(alipay.payV2(orderInfo, true));
                 })
-                .flatMap((Func1<Map<String, String>, Observable<BaseJsonV2<String>>>) stringStringMap -> mBillRepository.aliPayVerify(stringStringMap.get("memo"),
-                        stringStringMap.get("result"), stringStringMap.get("resultStatus")))
+                .flatMap((Func1<Map<String, String>, Observable<BaseJsonV2<String>>>) stringStringMap -> {
+                    if (TSPayClient.CHANNEL_ALIPAY_SUCCESS.equals(stringStringMap.get("resultStatus"))){
+                        return mBillRepository.aliPayVerify(stringStringMap.get("memo"),
+                                stringStringMap.get("result"), stringStringMap.get("resultStatus"));
+                    }
+                    return Observable.error(new IllegalArgumentException(stringStringMap.get("memo")));
+                })
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new BaseSubscribeForV2<BaseJsonV2<String>>() {
             @Override
             protected void onSuccess(BaseJsonV2<String> data) {

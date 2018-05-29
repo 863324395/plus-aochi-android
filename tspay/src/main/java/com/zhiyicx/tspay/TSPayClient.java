@@ -19,6 +19,7 @@ public class TSPayClient {
      * 手机支付宝 APP 支付
      */
     public static final String CHANNEL_ALIPAY = "alipay";
+    public static final String CHANNEL_ALIPAY_SUCCESS = "9000";
     public static final String CHANNEL_ALIPAY_V2 = "AlipayOrder";
     /**
      * 手机支付宝扫码支付

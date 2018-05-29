@@ -241,7 +241,7 @@ public class RechargeFragment extends TSFragment<RechargeContract.Presenter> imp
 
         // 选择充值方式
         RxView.clicks(mBtRechargeStyle)
-                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .compose(this.bindToLifecycle())
                 .subscribe(aVoid -> {
                     DeviceUtils.hideSoftKeyboard(getContext(), mBtRechargeStyle);
@@ -249,7 +249,7 @@ public class RechargeFragment extends TSFragment<RechargeContract.Presenter> imp
                 });
         // 确认
         RxView.clicks(mBtTop)
-                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .compose(this.bindToLifecycle())
                 .subscribe(aVoid -> {
                     mBtTop.setEnabled(false);

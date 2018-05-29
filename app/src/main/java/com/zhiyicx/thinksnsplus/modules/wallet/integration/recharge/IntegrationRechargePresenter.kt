@@ -22,6 +22,7 @@ import com.zhiyicx.rxerrorhandler.functions.RetryWithInterceptDelay.RETRY_INTERV
 import com.zhiyicx.rxerrorhandler.functions.RetryWithInterceptDelay.RETRY_MAX_COUNT
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig
 import com.zhiyicx.thinksnsplus.data.beans.*
+import com.zhiyicx.tspay.TSPayClient
 import com.zhiyicx.tspay.TSPayClient.*
 import org.simple.eventbus.Subscriber
 import rx.Observable
@@ -121,8 +122,11 @@ constructor(rootView: IntegrationRechargeContract.View) : AppBasePresenter<Integ
                     Observable.just(alipay.payV2(orderInfo, true))
                 }
                 .flatMap { stringStringMap ->
-                    mBillRepository.aliPayIntegrationVerify(stringStringMap["memo"],
-                            stringStringMap["result"], stringStringMap["resultStatus"])
+                    if (TSPayClient.CHANNEL_ALIPAY_SUCCESS == stringStringMap["resultStatus"]) {
+                        mBillRepository.aliPayIntegrationVerify(stringStringMap["memo"],
+                                stringStringMap["result"], stringStringMap["resultStatus"])
+                    }
+                    Observable.error<BaseJsonV2<String>>(IllegalArgumentException(stringStringMap["memo"]))
                 }
                 .flatMap { mUserInfoRepository.currentLoginUserInfo }
                 .subscribe(object : BaseSubscribeForV2<UserInfoBean>() {
@@ -148,7 +152,7 @@ constructor(rootView: IntegrationRechargeContract.View) : AppBasePresenter<Integ
                     override fun onException(throwable: Throwable) {
                         super.onException(throwable)
                         try {
-                            mRootView.showSnackErrorMessage(mContext.resources.getString(R.string.err_net_not_work))
+                            mRootView.showSnackErrorMessage(throwable.message)
                         } catch (ignored: Exception) {
                             ignored.printStackTrace()
                         }
