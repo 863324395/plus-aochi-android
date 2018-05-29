@@ -157,6 +157,7 @@ public class EditUserTagFragment extends TSFragment<EditUserTagContract.Presente
             mFrom = (TagFrom) getArguments().getSerializable(BUNDLE_IS_FROM);
             if (getArguments().getParcelableArrayList(BUNDLE_CHOOSED_TAGS) != null) {
                 mChoosedTags.addAll(getArguments().getParcelableArrayList(BUNDLE_CHOOSED_TAGS));
+                mCurrentChooseNums = mChoosedTags.size();
             }
 
         }
@@ -262,7 +263,7 @@ public class EditUserTagFragment extends TSFragment<EditUserTagContract.Presente
                     , final int position) {
                 holder.setText(R.id.item_info_channel, data.getTagName());
                 RxView.clicks(holder.getView(R.id.fl_container))
-                        .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
+                        .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                         .subscribe(aVoid -> {
                             switch (mFrom) {
                                 case INFO_PUBLISH:
