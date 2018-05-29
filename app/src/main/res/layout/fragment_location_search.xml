@@ -75,6 +75,7 @@
         android:id="@+id/tv_recomment_user"
         android:layout_width="match_parent"
         android:paddingLeft="@dimen/spacing_mid"
+        android:visibility="gone"
         android:paddingTop="@dimen/spacing_mid"
         android:background="@color/white"
         android:text="@string/recomment_user"
