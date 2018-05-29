@@ -29,7 +29,6 @@ import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
-import android.view.DisplayCutout;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.Window;
@@ -864,7 +863,7 @@ public class DeviceUtils {
         if (Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O_MR1) {
             mAc.requestWindowFeature(Window.FEATURE_NO_TITLE);
             WindowManager.LayoutParams lp = mAc.getWindow().getAttributes();
-            lp.layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES;
+//            lp.layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES;
             mAc.getWindow().setAttributes(lp);
         }
     }
@@ -877,8 +876,8 @@ public class DeviceUtils {
             if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
                 WindowInsets windowInsets = decorView.getRootWindowInsets();
                 if (windowInsets != null) {
-                    DisplayCutout displayCutout = windowInsets.getDisplayCutout();
-                    return displayCutout.getSafeInsetTop();
+//                    DisplayCutout displayCutout = windowInsets.getDisplayCutout();
+//                    return displayCutout.getSafeInsetTop();
                 }
             }
         }

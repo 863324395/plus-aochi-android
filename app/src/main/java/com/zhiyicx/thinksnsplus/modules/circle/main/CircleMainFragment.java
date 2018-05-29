@@ -13,6 +13,7 @@ import com.zhiyicx.thinksnsplus.data.beans.CircleJoinedBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserCertificationInfo;
 import com.zhiyicx.thinksnsplus.modules.certification.detail.CertificationDetailActivity;
 import com.zhiyicx.thinksnsplus.modules.certification.input.CertificationInputActivity;
+import com.zhiyicx.thinksnsplus.modules.circle.all_circle.container.AllCircleContainerActivity;
 import com.zhiyicx.thinksnsplus.modules.circle.create.CreateCircleActivity;
 import com.zhiyicx.thinksnsplus.modules.circle.detailv2.CircleDetailActivity;
 import com.zhiyicx.thinksnsplus.modules.circle.main.adapter.BaseCircleItem;
@@ -137,7 +138,7 @@ public class CircleMainFragment extends TSListFragment<CircleMainContract.Presen
     @Override
     protected void setLoadingViewHolderClick() {
         super.setLoadingViewHolderClick();
-        mPresenter.requestNetData(0L,false);
+        mPresenter.requestNetData(0L, false);
     }
 
     @Override
@@ -192,6 +193,11 @@ public class CircleMainFragment extends TSListFragment<CircleMainContract.Presen
     @Override
     public void toAllJoinedCircle(CircleInfo groupInfoBean) {
         if (mListDatas.size() <= TITLEVOUNT) {
+            return;
+        }
+        if (mJoinedCircle.size() == 2) {
+            // 查看全部
+            startActivity(new Intent(mActivity, AllCircleContainerActivity.class));
             return;
         }
         Intent intent = new Intent(mActivity, MyJoinedCircleActivity.class);

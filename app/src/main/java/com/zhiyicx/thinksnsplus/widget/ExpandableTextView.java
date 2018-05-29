@@ -357,6 +357,7 @@ public class ExpandableTextView extends AppCompatTextView {
     public void setText(CharSequence text, TextView.BufferType type) {
         mOrigText = text;
         mBufferType = type;
+        CharSequence result = getNewTextByConfig();
         setTextInternal(getNewTextByConfig(), type);
     }
 

@@ -79,11 +79,16 @@ public class CircleMainPresenter extends AppBasePresenter<CircleMainContract.Vie
 
                     mRootView.updateCircleCount(integerBaseJsonV2.getData());
 
+                    boolean myJoinedIsEmpty = myJoinedCircle.isEmpty();
+
                     // 游客模式没有 我加入的
                     if (!isTourist()) {
                         CircleInfo moreJoined = new CircleInfo();
+                        moreJoined.setSummary(mContext.getString(myJoinedIsEmpty ? R.string.more_all_group : R.string.more_group));
+                        if (myJoinedCircle.size() < CircleMainFragment.DATALIMIT && myJoinedCircle.size() > 0) {
+                            moreJoined.setSummary("");
+                        }
                         moreJoined.setName(mContext.getString(R.string.joined_group));
-                        moreJoined.setSummary(mContext.getString(R.string.more_group));
                         moreJoined.setId(BaseCircleItem.MYJOINEDCIRCLE);
                         myJoinedCircle.add(0, moreJoined);
                     }
