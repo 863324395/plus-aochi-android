@@ -45,14 +45,13 @@ p {
 .content {
   width: auto;
   position: relative;
-  padding-top: 20px;
+  padding-top: 10px;
   margin-left: 10px;
   margin-right: 10px;
 }
 .content .title {
   width: 100%;
   min-height: 30px;
-  font-size: 24px;
   line-height:30px;
   border: none;
   display: block;
