@@ -219,9 +219,9 @@ public class ChatFragment extends TSEaseChatFragment<ChatContract.Presenter>
             } else if (group != null && !group.isMsgBlocked()) {
                 mToolbarCenter.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
             }
-
             setCenterText(mPresenter.getGroupName(toChatUsername));
         }
+        messageList.refresh();
     }
 
     /**
