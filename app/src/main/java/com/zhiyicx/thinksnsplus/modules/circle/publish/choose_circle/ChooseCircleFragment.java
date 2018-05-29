@@ -15,9 +15,12 @@ import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
 import com.zhiyicx.thinksnsplus.data.source.remote.CircleClient;
 import com.zhiyicx.thinksnsplus.modules.circle.main.CircleMainActivity;
+import com.zhiyicx.thinksnsplus.modules.circle.mine.joined.MyJoinedCircleFragment;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,15 +36,13 @@ import static android.app.Activity.RESULT_OK;
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class ChooseCircleFragment extends TSFragment<ChooseCircleContract.Presenter> implements ChooseCircleContract.View {
+public class ChooseCircleFragment extends MyJoinedCircleFragment{
 
     public static final String BUNDLE_CIRCLE = "circle";
     private static final int DEFAULT_COLUMN = 4;
 
     public static final int CHOOSE_CIRCLE = 1994;
 
-    @BindView(R.id.fragment_channel_content_unsubscribe)
-    RecyclerView mRvCircleList;
     @BindView(R.id.ll_empty)
     LinearLayout mLlEmpty;
     @BindView(R.id.tv_tip)
@@ -49,18 +50,10 @@ public class ChooseCircleFragment extends TSFragment<ChooseCircleContract.Presen
     @BindView(R.id.bt_do)
     Button mBtDo;
 
-    private List<CircleInfo> mCircleInfos = new ArrayList<>();
-    private CommonAdapter mAdapter;
-
     public static ChooseCircleFragment newInstance(Bundle bundle) {
         ChooseCircleFragment fragment = new ChooseCircleFragment();
         fragment.setArguments(bundle);
         return fragment;
-    }
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
     }
 
     @Override
@@ -74,59 +67,25 @@ public class ChooseCircleFragment extends TSFragment<ChooseCircleContract.Presen
     }
 
     @Override
-    protected void setRightClick() {
-        super.setRightClick();
-    }
-
-    @Override
-    protected int setToolBarBackgroud() {
-        return R.color.white;
-    }
-
-    @Override
-    protected boolean showToolBarDivider() {
+    protected boolean showToolbar() {
         return true;
     }
 
     @Override
     protected void initView(View rootView) {
-        mRvCircleList.setLayoutManager(new GridLayoutManager(getActivity(),
-                DEFAULT_COLUMN));
-        mRvCircleList.setAdapter(initAdapter());
-
+        super.initView(rootView);
         mTvTip.setText(getString(R.string.not_find_joined_circle));
         mBtDo.setText(getString(R.string.join_circle));
     }
 
-    private CommonAdapter initAdapter() {
-        mAdapter = new CommonAdapter<CircleInfo>(getActivity(),
-                R.layout.item_info_channel, mCircleInfos) {
-            @Override
-            protected void convert(ViewHolder holder, CircleInfo data, int position) {
-                holder.setText(R.id.item_info_channel, data.getName());
-            }
-        };
-
-        mAdapter.setOnItemClickListener(new MultiItemTypeAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
-                CircleInfo bean = mCircleInfos.get(position);
-                Intent intent = new Intent();
-                Bundle bundle = new Bundle();
-                bundle.putParcelable(BUNDLE_CIRCLE, bean);
-                intent.putExtras(bundle);
-                getActivity().setResult(RESULT_OK, intent);
-                getActivity().finish();
-            }
-
-            @Override
-            public boolean onItemLongClick(View view, RecyclerView.ViewHolder holder, int
-                    position) {
-                return false;
-            }
-        });
-
-        return mAdapter;
+    @Override
+    public void toCircleDetail(CircleInfo circleInfo) {
+        Intent intent = new Intent();
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(BUNDLE_CIRCLE, circleInfo);
+        intent.putExtras(bundle);
+        getActivity().setResult(RESULT_OK, intent);
+        getActivity().finish();
     }
 
     @Override
@@ -135,20 +94,15 @@ public class ChooseCircleFragment extends TSFragment<ChooseCircleContract.Presen
     }
 
     @Override
-    public void onNetResponseSuccess(List<CircleInfo> data) {
+    public void onNetResponseSuccess(@NotNull List<CircleInfo> data, boolean isLoadMore) {
         if (data.isEmpty()) {
             mLlEmpty.setVisibility(View.VISIBLE);
-            mRvCircleList.setVisibility(View.GONE);
+            mRvList.setVisibility(View.GONE);
             return;
         }
-        mCircleInfos.clear();
-        mCircleInfos.addAll(data);
-        mAdapter.notifyDataSetChanged();
-    }
-
-    @Override
-    protected void initData() {
-        mPresenter.getMyJoinedCircleList();
+        mRvList.setVisibility(View.VISIBLE);
+        mLlEmpty.setVisibility(View.GONE);
+        super.onNetResponseSuccess(data, isLoadMore);
     }
 
     @OnClick(R.id.bt_do)

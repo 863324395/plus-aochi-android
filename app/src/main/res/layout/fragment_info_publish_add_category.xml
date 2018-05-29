@@ -6,11 +6,7 @@
     android:layout_margin="@dimen/spacing_normal"
     android:background="@color/white">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/fragment_channel_content_unsubscribe"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/white"/>
+    <include layout="@layout/fragment_tslist"/>
 
     <LinearLayout
         android:id="@+id/ll_empty"

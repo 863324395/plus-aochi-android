@@ -85,6 +85,7 @@ public class BaseCircleListPresenter extends AppBasePresenter<BaseCircleListCont
         switch (mRootView.getMineCircleType()) {
             case JOIN:
             case AUDIT:
+            case ALLOW:
                 Subscription subscribe = mBaseCircleRepository.getMyJoinedCircle(TSListFragment.DEFAULT_PAGE_SIZE
                         , maxId.intValue(), mRootView.getMineCircleType().value)
                         .subscribe(new BaseSubscribeForV2<List<CircleInfo>>() {

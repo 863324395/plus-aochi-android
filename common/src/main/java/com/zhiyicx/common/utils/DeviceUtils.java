@@ -124,9 +124,6 @@ public class DeviceUtils {
             x = Integer.parseInt(field.get(obj).toString());
             sbar = context.getResources()
                     .getDimensionPixelSize(x);
-
-            LogUtils.d("getStatuBarHeight::" + sbar);
-
         } catch (Exception e1) {
             e1.printStackTrace();
         }

@@ -131,6 +131,7 @@ public class SpanTextViewWithEllipsize extends android.support.v7.widget.AppComp
         @Override
         public void updateDrawState(TextPaint ds) {
             super.updateDrawState(ds);
+            CharSequence charSequence=getText();
             ds.setColor(0xFF3498DB);
             ds.bgColor = mIsPressed ? 0x55999999 : 0;
             ds.setUnderlineText(false);
