@@ -201,12 +201,14 @@ public class QuestionDetailHeader implements TagFlowLayout.OnTagClickListener {
 
         // 悬赏状态
         if (qaListInfoBean.getAmount() == 0) {
+            mIvRewardType.setImageResource(R.mipmap.ico_question_reward);
             mTvRewardType.setText(mContext.getString(R.string.qa_not_set_reward));
         } else if (qaListInfoBean.getInvitations() != null
                 && qaListInfoBean.getInvitations().size() > 0) {
             mIvRewardType.setImageResource(R.mipmap.ico_question_invited);
             mTvRewardType.setText(mContext.getString(R.string.qa_reward_invited));
         } else {
+            mIvRewardType.setImageResource(R.mipmap.ico_question_invited);
             mTvRewardType.setText(mContext.getString(R.string.qa_reward_setting));
         }
     }

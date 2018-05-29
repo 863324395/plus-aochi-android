@@ -403,6 +403,7 @@ public class SelectDynamicTypeFragment extends TSFragment<SelectDynamicTypeContr
                         mPayAlertPopWindow.hide();
                         mPresenter.savePayTip(false);
                         startActivity(new Intent(getActivity(), EditeInfoDetailActivity.class));
+                        closeActivity();
                     })
                     .build();
         }

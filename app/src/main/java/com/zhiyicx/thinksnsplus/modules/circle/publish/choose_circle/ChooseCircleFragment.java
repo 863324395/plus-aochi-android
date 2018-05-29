@@ -64,7 +64,7 @@ public class ChooseCircleFragment extends MyJoinedCircleFragment {
 
     @Override
     protected int getBodyLayoutId() {
-        return R.layout.fragment_info_publish_add_category;
+        return R.layout.fragment_post_publish_choose_circle;
     }
 
     @Override
