@@ -192,16 +192,15 @@ public class CircleMainFragment extends TSListFragment<CircleMainContract.Presen
      */
     @Override
     public void toAllJoinedCircle(CircleInfo groupInfoBean) {
-        if (mListDatas.size() <= TITLEVOUNT) {
-            return;
-        }
-        if (mJoinedCircle.size() == 2) {
+        if (mJoinedCircle.size() <= TITLEVOUNT - 1) {
             // 查看全部
             startActivity(new Intent(mActivity, AllCircleContainerActivity.class));
             return;
         }
-        Intent intent = new Intent(mActivity, MyJoinedCircleActivity.class);
-        startActivity(intent);
+        if (mJoinedCircle.size() >= DATALIMIT + 1) {
+            Intent intent = new Intent(mActivity, MyJoinedCircleActivity.class);
+            startActivity(intent);
+        }
     }
 
     @Override
