@@ -1,13 +1,17 @@
 package com.zhiyicx.thinksnsplus.modules.q_a.mine.answer;
 
+import android.os.Bundle;
+
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
+import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.AnswerInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.AnswerInfoListBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.BaseQARepository;
 
 import org.jetbrains.annotations.NotNull;
+import org.simple.eventbus.Subscriber;
 
 import java.util.List;
 
@@ -36,6 +40,11 @@ public class MyAnswerPresenter extends AppBasePresenter<MyAnswerContract.View>
         super(rootView);
         mAnswerInfoListBeanGreenDao = answerInfoListBeanGreenDao;
         mBaseQARepository = baseQARepository;
+    }
+
+    @Override
+    protected boolean useEventBus() {
+        return true;
     }
 
     @Override
@@ -79,5 +88,22 @@ public class MyAnswerPresenter extends AppBasePresenter<MyAnswerContract.View>
         mRootView.updateList(position, answerInfoBean);
         mAnswerInfoListBeanGreenDao.insertOrReplace(answerInfoBean);
         mBaseQARepository.handleAnswerLike(isLiked, answerInfoBean.getId());
+    }
+
+    @Subscriber(tag = EventBusTagConfig.EVENT_UPDATE_ANSWER_LIST_LIKE)
+    public void updateLike(Bundle bundle) {
+        if (bundle != null) {
+            AnswerInfoBean answerInfoBean = (AnswerInfoBean) bundle.
+                    getSerializable(EventBusTagConfig.EVENT_UPDATE_ANSWER_LIST_LIKE);
+            if (answerInfoBean != null) {
+                for (AnswerInfoBean answerInfoBean1 : mRootView.getListDatas()) {
+                    if (answerInfoBean.getId().equals(answerInfoBean1.getId())) {
+                        mRootView.getListDatas().set(mRootView.getListDatas().indexOf(answerInfoBean1), answerInfoBean);
+                        mRootView.refreshData();
+                        break;
+                    }
+                }
+            }
+        }
     }
 }
