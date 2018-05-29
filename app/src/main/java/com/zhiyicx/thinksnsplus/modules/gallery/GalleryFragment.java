@@ -93,9 +93,8 @@ public class GalleryFragment extends TSFragment {
         if (allImages != null && allImages.size() > 1) {
             addCircleNavigator();
             mMiIndicator.onPageSelected(currentItem);
-        } else {
-            mMiIndicator.setVisibility(View.GONE);
         }
+        mMiIndicator.setVisibility(View.GONE);
         mVpPhotos.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
             @Override
             public void onPageScrollStateChanged(int state) {
@@ -213,30 +212,6 @@ public class GalleryFragment extends TSFragment {
 
     /////////////////////////////////处理转场缩放动画/////////////////////////////////////
     private ColorDrawable backgroundColor = new ColorDrawable(Color.BLACK);
-
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-    public void showBackgroundImmediately() {
-        if (mRootView.getBackground() == null) {
-            mVpPhotos.setBackground(backgroundColor);
-        }
-        setIndiactorVisible(true);
-    }
-
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-    public ObjectAnimator showBackgroundAnimate() {
-        ObjectAnimator bgAnim = ObjectAnimator
-                .ofInt(backgroundColor, "alpha", 0, 255);
-        bgAnim.addUpdateListener(animation -> {
-            mVpPhotos.setBackground(backgroundColor);
-        });
-        bgAnim.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                setIndiactorVisible(true);
-            }
-        });
-        return bgAnim;
-    }
 
     @Override
     public void onBackPressed() {

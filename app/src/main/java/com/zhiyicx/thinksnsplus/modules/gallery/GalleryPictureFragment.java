@@ -214,39 +214,6 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
     }
 
     @Override
-    public void setUserVisibleHint(boolean isVisibleToUser) {
-        super.setUserVisibleHint(isVisibleToUser);
-        if (isVisibleToUser) {
-            GalleryFragment galleryFragment = (GalleryFragment) getParentFragment();
-            if (galleryFragment != null) {
-                boolean firstOpenPage = getArguments().getBoolean("firstOpenPage");
-                if (firstOpenPage) {
-                    if (hasAnim) {
-                        ObjectAnimator animator = galleryFragment.showBackgroundAnimate();
-                        animator.start();
-                    } else {
-                        galleryFragment.showBackgroundImmediately();
-                    }
-                    getArguments().putBoolean("firstOpenPage", false);
-                }
-            }
-            if (!mImageIsLoaded) {
-                startLoadProgress();
-            }
-        } else {
-            stopCenterLoading();
-        }
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (getUserVisibleHint() && !mImageIsLoaded && !getArguments().getBoolean("firstOpenPage")) {
-            startLoadProgress();
-        }
-    }
-
-    @Override
     public void onPause() {
         super.onPause();
         stopCenterLoading();
@@ -474,6 +441,10 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                             if (TextUtils.isEmpty(imageBean.getListCacheUrl()) || isNeedOrin) {
                                 if (mTvOriginPhoto != null && isNeedOrin) {
                                     mTvOriginPhoto.setVisibility(View.GONE);
+                                }
+                                GalleryFragment galleryFragment = (GalleryFragment) getParentFragment();
+                                if (galleryFragment != null) {
+                                    galleryFragment.setIndiactorVisible(true);
                                 }
                                 mFlGalleryPhoto.setBackgroundColor(Color.BLACK);
                                 startLoadProgress();
@@ -754,9 +725,13 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
         if (hasAnim) {
             hasAnim = false;
             TransferImageAnimationUtil.startInAnim(rect, mIvPager, mFlGalleryPhoto, () -> {
-                if (needEndAction && mIvPager != null && mActivity != null && mCurrentHDRequestBuilder != null) {
+                if (mIvPager != null && mActivity != null) {
                     mActivity.runOnUiThread(() -> {
-                        if (mIvPager != null && mActivity != null && mCurrentHDRequestBuilder != null) {
+                        GalleryFragment galleryFragment = (GalleryFragment) getParentFragment();
+                        if (galleryFragment != null) {
+                            galleryFragment.setIndiactorVisible(true);
+                        }
+                        if (needEndAction && mIvPager != null && mActivity != null && mCurrentHDRequestBuilder != null) {
                             intoImageTarget(mCurrentHDRequestBuilder, imageBean, rect);
                         }
                     });
