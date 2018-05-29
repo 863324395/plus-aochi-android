@@ -39,7 +39,7 @@
         android:layout_below="@id/tv_time"
         android:layout_toRightOf="@id/iv_headpic"
         android:includeFontPadding="false"
-        android:paddingBottom="@dimen/spacing_mid"
+        android:paddingBottom="@dimen/spacing_mid_small_8dp"
         android:paddingRight="@dimen/spacing_normal"
         android:textColor="@color/important_for_content"
         android:textSize="@dimen/size_content"

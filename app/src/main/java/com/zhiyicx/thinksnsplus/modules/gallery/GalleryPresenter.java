@@ -9,6 +9,7 @@ import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
+import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.WalletBean;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicDetailBeanV2GreenDaoImpl;
 
@@ -63,10 +64,9 @@ public class GalleryPresenter extends AppBasePresenter<GalleryConstract.View> im
                     @Override
                     protected void onSuccess(BaseJsonV2 data) {
                         mRootView.hideCenterLoading();
-                        WalletBean walletBean = mWalletBeanGreenDao.getSingleDataFromCacheByUserId(AppApplication.getmCurrentLoginAuth().getUser_id
-                                ());
-                        walletBean.setBalance(walletBean.getBalance() - amount);
-                        mWalletBeanGreenDao.insertOrReplace(walletBean);
+                        UserInfoBean currentUser = mUserInfoBeanGreenDao.getUserInfoById(AppApplication.getMyUserIdWithdefault() + "");
+                        currentUser.getCurrency().setSum(currentUser.getFormatCurrencyNum() - (long) amount);
+                        mUserInfoBeanGreenDao.insertOrReplace(currentUser);
                         DynamicDetailBeanV2 dynamicDetailBeanV2 = mDynamicDetailBeanV2GreenDao.getDynamicByFeedId(feed_id);
                         dynamicDetailBeanV2.getImages().get(imagePosition).setPaid(true);
                         mRootView.getCurrentImageBean().getToll().setPaid(true);
