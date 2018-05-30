@@ -137,7 +137,7 @@
         app:dividerLeftMargin="@dimen/spacing_mid"
         app:dividerRightMargin="@dimen/spacing_mid"
         app:leftImage="@mipmap/ico_circle_blacklist"
-        app:leftText="@string/circle_blacklist_format"
+        app:leftText="@string/ts_blacklist"
         app:leftTextColor="@color/general_for_hint"
         app:lineColor="@color/circle_navigation_txt_color"
         app:rightImage="@mipmap/ico_circle_arrow"

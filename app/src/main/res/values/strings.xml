@@ -298,7 +298,7 @@
     <string name="circle_post_from">来自	%s</string>
     <string name="cirle_type">圈子分类</string>
     <string name="from">来自</string>
-    <string name="circle_blacklist_format">黑名单</string>
+    <string name="circle_blacklist_format">黑名单%s</string>
     <string name="circle_blacklist">黑名单用户只能查看不能操作!</string>
     <string name="circle_blocked">需要加入才可进入详情!</string>
     <string name="post_apply_for_top">申请帖子置顶</string>
