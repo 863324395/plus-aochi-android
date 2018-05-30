@@ -313,4 +313,10 @@ public class CircleMainFragment extends TSListFragment<CircleMainContract.Presen
         mCertificationAlertPopWindow.show();
 
     }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        dismissPop(mCertificationAlertPopWindow);
+    }
 }

@@ -124,6 +124,7 @@
                 android:layout_height="match_parent"
                 android:layout_centerVertical="true"
                 android:paddingLeft="@dimen/spacing_mid"
+                style="@style/TextShadowStyle"
                 android:paddingRight="@dimen/spacing_mid"
                 android:src="@mipmap/topbar_back_white"/>
             <ImageView
@@ -154,6 +155,7 @@
                 android:layout_height="match_parent"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
+                style="@style/TextShadowStyle"
                 android:paddingLeft="@dimen/spacing_mid"
                 android:paddingRight="@dimen/spacing_mid"
                 android:src="@mipmap/topbar_more_white"/>
