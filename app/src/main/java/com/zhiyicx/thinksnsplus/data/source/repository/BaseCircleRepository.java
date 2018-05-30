@@ -42,6 +42,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.inject.Inject;
 
@@ -371,14 +372,21 @@ public class BaseCircleRepository implements IBaseCircleRepository {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .map(circlePostBean -> {
-                    List<CirclePostListBean> data = circlePostBean.getPinneds();
+                    List<CirclePostListBean> pinnedData = circlePostBean.getPinneds();
+                    List<CirclePostListBean> data = new ArrayList<>(circlePostBean.getPinneds());
                     // 最新回复不显示置顶内容
-                    if (data != null && !type.equals(PostTypeChoosePopAdapter.MyPostTypeEnum.LATEST_COMMENT.value)) {
-                        for (CirclePostListBean postListBean : data) {
+                    if (pinnedData != null && !type.equals(PostTypeChoosePopAdapter.MyPostTypeEnum.LATEST_COMMENT.value)) {
+                        for (CirclePostListBean postListBean : pinnedData) {
+                            for (CirclePostListBean post : data) {
+                                // 删除置顶重复的
+                                if (postListBean.getId().equals(post.getId())) {
+                                    circlePostBean.getPosts().remove(post);
+                                }
+                            }
                             postListBean.setPinned(true);
                         }
-                        data.addAll(circlePostBean.getPosts());
-                        return data;
+                        pinnedData.addAll(circlePostBean.getPosts());
+                        return pinnedData;
                     } else {
                         return circlePostBean.getPosts();
                     }

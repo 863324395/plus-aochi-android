@@ -177,7 +177,7 @@ public class CirclePostListBaseItem implements ItemViewDelegate<CirclePostListBe
             String content = circlePostListBean.getFriendlyContent();
             TextView contentView = holder.getView(R.id.tv_content);
             TextView contentFrom = holder.getView(R.id.tv_from);
-
+            contentView.setOnClickListener(v -> holder.itemView.performClick());
             contentFrom.setVisibility(showPostFrom ? View.VISIBLE : View.GONE);
             if (showPostFrom) {
                 contentFrom.setText(String.format(Locale.getDefault(), mContext.getString(R.string.circle_post_from),
