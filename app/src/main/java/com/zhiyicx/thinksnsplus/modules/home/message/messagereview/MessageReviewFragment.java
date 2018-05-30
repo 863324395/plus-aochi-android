@@ -182,6 +182,9 @@ public class MessageReviewFragment extends TSListFragment<MessageReviewContract.
 
     @Override
     public void refuseTip() {
+        if (mUnhandlePinnedBean == null) {
+            return;
+        }
         switch (getType()) {
             case TOP_DYNAMIC_COMMENT:
                 if (mUnhandlePinnedBean.getFeeds() != null && mUnhandlePinnedBean.getFeeds().getCount() > 0) {
@@ -215,16 +218,16 @@ public class MessageReviewFragment extends TSListFragment<MessageReviewContract.
                 .parentView(mDriver)
                 .animationStyle(ActionPopupWindow.NO_ANIMATION)
                 .item1Str(getString(R.string.stick_type_dynamic_commnet))
-                .showTip1(mUnhandlePinnedBean.getFeeds() != null && mUnhandlePinnedBean.getFeeds().getCount() > 0)
+                .showTip1(mUnhandlePinnedBean != null && mUnhandlePinnedBean.getFeeds() != null && mUnhandlePinnedBean.getFeeds().getCount() > 0)
                 .item1Color(mTopType.equals(mTopTypes[0]) ? getColor(R.color.themeColor) : 0)
                 .item2Str(getString(R.string.stick_type_news_commnet))
-                .showTip2(mUnhandlePinnedBean.getNewsComments() != null && mUnhandlePinnedBean.getNewsComments().getCount() > 0)
+                .showTip2(mUnhandlePinnedBean != null && mUnhandlePinnedBean.getNewsComments() != null && mUnhandlePinnedBean.getNewsComments().getCount() > 0)
                 .item2Color(mTopType.equals(mTopTypes[1]) ? getColor(R.color.themeColor) : 0)
                 .item3Str(getString(R.string.stick_type_group_commnet))
-                .showTip3(mUnhandlePinnedBean.getGroupComments() != null && mUnhandlePinnedBean.getGroupComments().getCount() > 0)
+                .showTip3(mUnhandlePinnedBean != null && mUnhandlePinnedBean.getGroupComments() != null && mUnhandlePinnedBean.getGroupComments().getCount() > 0)
                 .item3Color(mTopType.equals(mTopTypes[2]) ? getColor(R.color.themeColor) : 0)
                 .item4Str(getString(R.string.stick_type_group))
-                .showTip4(mUnhandlePinnedBean.getGroupPosts() != null && mUnhandlePinnedBean.getGroupPosts().getCount() > 0)
+                .showTip4(mUnhandlePinnedBean != null && mUnhandlePinnedBean.getGroupPosts() != null && mUnhandlePinnedBean.getGroupPosts().getCount() > 0)
                 .item4Color(mTopType.equals(mTopTypes[3]) ? getColor(R.color.themeColor) : 0)
                 .item5Str(getString(R.string.stick_type_group_join))
                 .item5Color(mTopType.equals(mTopTypes[4]) ? getColor(R.color.themeColor) : 0)
