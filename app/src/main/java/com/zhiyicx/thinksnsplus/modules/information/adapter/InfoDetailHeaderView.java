@@ -2,19 +2,13 @@ package com.zhiyicx.thinksnsplus.modules.information.adapter;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Message;
-import android.support.annotation.RequiresApi;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.webkit.WebChromeClient;
-import android.webkit.WebResourceRequest;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.FrameLayout;
@@ -31,6 +25,7 @@ import com.zhiyicx.common.utils.FileUtils;
 import com.zhiyicx.common.utils.SkinUtils;
 import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
+import com.zhiyicx.common.utils.recycleviewdecoration.CustomLinearDecoration;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.BaseWebLoad;
@@ -54,7 +49,6 @@ import com.zhiyicx.thinksnsplus.widget.DynamicHorizontalStackIconView;
 import com.zhiyicx.thinksnsplus.widget.ReWardView;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
-import com.zhy.view.flowlayout.FlowLayout;
 import com.zhy.view.flowlayout.TagFlowLayout;
 
 import java.util.ArrayList;
@@ -64,10 +58,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import br.tiagohm.markdownview.MarkdownView;
-import br.tiagohm.markdownview.css.InternalStyleSheet;
-import br.tiagohm.markdownview.css.styles.Github;
-import br.tiagohm.markdownview.js.ExternalScript;
-import br.tiagohm.markdownview.js.JavaScript;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
@@ -343,6 +333,9 @@ public class InfoDetailHeaderView extends BaseWebLoad {
             }
             LinearLayoutManager manager = new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false);
             mRvRelateInfo.setLayoutManager(manager);
+            mRvRelateInfo.addItemDecoration(new CustomLinearDecoration(0, mContext.getResources().getDimensionPixelSize(R.dimen
+                    .divider_line), 0, 0, ContextCompat.getDrawable(mContext, R.drawable
+                    .shape_recyclerview_grey_divider)));
             mRvRelateInfo.setNestedScrollingEnabled(false);
             CommonAdapter adapter = new CommonAdapter<InfoListDataBean>(mContext, R.layout.item_info, infoListDataBeen) {
                 @Override
