@@ -21,7 +21,7 @@ body {
 }
 
 #editor:not(:empty){
-  line-height:2;
+  line-height:normal;
 }
 
 textarea::-webkit-input-placeholder {
@@ -51,8 +51,6 @@ p {
 }
 .content .title {
   width: 100%;
-  min-height: 30px;
-  line-height:30px;
   border: none;
   display: block;
   outline: none;
@@ -64,12 +62,12 @@ p {
 }
 .content .line {
   height:1px;
-  background:#cccccc;
-  margin-top: 5px;
+  margin-top:10px;
+  margin-bottom:10px;
+  background:#dddddd;
 }
 /* 在大多数浏览器中默认行高大约是 20px。*/
 .content #editor {
-  margin-top: 10px;
   outline: none;
 }
 .content #editor hr {
