@@ -27,6 +27,8 @@ import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.BaseWebLoad;
+import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
+import com.zhiyicx.thinksnsplus.data.beans.CircleJoinedBean;
 import com.zhiyicx.thinksnsplus.data.beans.CircleMembers;
 import com.zhiyicx.thinksnsplus.data.beans.CirclePostCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.CirclePostListBean;
@@ -439,12 +441,17 @@ public class CirclePostDetailFragment extends TSListFragment<CirclePostDetailCon
     private void initBottomToolListener() {
         mDdDynamicTool.setItemOnClick((parent, v, position) -> {
             mDdDynamicTool.getTag(R.id.view_data);
-            boolean isJoined = mCirclePostDetailBean.getGroup().getJoined() != null;
+            boolean isJoined = mCirclePostDetailBean.getGroup().getJoined() != null && mCirclePostDetailBean.getGroup().getJoined().getAudit() == CircleJoinedBean.AuditStatus.PASS.value;
             boolean isBlackList = isJoined && CircleMembers.BLACKLIST.equals(mCirclePostDetailBean.getGroup().getJoined().getRole());
-
+            boolean isClosedCircle = CircleInfo.CirclePayMode.PAID.value.equals(mCirclePostDetailBean.getGroup().getMode())
+                    || CircleInfo.CirclePayMode.PRIVATE.value.equals(mCirclePostDetailBean.getGroup().getMode());
             switch (position) {
                 // 点赞
                 case DynamicDetailMenuView.ITEM_POSITION_0:
+                    if (isClosedCircle && !isJoined) {
+                        showAuditTipPopupWindow(getString(R.string.circle_member_like_join));
+                        return;
+                    }
                     mPresenter.handleLike(!mCirclePostDetailBean.getLiked(),
                             mCirclePostDetailBean.getId());
                     break;
@@ -593,6 +600,9 @@ public class CirclePostDetailFragment extends TSListFragment<CirclePostDetailCon
         boolean isPinned = circlePostListBean.getPinned();
         boolean isBlackList = circlePostListBean.getGroup().getJoined() != null && CircleMembers.BLACKLIST.equals(mCirclePostDetailBean.getGroup()
                 .getJoined().getRole());
+        boolean isClosedCircle = CircleInfo.CirclePayMode.PAID.value.equals(circlePostListBean.getGroup().getMode())
+                || CircleInfo.CirclePayMode.PRIVATE.value.equals(circlePostListBean.getGroup().getMode());
+        isBlackList = isBlackList || isClosedCircle;
 
         mDealPostPopWindow = ActionPopupWindow.builder()
                 .item1Str(isMine && !isBlackList && !isManager ? getString(R.string.post_apply_for_top) : "")

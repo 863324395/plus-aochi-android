@@ -482,6 +482,8 @@ public class BaseCircleDetailFragment extends TSListFragment<CircleDetailContrac
         dataPosition -= mHeaderAndFooterWrapper.getHeadersCount();// 减去 header
         mCurrentPostion = dataPosition;
         CircleInfo mCircleInfo = mListDatas.get(dataPosition).getGroup();
+        boolean isClosedCircle = CircleInfo.CirclePayMode.PAID.value.equals(mCircleInfo.getMode())
+                || CircleInfo.CirclePayMode.PRIVATE.value.equals(mCircleInfo.getMode());
         boolean isJoined = mCircleInfo.getJoined() != null && mCircleInfo.getJoined().getAudit() == CircleJoinedBean.AuditStatus.PASS.value;
 
         boolean isBlackList = isJoined && CircleMembers.BLACKLIST.equals(mCircleInfo.getJoined().getRole());
@@ -489,6 +491,10 @@ public class BaseCircleDetailFragment extends TSListFragment<CircleDetailContrac
         switch (viewPosition) { // 0 1 2 3 代表 view item 位置
             // 喜欢
             case 0:
+                if (isClosedCircle && !isJoined) {
+                    showAuditTipPopupWindow(getString(R.string.circle_member_like_join));
+                    return;
+                }
                 if (isBlackList) {
                     showAuditTipPopupWindow(getString(R.string.circle_member_added_blacklist));
                     return;
@@ -547,6 +553,10 @@ public class BaseCircleDetailFragment extends TSListFragment<CircleDetailContrac
                 } else {
                     if (isBlackList) {
                         showAuditTipPopupWindow(getString(R.string.circle_member_added_blacklist));
+                        return;
+                    }
+                    if (isClosedCircle && !isJoined) {
+                        showAuditTipPopupWindow(getString(R.string.circle_member_handle_join));
                         return;
                     }
                     initOtherDynamicPopupWindow(mListDatas.get(dataPosition), dataPosition, mListDatas.get(dataPosition)
@@ -612,7 +622,7 @@ public class BaseCircleDetailFragment extends TSListFragment<CircleDetailContrac
                     boolean sourceIsMine = AppApplication.getMyUserIdWithdefault() == circlePostListBean.getUser_id();
 
                     StickTopFragment.startSticTopActivity(getActivity(), StickTopFragment.TYPE_POST, circlePostListBean.getId(), circlePostListBean
-                            .getComments().get(commentPosition).getId(),sourceIsMine);
+                            .getComments().get(commentPosition).getId(), sourceIsMine);
 
                 })
                 .item2ClickListener(() -> {
@@ -644,9 +654,11 @@ public class BaseCircleDetailFragment extends TSListFragment<CircleDetailContrac
             isManager = CircleMembers.FOUNDER.equals(mCircleInfo.getJoined().getRole()) ||
                     CircleMembers.ADMINISTRATOR.equals(mCircleInfo.getJoined().getRole());
         }
+        boolean isClosedCircle = CircleInfo.CirclePayMode.PAID.value.equals(mCircleInfo.getMode())
+                || CircleInfo.CirclePayMode.PRIVATE.value.equals(mCircleInfo.getMode());
         boolean isPinned = circlePostListBean.getPinned();
         boolean isBlackList = mCircleInfo.getJoined() != null && CircleMembers.BLACKLIST.equals(mCircleInfo.getJoined().getRole());
-
+        isBlackList = isClosedCircle || isBlackList;
         mMyPostPopWindow = ActionPopupWindow.builder()
                 .item1Str(getString(feedIdIsNull || isBlackList ? R.string.empty : R.string.dynamic_list_share_dynamic))
                 .item2Str(getString(feedIdIsNull || isBlackList ? R.string.empty : isCollected ? R.string.dynamic_list_uncollect_dynamic : R.string
@@ -778,7 +790,7 @@ public class BaseCircleDetailFragment extends TSListFragment<CircleDetailContrac
                     }
                     ReportActivity.startReportActivity(mActivity, new ReportResourceBean(circlePostListBean.getUser(), String.valueOf
                             (circlePostListBean.getId()),
-                            circlePostListBean.getTitle(), img,des , ReportType.CIRCLE_POST));
+                            circlePostListBean.getTitle(), img, des, ReportType.CIRCLE_POST));
                     mOtherPostPopWindow.hide();
                     showBottomView(true);
                 })
@@ -841,6 +853,7 @@ public class BaseCircleDetailFragment extends TSListFragment<CircleDetailContrac
 
     /**
      * 是否显示帖子来原
+     *
      * @return
      */
     protected boolean showPostFrom() {
