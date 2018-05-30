@@ -155,6 +155,7 @@ public class MessageReviewPresenter extends AppBasePresenter<
                     protected void onSuccess(BaseJsonV2 data) {
                         mRootView.getListDatas().set(position, result);
                         mRootView.refreshData(position);
+                        mRootView.refuseTip();
                     }
 
                     @Override

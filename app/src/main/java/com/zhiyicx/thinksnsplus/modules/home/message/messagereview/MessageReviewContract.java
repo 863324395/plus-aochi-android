@@ -25,6 +25,7 @@ public interface MessageReviewContract {
     interface View extends ITSListView<BaseListBean, Presenter> {
         String getType();
         Long getSourceId();
+        void refuseTip();
     }
 
     interface Presenter extends ITSListPresenter<BaseListBean> {

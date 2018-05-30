@@ -91,6 +91,7 @@ public class MessageCommentAdapter extends CommonAdapter<CommentedBean> {
         ImageUtils.loadCircleUserHeadPic(commentedBean.getCommentUserInfo(), holder.getView(R.id.iv_headpic));
 
         holder.setVisible(R.id.tv_reply, commentedBean.getIsDelete() ? View.GONE : View.VISIBLE);
+        holder.setVisible(R.id.tv_review, commentedBean.getIsDelete() ? View.VISIBLE : View.GONE);
         if (commentedBean.getTarget_image() != null && commentedBean.getTarget_image() > 0) {
             holder.setVisible(R.id.fl_image_container, View.VISIBLE);
             if (commentedBean.isHasVideo()) {

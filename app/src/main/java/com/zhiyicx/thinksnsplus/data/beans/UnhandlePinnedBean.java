@@ -25,6 +25,8 @@ public class UnhandlePinnedBean implements Parcelable {
     private CountBean groupPosts;
     @SerializedName("group-comments")
     private CountBean groupComments;
+    @SerializedName("news-comments")
+    private CountBean newsComments;
 
     public CountBean getNews() {
         return news;
@@ -36,6 +38,14 @@ public class UnhandlePinnedBean implements Parcelable {
 
     public CountBean getFeeds() {
         return feeds;
+    }
+
+    public CountBean getNewsComments() {
+        return newsComments;
+    }
+
+    public void setNewsComments(CountBean newsComments) {
+        this.newsComments = newsComments;
     }
 
     public void setFeeds(CountBean feeds) {
@@ -135,6 +145,7 @@ public class UnhandlePinnedBean implements Parcelable {
         dest.writeParcelable(this.feeds, flags);
         dest.writeParcelable(this.groupPosts, flags);
         dest.writeParcelable(this.groupComments, flags);
+        dest.writeParcelable(this.newsComments, flags);
     }
 
     public UnhandlePinnedBean() {
@@ -145,6 +156,7 @@ public class UnhandlePinnedBean implements Parcelable {
         this.feeds = in.readParcelable(CountBean.class.getClassLoader());
         this.groupPosts = in.readParcelable(CountBean.class.getClassLoader());
         this.groupComments = in.readParcelable(CountBean.class.getClassLoader());
+        this.newsComments = in.readParcelable(CountBean.class.getClassLoader());
     }
 
     public static final Creator<UnhandlePinnedBean> CREATOR = new Creator<UnhandlePinnedBean>() {
@@ -158,14 +170,4 @@ public class UnhandlePinnedBean implements Parcelable {
             return new UnhandlePinnedBean[size];
         }
     };
-
-    @Override
-    public String toString() {
-        return "UnhandlePinnedBean{" +
-                "news=" + news +
-                ", feeds=" + feeds +
-                ", groupPosts=" + groupPosts +
-                ", groupComments=" + groupComments +
-                '}';
-    }
 }

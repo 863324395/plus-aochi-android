@@ -373,14 +373,14 @@ public class BaseCircleRepository implements IBaseCircleRepository {
                 .observeOn(AndroidSchedulers.mainThread())
                 .map(circlePostBean -> {
                     List<CirclePostListBean> pinnedData = circlePostBean.getPinneds();
-                    List<CirclePostListBean> data = new ArrayList<>(circlePostBean.getPinneds());
+                    List<CirclePostListBean> data = new ArrayList<>(circlePostBean.getPosts());
                     // 最新回复不显示置顶内容
                     if (pinnedData != null && !type.equals(PostTypeChoosePopAdapter.MyPostTypeEnum.LATEST_COMMENT.value)) {
                         for (CirclePostListBean postListBean : pinnedData) {
                             for (CirclePostListBean post : data) {
                                 // 删除置顶重复的
                                 if (postListBean.getId().equals(post.getId())) {
-                                    circlePostBean.getPosts().remove(post);
+                                    circlePostBean.getPosts().remove(data);
                                 }
                             }
                             postListBean.setPinned(true);

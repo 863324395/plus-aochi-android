@@ -106,8 +106,8 @@
         android:layout_below="@id/tv_name"
         android:layout_toRightOf="@id/iv_headpic"
         android:maxLines="1"
-        android:paddingBottom="@dimen/spacing_mid"
-        android:paddingTop="@dimen/spacing_mid_small_6dp"
+        android:layout_marginBottom="@dimen/spacing_normal"
+        android:layout_marginTop="@dimen/spacing_mid_small_6dp"
         android:textColor="@color/general_for_hint"
         android:textSize="@dimen/size_icon_assist"
         tools:text="6分钟前"/>
