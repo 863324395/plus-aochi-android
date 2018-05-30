@@ -61,10 +61,7 @@
             android:layout_marginBottom="37dp"
             android:includeFontPadding="false"
             android:textColor="@color/white"
-            android:shadowColor="@android:color/black"
-            android:shadowRadius="10"
-            android:shadowDx="5"
-            android:shadowDy="5"
+            style="@style/TSChatImageItemRight"
             android:textSize="@dimen/size_sub_title"
             tools:text="阿超的超能力"/>
 
@@ -81,18 +78,13 @@
                 android:paddingBottom="@dimen/spacing_mid"
                 android:paddingRight="@dimen/spacing_mid"
                 android:shadowColor="@android:color/black"
-                android:shadowRadius="10"
-                android:shadowDx="5"
-                android:shadowDy="5"
+                style="@style/TSChatImageItemRight"
                 android:textColor="@color/white"
                 android:textSize="@dimen/size_content_assist"
                 tools:text="粉丝 26"/>
 
             <TextView
-                android:shadowColor="@android:color/black"
-                android:shadowRadius="10"
-                android:shadowDx="5"
-                android:shadowDy="5"
+                style="@style/TSChatImageItemRight"
                 android:id="@+id/tv_user_follow"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

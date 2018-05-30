@@ -103,4 +103,12 @@
         <item name="TSRightTopRaduis">0dp</item>
         <item name="TSRightBottomRaduis">@dimen/ts_chat_item_iamge_raduis</item>
     </style>
+
+    <!--文字阴影效果-->
+    <style name="TextShadowStyle">
+        <item name="android:shadowColor">@android:color/black</item>
+        <item name="android:shadowRadius">5</item>
+        <item name="android:shadowDx">2</item>
+        <item name="android:shadowDy">2</item>
+    </style>
 </resources>
