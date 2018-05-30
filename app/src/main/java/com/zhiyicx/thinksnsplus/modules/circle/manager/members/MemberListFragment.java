@@ -291,7 +291,7 @@ public class MemberListFragment extends TSListFragment<MembersContract.Presenter
                 case CircleMembers.BLACKLIST:
                     groupInfo = new StickySectionDecoration.GroupInfo(3,
                             String.format(Locale.getDefault(), mActivity.getString(R.string
-                                    .circle_blacklist_format), mFrouLengh[3]));
+                                    .circle_blacklist_format), mFrouLengh[3]+""));
                     groupInfo.setPosition(position);
                     groupInfo.setGroupLength(mFrouLengh[3]);
                     break;
