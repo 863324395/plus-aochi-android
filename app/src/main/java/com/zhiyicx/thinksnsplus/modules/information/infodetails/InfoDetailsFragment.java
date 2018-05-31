@@ -131,6 +131,11 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
     }
 
     @Override
+    protected float getItemDecorationSpacing() {
+        return 0;
+    }
+
+    @Override
     protected boolean showToolBarDivider() {
         return false;
     }

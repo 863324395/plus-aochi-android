@@ -109,6 +109,10 @@ public class QuestionCommentFragment extends TSListFragment<QuestionCommentContr
         showCommentView();
     }
 
+    @Override
+    protected float getItemDecorationSpacing() {
+        return 0;
+    }
 
     @Override
     protected RecyclerView.Adapter getAdapter() {
@@ -120,6 +124,8 @@ public class QuestionCommentFragment extends TSListFragment<QuestionCommentContr
         multiItemTypeAdapter.setOnItemClickListener(this);
         return multiItemTypeAdapter;
     }
+
+
 
     @Override
     public void onNetResponseSuccess(@NotNull List<QuestionCommentBean> data, boolean isLoadMore) {

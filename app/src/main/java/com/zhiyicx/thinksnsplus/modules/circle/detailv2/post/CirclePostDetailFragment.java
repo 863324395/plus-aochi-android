@@ -216,6 +216,11 @@ public class CirclePostDetailFragment extends TSListFragment<CirclePostDetailCon
     }
 
     @Override
+    protected float getItemDecorationSpacing() {
+        return 0;
+    }
+
+    @Override
     public void setCollect(boolean isCollected) {
         mDdDynamicTool.setItemIsChecked(isCollected, ITEM_POSITION_3);
     }

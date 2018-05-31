@@ -5,6 +5,7 @@ import com.zhiyicx.baseproject.em.manager.eventbus.TSEMRefreshEvent;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
+import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.ChatGroupBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.ChatGroupBeanGreenDaoImpl;
@@ -12,6 +13,8 @@ import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.BaseFriendsRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.ChatInfoRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
+
+import org.simple.eventbus.EventBus;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -112,6 +115,7 @@ public class ChatPresenter extends AppBasePresenter<ChatContract.View> implement
                     @Override
                     protected void onSuccess(ChatGroupBean data) {
                         mChatGroupBeanGreenDao.saveSingleData(chatGroupBean);
+                        EventBus.getDefault().post(chatGroupBean, EventBusTagConfig.EVENT_IM_GROUP_UPDATE_GROUP_INFO);
                         mRootView.setGoupName(mContext.getString(R.string.chat_group_name_default, data.getName(), chatGroupBean
                                 .getAffiliations_count()));
                         mRootView.dismissSnackBar();
