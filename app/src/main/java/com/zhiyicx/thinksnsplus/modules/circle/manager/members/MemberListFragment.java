@@ -103,6 +103,11 @@ public class MemberListFragment extends TSListFragment<MembersContract.Presenter
     }
 
     @Override
+    protected View getRightViewOfMusicWindow() {
+        return mFragmentSearchCancle;
+    }
+
+    @Override
     protected boolean showToolbar() {
         return false;
     }

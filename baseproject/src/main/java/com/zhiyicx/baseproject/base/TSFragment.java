@@ -36,7 +36,6 @@ import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.StatusBarUtils;
 import com.zhiyicx.common.utils.UIUtils;
-import com.zhiyicx.common.utils.log.LogUtils;
 
 import java.util.concurrent.TimeUnit;
 
@@ -457,6 +456,7 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
 
     /**
      * 根据类名跳转页面
+     *
      * @param cls 目标类名
      */
     @Override
@@ -466,6 +466,7 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
 
     /**
      * 默认显示提示的方法，具体实现在子类处理
+     *
      * @param message 提示内容
      */
     @Override
@@ -584,6 +585,7 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
 
     /**
      * 显示加载失败
+     *
      * @param isNeedClick 是否需要回调
      */
     protected void showLoadViewLoadErrorDisableClick(boolean isNeedClick) {
@@ -667,7 +669,6 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
     }
 
     /**
-     *
      * @return 是否需要中心加载动画，对应  hideCenterLoading()
      */
     protected boolean setUseCenterLoadingAnimation() {
@@ -711,7 +712,6 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
     }
 
     /**
-     *
      * @return 是否需要显示音乐播放图标
      */
     protected boolean needMusicWindowView() {
@@ -726,7 +726,6 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
     }
 
     /**
-     *
      * @return toolbar 背景
      */
     protected int setToolBarBackgroud() {
@@ -748,24 +747,17 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
         final View view = getRightViewOfMusicWindow();
         if (getRightViewOfMusicWindow() != null) {
 
-            if (view != null && isShow && !rightViewHadTranslated) {
-                if (view.getVisibility() == View.VISIBLE) {
-                    // 向左移动一定距离
-                    int rightX = ConvertUtils.dp2px(getContext(), 24) + ConvertUtils.dp2px(getContext(), 10);
-                    view.setTag(rightX);
-                    LogUtils.d("musicWindowsStatus::"+view.getPaddingTop());
-                    view.setPadding(view.getPaddingLeft(), view.getPaddingTop(), view.getPaddingRight() + rightX, view
-                            .getPaddingBottom());
-                    rightViewHadTranslated = true;
-                } else {
-                    rightViewHadTranslated = false;
-                }
+            if (view != null && isShow) {
+                // 向左移动一定距离
+                int rightX = ConvertUtils.dp2px(getContext(), 24) + ConvertUtils.dp2px(getContext(), 10);
+                view.setTag(rightX);
+                view.setPadding(view.getPaddingLeft(), view.getPaddingTop(), view.getPaddingRight() + rightX, view
+                        .getPaddingBottom());
             }
         }
     }
 
     /**
-     *
      * @return 音乐图标显示需要占位的 View, View 会左移，留出音乐图标的位置
      */
     protected View getRightViewOfMusicWindow() {
@@ -774,6 +766,7 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
 
     /**
      * 是否需要中心加载弹窗
+     *
      * @return
      */
     protected boolean needCenterLoadingDialog() {
@@ -907,6 +900,7 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
 
     /**
      * 设置 Toolbar 左边控件的文字颜色
+     *
      * @param resId
      */
     protected void setLeftTextColor(@ColorRes int resId) {
@@ -1025,7 +1019,8 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
 
     /**
      * 文本修改方法
-     * @param view 需要修改的文本控件
+     *
+     * @param view   需要修改的文本控件
      * @param string 文本内容
      */
     private void changeText(TextView view, String string) {
@@ -1077,6 +1072,7 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
 
     /**
      * 返回颜色
+     *
      * @param resId
      * @return
      */

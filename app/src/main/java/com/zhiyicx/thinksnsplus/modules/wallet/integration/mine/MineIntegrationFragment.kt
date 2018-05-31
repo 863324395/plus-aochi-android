@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.Toolbar
 import android.view.View
-import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -23,7 +22,6 @@ import com.zhiyicx.common.utils.log.LogUtils
 import com.zhiyicx.common.widget.popwindow.CustomPopupWindow
 import com.zhiyicx.thinksnsplus.R
 import com.zhiyicx.thinksnsplus.base.AppApplication
-import com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_INTEGRATION_RECHARGE
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean
 import com.zhiyicx.thinksnsplus.data.beans.RealAdvertListBean
 import com.zhiyicx.thinksnsplus.data.beans.integration.IntegrationConfigBean
@@ -38,8 +36,6 @@ import com.zhiyicx.thinksnsplus.modules.wallet.integration.withdrawal.Integratio
 import com.zhiyicx.thinksnsplus.modules.wallet.integration.withdrawal.IntegrationWithdrawalsFragment
 import com.zhiyicx.thinksnsplus.modules.wallet.rule.WalletRuleActivity
 import com.zhiyicx.thinksnsplus.modules.wallet.rule.WalletRuleFragment
-import org.simple.eventbus.Subscriber
-import org.simple.eventbus.ThreadMode
 import java.util.*
 import java.util.concurrent.TimeUnit
 
@@ -93,6 +89,10 @@ class MineIntegrationFragment : TSFragment<MineIntegrationContract.Presenter>(),
         return false
     }
 
+    override fun getRightViewOfMusicWindow(): View {
+        return mTvToolbarRight
+    }
+
     override fun setUseSatusbar(): Boolean {
         return true
     }
@@ -115,7 +115,7 @@ class MineIntegrationFragment : TSFragment<MineIntegrationContract.Presenter>(),
 
     override fun initView(rootView: View) {
         setStatusPlaceholderViewBackgroundColor(android.R.color.transparent)
-        mIvRefresh = mRootView.findViewById(R.id.iv_refresh)
+        mIvRefresh = mRootView.findViewById(R.id.iv_refresh) as ImageView
 
         mToolbar.setBackgroundResource(android.R.color.transparent)
         (mToolbar.layoutParams as LinearLayout.LayoutParams).setMargins(0, DeviceUtils.getStatuBarHeight(mActivity), 0, 0)
@@ -154,11 +154,11 @@ class MineIntegrationFragment : TSFragment<MineIntegrationContract.Presenter>(),
     }
 
     private fun initAdvert(context: Context, adverts: List<RealAdvertListBean>?) {
-        mRootView.findViewById<FrameLayout>(R.id.ll_advert_tag).visibility = View.GONE
+        mRootView.findViewById(R.id.ll_advert_tag).visibility = View.GONE
 
 
         if (!com.zhiyicx.common.BuildConfig.USE_ADVERT || adverts == null || adverts.isEmpty()) {
-            mRootView.findViewById<LinearLayout>(R.id.ll_advert).visibility = View.GONE
+            mRootView.findViewById(R.id.ll_advert).visibility = View.GONE
             return
         }
         mDynamicDetailAdvertHeader = DynamicDetailAdvertHeader(context, mRootView.findViewById(R.id.ll_advert))

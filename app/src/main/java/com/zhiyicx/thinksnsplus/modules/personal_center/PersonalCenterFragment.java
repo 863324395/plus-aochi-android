@@ -209,6 +209,8 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
         return personalCenterFragment;
     }
 
+
+
     @Override
     protected int getstatusbarAndToolbarHeight() {
         if (setUseSatusbar()) {
@@ -294,7 +296,6 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
         mPersonalCenterHeaderViewItem.setViewColorWithAlpha(mLlToolbarContainerParent.findViewById(R.id.v_horizontal_line), TOOLBAR_DIVIDER_RGB, 255);
         mPersonalCenterHeaderViewItem.setToolbarIconColor(Color.argb(255, TOOLBAR_BLACK_ICON[0],
                 TOOLBAR_BLACK_ICON[1], TOOLBAR_BLACK_ICON[2]));
-        mIvMore.setVisibility(View.GONE);
 //        setOverScroll(false, null);
         mLinearDecoration.setHeaderCount(mHeaderAndFooterWrapper.getHeadersCount());
         mLinearDecoration.setFooterCount(mHeaderAndFooterWrapper.getFootersCount());
@@ -552,7 +553,6 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
         mPersonalCenterHeaderViewItem.setViewColorWithAlpha(mLlToolbarContainerParent.findViewById(R.id.v_horizontal_line), TOOLBAR_DIVIDER_RGB, 0);
         mPersonalCenterHeaderViewItem.setToolbarIconColor(Color.argb(255, TOOLBAR_WHITE_ICON[0]
                 , TOOLBAR_WHITE_ICON[1], TOOLBAR_WHITE_ICON[2]));
-        mIvMore.setVisibility(View.VISIBLE);
         mPersonalCenterHeaderViewItem.setScrollListenter();
         // 状态栏文字设为白色
         //StatusBarUtils.statusBarDarkMode(mActivity);

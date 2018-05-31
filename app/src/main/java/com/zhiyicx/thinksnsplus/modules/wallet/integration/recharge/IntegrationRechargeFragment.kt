@@ -106,13 +106,17 @@ class IntegrationRechargeFragment : TSFragment<IntegrationRechargeContract.Prese
 
     override fun setStatusbarGrey() = false
 
+    override fun getRightViewOfMusicWindow(): View {
+        return mTvToolbarRight
+    }
+
     override fun getBodyLayoutId() = R.layout.fragment_integration_recharge
 
     private val mBaseRatioNum = 1
 
     override fun initView(rootView: View) {
         setStatusPlaceholderViewBackgroundColor(android.R.color.transparent)
-        mIvRefresh = mRootView.findViewById(R.id.iv_refresh)
+        mIvRefresh = mRootView.findViewById(R.id.iv_refresh) as ImageView
         mToolbar.setBackgroundResource(android.R.color.transparent)
         (mToolbar.layoutParams as LinearLayout.LayoutParams).setMargins(0, DeviceUtils.getStatuBarHeight(mActivity), 0, 0)
         mTvToolbarCenter.setTextColor(ContextCompat.getColor(mActivity, R.color.white))

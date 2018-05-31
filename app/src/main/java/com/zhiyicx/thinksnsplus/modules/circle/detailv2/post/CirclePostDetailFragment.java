@@ -161,6 +161,11 @@ public class CirclePostDetailFragment extends TSListFragment<CirclePostDetailCon
     }
 
     @Override
+    protected View getRightViewOfMusicWindow() {
+        return mTvToolbarRight;
+    }
+
+    @Override
     protected int getBodyLayoutId() {
         return R.layout.fragment_post_detail;
     }

@@ -85,13 +85,16 @@ class IntegrationWithdrawalsFragment : TSFragment<IntegrationWithdrawalsContract
 
     override fun setStatusbarGrey() = false
 
+    override fun getRightViewOfMusicWindow(): View {
+        return mTvToolbarRight
+    }
 
     override fun getBodyLayoutId() = R.layout.fragment_integration_withdrawals
 
 
     override fun initView(rootView: View) {
         setStatusPlaceholderViewBackgroundColor(android.R.color.transparent)
-        mIvRefresh = mRootView.findViewById(R.id.iv_refresh)
+        mIvRefresh = mRootView.findViewById(R.id.iv_refresh) as ImageView
         mToolbar.setBackgroundResource(android.R.color.transparent)
         (mToolbar.layoutParams as LinearLayout.LayoutParams).setMargins(0, DeviceUtils.getStatuBarHeight(mActivity), 0, 0)
         mGoldName = mPresenter.goldName
