@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.Toolbar
 import android.view.View
+import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -115,7 +116,7 @@ class MineIntegrationFragment : TSFragment<MineIntegrationContract.Presenter>(),
 
     override fun initView(rootView: View) {
         setStatusPlaceholderViewBackgroundColor(android.R.color.transparent)
-        mIvRefresh = mRootView.findViewById(R.id.iv_refresh) as ImageView
+        mIvRefresh = mRootView.findViewById(R.id.iv_refresh)
 
         mToolbar.setBackgroundResource(android.R.color.transparent)
         (mToolbar.layoutParams as LinearLayout.LayoutParams).setMargins(0, DeviceUtils.getStatuBarHeight(mActivity), 0, 0)
@@ -154,11 +155,11 @@ class MineIntegrationFragment : TSFragment<MineIntegrationContract.Presenter>(),
     }
 
     private fun initAdvert(context: Context, adverts: List<RealAdvertListBean>?) {
-        mRootView.findViewById(R.id.ll_advert_tag).visibility = View.GONE
+        mRootView.findViewById<FrameLayout>(R.id.ll_advert_tag).visibility = View.GONE
 
 
         if (!com.zhiyicx.common.BuildConfig.USE_ADVERT || adverts == null || adverts.isEmpty()) {
-            mRootView.findViewById(R.id.ll_advert).visibility = View.GONE
+            mRootView.findViewById<LinearLayout>(R.id.ll_advert).visibility = View.GONE
             return
         }
         mDynamicDetailAdvertHeader = DynamicDetailAdvertHeader(context, mRootView.findViewById(R.id.ll_advert))
