@@ -221,7 +221,11 @@ public class ChatFragment extends TSEaseChatFragment<ChatContract.Presenter>
             }
             setCenterText(mPresenter.getGroupName(toChatUsername));
         }
-        messageList.refresh();
+        final List<EMMessage> msgs = conversation.getAllMessages();
+        int msgCount = msgs != null ? msgs.size() : 0;
+        if (msgCount == 0) {
+            messageList.refresh();
+        }
     }
 
     /**
@@ -460,9 +464,9 @@ public class ChatFragment extends TSEaseChatFragment<ChatContract.Presenter>
                 String content = message.getBody().toString();
                 if (message.getBody() instanceof EMTextMessageBody) {
                     content = ((EMTextMessageBody) message.getBody()).getMessage();
-                }else if (message.getBody() instanceof EMImageMessageBody){
+                } else if (message.getBody() instanceof EMImageMessageBody) {
                     content = "[图片]";
-                }else if (message.getBody() instanceof EMVoiceMessageBody){
+                } else if (message.getBody() instanceof EMVoiceMessageBody) {
                     content = "[语音]";
                 }
 
