@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -95,7 +96,8 @@ public class DynamicDetailAdvertHeader {
     public void setHeight(int height) {
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams
                 .MATCH_PARENT, height);
-        params.setMargins(20, 20, 20, 20);
+        int space= mContext.getResources().getDimensionPixelOffset(R.dimen.spacing_normal);
+        params.setMargins(space, space, space, space);
         mAdvertContainer.setLayoutParams(params);
     }
 

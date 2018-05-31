@@ -14,7 +14,6 @@ import android.widget.TextView;
 import com.jakewharton.rxbinding.view.RxView;
 import com.jakewharton.rxbinding.widget.RxRadioGroup;
 import com.jakewharton.rxbinding.widget.RxTextView;
-import com.pingplusplus.android.Pingpp;
 import com.trycatch.mysnackbar.Prompt;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.config.PayConfig;
@@ -22,7 +21,6 @@ import com.zhiyicx.baseproject.widget.button.CombinationButton;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.DeviceUtils;
-import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
@@ -31,6 +29,7 @@ import com.zhiyicx.thinksnsplus.data.beans.RechargeSuccessBean;
 import com.zhiyicx.thinksnsplus.data.beans.WalletConfigBean;
 import com.zhiyicx.tspay.TSPayClient;
 
+import org.jetbrains.annotations.NotNull;
 import org.simple.eventbus.EventBus;
 
 import java.util.ArrayList;
@@ -133,6 +132,11 @@ public class RechargeFragment extends TSFragment<RechargeContract.Presenter> imp
     }
 
     @Override
+    public void payCredentialsResult(@NotNull String payStrBean) {
+
+    }
+
+    @Override
     protected void snackViewDismissWhenTimeOut(Prompt prompt, String message) {
         super.snackViewDismissWhenTimeOut(prompt);
         if (getActivity() != null && Prompt.SUCCESS == prompt && getString(R.string.recharge_success).equals(message)) {
@@ -148,30 +152,30 @@ public class RechargeFragment extends TSFragment<RechargeContract.Presenter> imp
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == Pingpp.REQUEST_CODE_PAYMENT) {
-            if (resultCode == Activity.RESULT_OK) {
-                configSureBtn(true);
-                String result = data.getExtras().getString("pay_result", "");
-                /* 处理返回值
-                 * "success" - 支付成功
-                 * "fail"    - 支付失败
-                 * "cancel"  - 取消支付
-                 * "invalid" - 支付插件未安装（一般是微信客户端未安装的情况）
-                 * "unknown" - app进程异常被杀死(一般是低内存状态下,app进程被杀死)
-                 */
-                String errorMsg = data.getExtras().getString("error_msg"); // 错误信息
-                String extraMsg = data.getExtras().getString("extra_msg"); // 错误信息
-                int id = UIUtils.getResourceByName("pay_" + result, "string", getContext());
-                if (result.contains("success")) {
-                    showSnackSuccessMessage(getString(id));
-                } else {
-                    showSnackErrorMessage(getString(id));
-                }
-                if (result.equals("success")) {
-                    mPresenter.rechargeSuccess(mPayChargeId);
-                }
-            }
-        }
+//        if (requestCode == Pingpp.REQUEST_CODE_PAYMENT) {
+//            if (resultCode == Activity.RESULT_OK) {
+//                configSureBtn(true);
+//                String result = data.getExtras().getString("pay_result", "");
+//                /* 处理返回值
+//                 * "success" - 支付成功
+//                 * "fail"    - 支付失败
+//                 * "cancel"  - 取消支付
+//                 * "invalid" - 支付插件未安装（一般是微信客户端未安装的情况）
+//                 * "unknown" - app进程异常被杀死(一般是低内存状态下,app进程被杀死)
+//                 */
+//                String errorMsg = data.getExtras().getString("error_msg"); // 错误信息
+//                String extraMsg = data.getExtras().getString("extra_msg"); // 错误信息
+//                int id = UIUtils.getResourceByName("pay_" + result, "string", getContext());
+//                if (result.contains("success")) {
+//                    showSnackSuccessMessage(getString(id));
+//                } else {
+//                    showSnackErrorMessage(getString(id));
+//                }
+//                if (result.equals("success")) {
+//                    mPresenter.rechargeSuccess(mPayChargeId);
+//                }
+//            }
+//        }
     }
 
     @Override
@@ -182,6 +186,12 @@ public class RechargeFragment extends TSFragment<RechargeContract.Presenter> imp
     @Override
     public double getMoney() {
         return mRechargeMoney;
+    }
+
+    @NotNull
+    @Override
+    public Activity getCurrentActivity() {
+        return mActivity;
     }
 
     private void initRechargeLables() {
@@ -231,7 +241,7 @@ public class RechargeFragment extends TSFragment<RechargeContract.Presenter> imp
 
         // 选择充值方式
         RxView.clicks(mBtRechargeStyle)
-                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .compose(this.bindToLifecycle())
                 .subscribe(aVoid -> {
                     DeviceUtils.hideSoftKeyboard(getContext(), mBtRechargeStyle);
@@ -239,11 +249,18 @@ public class RechargeFragment extends TSFragment<RechargeContract.Presenter> imp
                 });
         // 确认
         RxView.clicks(mBtTop)
-                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .compose(this.bindToLifecycle())
                 .subscribe(aVoid -> {
                     mBtTop.setEnabled(false);
-                    mPresenter.getPayStr(mPayType, PayConfig.realCurrencyYuan2Fen(mRechargeMoney));
+                    switch (mPayType){
+                        case TSPayClient.CHANNEL_ALIPAY_V2:
+                            mPresenter.getAliPayStr(mPayType, PayConfig.realCurrencyYuan2Fen(mRechargeMoney));
+                            break;
+                        case TSPayClient.CHANNEL_WXPAY_V2:
+                            mPresenter.getWXPayStr(mPayType, PayConfig.realCurrencyYuan2Fen(mRechargeMoney));
+                            default:
+                    }
                 });// 传入的是真实货币分单位
 
         RxTextView.textChanges(mEtInput).subscribe(charSequence -> {
@@ -325,13 +342,13 @@ public class RechargeFragment extends TSFragment<RechargeContract.Presenter> imp
                 .backgroundAlpha(CustomPopupWindow.POPUPWINDOW_ALPHA)
                 .with(getActivity())
                 .item2ClickListener(() -> {
-                    mPayType = TSPayClient.CHANNEL_ALIPAY;
+                    mPayType = TSPayClient.CHANNEL_ALIPAY_V2;
                     mBtRechargeStyle.setRightText(getString(R.string.choose_recharge_style_formart, getString(R.string.alipay)));
                     mPayStylePopupWindow.hide();
                     configSureButton();
                 })
                 .item3ClickListener(() -> {
-                    mPayType = TSPayClient.CHANNEL_WX;
+                    mPayType = TSPayClient.CHANNEL_WXPAY_V2;
                     mBtRechargeStyle.setRightText(getString(R.string.choose_recharge_style_formart, getString(R.string.wxpay)));
                     mPayStylePopupWindow.hide();
                     configSureButton();

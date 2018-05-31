@@ -27,9 +27,12 @@ import android.telephony.TelephonyManager;
 import android.text.TextPaint;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Display;
 import android.view.View;
 import android.view.ViewTreeObserver;
+import android.view.Window;
+import android.view.WindowInsets;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 
@@ -120,11 +123,11 @@ public class DeviceUtils {
             x = Integer.parseInt(field.get(obj).toString());
             sbar = context.getResources()
                     .getDimensionPixelSize(x);
-
         } catch (Exception e1) {
             e1.printStackTrace();
         }
-        return sbar;
+        int h = getHeight(ActivityHandler.getInstance().currentActivity());
+        return Math.max(h, sbar);
     }
 
     /**
@@ -826,10 +829,9 @@ public class DeviceUtils {
     }
 
     /**
-     *
-     * @param paint 文字控件 paint
+     * @param paint       文字控件 paint
      * @param str
-     * @param totalWidth 文字限制的总宽度
+     * @param totalWidth  文字限制的总宽度
      * @param defaultWord 默认文字
      * @return 截取文本控件上指定宽度的文字
      */
@@ -853,6 +855,31 @@ public class DeviceUtils {
         if (measurennums > length) {
             measurennums = length;
         }
-        return str.substring(0, measurennums) + "..." +defaultWord;
+        return str.substring(0, measurennums) + "..." + defaultWord;
+    }
+
+    // 设置刘海区域可用
+    public static void openFullScreenModel(Activity mAc) {
+        if (Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O_MR1) {
+            mAc.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            WindowManager.LayoutParams lp = mAc.getWindow().getAttributes();
+//            lp.layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES;
+            mAc.getWindow().setAttributes(lp);
+        }
+    }
+
+    // 刘海高度
+    public static int getHeight(Activity mAc) {
+        View decorView = mAc.getWindow().getDecorView();
+        if (decorView != null) {
+            if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
+                WindowInsets windowInsets = decorView.getRootWindowInsets();
+                if (windowInsets != null) {
+//                    DisplayCutout displayCutout = windowInsets.getDisplayCutout();
+//                    return displayCutout.getSafeInsetTop();
+                }
+            }
+        }
+        return 0;
     }
 }

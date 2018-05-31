@@ -59,6 +59,11 @@ public class PersonalCenterDynamicListItemForNineImage extends PersonalCenterDyn
         initImageView(holder, holder.getView(R.id.siv_6), dynamicBean, 6,1);
         initImageView(holder, holder.getView(R.id.siv_7), dynamicBean, 7,1);
         initImageView(holder, holder.getView(R.id.siv_8), dynamicBean, 8,1);
+
+        TextView size = holder.getTextView(R.id.tv_numshadow);
+        int iamgeSize = dynamicBean.getImages().size();
+        size.setVisibility(iamgeSize > 9 ? View.VISIBLE : View.GONE);
+        size.setText("+" + (iamgeSize -9 ));
     }
 
 }

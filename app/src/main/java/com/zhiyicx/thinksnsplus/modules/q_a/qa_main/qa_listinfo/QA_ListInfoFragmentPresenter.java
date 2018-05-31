@@ -98,7 +98,7 @@ public class QA_ListInfoFragmentPresenter extends AppBasePresenter<QA_ListInfoCo
 
     @Override
     public void payForOnlook(long answer_id, int position) {
-        Subscription subscription = handleWalletBlance((long) getSystemConfig().getOnlookQuestion())
+        Subscription subscription = handleIntegrationBlance((long) getSystemConfig().getOnlookQuestion())
                 .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R
                         .string.ts_pay_check_handle_doing)))
                 .flatMap(o -> mBaseQARepository.payForOnlook(answer_id))
@@ -119,7 +119,7 @@ public class QA_ListInfoFragmentPresenter extends AppBasePresenter<QA_ListInfoCo
                     @Override
                     protected void onException(Throwable throwable) {
                         super.onException(throwable);
-                        if (isBalanceCheck(throwable)) {
+                        if (isIntegrationBalanceCheck(throwable)) {
                             return;
                         }
                         mRootView.showSnackErrorMessage(throwable.getMessage());

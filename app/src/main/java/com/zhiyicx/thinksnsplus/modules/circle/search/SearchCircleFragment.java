@@ -202,8 +202,10 @@ public class SearchCircleFragment extends BaseCircleListFragment implements ISea
                             if (o.getContent().equals(getString(R.string.show_all_history))) { // 显示所有历史
                                 mHistoryData.clear();
                                 mHistoryData.addAll(mPresenter.getAllSearchHistory());
-                                mHistoryData.add(new CircleSearchHistoryBean(getString(R.string.clear_all_history), CircleSearchHistoryBean
-                                        .TYPE_DEFAULT));
+                                if (!mHistoryData.isEmpty()){
+                                    mHistoryData.add(new CircleSearchHistoryBean(getString(R.string.clear_all_history), CircleSearchHistoryBean
+                                            .TYPE_DEFAULT));
+                                }
                                 mHsitoryAdapter.notifyDataSetChanged();
 
                             } else { // 清空历史

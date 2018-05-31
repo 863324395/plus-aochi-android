@@ -155,6 +155,11 @@ public class MusicCommentFragment extends TSListFragment<MusicCommentContract.Pr
     }
 
     @Override
+    protected float getItemDecorationSpacing() {
+        return 0;
+    }
+
+    @Override
     protected MultiItemTypeAdapter<MusicCommentListBean> getAdapter() {
         MultiItemTypeAdapter adapter = new MultiItemTypeAdapter<>(getContext(), mListDatas);
         MusicCommentItem musicCommentItem = new MusicCommentItem();

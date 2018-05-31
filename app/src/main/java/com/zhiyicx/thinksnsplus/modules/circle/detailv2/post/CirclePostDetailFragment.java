@@ -1,7 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.circle.detailv2.post;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -15,18 +14,21 @@ import android.widget.TextView;
 import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyi.richtexteditorlib.view.dialogs.LinkDialog;
 import com.zhiyicx.baseproject.base.TSListFragment;
+import com.zhiyicx.baseproject.config.MarkdownConfig;
 import com.zhiyicx.baseproject.widget.DynamicDetailMenuView;
 import com.zhiyicx.baseproject.widget.InputLimitView;
 import com.zhiyicx.baseproject.widget.UserAvatarView;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.BuildConfig;
 import com.zhiyicx.common.utils.DeviceUtils;
-import com.zhiyicx.common.utils.FileUtils;
+import com.zhiyicx.common.utils.RegexUtils;
 import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.BaseWebLoad;
+import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
+import com.zhiyicx.thinksnsplus.data.beans.CircleJoinedBean;
 import com.zhiyicx.thinksnsplus.data.beans.CircleMembers;
 import com.zhiyicx.thinksnsplus.data.beans.CirclePostCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.CirclePostListBean;
@@ -42,7 +44,6 @@ import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
 import com.zhiyicx.thinksnsplus.modules.report.ReportActivity;
 import com.zhiyicx.thinksnsplus.modules.report.ReportType;
 import com.zhiyicx.thinksnsplus.modules.wallet.reward.RewardType;
-import com.zhiyicx.thinksnsplus.modules.wallet.sticktop.StickTopActivity;
 import com.zhiyicx.thinksnsplus.modules.wallet.sticktop.StickTopFragment;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhiyicx.thinksnsplus.widget.comment.DynamicListCommentView;
@@ -160,6 +161,11 @@ public class CirclePostDetailFragment extends TSListFragment<CirclePostDetailCon
     }
 
     @Override
+    protected View getRightViewOfMusicWindow() {
+        return mTvToolbarRight;
+    }
+
+    @Override
     protected int getBodyLayoutId() {
         return R.layout.fragment_post_detail;
     }
@@ -207,6 +213,11 @@ public class CirclePostDetailFragment extends TSListFragment<CirclePostDetailCon
         multiItemTypeAdapter.addItemViewDelegate(commentItem);
         multiItemTypeAdapter.addItemViewDelegate(new PostDetailCommentEmptyItem());
         return multiItemTypeAdapter;
+    }
+
+    @Override
+    protected float getItemDecorationSpacing() {
+        return 0;
     }
 
     @Override
@@ -352,6 +363,10 @@ public class CirclePostDetailFragment extends TSListFragment<CirclePostDetailCon
                         showAuditTipPopupWindow(getString(R.string.circle_member_added_blacklist));
                         return;
                     }
+                    if (!isJoined) {
+                        showAuditTipPopupWindow(getString(R.string.circle_member_comment_join));
+                        return;
+                    }
                     mReplyUserId = (int) circlePostCommentBean.getUser_id();
                     showCommentView();
                     String contentHint = getString(R.string.default_input_hint);
@@ -414,6 +429,7 @@ public class CirclePostDetailFragment extends TSListFragment<CirclePostDetailCon
         mPostDetailHeaderView = new PostDetailHeaderView(getContext(), mPresenter.getAdvert());
         mPostDetailHeaderView.setWebLoadListener(this);
         mPostDetailHeaderView.setCanGotoCircle(canGotoCircle);
+        mPostDetailHeaderView.setShowMessageListener(this::showSnackErrorMessage);
         mHeaderAndFooterWrapper.addHeaderView(mPostDetailHeaderView.getInfoDetailHeader());
         View mFooterView = new View(getContext());
         mFooterView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams
@@ -439,12 +455,17 @@ public class CirclePostDetailFragment extends TSListFragment<CirclePostDetailCon
     private void initBottomToolListener() {
         mDdDynamicTool.setItemOnClick((parent, v, position) -> {
             mDdDynamicTool.getTag(R.id.view_data);
-            boolean isJoined = mCirclePostDetailBean.getGroup().getJoined() != null;
+            boolean isJoined = mCirclePostDetailBean.getGroup().getJoined() != null && mCirclePostDetailBean.getGroup().getJoined().getAudit() == CircleJoinedBean.AuditStatus.PASS.value;
             boolean isBlackList = isJoined && CircleMembers.BLACKLIST.equals(mCirclePostDetailBean.getGroup().getJoined().getRole());
-
+            boolean isClosedCircle = CircleInfo.CirclePayMode.PAID.value.equals(mCirclePostDetailBean.getGroup().getMode())
+                    || CircleInfo.CirclePayMode.PRIVATE.value.equals(mCirclePostDetailBean.getGroup().getMode());
             switch (position) {
                 // 点赞
                 case DynamicDetailMenuView.ITEM_POSITION_0:
+                    if (isClosedCircle && !isJoined) {
+                        showAuditTipPopupWindow(getString(R.string.circle_member_like_join));
+                        return;
+                    }
                     mPresenter.handleLike(!mCirclePostDetailBean.getLiked(),
                             mCirclePostDetailBean.getId());
                     break;
@@ -593,14 +614,18 @@ public class CirclePostDetailFragment extends TSListFragment<CirclePostDetailCon
         boolean isPinned = circlePostListBean.getPinned();
         boolean isBlackList = circlePostListBean.getGroup().getJoined() != null && CircleMembers.BLACKLIST.equals(mCirclePostDetailBean.getGroup()
                 .getJoined().getRole());
+        boolean isClosedCircle = CircleInfo.CirclePayMode.PAID.value.equals(circlePostListBean.getGroup().getMode())
+                || CircleInfo.CirclePayMode.PRIVATE.value.equals(circlePostListBean.getGroup().getMode());
+        isBlackList = isBlackList || isClosedCircle;
 
         mDealPostPopWindow = ActionPopupWindow.builder()
                 .item1Str(isMine && !isBlackList && !isManager ? getString(R.string.post_apply_for_top) : "")
                 .item2Str(getString(isManager ? (isPinned ? R.string.post_undo_top : R.string.post_apply_top) : R.string.empty))
-                .item3Str(isMine ? getString(R.string.delete_post) : (!isBlackList ? getString(isCollected ? R
+                .item3Str((!isBlackList ? getString(isCollected ? R
                         .string.dynamic_list_uncollect_dynamic : R.string.dynamic_list_collect_dynamic) : null))
-                .item4Str(getString(isManager && !isMine ? R.string.delete_post : R.string.empty))
-                .item5Str(isMine || isBlackList || isManager ? getString(R.string.empty) : getString(R.string.report))
+                .item4Str(isMine ? getString(R.string.delete_post) : null)
+                .item5Str(getString(isManager && !isMine ? R.string.delete_post : R.string.empty))
+                .item6Str(isMine || isBlackList || isManager ? getString(R.string.empty) : getString(R.string.report))
                 .bottomStr(getString(R.string.cancel))
                 .isOutsideTouch(true)
                 .isFocus(true)
@@ -627,21 +652,21 @@ public class CirclePostDetailFragment extends TSListFragment<CirclePostDetailCon
                 })
                 .item3ClickListener(() -> {
                     // 收藏
-                    // 如果是自己发布的，则不能收藏只能删除
-                    if (isMine) {
-                        showDeleteTipPopupWindow(getString(R.string.delete_post), true, circlePostListBean);
-                    } else {
-                        mPresenter.handleCollect(!circlePostListBean.getCollected(),
-                                circlePostListBean.getId());
-                    }
+                    mPresenter.handleCollect(!circlePostListBean.getCollected(),
+                            circlePostListBean.getId());
+
                     mDealPostPopWindow.hide();
                 })
                 .item4ClickListener(() -> {
-                    // 管理员删除
                     showDeleteTipPopupWindow(getString(R.string.delete_post), true, circlePostListBean);
                     mDealPostPopWindow.hide();
                 })
                 .item5ClickListener(() -> {
+                    // 管理员删除
+                    showDeleteTipPopupWindow(getString(R.string.delete_post), true, circlePostListBean);
+                    mDealPostPopWindow.hide();
+                })
+                .item6ClickListener(() -> {
                     // 举报
                     if (!mPresenter.handleTouristControl()) {
                         String img = "";
@@ -654,11 +679,15 @@ public class CirclePostDetailFragment extends TSListFragment<CirclePostDetailCon
                                             .getDimensionPixelOffset(R.dimen.report_resource_img),
                                     100);
                         }
-
+                        // 预览的文字
+                        String des = circlePostListBean.getSummary();
+                        if (TextUtils.isEmpty(des)) {
+                            des = RegexUtils.replaceImageId(MarkdownConfig.IMAGE_FORMAT, circlePostListBean.getSummary());
+                        }
                         ReportActivity.startReportActivity(mActivity, new ReportResourceBean
                                 (circlePostListBean.getUser(), String.valueOf
                                         (circlePostListBean.getId()),
-                                        circlePostListBean.getTitle(), img, circlePostListBean.getSummary(), ReportType.CIRCLE_POST));
+                                        circlePostListBean.getTitle(), img, des, ReportType.CIRCLE_POST));
                         mDealPostPopWindow.hide();
                     }
                 })

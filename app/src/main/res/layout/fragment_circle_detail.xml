@@ -56,9 +56,7 @@
             </android.support.design.widget.AppBarLayout>
 
             <include
-                layout="@layout/circle_content"
-                android:layout_height="565dp"
-                tools:layout_editor_absoluteY="254dp"/>
+                layout="@layout/circle_content"/>
 
             <ImageView
                 android:id="@+id/btn_send_post"

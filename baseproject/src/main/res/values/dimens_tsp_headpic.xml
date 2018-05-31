@@ -16,6 +16,7 @@
     表头像、聊详情页头像、修改资料-更换头像
     -->
     <dimen name="headpic_for_list">38dp</dimen>
+    <dimen name="headpic_for_recomment_list">50dp</dimen>
 
     <dimen name="headpic_for_question_list">20dp</dimen>
     <!--
@@ -28,5 +29,6 @@
        使用场景：消息-> 通知，评论的点赞的等
     -->
     <dimen name="headpic_for_notification">32dp</dimen>
-    <dimen name="headpic_for_notification_27dp">27dp</dimen>
+    <dimen name="headpic_for_notification_30dp">30dp</dimen>
+    <dimen name="headpic_for_notification_28dp">28dp</dimen>
 </resources>

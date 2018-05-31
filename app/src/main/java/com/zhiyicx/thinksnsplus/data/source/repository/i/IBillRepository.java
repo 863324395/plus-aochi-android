@@ -4,6 +4,7 @@ import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.thinksnsplus.data.beans.PayStrV2Bean;
 import com.zhiyicx.thinksnsplus.data.beans.RechargeSuccessBean;
 import com.zhiyicx.thinksnsplus.data.beans.RechargeSuccessV2Bean;
+import com.zhiyicx.thinksnsplus.data.beans.WXPayInfo;
 import com.zhiyicx.thinksnsplus.data.beans.WalletConfigBean;
 import com.zhiyicx.thinksnsplus.data.beans.WithdrawResultBean;
 import com.zhiyicx.thinksnsplus.data.beans.WithdrawalsListBean;
@@ -57,6 +58,45 @@ public interface IBillRepository {
     Observable<PayStrV2Bean> getPayStr(String channel, double amount);
 
     /**
+     * 获取ali支付信息V2
+     * 不在调用 ping++
+     * @param channel 支付渠道
+     * @param amount  支付金额
+     * @return
+     */
+    Observable<BaseJsonV2<String>> getAliPayStr(String channel, double amount);
+
+    /**
+     * 获取wx支付信息V2
+     * @param channel
+     * @param amount
+     * @return
+     */
+    Observable<BaseJsonV2<WXPayInfo>> getWXPayStr(String channel, double amount);
+
+    /**
+     * 支付宝支付验证，3个参数都是支付宝返回
+     * @param memo
+     * @param result
+     * @param resultStatus
+     * @return
+     */
+    Observable<BaseJsonV2<String>> aliPayVerify(String memo, String result, String resultStatus);
+
+
+    Observable<BaseJsonV2<String>> aliPayIntegrationVerify(String memo, String result, String resultStatus);
+
+    /**
+     * 微信支付验证，3个参数都是支付宝返回
+     * @param memo
+     * @param result
+     * @param resultStatus
+     * @return
+     */
+    Observable<BaseJsonV2<String>> wxPayVerify(String memo, String result, String resultStatus);
+
+
+    /**
      * 钱包余额转积分
      *
      * @param amount 转账金额，分单位
@@ -84,7 +124,8 @@ public interface IBillRepository {
      */
     Observable<PayStrV2Bean> getIntegrationPayStr(String type, long amount, String extra);
 
-
+    Observable<BaseJsonV2<String>> getIntegrationAliPayStr(String channel, double amount);
+    Observable<BaseJsonV2<WXPayInfo>> getIntegrationWXPayStr(String channel, double amount);
     /**
      * @param order
      * @return 取回凭据

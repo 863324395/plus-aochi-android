@@ -33,6 +33,7 @@ import com.jakewharton.rxbinding.view.RxView;
 import com.nineoldandroids.view.ViewHelper;
 import com.zhiyi.richtexteditorlib.view.dialogs.LinkDialog;
 import com.zhiyicx.baseproject.base.TSListFragment;
+import com.zhiyicx.baseproject.config.MarkdownConfig;
 import com.zhiyicx.baseproject.config.PayConfig;
 import com.zhiyicx.baseproject.config.TouristConfig;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
@@ -47,6 +48,7 @@ import com.zhiyicx.common.utils.AndroidBug5497Workaround;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.FastBlur;
+import com.zhiyicx.common.utils.RegexUtils;
 import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
@@ -370,7 +372,6 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
     @Override
     public void allDataReady(CircleZipBean circleZipBean) {
         closeLoadingView();
-        myAppBarLayoutBehavoir.setRefreshing(false);
         ((AnimationDrawable) mIvRefresh.getDrawable()).stop();
         mIvRefresh.setVisibility(View.INVISIBLE);
         CircleInfo detail = circleZipBean.getCircleInfo();
@@ -430,6 +431,7 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
             mCircleInfo.setUser_id((int) circleMembers.getUser_id());
             CircleJoinedBean joinedBean = mCircleInfo.getJoined();
             joinedBean.setRole(CircleMembers.MEMBER);
+            joinedBean.setAudit(CircleJoinedBean.AuditStatus.PASS.value);
             mCircleInfo.setJoined(joinedBean);
             mCircleInfo.getFounder().setUser(circleMembers.getUser());
             mCircleInfo.getFounder().setUser_id((int) circleMembers.getUser_id());
@@ -455,8 +457,7 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
             mLlMemberContainer.setRightText(String.valueOf(mCircleInfo.getUsers_count()));
 
             mCircleInfo.setBlacklist_count(blackListCount);
-            mLlBlackContainer.setLeftText(String.format(Locale.getDefault(), getString(R.string.circle_blacklist_format), mCircleInfo
-                    .getBlacklist_count()));
+            mLlBlackContainer.setRightText("" + mCircleInfo.getBlacklist_count());
         }
     }
 
@@ -526,7 +527,8 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
     @Override
     public void onCommentContentClick(CirclePostListBean postListBean, int position) {
         mCurrentPostion = mPresenter.getCurrenPosiotnInDataList(postListBean.getId());
-        boolean isJoined = mCircleInfo.getJoined() != null;
+        boolean isJoined = mCircleInfo.getJoined() != null && mCircleInfo.getJoined().getAudit() == CircleJoinedBean.AuditStatus.PASS.value;
+
         boolean isBlackList = isJoined && CircleMembers.BLACKLIST.equals(mCircleInfo.getJoined().getRole());
 
         if (postListBean.getComments().get(position).getUser_id() == AppApplication.getmCurrentLoginAuth().getUser_id()) {
@@ -556,7 +558,8 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
         if (mPresenter.handleTouristControl()) {
             return;
         }
-        boolean isJoined = mCircleInfo.getJoined() != null;
+        boolean isJoined = mCircleInfo.getJoined() != null && mCircleInfo.getJoined().getAudit() == CircleJoinedBean.AuditStatus.PASS.value;
+
         boolean isBlackList = isJoined && CircleMembers.BLACKLIST.equals(mCircleInfo.getJoined().getRole());
 
         if (isBlackList) {
@@ -648,7 +651,8 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
 
     @Override
     public void onMenuItemClick(View view, int dataPosition, int viewPosition) {
-        boolean isJoined = mCircleInfo.getJoined() != null;
+        boolean isJoined = mCircleInfo.getJoined() != null && mCircleInfo.getJoined().getAudit() == CircleJoinedBean.AuditStatus.PASS.value;
+
         boolean isBlackList = isJoined && CircleMembers.BLACKLIST.equals(mCircleInfo.getJoined().getRole());
         // 减去 header
         dataPosition -= mHeaderAndFooterWrapper.getHeadersCount();
@@ -748,8 +752,7 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
 
     @Override
     protected Long getMaxId(@NotNull List<CirclePostListBean> data) {
-        int pinnedCount = mCircleZipBean == null ? 0 : mCircleZipBean.getPinnedCount();
-        return (long) mListDatas.size() - pinnedCount;
+        return (long) getOffset();
     }
 
     @Override
@@ -830,7 +833,7 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
                     boolean sourceIsMine = AppApplication.getMyUserIdWithdefault() == circlePostListBean.getUser_id();
 
                     StickTopFragment.startSticTopActivity(getActivity(), StickTopFragment.TYPE_POST, circlePostListBean.getId(), circlePostListBean
-                            .getComments().get(commentPosition).getId(),sourceIsMine);
+                            .getComments().get(commentPosition).getId(), sourceIsMine);
 
                 })
                 .item2ClickListener(() -> {
@@ -866,6 +869,8 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
 
         mMyPostPopWindow = ActionPopupWindow.builder()
                 .item1Str(getString(feedIdIsNull || isBlackList ? R.string.empty : R.string.dynamic_list_share_dynamic))
+                .item2Str(getString(feedIdIsNull || isBlackList ? R.string.empty : isCollected ? R.string.dynamic_list_uncollect_dynamic : R.string
+                        .dynamic_list_collect_dynamic))
                 .item3Str(!feedIdIsNull && !isBlackList && !isManager ? getString(R.string.post_apply_for_top) : null)
                 .item4Str(getString(isManager ? (isPinned ? R.string.post_undo_top : R.string.post_apply_top) : R.string.empty))
                 .item5Str(getString(R.string.delete_post))
@@ -874,7 +879,12 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
                 .isFocus(true)
                 .backgroundAlpha(POPUPWINDOW_ALPHA)
                 .with(mActivity)
-
+                .item2ClickListener(() -> {
+                    // 收藏
+                    handleCollect(position);
+                    mMyPostPopWindow.hide();
+                    showBottomView(true);
+                })
                 .item3ClickListener(() -> {
                     // 置顶
                     mMyPostPopWindow.hide();
@@ -982,9 +992,14 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
                                             .getDimensionPixelOffset(R.dimen.report_resource_img),
                                     100);
                         }
+                        // 预览的文字
+                        String des = circlePostListBean.getSummary();
+                        if (TextUtils.isEmpty(des)) {
+                            des = RegexUtils.replaceImageId(MarkdownConfig.IMAGE_FORMAT, circlePostListBean.getSummary());
+                        }
                         ReportActivity.startReportActivity(mActivity, new ReportResourceBean(circlePostListBean.getUser(), String.valueOf
                                 (circlePostListBean.getId()),
-                                circlePostListBean.getTitle(), img, circlePostListBean.getSummary(), ReportType.CIRCLE_POST));
+                                circlePostListBean.getTitle(), img, des, ReportType.CIRCLE_POST));
                         mOtherPostPopWindow.hide();
                         showBottomView(true);
                     }
@@ -1247,8 +1262,7 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
         mTvCircleDec.setText(String.format(Locale.getDefault(), getString(R.string.circle_detail_location), location));
         mTvCircleMember.setText(String.format(Locale.getDefault(), getString(R.string.circle_detail_usercount), detail.getUsers_count()));
         mTvCirclePostCount.setText(String.format(Locale.getDefault(), getString(R.string.circle_detail_postcount), detail.getPosts_count()));
-        mLlBlackContainer.setLeftText(String.format(Locale.getDefault(), getString(R.string.circle_blacklist_format), mCircleInfo
-                .getBlacklist_count()));
+        mLlBlackContainer.setRightText(""+mCircleInfo.getBlacklist_count());
         mTvOwnerName.setText(detail.getFounder().getUser().getName());
         mTvCircleIntroduce.setText(detail.getSummary());
         mLlIntroCountContainer.setVisibility(TextUtils.isEmpty(detail.getSummary()) ? View.GONE : View.VISIBLE);
@@ -1322,7 +1336,8 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
             R.id.ll_permission_container, R.id.ll_report_container, R.id.iv_back, R.id.iv_serach,
             R.id.iv_share, R.id.iv_setting, R.id.tv_circle_subscrib, R.id.tv_exit_circle, R.id.bt_report_circle})
     public void onViewClicked(View view) {
-        boolean isJoing = mCircleInfo.getJoined() != null;
+        boolean isJoing = mCircleInfo.getJoined() != null && mCircleInfo.getJoined().getAudit() == CircleJoinedBean.AuditStatus.PASS.value;
+
         boolean isBlackList = isJoing && CircleMembers.BLACKLIST.equals(mCircleInfo.getJoined().getRole());
         switch (view.getId()) {
             case R.id.ll_member_container:
@@ -1398,9 +1413,9 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
                     mPresenter.dealCircleJoinOrExit(mCircleInfo);
                 }
                 break;
-                /*
-                 * 举报圈子
-                 */
+            /*
+             * 举报圈子
+             */
             case R.id.bt_report_circle:
                 if (mPresenter.handleTouristControl()) {
                     return;

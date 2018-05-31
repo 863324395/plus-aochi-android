@@ -66,7 +66,7 @@ public class TopicDetailListPresenter extends AppBasePresenter<TopicDetailListCo
 
     @Override
     public void payForOnlook(long answer_id, int position) {
-        Subscription subscription = handleWalletBlance((long) getSystemConfigBean().getOnlookQuestion())
+        Subscription subscription = handleIntegrationBlance((long) getSystemConfigBean().getOnlookQuestion())
                 .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R
                         .string.ts_pay_check_handle_doing)))
                 .flatMap(o -> mBaseQARepository.payForOnlook(answer_id))
@@ -87,7 +87,7 @@ public class TopicDetailListPresenter extends AppBasePresenter<TopicDetailListCo
                     @Override
                     protected void onException(Throwable throwable) {
                         super.onException(throwable);
-                        if (isBalanceCheck(throwable)) {
+                        if (isIntegrationBalanceCheck(throwable)) {
                             return;
                         }
                         mRootView.showSnackErrorMessage(throwable.getMessage());

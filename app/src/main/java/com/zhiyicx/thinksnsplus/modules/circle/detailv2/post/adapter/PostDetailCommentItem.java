@@ -63,7 +63,6 @@ public class PostDetailCommentItem implements ItemViewDelegate<CirclePostComment
 
         ImageUtils.loadCircleUserHeadPic(circlePostCommentBean.getCommentUser(), holder.getView(R.id.iv_headpic));
 
-        holder.getView(R.id.v_line).setVisibility(View.GONE);
         holder.setText(R.id.tv_name, circlePostCommentBean.getCommentUser().getName());
         holder.setText(R.id.tv_time, TimeUtils.getTimeFriendlyNormal(circlePostCommentBean
                 .getCreated_at()));

@@ -1039,6 +1039,13 @@ public class ApiConfig {
     //    钱包余额转积分
     public static final String APP_PAHT_WALLET_BALANCE_TO_INTEGRATION = "api/" + API_VERSION_2 + "/plus-pay/transform";
 
+    // 支付宝充值
+    public static final String APP_PAHT_WALLET_RECHARGE_V2 = "api/" + API_VERSION_2 + "/walletRecharge/orders";
+
+    // 余额充值验证
+    public static final String APP_PAHT_WALLET_VERIFY_V2 = "api/" + API_VERSION_2 + "/walletRecharge/checkOrders";
+    // 积分充值验证
+    public static final String APP_PAHT_INTEGRATION_VERIFY_V2 = "api/" + API_VERSION_2 + "/currencyRecharge/checkOrders";
 
     /**
      * 积分
@@ -1046,6 +1053,7 @@ public class ApiConfig {
     // 积分配置信息
     public static final String APP_PAHT_INTEGRATION_CONFIG = "api/" + API_VERSION_2 + "/currency";
     public static final String APP_PAHT_INTEGRATION_RECHARGE = "api/" + API_VERSION_2 + "/currency/recharge";
+    public static final String APP_PAHT_INTEGRATION_RECHARGE_V2 = "api/" + API_VERSION_2 + "/currencyRecharge/orders";
     public static final String APP_PAHT_INTEGRATION_RECHARGE_SUCCESS = "api/" + API_VERSION_2 + "/currency/orders/{order}";
     // 凭据回执
     public static final String APP_PAHT_INTEGRATION_RECHARGE_SUCCESS_CALLBACK = "api/" + API_VERSION_2 + "/currency/webhooks";

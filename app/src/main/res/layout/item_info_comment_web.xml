@@ -92,22 +92,17 @@
     <include
         layout="@layout/include_reward"/>
 
-    <include
-        layout="@layout/advert_details"
-        />
-
     <!--相关资讯以及标签-->
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="@dimen/spacing_small_3dp"
+        android:layout_height="@dimen/spacing_small"
         android:background="@color/general_for_bg_light"/>
 
     <FrameLayout
         android:id="@+id/info_relate_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_small"
         android:background="@color/white">
 
         <LinearLayout
@@ -156,7 +151,16 @@
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="@dimen/spacing_small_3dp"
+        android:layout_height="@dimen/spacing_small"
+        android:background="@color/general_for_bg_light"/>
+
+    <include
+        layout="@layout/advert_details"
+        />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/spacing_small"
         android:background="@color/general_for_bg_light"/>
 
     <!--评论数-->
@@ -164,7 +168,6 @@
         android:id="@+id/info_detail_comment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_small"
         android:background="@color/white">
 
         <LinearLayout

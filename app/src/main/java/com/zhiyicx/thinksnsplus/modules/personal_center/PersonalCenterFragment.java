@@ -40,6 +40,7 @@ import com.zhiyicx.common.utils.TextViewUtils;
 import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
+import com.zhiyicx.common.utils.recycleviewdecoration.LinearDecoration;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.AnimationRectBean;
@@ -161,6 +162,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
     private int mCurrentPostion;// 当前评论的动态位置
     private long mReplyToUserId;// 被评论者的 id
     private BaseDynamicRepository.MyDynamicTypeEnum mDynamicType = BaseDynamicRepository.MyDynamicTypeEnum.ALL; //type = users 时可选，null-全部
+    private LinearDecoration mLinearDecoration;
     // paid-付费动态 pinned - 置顶动态
 
     /**
@@ -207,12 +209,20 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
         return personalCenterFragment;
     }
 
+
+
     @Override
     protected int getstatusbarAndToolbarHeight() {
         if (setUseSatusbar()) {
             return 0;
         }
         return super.getstatusbarAndToolbarHeight();
+    }
+
+    @Override
+    protected RecyclerView.ItemDecoration getItemDecoration() {
+        mLinearDecoration = new LinearDecoration(0, ConvertUtils.dp2px(getContext(), getItemDecorationSpacing()), 0, 0);
+        return mLinearDecoration;
     }
 
     @Override
@@ -286,8 +296,9 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
         mPersonalCenterHeaderViewItem.setViewColorWithAlpha(mLlToolbarContainerParent.findViewById(R.id.v_horizontal_line), TOOLBAR_DIVIDER_RGB, 255);
         mPersonalCenterHeaderViewItem.setToolbarIconColor(Color.argb(255, TOOLBAR_BLACK_ICON[0],
                 TOOLBAR_BLACK_ICON[1], TOOLBAR_BLACK_ICON[2]));
-        mIvMore.setVisibility(View.GONE);
 //        setOverScroll(false, null);
+        mLinearDecoration.setHeaderCount(mHeaderAndFooterWrapper.getHeadersCount());
+        mLinearDecoration.setFooterCount(mHeaderAndFooterWrapper.getFootersCount());
     }
 
     private void initListener() {
@@ -429,6 +440,9 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
         ArrayList<AnimationRectBean> animationRectBeanArrayList
                 = new ArrayList<>();
         for (int i = 0; i < tasks.size(); i++) {
+            if (i >= 9) {
+                continue;
+            }
             DynamicDetailBeanV2.ImagesBean task = tasks.get(i);
             int id = UIUtils.getResourceByName("siv_" + i, "id", getContext());
             ImageView imageView = holder.getView(id);
@@ -539,7 +553,6 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
         mPersonalCenterHeaderViewItem.setViewColorWithAlpha(mLlToolbarContainerParent.findViewById(R.id.v_horizontal_line), TOOLBAR_DIVIDER_RGB, 0);
         mPersonalCenterHeaderViewItem.setToolbarIconColor(Color.argb(255, TOOLBAR_WHITE_ICON[0]
                 , TOOLBAR_WHITE_ICON[1], TOOLBAR_WHITE_ICON[2]));
-        mIvMore.setVisibility(View.VISIBLE);
         mPersonalCenterHeaderViewItem.setScrollListenter();
         // 状态栏文字设为白色
         //StatusBarUtils.statusBarDarkMode(mActivity);

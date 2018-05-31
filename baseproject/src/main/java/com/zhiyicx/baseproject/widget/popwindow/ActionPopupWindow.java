@@ -32,44 +32,44 @@ public class ActionPopupWindow extends PopupWindow {
     public static final float POPUPWINDOW_ALPHA = .8f;
     public static final int NO_ANIMATION = -1;
 
-    private Activity mActivity;
-    private View mParentView;
+    protected Activity mActivity;
+    protected View mParentView;
     protected View mContentView;
-    private String mItem1Str;
-    private String mItem2Str;
-    private String mItem3Str;
-    private String mItem4Str;
-    private String mItem5Str;
-    private String mItem6Str;
-    private String mDesStr;
-    private String mBottomStr;
+    protected String mItem1Str;
+    protected String mItem2Str;
+    protected String mItem3Str;
+    protected String mItem4Str;
+    protected String mItem5Str;
+    protected String mItem6Str;
+    protected String mDesStr;
+    protected String mBottomStr;
 
 
-    private int mItem1Color;
-    private int mItem2Color;
-    private int mAnimationStyle;
-    private int mItem3Color;
-    private int mItem4Color;
-    private int mItem5Color;
-    private int mItem6Color;
-    private int mItemDesColor;
-    private int mItemBottomColor;
+    protected int mItem1Color;
+    protected int mItem2Color;
+    protected int mAnimationStyle;
+    protected int mItem3Color;
+    protected int mItem4Color;
+    protected int mItem5Color;
+    protected int mItem6Color;
+    protected int mItemDesColor;
+    protected int mItemBottomColor;
 
-    private boolean mIsOutsideTouch;
-    private boolean mIsFocus;
-    private float mAlpha;
+    protected boolean mIsOutsideTouch;
+    protected boolean mIsFocus;
+    protected float mAlpha;
     private Drawable mBackgroundDrawable = new ColorDrawable(0x00000000);// 默认为透明;
-    private ActionPopupWindowItem1ClickListener mActionPopupWindowItem1ClickListener;
-    private ActionPopupWindowItem2ClickListener mActionPopupWindowItem2ClickListener;
-    private ActionPopupWindowItem3ClickListener mActionPopupWindowItem3ClickListener;
+    protected ActionPopupWindowItem1ClickListener mActionPopupWindowItem1ClickListener;
+    protected ActionPopupWindowItem2ClickListener mActionPopupWindowItem2ClickListener;
+    protected ActionPopupWindowItem3ClickListener mActionPopupWindowItem3ClickListener;
 
-    private ActionPopupWindowItem4ClickListener mActionPopupWindowItem4ClickListener;
-    private ActionPopupWindowDesClickListener mActionPopupWindowDesClickListener;
-    private ActionPopupWindowItem5ClickListener mActionPopupWindowItem5ClickListener;
-    private ActionPopupWindowItem6ClickListener mActionPopupWindowItem6ClickListener;
-    private ActionPopupWindowShowOrDismissListener mActionPopupWindowDismissListener;
+    protected ActionPopupWindowItem4ClickListener mActionPopupWindowItem4ClickListener;
+    protected ActionPopupWindowDesClickListener mActionPopupWindowDesClickListener;
+    protected ActionPopupWindowItem5ClickListener mActionPopupWindowItem5ClickListener;
+    protected ActionPopupWindowItem6ClickListener mActionPopupWindowItem6ClickListener;
+    protected ActionPopupWindowShowOrDismissListener mActionPopupWindowDismissListener;
 
-    private ActionPopupWindow.ActionPopupWindowBottomClickListener mActionPopupWindowBottomClickListener;
+    protected ActionPopupWindow.ActionPopupWindowBottomClickListener mActionPopupWindowBottomClickListener;
 
     public ActionPopupWindow(Builder builder) {
         this.mActivity = builder.mActivity;
@@ -129,8 +129,9 @@ public class ActionPopupWindow extends PopupWindow {
         setOutsideTouchable(mIsOutsideTouch);
         setBackgroundDrawable(mBackgroundDrawable);
         setContentView(mContentView);
-        if (mAnimationStyle == NO_ANIMATION)
+        if (mAnimationStyle == NO_ANIMATION) {
             return;
+        }
         setAnimationStyle(mAnimationStyle > 0 ? mAnimationStyle : R.style.style_actionPopupAnimation);
     }
 
@@ -164,12 +165,12 @@ public class ActionPopupWindow extends PopupWindow {
         });
     }
 
-    private void initItemView(@IdRes int viewId, int viewColor, String text, final ItemClickListener listener) {
+    protected void initItemView(@IdRes int viewId, int viewColor, String text, final ItemClickListener listener) {
         if (!TextUtils.isEmpty(text)) {
-            TextView item2View = (TextView) mContentView.findViewById(viewId);
-            item2View.setVisibility(View.VISIBLE);
-            item2View.setText(text);
-            item2View.setOnClickListener(new View.OnClickListener() {
+            TextView itemView = (TextView) mContentView.findViewById(viewId);
+            itemView.setVisibility(View.VISIBLE);
+            itemView.setText(text);
+            itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     if (listener != null) {
@@ -178,7 +179,7 @@ public class ActionPopupWindow extends PopupWindow {
                 }
             });
             if (viewColor != 0) {
-                item2View.setTextColor(viewColor);
+                itemView.setTextColor(viewColor);
             }
         }
     }
@@ -188,7 +189,7 @@ public class ActionPopupWindow extends PopupWindow {
      *
      * @param alpha 需要设置透明度
      */
-    private void setWindowAlpha(float alpha) {
+    protected void setWindowAlpha(float alpha) {
         WindowManager.LayoutParams params = mActivity.getWindow().getAttributes();
         params.alpha = alpha;
         params.verticalMargin = 100;
@@ -223,15 +224,17 @@ public class ActionPopupWindow extends PopupWindow {
     @Override
     public void showAtLocation(View parent, int gravity, int x, int y) {
         super.showAtLocation(parent, gravity, x, y);
-        if (mActionPopupWindowDismissListener != null)
+        if (mActionPopupWindowDismissListener != null) {
             mActionPopupWindowDismissListener.onShow();
+        }
     }
 
     @Override
     public void showAsDropDown(View anchor, int xoff, int yoff, int gravity) {
         super.showAsDropDown(anchor, xoff, yoff, gravity);
-        if (mActionPopupWindowDismissListener != null)
+        if (mActionPopupWindowDismissListener != null) {
             mActionPopupWindowDismissListener.onShow();
+        }
     }
 
     @Override
@@ -240,8 +243,9 @@ public class ActionPopupWindow extends PopupWindow {
             mContentView.clearAnimation();
         }
         super.dismiss();
-        if (mActionPopupWindowDismissListener != null)
+        if (mActionPopupWindowDismissListener != null) {
             mActionPopupWindowDismissListener.onDismiss();
+        }
     }
 
     /**
@@ -252,39 +256,39 @@ public class ActionPopupWindow extends PopupWindow {
     }
 
     public static class Builder {
-        private Activity mActivity;
-        private View parentView;
-        private String mItem1Str;
-        private String mItem2Str;
-        private String mItem3Str;
-        private String mItem4Str;
-        private String mItem5Str;
-        private String mItem6Str;
-        private String mDesStr;
-        private String mBottomStr;
+        protected Activity mActivity;
+        protected View parentView;
+        protected String mItem1Str;
+        protected String mItem2Str;
+        protected String mItem3Str;
+        protected String mItem4Str;
+        protected String mItem5Str;
+        protected String mItem6Str;
+        protected String mDesStr;
+        protected String mBottomStr;
 
-        private int mItem1Color;
-        private int mItem2Color;
-        private int mAnimationStyle;
-        private int mItem3Color;
-        private int mItem4Color;
-        private int mItem5Color;
-        private int mItem6Color;
-        private int mItemDesColor;
-        private int mItemBottomColor;
+        protected int mItem1Color;
+        protected int mItem2Color;
+        protected int mAnimationStyle;
+        protected int mItem3Color;
+        protected int mItem4Color;
+        protected int mItem5Color;
+        protected int mItem6Color;
+        protected int mItemDesColor;
+        protected int mItemBottomColor;
 
-        private float mAlpha = POPUPWINDOW_ALPHA;
-        private boolean mIsOutsideTouch = true;// 默认为true
-        private boolean mIsFocus = true;// 默认为true
-        private ActionPopupWindowItem1ClickListener mActionPopupWindowItem1ClickListener;
-        private ActionPopupWindowItem2ClickListener mActionPopupWindowItem2ClickListener;
-        private ActionPopupWindowItem3ClickListener mActionPopupWindowItem3ClickListener;
-        private ActionPopupWindowItem4ClickListener mActionPopupWindowItem4ClickListener;
-        private ActionPopupWindowItem5ClickListener mActionPopupWindowItem5ClickListener;
-        private ActionPopupWindowItem6ClickListener mActionPopupWindowItem6ClickListener;
-        private ActionPopupWindowShowOrDismissListener mActionPopupWindowDismissListener;
-        private ActionPopupWindowDesClickListener mActionPopupWindowDesClickListener;
-        private ActionPopupWindow.ActionPopupWindowBottomClickListener mActionPopupWindowBottomClickListener;
+        protected float mAlpha = POPUPWINDOW_ALPHA;
+        protected boolean mIsOutsideTouch = true;// 默认为true
+        protected boolean mIsFocus = true;// 默认为true
+        protected ActionPopupWindowItem1ClickListener mActionPopupWindowItem1ClickListener;
+        protected ActionPopupWindowItem2ClickListener mActionPopupWindowItem2ClickListener;
+        protected ActionPopupWindowItem3ClickListener mActionPopupWindowItem3ClickListener;
+        protected ActionPopupWindowItem4ClickListener mActionPopupWindowItem4ClickListener;
+        protected ActionPopupWindowItem5ClickListener mActionPopupWindowItem5ClickListener;
+        protected ActionPopupWindowItem6ClickListener mActionPopupWindowItem6ClickListener;
+        protected ActionPopupWindowShowOrDismissListener mActionPopupWindowDismissListener;
+        protected ActionPopupWindowDesClickListener mActionPopupWindowDesClickListener;
+        protected ActionPopupWindow.ActionPopupWindowBottomClickListener mActionPopupWindowBottomClickListener;
 
         protected Builder() {
         }

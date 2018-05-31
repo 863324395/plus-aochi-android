@@ -214,39 +214,6 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
     }
 
     @Override
-    public void setUserVisibleHint(boolean isVisibleToUser) {
-        super.setUserVisibleHint(isVisibleToUser);
-        if (isVisibleToUser) {
-            GalleryFragment galleryFragment = (GalleryFragment) getParentFragment();
-            if (galleryFragment != null) {
-                boolean firstOpenPage = getArguments().getBoolean("firstOpenPage");
-                if (firstOpenPage) {
-                    if (hasAnim) {
-                        ObjectAnimator animator = galleryFragment.showBackgroundAnimate();
-                        animator.start();
-                    } else {
-                        galleryFragment.showBackgroundImmediately();
-                    }
-                    getArguments().putBoolean("firstOpenPage", false);
-                }
-            }
-            if (!mImageIsLoaded) {
-                startLoadProgress();
-            }
-        } else {
-            stopCenterLoading();
-        }
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (getUserVisibleHint() && !mImageIsLoaded && !getArguments().getBoolean("firstOpenPage")) {
-            startLoadProgress();
-        }
-    }
-
-    @Override
     public void onPause() {
         super.onPause();
         stopCenterLoading();
@@ -444,11 +411,10 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
         h = imageBean.getWidth() == 0 ? 0 : (int) (w * imageBean.getHeight() / imageBean.getWidth());
         // 本地图片
         if (imageBean.getImgUrl() != null) {
-            mFlGalleryPhoto.setBackgroundColor(Color.BLACK);
             DrawableRequestBuilder local = Glide.with(context)
                     .load(imageBean.getImgUrl())
                     .thumbnail(0.1f);
-            local.into(new GallaryGlideDrawableImageViewTarget(rect));
+            local.into(new GallaryGlideDrawableImageViewTarget(rect, true, imageBean));
             // 聊天里面用
             if (!FileUtils.isFileExists(imageBean.getImgUrl()) && getArguments() != null && getArguments().getBoolean("needStartLoading")) {
                 startLoadProgress();
@@ -465,7 +431,7 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
             RequestManager thumbnailRequestManager = Glide
                     .with(context);
 
-            if (!isNeedOrin){
+            if (!isNeedOrin) {
                 thumbnailRequestManager.using(LIST_CACHE_ONLY_STREAM_LOADER);
             }
             DrawableRequestBuilder thumbnailBuilder = thumbnailRequestManager
@@ -475,6 +441,10 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                             if (TextUtils.isEmpty(imageBean.getListCacheUrl()) || isNeedOrin) {
                                 if (mTvOriginPhoto != null && isNeedOrin) {
                                     mTvOriginPhoto.setVisibility(View.GONE);
+                                }
+                                GalleryFragment galleryFragment = (GalleryFragment) getParentFragment();
+                                if (galleryFragment != null) {
+                                    galleryFragment.setIndiactorVisible(true);
                                 }
                                 mFlGalleryPhoto.setBackgroundColor(Color.BLACK);
                                 startLoadProgress();
@@ -486,7 +456,7 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
 
                         }
                     }
-                    .requestGlideUrl())
+                            .requestGlideUrl())
                     .listener(new RequestListener<GlideUrl, GlideDrawable>() {
                         @Override
                         public boolean onException(Exception e, GlideUrl model, Target<GlideDrawable> target, boolean isFirstResource) {
@@ -502,8 +472,8 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                                 isFromMemoryCache, boolean isFirstResource) {
                             LogUtils.i(TAG + "加载缩略图成功");
                             // 获取到模糊图进行放大动画
-                            if (!isNeedOrin){
-                                startInAnim(imageBean, rect);
+                            if (!isNeedOrin) {
+                                startInAnim(imageBean, rect, true);
                             }
                             return false;
                         }
@@ -703,32 +673,9 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
 
     /**
      * 退出动画，在返回操作中调用
-     *
-     * @param backgroundAnimator
      */
-    public void animationExit(ObjectAnimator backgroundAnimator) {
+    public void animationExit() {
         stopCenterLoading();
-        backgroundAnimator.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                if (getActivity() != null) {
-                    getActivity().finish();
-                    getActivity().overridePendingTransition(-1, -1);
-                }
-            }
-
-
-            @Override
-            public void onAnimationStart(Animator animation) {
-                super.onAnimationStart(animation);
-                if (mIvOriginPager.getVisibility() == View.VISIBLE) {
-                    mIvOriginPager.setBackgroundColor(ContextCompat.getColor(getContext(), android.R.color.transparent));
-                } else {
-                    mIvPager.setBackgroundColor(ContextCompat.getColor(getContext(), android.R.color.transparent));
-                }
-
-            }
-        });
         // 高清图片可见，那就高清图片退出动画
         if (mIvPager.getVisibility() == View.VISIBLE) {
             // 图片处于放大状态，先让它复原
@@ -739,7 +686,12 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
             // 退出隐藏查看原图按钮，防止显示在透明背景上
             mTvOriginPhoto.setVisibility(View.GONE);
             AnimationRectBean rect = getArguments().getParcelable("rect");
-            TransferImageAnimationUtil.animateClose(backgroundAnimator, mFlGalleryPhoto, rect, mIvPager);
+            TransferImageAnimationUtil.animateClose(mFlGalleryPhoto, rect, mIvPager, () -> {
+                if (getActivity() != null) {
+                    getActivity().finish();
+                    getActivity().overridePendingTransition(-1, -1);
+                }
+            });
 
         }
         // 原图可见，退出就是用原图
@@ -752,7 +704,12 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
             // 退出隐藏查看原图按钮，防止显示在透明背景上
             mTvOriginPhoto.setVisibility(View.GONE);
             AnimationRectBean rect = getArguments().getParcelable("rect");
-            TransferImageAnimationUtil.animateClose(backgroundAnimator, mFlGalleryPhoto, rect, mIvOriginPager);
+            TransferImageAnimationUtil.animateClose(mFlGalleryPhoto, rect, mIvOriginPager, () -> {
+                if (getActivity() != null) {
+                    getActivity().finish();
+                    getActivity().overridePendingTransition(-1, -1);
+                }
+            });
         }
     }
 
@@ -764,13 +721,17 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
      * @param imageBean 图片信息
      * @param rect      动画所需位置信息
      */
-    private void startInAnim(final ImageBean imageBean, final AnimationRectBean rect) {
+    private void startInAnim(final ImageBean imageBean, final AnimationRectBean rect, boolean needEndAction) {
         if (hasAnim) {
             hasAnim = false;
             TransferImageAnimationUtil.startInAnim(rect, mIvPager, mFlGalleryPhoto, () -> {
-                if (mIvPager != null && mActivity != null && mCurrentHDRequestBuilder != null) {
+                if (mIvPager != null && mActivity != null) {
                     mActivity.runOnUiThread(() -> {
-                        if (mIvPager != null && mActivity != null && mCurrentHDRequestBuilder != null) {
+                        GalleryFragment galleryFragment = (GalleryFragment) getParentFragment();
+                        if (galleryFragment != null) {
+                            galleryFragment.setIndiactorVisible(true);
+                        }
+                        if (needEndAction && mIvPager != null && mActivity != null && mCurrentHDRequestBuilder != null) {
                             intoImageTarget(mCurrentHDRequestBuilder, imageBean, rect);
                         }
                     });
@@ -778,7 +739,9 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
             });
         } else {
             if (mIvPager != null && mActivity != null && mCurrentHDRequestBuilder != null) {
-                intoImageTarget(mCurrentHDRequestBuilder, imageBean, rect);
+                if (needEndAction) {
+                    intoImageTarget(mCurrentHDRequestBuilder, imageBean, rect);
+                }
                 mFlGalleryPhoto.setBackgroundColor(Color.BLACK);
             }
         }
@@ -875,11 +838,20 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
      */
     private class GallaryGlideDrawableImageViewTarget extends GlideDrawableImageViewTarget {
         private AnimationRectBean rect;
+        private boolean needAnimation;
+        private ImageBean imageBean;
+        private boolean isFirst = true;
 
         GallaryGlideDrawableImageViewTarget(AnimationRectBean rect) {
             super(mIvPager);
             this.rect = rect;
+        }
 
+        GallaryGlideDrawableImageViewTarget(AnimationRectBean rect, boolean needAnimation, ImageBean imageBean) {
+            super(mIvPager);
+            this.rect = rect;
+            this.needAnimation = needAnimation;
+            this.imageBean = imageBean;
         }
 
         @Override
@@ -888,6 +860,10 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
             mImageIsLoaded = true;
             stopCenterLoading();
             mPhotoViewAttacherNormal.update();
+            if (needAnimation && imageBean != null && isFirst) {
+                isFirst = false;
+                startInAnim(imageBean, rect, false);
+            }
         }
     }
 

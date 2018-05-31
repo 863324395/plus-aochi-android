@@ -15,6 +15,7 @@ import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
 import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
 import com.zhiyicx.thinksnsplus.data.beans.CircleEarningListBean;
 import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
+import com.zhiyicx.thinksnsplus.data.beans.CircleJoinedBean;
 import com.zhiyicx.thinksnsplus.data.beans.CircleMemberCountBean;
 import com.zhiyicx.thinksnsplus.data.beans.CircleMembers;
 import com.zhiyicx.thinksnsplus.data.beans.CirclePostCommentBean;
@@ -41,6 +42,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.inject.Inject;
 
@@ -289,7 +291,8 @@ public class BaseCircleRepository implements IBaseCircleRepository {
     @Override
     public Observable<BaseJsonV2<Object>> dealCircleJoinOrExit(CircleInfo circleInfo) {
 
-        boolean isJoined = circleInfo.getJoined() != null;
+        boolean isJoined = circleInfo.getJoined() != null && circleInfo.getJoined().getAudit() == CircleJoinedBean.AuditStatus.PASS.value;
+
 
         Observable<BaseJsonV2<Object>> observable;
 
@@ -369,14 +372,21 @@ public class BaseCircleRepository implements IBaseCircleRepository {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .map(circlePostBean -> {
-                    List<CirclePostListBean> data = circlePostBean.getPinneds();
+                    List<CirclePostListBean> pinnedData = circlePostBean.getPinneds();
+                    List<CirclePostListBean> data = new ArrayList<>(circlePostBean.getPosts());
                     // 最新回复不显示置顶内容
-                    if (data != null && !type.equals(PostTypeChoosePopAdapter.MyPostTypeEnum.LATEST_COMMENT.value)) {
-                        for (CirclePostListBean postListBean : data) {
+                    if (pinnedData != null && !type.equals(PostTypeChoosePopAdapter.MyPostTypeEnum.LATEST_COMMENT.value)) {
+                        for (CirclePostListBean postListBean : pinnedData) {
+                            for (CirclePostListBean post : data) {
+                                // 删除置顶重复的
+                                if (postListBean.getId().equals(post.getId())) {
+                                    circlePostBean.getPosts().remove(data);
+                                }
+                            }
                             postListBean.setPinned(true);
                         }
-                        data.addAll(circlePostBean.getPosts());
-                        return data;
+                        pinnedData.addAll(circlePostBean.getPosts());
+                        return pinnedData;
                     } else {
                         return circlePostBean.getPosts();
                     }

@@ -349,7 +349,7 @@ public class AnswerDetailsPresenter extends AppBasePresenter<
                         mRootView.refreshData(); // 加上 header
                     }
 
-                }, throwable -> throwable.printStackTrace());
+                }, Throwable::printStackTrace);
         addSubscrebe(subscribe);
 
     }
@@ -377,7 +377,7 @@ public class AnswerDetailsPresenter extends AppBasePresenter<
                 + "" + System.currentTimeMillis();
         createComment.setComment_mark(Long.parseLong(comment_mark));
 
-        if (reply_id == 0) {// 回复资讯
+        if (reply_id == 0) {
             UserInfoBean userInfoBean = new UserInfoBean();
             userInfoBean.setUser_id(0L);
             createComment.setToUserInfoBean(userInfoBean);

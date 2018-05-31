@@ -21,7 +21,6 @@ import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.baseproject.widget.indicator_expand.ScaleCircleNavigator;
 import com.zhiyicx.common.utils.DeviceUtils;
-import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.AnimationRectBean;
 
@@ -94,9 +93,8 @@ public class GalleryFragment extends TSFragment {
         if (allImages != null && allImages.size() > 1) {
             addCircleNavigator();
             mMiIndicator.onPageSelected(currentItem);
-        }else{
-            mMiIndicator.setVisibility(View.GONE);
         }
+        mMiIndicator.setVisibility(View.GONE);
         mVpPhotos.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
             @Override
             public void onPageScrollStateChanged(int state) {
@@ -187,7 +185,7 @@ public class GalleryFragment extends TSFragment {
                 boolean isFirstLoadPage = currentItem == position || Math.abs(currentItem - position) == 1;
                 fragment = GalleryPictureFragment
                         .newInstance(allImages.get(position), rectList.get(position), animateIn,
-                                isFirstLoadPage,mNeedStartLoading);
+                                isFirstLoadPage, mNeedStartLoading);
                 alreadyAnimateIn = true;
                 fragmentMap.put(position, fragment);
             }
@@ -215,37 +213,13 @@ public class GalleryFragment extends TSFragment {
     /////////////////////////////////处理转场缩放动画/////////////////////////////////////
     private ColorDrawable backgroundColor = new ColorDrawable(Color.BLACK);
 
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-    public void showBackgroundImmediately() {
-        if (mRootView.getBackground() == null) {
-            mVpPhotos.setBackground(backgroundColor);
-        }
-        setIndiactorVisible(true);
-    }
-
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-    public ObjectAnimator showBackgroundAnimate() {
-        ObjectAnimator bgAnim = ObjectAnimator
-                .ofInt(backgroundColor, "alpha", 0, 255);
-        bgAnim.addUpdateListener(animation -> {
-            mVpPhotos.setBackground(backgroundColor);
-        });
-        bgAnim.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                setIndiactorVisible(true);
-            }
-        });
-        return bgAnim;
-    }
-
     @Override
     public void onBackPressed() {
         // 退出隐藏圆点指示器，防止显示在透明背景上
         mMiIndicator.setVisibility(View.INVISIBLE);
         GalleryPictureFragment fragment = fragmentMap.get(mVpPhotos.getCurrentItem());
-        ObjectAnimator bgAnim = ObjectAnimator.ofInt(backgroundColor, "alpha", 0);
-        fragment.animationExit(bgAnim);
+        backgroundColor.setAlpha(0);
+        fragment.animationExit();
     }
 
     private void addCircleNavigator() {

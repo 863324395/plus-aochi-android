@@ -12,6 +12,7 @@
     <com.zhiyicx.baseproject.widget.UserAvatarView
         android:id="@+id/iv_headpic"
         android:layout_width="@dimen/headpic_for_notification"
+        android:visibility="gone"
         android:layout_height="@dimen/headpic_for_notification"
         android:layout_marginRight="@dimen/spacing_mid"
         app:pressShape="circle"

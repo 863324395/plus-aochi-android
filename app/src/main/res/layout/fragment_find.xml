@@ -50,6 +50,7 @@
                     android:visibility="visible"
                     app:leftImage="@mipmap/discover_ico_queansw"
                     app:leftText="@string/quiz"
+                    app:showLine="false"
                     app:rightImage="@mipmap/ic_arrow_smallgrey"/>
 
 

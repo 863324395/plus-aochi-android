@@ -72,11 +72,6 @@ public class MyCodeFragment extends TSFragment<MyCodeContract.Presenter> impleme
     }
 
     @Override
-    protected boolean setStatusbarGrey() {
-        return false;
-    }
-
-    @Override
     protected void initData() {
         mPresenter.getUserInfo();
     }
@@ -99,8 +94,23 @@ public class MyCodeFragment extends TSFragment<MyCodeContract.Presenter> impleme
     }
 
     @Override
+    protected boolean setUseSatusbar() {
+        return true;
+    }
+
+    @Override
+    protected boolean setUseStatusView() {
+        return true;
+    }
+
+    @Override
     protected int setToolBarBackgroud() {
         return R.color.themeColor;
+    }
+
+    @Override
+    protected int getstatusbarAndToolbarHeight() {
+        return super.getstatusbarAndToolbarHeight();
     }
 
     @Override

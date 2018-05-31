@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.TextView;
 
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.thinksnsplus.R;
@@ -15,6 +16,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
+import butterknife.BindView;
 import butterknife.OnClick;
 
 /**
@@ -27,6 +29,9 @@ import butterknife.OnClick;
 public class MyFriendsListFragment extends TSListFragment<MyFriendsListContract.Presenter, UserInfoBean>
         implements MyFriendsListContract.View {
 
+    @BindView(R.id.tv_toolbar_right)
+    TextView mTextView;
+
     @Override
     protected RecyclerView.Adapter getAdapter() {
         return new MyFriendsListAdapter(getContext(), mListDatas, mPresenter);
@@ -35,6 +40,11 @@ public class MyFriendsListFragment extends TSListFragment<MyFriendsListContract.
     @Override
     protected int getBodyLayoutId() {
         return R.layout.fragment_my_friends_list;
+    }
+
+    @Override
+    protected View getRightViewOfMusicWindow() {
+        return mTextView;
     }
 
     @Override

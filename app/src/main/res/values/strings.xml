@@ -51,6 +51,7 @@
     <string name="follow">关注</string>
     <string name="friends">好友</string>
     <string name="fans">粉丝</string>
+    <string name="fans_count">粉丝：%1$s</string>
     <string name="system_info">系统消息</string>
     <string name="my_qr_code_content">uid=%d</string>
     <string name="my_qr_code_title">扫一扫</string>
@@ -81,6 +82,7 @@
     <string name="tag">标签</string>
     <string name="introduce">简介</string>
     <string name="edit_introduce">编辑简介</string>
+    <string name="recomment_user">推荐用户</string>
     <string name="all">全部</string>
     <string name="edit_userinfo_success">修改成功</string>
     <string name="edit_userinfo_failure">修改失败</string>
@@ -163,7 +165,7 @@
     <string name="info_publish_original">原创</string>
     <string name="info_top">顶</string>
     <string name="info_publish_hint">提示</string>
-    <string name="info_publish_hint_certification">只有认证过的用户才可以投稿，是否去认证?</string>
+    <string name="info_publish_hint_certification">认证用户才能投稿，去认证？</string>
     <string name="info_publish_go_to_certification">去认证</string>
     <string name="testtym">%1$d,%2$s</string>
     <string name="info_publish_hint_pay">投稿一次需付费%1$d%2$s，是否继续投稿？</string>
@@ -266,6 +268,7 @@
     <string name="administrator">管理员</string>
     <string name="joined_group">我加入的</string>
     <string name="more_group">查看更多</string>
+    <string name="more_all_group">查看全部</string>
     <string name="recommend_group">热门推荐</string>
     <string name="exchange_group">换一批</string>
     <string name="all_group">全部圈子</string>
@@ -295,7 +298,7 @@
     <string name="circle_post_from">来自	%s</string>
     <string name="cirle_type">圈子分类</string>
     <string name="from">来自</string>
-    <string name="circle_blacklist_format">黑名单(%d)</string>
+    <string name="circle_blacklist_format">黑名单%s</string>
     <string name="circle_blacklist">黑名单用户只能查看不能操作!</string>
     <string name="circle_blocked">需要加入才可进入详情!</string>
     <string name="post_apply_for_top">申请帖子置顶</string>
@@ -939,6 +942,8 @@
     <string name="please_join_circle_first">需要先加入才可发帖</string>
     <string name="circle_member_added_blacklist">你被管理员加入到了黑名单。</string>
     <string name="circle_member_comment_join">加入圈子后方可评论</string>
+    <string name="circle_member_like_join">加入圈子后方可点赞</string>
+    <string name="circle_member_handle_join">加入圈子后方可操作</string>
     <string name="publish_circle_post_format">\&#034;%1$s\&#034;仅%2$s拥有发帖权限</string>
     <string name="report_circle">举报圈子</string>
     <string name="publish_post">发帖</string>
@@ -1006,6 +1011,7 @@
     <string name="withdrawals_success">提取成功</string>
     <string name="withdrawals_fail">提取失败</string>
     <string name="recharge_success">充值成功</string>
+    <string name="recharge_cancle">交易取消</string>
     <string name="recharge_fail">充值失败</string>
     <string name="image_uploading">图片上传中&#8230;</string>
     <string name="image_upload_fail">图片上传失败</string>

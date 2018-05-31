@@ -21,10 +21,13 @@ import com.tym.shortvideo.utils.BitmapUtils;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.baseproject.impl.photoselector.Toll;
 import com.zhiyicx.common.utils.ConvertUtils;
+import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.BaseWebLoad;
 import com.zhiyicx.thinksnsplus.data.beans.AnimationRectBean;
+import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
+import com.zhiyicx.thinksnsplus.data.beans.CircleJoinedBean;
 import com.zhiyicx.thinksnsplus.data.beans.CirclePostListBean;
 import com.zhiyicx.thinksnsplus.data.beans.RealAdvertListBean;
 import com.zhiyicx.thinksnsplus.data.beans.RewardsCountBean;
@@ -128,13 +131,26 @@ public class PostDetailHeaderView extends BaseWebLoad {
         if (circlePostDetailBean != null) {
             mTitle.setText(circlePostDetailBean.getTitle());
             mChannel.setText(mContext.getText(R.string.from));
-            String from = circlePostDetailBean.getGroup().getName();
+            CircleInfo circleInfo = circlePostDetailBean.getGroup();
+            String from = circleInfo.getName();
+
             if (!TextUtils.isEmpty(from)) {
                 mFrom.setText(from);
                 RxView.clicks(mFrom)
                         .filter(aVoid -> canGotoCircle)
                         .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
-                        .subscribe(aVoid -> CircleDetailActivity.startCircleDetailActivity(mContext, circlePostDetailBean.getGroup_id()));
+                        .subscribe(aVoid -> {
+                            boolean isClosedCircle = CircleInfo.CirclePayMode.PAID.value.equals(circleInfo.getMode())
+                                    || CircleInfo.CirclePayMode.PRIVATE.value.equals(circleInfo.getMode());
+                            boolean isJoined = circleInfo.getJoined() != null && circleInfo.getJoined().getAudit() == CircleJoinedBean.AuditStatus.PASS.value;
+
+
+                            if (isClosedCircle && !isJoined) {
+                                showSnackErrorMessage(mContext.getString(R.string.circle_blocked));
+                                return;
+                            }
+                            CircleDetailActivity.startCircleDetailActivity(mContext, circlePostDetailBean.getGroup_id());
+                        });
             }
             mContentSubject.setVisibility(GONE);
 
@@ -199,6 +215,14 @@ public class PostDetailHeaderView extends BaseWebLoad {
         }
     }
 
+    private void showSnackErrorMessage(String string) {
+        if (mShowMessageListener != null) {
+            mShowMessageListener.showErrorMessage(string);
+        } else {
+            ToastUtils.showToast(string);
+        }
+    }
+
     private void initAdvert(Context context, List<RealAdvertListBean> adverts) {
         mDynamicDetailAdvertHeader = new DynamicDetailAdvertHeader(context, mInfoDetailHeader
                 .findViewById(R.id.ll_advert));
@@ -227,7 +251,7 @@ public class PostDetailHeaderView extends BaseWebLoad {
             String id = matcher.group(1);
 
             String imgPath = APP_DOMAIN + "api/" + API_VERSION_2 + "/files/" + id + "?q=80";
-            if (TextUtils.isEmpty(sharImage)){
+            if (TextUtils.isEmpty(sharImage)) {
                 sharImage = imgPath;
             }
             String iamgeTag = imageMarkDown.replaceAll("\\d+", imgPath).replace("@", "");
@@ -235,19 +259,19 @@ public class PostDetailHeaderView extends BaseWebLoad {
             dealImageList(imgPath, id);
         }
         if (!TextUtils.isEmpty(sharImage)) {
-                Observable.just(sharImage)
-                        .observeOn(Schedulers.io())
-                        .subscribe(url -> {
-                            try {
-                                File cacheFile = Glide.with(mContext)
-                                        .load(url)
-                                        .downloadOnly(200, 200)
-                                        .get();
-                                sharBitmap = BitmapUtils.getBitmapFromFileDescriptor(cacheFile,200,200,true);
-                            } catch (Exception e) {
-                                LogUtils.d(e.getMessage());
-                            }
-                        });
+            Observable.just(sharImage)
+                    .observeOn(Schedulers.io())
+                    .subscribe(url -> {
+                        try {
+                            File cacheFile = Glide.with(mContext)
+                                    .load(url)
+                                    .downloadOnly(200, 200)
+                                    .get();
+                            sharBitmap = BitmapUtils.getBitmapFromFileDescriptor(cacheFile, 200, 200, true);
+                        } catch (Exception e) {
+                            LogUtils.d(e.getMessage());
+                        }
+                    });
 
         }
 
@@ -386,5 +410,15 @@ public class PostDetailHeaderView extends BaseWebLoad {
                     .getResources(), R.mipmap.icon).copy(Bitmap.Config.RGB_565, true));
         }
         return sharBitmap;
+    }
+
+    public interface ShowMessageListener {
+        void showErrorMessage(String s);
+    }
+
+    private ShowMessageListener mShowMessageListener;
+
+    public void setShowMessageListener(ShowMessageListener showMessageListener) {
+        mShowMessageListener = showMessageListener;
     }
 }

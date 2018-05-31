@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import com.zhiyicx.baseproject.base.BaseListBean;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
+import com.zhiyicx.baseproject.widget.popwindow.TipActionPopupWindow;
 import com.zhiyicx.common.utils.recycleviewdecoration.CustomLinearDecoration;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.UnhandlePinnedBean;
@@ -26,6 +27,12 @@ import java.util.List;
 
 import butterknife.BindView;
 
+import static com.zhiyicx.thinksnsplus.config.NotificationConfig.TOP_CIRCLE_MEMBER;
+import static com.zhiyicx.thinksnsplus.config.NotificationConfig.TOP_DYNAMIC_COMMENT;
+import static com.zhiyicx.thinksnsplus.config.NotificationConfig.TOP_NEWS_COMMENT;
+import static com.zhiyicx.thinksnsplus.config.NotificationConfig.TOP_POST;
+import static com.zhiyicx.thinksnsplus.config.NotificationConfig.TOP_POST_COMMENT;
+
 /**
  * @Author Jliuer
  * @Date 2017/7/5/20:55
@@ -39,7 +46,7 @@ public class MessageReviewFragment extends TSListFragment<MessageReviewContract.
     private String[] mTopTypes;
     private String mTopType;
 
-    private ActionPopupWindow mActionPopupWindow;
+    private TipActionPopupWindow mActionPopupWindow;
 
     @BindView(R.id.v_shadow)
     View mVshadow;
@@ -111,13 +118,17 @@ public class MessageReviewFragment extends TSListFragment<MessageReviewContract.
         if (mUnhandlePinnedBean != null) {
             if (mUnhandlePinnedBean.getFeeds() != null && mUnhandlePinnedBean.getFeeds().getCount() > 0) {
                 chooseType(getString(R.string.stick_type_dynamic_commnet), 0);
-            } else if (mUnhandlePinnedBean.getNews() != null && mUnhandlePinnedBean.getNews().getCount() > 0) {
+            } else if (mUnhandlePinnedBean.getNewsComments() != null && mUnhandlePinnedBean.getNewsComments().getCount() > 0) {
                 chooseType(getString(R.string.stick_type_news_commnet), 1);
+            } else if (mUnhandlePinnedBean.getGroupComments() != null && mUnhandlePinnedBean.getGroupComments().getCount() > 0) {
+                chooseType(getString(R.string.stick_type_group_commnet), 0);
+            } else if (mUnhandlePinnedBean.getGroupPosts() != null && mUnhandlePinnedBean.getGroupPosts().getCount() > 0) {
+                chooseType(getString(R.string.stick_type_group), 0);
             } else {
                 chooseType(getString(R.string.stick_type_dynamic_commnet), 0);
             }
 
-        }else {
+        } else {
             chooseType(getString(R.string.stick_type_dynamic_commnet), 0);
         }
     }
@@ -169,20 +180,54 @@ public class MessageReviewFragment extends TSListFragment<MessageReviewContract.
         return R.mipmap.img_default_nothing;
     }
 
+    @Override
+    public void refuseTip() {
+        if (mUnhandlePinnedBean == null) {
+            return;
+        }
+        switch (getType()) {
+            case TOP_DYNAMIC_COMMENT:
+                if (mUnhandlePinnedBean.getFeeds() != null && mUnhandlePinnedBean.getFeeds().getCount() > 0) {
+                    mUnhandlePinnedBean.getFeeds().setCount(mUnhandlePinnedBean.getFeeds().getCount() - 1);
+                }
+                break;
+            case TOP_NEWS_COMMENT:
+                if (mUnhandlePinnedBean.getNewsComments() != null && mUnhandlePinnedBean.getNewsComments().getCount() > 0) {
+                    mUnhandlePinnedBean.getNewsComments().setCount(mUnhandlePinnedBean.getNewsComments().getCount() - 1);
+                }
+                break;
+            case TOP_POST_COMMENT:
+                if (mUnhandlePinnedBean.getGroupComments() != null && mUnhandlePinnedBean.getGroupComments().getCount() > 0) {
+                    mUnhandlePinnedBean.getGroupComments().setCount(mUnhandlePinnedBean.getGroupComments().getCount() - 1);
+                }
+                break;
+            case TOP_POST:
+                if (mUnhandlePinnedBean.getGroupPosts() != null && mUnhandlePinnedBean.getGroupPosts().getCount() > 0) {
+                    mUnhandlePinnedBean.getGroupPosts().setCount(mUnhandlePinnedBean.getGroupPosts().getCount() - 1);
+                }
+                break;
+            default:
+        }
+    }
+
     private void initTopPopWindow() {
-        mActionPopupWindow = ActionPopupWindow.builder()
+        mActionPopupWindow = TipActionPopupWindow.builder()
                 .with(getActivity())
                 .isFocus(true)
                 .isOutsideTouch(true)
                 .parentView(mDriver)
                 .animationStyle(ActionPopupWindow.NO_ANIMATION)
                 .item1Str(getString(R.string.stick_type_dynamic_commnet))
+                .showTip1(mUnhandlePinnedBean != null && mUnhandlePinnedBean.getFeeds() != null && mUnhandlePinnedBean.getFeeds().getCount() > 0)
                 .item1Color(mTopType.equals(mTopTypes[0]) ? getColor(R.color.themeColor) : 0)
                 .item2Str(getString(R.string.stick_type_news_commnet))
+                .showTip2(mUnhandlePinnedBean != null && mUnhandlePinnedBean.getNewsComments() != null && mUnhandlePinnedBean.getNewsComments().getCount() > 0)
                 .item2Color(mTopType.equals(mTopTypes[1]) ? getColor(R.color.themeColor) : 0)
                 .item3Str(getString(R.string.stick_type_group_commnet))
+                .showTip3(mUnhandlePinnedBean != null && mUnhandlePinnedBean.getGroupComments() != null && mUnhandlePinnedBean.getGroupComments().getCount() > 0)
                 .item3Color(mTopType.equals(mTopTypes[2]) ? getColor(R.color.themeColor) : 0)
                 .item4Str(getString(R.string.stick_type_group))
+                .showTip4(mUnhandlePinnedBean != null && mUnhandlePinnedBean.getGroupPosts() != null && mUnhandlePinnedBean.getGroupPosts().getCount() > 0)
                 .item4Color(mTopType.equals(mTopTypes[3]) ? getColor(R.color.themeColor) : 0)
                 .item5Str(getString(R.string.stick_type_group_join))
                 .item5Color(mTopType.equals(mTopTypes[4]) ? getColor(R.color.themeColor) : 0)
@@ -190,7 +235,6 @@ public class MessageReviewFragment extends TSListFragment<MessageReviewContract.
                     chooseType(getString(R.string.stick_type_dynamic_commnet), 0);
                 })
                 .item2ClickListener(() -> {
-
                     chooseType(getString(R.string.stick_type_news_commnet), 1);
                 })
                 .item3ClickListener(() -> {

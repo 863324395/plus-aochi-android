@@ -165,18 +165,7 @@ public class ExpandableTextView extends AppCompatTextView {
             mExpandableClickListener = new ExpandableClickListener();
             setOnClickListener(mExpandableClickListener);
         }
-        getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                ViewTreeObserver obs = getViewTreeObserver();
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                    obs.removeOnGlobalLayoutListener(this);
-                } else {
-                    obs.removeGlobalOnLayoutListener(this);
-                }
-                setTextInternal(getNewTextByConfig(), mBufferType);
-            }
-        });
+        getViewTreeObserver().addOnGlobalLayoutListener(() -> setTextInternal(getNewTextByConfig(), mBufferType));
     }
 
     /**
@@ -222,7 +211,7 @@ public class ExpandableTextView extends AppCompatTextView {
         if (TextUtils.isEmpty(mOrigText)) {
             return mOrigText;
         }
-
+        mTextPaint = getPaint();
         mLayout = getLayout();
         if (mLayout != null) {
             mLayoutWidth = mLayout.getWidth();
@@ -240,7 +229,7 @@ public class ExpandableTextView extends AppCompatTextView {
             }
         }
 
-        mTextPaint = getPaint();
+
 
         mTextLineCount = -1;
         switch (mCurrState) {
@@ -368,6 +357,7 @@ public class ExpandableTextView extends AppCompatTextView {
     public void setText(CharSequence text, TextView.BufferType type) {
         mOrigText = text;
         mBufferType = type;
+        CharSequence result = getNewTextByConfig();
         setTextInternal(getNewTextByConfig(), type);
     }
 

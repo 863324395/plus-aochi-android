@@ -9,11 +9,23 @@ import com.zhiyicx.baseproject.impl.share.ShareModule;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.CirclePostListBean;
 
+/**
+ * @author Jliuer
+ * @Date 18/05/29 15:16
+ * @Email Jliuer@aliyun.com
+ * @Description 帖子详情
+ */
 public class CirclePostDetailActivity extends TSActivity<CirclePostDetailPresenter, CirclePostDetailFragment> {
 
     @Override
     protected CirclePostDetailFragment getFragment() {
         return CirclePostDetailFragment.newInstance(getIntent().getExtras());
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        mContanierFragment.onActivityResult(requestCode,resultCode,data);
     }
 
     @Override

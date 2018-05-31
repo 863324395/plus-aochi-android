@@ -7,14 +7,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.view.ViewCompat;
-import android.text.TextUtils;
 import android.view.View;
-import android.view.animation.DecelerateInterpolator;
 import android.view.animation.OvershootInterpolator;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
-import com.tym.shortvideo.recodrender.ParamsManager;
 import com.zhiyicx.baseproject.base.SystemConfigBean;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.impl.photoselector.DaggerPhotoSelectorImplComponent;
@@ -44,14 +41,12 @@ import com.zhiyicx.thinksnsplus.widget.IconTextView;
 import org.simple.eventbus.EventBus;
 import org.simple.eventbus.Subscriber;
 
-import java.io.File;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
 
 import static android.app.Activity.RESULT_OK;
-import static com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl.MAX_DEFAULT_COUNT;
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_CHECK_IN_CLICK;
 import static com.zhiyicx.thinksnsplus.modules.certification.detail.CertificationDetailActivity.BUNDLE_DETAIL_DATA;
 import static com.zhiyicx.thinksnsplus.modules.certification.detail.CertificationDetailActivity.BUNDLE_DETAIL_TYPE;
@@ -122,7 +117,7 @@ public class SelectDynamicTypeFragment extends TSFragment<SelectDynamicTypeContr
 
     @Override
     protected boolean setUseSatusbar() {
-        return false;
+        return true;
     }
 
     @Override
@@ -174,6 +169,7 @@ public class SelectDynamicTypeFragment extends TSFragment<SelectDynamicTypeContr
                 mPayAlertPopWindow.show();
             } else {
                 startActivity(new Intent(getActivity(), EditeInfoDetailActivity.class));
+                closeActivity();
             }
         } else {
             mCertificationAlertPopWindow.show();
@@ -263,7 +259,7 @@ public class SelectDynamicTypeFragment extends TSFragment<SelectDynamicTypeContr
                                         SendDynamicActivity.startToSendDynamicActivity(getContext(),
                                                 sendDynamicDataBean);
                                     } else {
-                                        VideoSelectActivity.startVideoSelectActivity(mActivity,false);
+                                        VideoSelectActivity.startVideoSelectActivity(mActivity, false);
                                     }
                                     closeActivity();
                                 } else {
@@ -403,6 +399,7 @@ public class SelectDynamicTypeFragment extends TSFragment<SelectDynamicTypeContr
                         mPayAlertPopWindow.hide();
                         mPresenter.savePayTip(false);
                         startActivity(new Intent(getActivity(), EditeInfoDetailActivity.class));
+                        closeActivity();
                     })
                     .build();
         }

@@ -219,10 +219,13 @@ public class ChatFragment extends TSEaseChatFragment<ChatContract.Presenter>
             } else if (group != null && !group.isMsgBlocked()) {
                 mToolbarCenter.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
             }
-
             setCenterText(mPresenter.getGroupName(toChatUsername));
         }
-        setUpView();
+        final List<EMMessage> msgs = conversation.getAllMessages();
+        int msgCount = msgs != null ? msgs.size() : 0;
+        if (msgCount == 0) {
+            messageList.refresh();
+        }
     }
 
     /**
@@ -237,6 +240,7 @@ public class ChatFragment extends TSEaseChatFragment<ChatContract.Presenter>
         toChatUsername = fragmentArgs.getString(EaseConstant.EXTRA_USER_ID);
         getArguments().putInt(EaseConstant.EXTRA_CHAT_TYPE, chatType);
         getArguments().putString(EaseConstant.EXTRA_USER_ID, toChatUsername);
+        setUpView();
     }
 
     @Override
@@ -460,9 +464,9 @@ public class ChatFragment extends TSEaseChatFragment<ChatContract.Presenter>
                 String content = message.getBody().toString();
                 if (message.getBody() instanceof EMTextMessageBody) {
                     content = ((EMTextMessageBody) message.getBody()).getMessage();
-                }else if (message.getBody() instanceof EMImageMessageBody){
+                } else if (message.getBody() instanceof EMImageMessageBody) {
                     content = "[图片]";
-                }else if (message.getBody() instanceof EMVoiceMessageBody){
+                } else if (message.getBody() instanceof EMVoiceMessageBody) {
                     content = "[语音]";
                 }
 

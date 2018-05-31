@@ -227,12 +227,28 @@
                 android:layout_height="match_parent"
                 />
 
-            <com.zhiyicx.baseproject.widget.imageview.SquareImageView
-                android:id="@+id/siv_8"
-                style="@style/style_dynamic_list_image_horizen"
+            <FrameLayout
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                />
+                android:layout_weight="1">
+
+                <com.zhiyicx.baseproject.widget.imageview.SquareImageView
+                    android:id="@+id/siv_8"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/shape_default_image"/>
+
+                <TextView
+                    android:gravity="center"
+                    android:id="@+id/tv_numshadow"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/shadow_color"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/size_number_shadow"/>
+
+            </FrameLayout>
         </LinearLayout>
     </LinearLayout>
 

@@ -51,6 +51,7 @@ public class CircleTypesFragment extends TSFragment<AllCircleContainerContract.P
 
     @Inject
     AllCircleContainerPresenter mAllCircleContainerPresenter;
+    private boolean isFromAllCircle;
 
     public static CircleTypesFragment newInstance(Bundle bundle) {
         CircleTypesFragment fragment = new CircleTypesFragment();
@@ -106,7 +107,7 @@ public class CircleTypesFragment extends TSFragment<AllCircleContainerContract.P
                 DEFAULT_COLUMN));
         if (getArguments() != null) {
             mCurrenChooseName = getArguments().getString(BUNDLE_CIRCLE_CATEGORY_NAME);
-            boolean isFromAllCircle = getArguments().getBoolean(AllCircleContainerFragment.BUNDLE_ALL_CIRCLE_CATEGORY);
+            isFromAllCircle = getArguments().getBoolean(AllCircleContainerFragment.BUNDLE_ALL_CIRCLE_CATEGORY);
             if (isFromAllCircle) {
                 setToolBarRightImage(R.mipmap.ico_createcircle);
                 mToolbarRight.setVisibility(View.VISIBLE);
@@ -158,6 +159,10 @@ public class CircleTypesFragment extends TSFragment<AllCircleContainerContract.P
     public void setCategroiesList(List<CircleTypeBean> circleTypeList) {
         mCircleTypeBeans.clear();
         mCircleTypeBeans.addAll(circleTypeList);
+        if (!isFromAllCircle){
+            // 去掉推荐这个分类，如果不是从全部圈子过来的
+            mCircleTypeBeans.remove(0);
+        }
         mAdapter.notifyDataSetChanged();
     }
 
@@ -169,6 +174,10 @@ public class CircleTypesFragment extends TSFragment<AllCircleContainerContract.P
     @Override
     protected void initData() {
         mCircleTypeBeans = mPresenter.getCircleTypesFormLocal();
+        if (!isFromAllCircle){
+            // 去掉推荐这个分类，如果不是从全部圈子过来的
+            mCircleTypeBeans.remove(0);
+        }
         if (mCircleTypeBeans.isEmpty()) {
             mPresenter.getCategroiesList(0, 0);
         }

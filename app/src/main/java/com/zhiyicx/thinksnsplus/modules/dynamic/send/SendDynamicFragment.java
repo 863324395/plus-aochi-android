@@ -57,7 +57,6 @@ import com.zhiyicx.thinksnsplus.modules.home.HomeActivity;
 import com.zhiyicx.thinksnsplus.modules.photopicker.PhotoAlbumDetailsActivity;
 import com.zhiyicx.thinksnsplus.modules.photopicker.PhotoViewActivity;
 import com.zhiyicx.thinksnsplus.modules.photopicker.PhotoViewFragment;
-import com.zhiyicx.thinksnsplus.modules.shortvideo.clipe.TrimmerActivity;
 import com.zhiyicx.thinksnsplus.modules.shortvideo.cover.CoverActivity;
 import com.zhiyicx.thinksnsplus.modules.shortvideo.cover.CoverFragment;
 import com.zhiyicx.thinksnsplus.modules.shortvideo.videostore.VideoSelectActivity;
@@ -551,6 +550,7 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
         } else if (dynamicType == SendDynamicDataBean.VIDEO_TEXT_DYNAMIC && resultCode == Activity.RESULT_OK) {
             if (requestCode == CoverFragment.REQUEST_COVER_CODE) {
                 // 删除视频
+                SharePreferenceUtils.remove(mActivity, SharePreferenceUtils.VIDEO_DYNAMIC);
                 selectedPhotos.clear();
                 addPlaceHolder();
                 setSendDynamicState();// 每次刷新图片后都要判断发布按钮状态
@@ -883,10 +883,12 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                     if (imageBean.getToll_type() > 0) {
                         hasTollPic = true;
                         filterView.setVisibility(View.VISIBLE);
-                        paintView.setIconRes(R.mipmap.ico_lock);
+                        paintView.setIconRes(R.mipmap.ico_coins);
+                        paintView.setText(imageBean.getToll_monye() + "");
                     } else {
                         paintView.setIconRes(R.mipmap.ico_edit_pen);
                         filterView.setVisibility(View.GONE);
+                        paintView.setText(getString(R.string.dynamic_send_toll_quick));
                     }
                     Glide.with(getContext())
                             .load(imageBean.getImgUrl())

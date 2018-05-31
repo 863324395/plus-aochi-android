@@ -410,19 +410,7 @@ public class MessageConversationPresenter extends AppBasePresenter<MessageConver
                                     break;
                                 } else if (i == size - 1) {
                                     // 循环到最后一条，仍然没有会话，那则证明是需要新增一条到会话列表
-                                    LogUtils.d("msg::" + "newMsg");
-
-                                    // 之前在这里也许重复创建了会话 ，fix by tym on 2018-5-7 14:40:39
-                                    EMConversation.EMConversationType type = EMConversation.EMConversationType.Chat;
-                                    if (emMessage.getChatType() == EMMessage.ChatType.Chat) {
-                                        type = EMConversation.EMConversationType.Chat;
-                                    } else if (emMessage.getChatType() == EMMessage.ChatType.GroupChat) {
-                                        type = EMConversation.EMConversationType.GroupChat;
-                                    }
-                                    EMConversation conversation =
-                                            EMClient.getInstance().chatManager().getConversation(emMessage.conversationId(), type, true);
-                                    conversation.insertMessage(emMessage);
-
+                                    LogUtils.d("msg::" + "this is a newMsg");
                                     MessageItemBeanV2 itemBeanV2 = new MessageItemBeanV2();
                                     itemBeanV2.setConversation(conversationNew);
                                     itemBeanV2.setEmKey(conversationNew.conversationId());

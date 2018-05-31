@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.circle.search;
 
 import android.app.Activity;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -13,6 +14,7 @@ import android.widget.TextView;
 
 import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.impl.share.ShareModule;
+import com.zhiyicx.common.utils.AndroidBug5497Workaround;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.recycleviewdecoration.LinearDecoration;
@@ -123,6 +125,14 @@ public class SearchCirclePostFragment extends BaseCircleDetailFragment implement
     }
 
     @Override
+    protected void initView(View rootView) {
+        super.initView(rootView);
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            AndroidBug5497Workaround.assistActivity(mActivity);
+        }
+    }
+
+    @Override
     protected void initData() {
         super.initData();
         if (mPresenter != null) {
@@ -221,8 +231,10 @@ public class SearchCirclePostFragment extends BaseCircleDetailFragment implement
                             if (o.getContent().equals(getString(R.string.show_all_history))) { // 显示所有历史
                                 mHistoryData.clear();
                                 mHistoryData.addAll(mPresenter.getAllSearchHistory());
-                                mHistoryData.add(new CircleSearchHistoryBean(getString(R.string.clear_all_history), CircleSearchHistoryBean
-                                        .TYPE_DEFAULT));
+                                if (!mHistoryData.isEmpty()) {
+                                    mHistoryData.add(new CircleSearchHistoryBean(getString(R.string.clear_all_history), CircleSearchHistoryBean
+                                            .TYPE_DEFAULT));
+                                }
                                 mHsitoryAdapter.notifyDataSetChanged();
 
                             } else { // 清空历史

@@ -9,6 +9,8 @@ import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
+import java.util.Locale;
+
 /**
  * @Describe 动态列表 五张图的时候的 item
  * @Author Jungle68
@@ -59,11 +61,9 @@ public class DynamicListItemForNineImage extends DynamicListBaseItem {
         initImageView(holder, holder.getView(R.id.siv_8), dynamicBean, 8, 1);
 
         TextView size = holder.getTextView(R.id.tv_numshadow);
-//        int iamgeSize = dynamicBean.getImages().size();
-//        size.setVisibility(iamgeSize > 9 ? View.VISIBLE : View.GONE);
-//        size.setText("+" + (iamgeSize -9 ));
-
-        size.setVisibility(View.GONE);
+        int iamgeSize = dynamicBean.getImages().size();
+        size.setVisibility(iamgeSize > 9 ? View.VISIBLE : View.GONE);
+        size.setText(String.format(Locale.getDefault(),"+%d", iamgeSize - 9));
         LogUtils.d("------------image 9  = " + (System.currentTimeMillis() - start));
 
     }

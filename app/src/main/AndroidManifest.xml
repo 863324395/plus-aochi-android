@@ -391,21 +391,21 @@
         </activity>
 
         <!-- Ping++ 支付SDK -->
-        <activity
-            android:name="com.pingplusplus.android.PaymentActivity"
-            android:configChanges="orientation|keyboardHidden|navigation|screenSize"
-            android:launchMode="singleTop"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar">
-        </activity>
+        <!--<activity-->
+        <!--android:name="com.pingplusplus.android.PaymentActivity"-->
+        <!--android:configChanges="orientation|keyboardHidden|navigation|screenSize"-->
+        <!--android:launchMode="singleTop"-->
+        <!--android:theme="@android:style/Theme.Translucent.NoTitleBar">-->
+        <!--</activity>-->
 
 
         <!-- 微信支付 -->
         <!-- 1.需要将以下"替换成自己 APK 的包名"换成在微信平台上注册填写的包名 -->
         <!-- 2.WxPayEntryActivity 这个类在 SDK 内部实现，开发者不需要额外实现该类 -->
-        <activity-alias
-            android:name="${applicationId}.wxapi.WXPayEntryActivity"
-            android:exported="true"
-            android:targetActivity="com.pingplusplus.android.PaymentActivity"/>
+        <!--<activity-alias-->
+        <!--android:name="${applicationId}.wxapi.WXPayEntryActivity"-->
+        <!--android:exported="true"-->
+        <!--android:targetActivity="com.pingplusplus.android.PaymentActivity"/>-->
         <!-- 支付宝 -->
         <activity
             android:name="com.alipay.sdk.app.H5PayActivity"
@@ -657,7 +657,7 @@
         <activity
             android:name=".modules.chat.ChatActivity"
             android:hardwareAccelerated="true"
-            android:launchMode="singleTop"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize|stateAlwaysHidden"/>
         <!--发送位置-->
@@ -717,7 +717,7 @@
         <activity
             android:name=".modules.shortvideo.record.RecordActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/GalleryTheme"/>
+            android:theme="@style/DynamciSelectTheme"/>
         <activity
             android:name=".modules.shortvideo.videostore.VideoSelectActivity"
             android:screenOrientation="portrait"/>
@@ -741,6 +741,10 @@
         <activity
             android:name=".modules.home.message.messagegroup.MessageGroupActivity"
             android:screenOrientation="portrait"/>
+        <activity
+            android:name=".wxapi.WXPayEntryActivity"
+            android:exported="true"
+            android:launchMode="singleTop"/>
         <!-- 开机自启动服务 -->
         <receiver android:name=".modules.chat.call.receiver.StartServiceReceiver">
             <intent-filter android:priority="1000">

@@ -79,13 +79,25 @@ public class CircleMainPresenter extends AppBasePresenter<CircleMainContract.Vie
 
                     mRootView.updateCircleCount(integerBaseJsonV2.getData());
 
+                    boolean myJoinedIsEmpty = myJoinedCircle.isEmpty();
+
                     // 游客模式没有 我加入的
                     if (!isTourist()) {
                         CircleInfo moreJoined = new CircleInfo();
+                        moreJoined.setSummary(mContext.getString(myJoinedIsEmpty ? R.string.more_all_group : R.string.more_group));
+                        if (myJoinedCircle.size() < CircleMainFragment.DATALIMIT && myJoinedCircle.size() > 0) {
+                            moreJoined.setSummary("");
+                        }
                         moreJoined.setName(mContext.getString(R.string.joined_group));
-                        moreJoined.setSummary(mContext.getString(R.string.more_group));
                         moreJoined.setId(BaseCircleItem.MYJOINEDCIRCLE);
                         myJoinedCircle.add(0, moreJoined);
+                    }
+
+                    // 当没有推荐时，不显示推荐一栏
+                    if (recommendCircle.isEmpty()) {
+                        mRootView.setJoinedCircles(new ArrayList<>(myJoinedCircle));
+                        mRootView.setRecommendCircles(new ArrayList<>(recommendCircle));
+                        return myJoinedCircle;
                     }
 
                     CircleInfo changeCircle = new CircleInfo();
@@ -172,14 +184,15 @@ public class CircleMainPresenter extends AppBasePresenter<CircleMainContract.Vie
             mRootView.showSnackErrorMessage(mContext.getString(R.string.reviewing_circle));
             return;
         }
-        boolean isJoined = circleInfo.getJoined() != null;
+        boolean isJoined = circleInfo.getJoined() != null && circleInfo.getJoined().getAudit() == CircleJoinedBean.AuditStatus.PASS.value;
+
 
         boolean isPaid = CircleInfo.CirclePayMode.PAID.value.equals(circleInfo.getMode());
         boolean isPrivate = CircleInfo.CirclePayMode.PRIVATE.value.equals(circleInfo.getMode());
 
         Observable<BaseJsonV2<Object>> observable;
         if (isPaid) {
-            observable = handleWalletBlance(circleInfo.getMoney())
+            observable = handleIntegrationBlance(circleInfo.getMoney())
                     .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R
                             .string.pay_alert_ing)))
                     .flatMap(o -> mBaseCircleRepository.dealCircleJoinOrExit(circleInfo));
@@ -233,7 +246,7 @@ public class CircleMainPresenter extends AppBasePresenter<CircleMainContract.Vie
                     @Override
                     protected void onException(Throwable throwable) {
                         super.onException(throwable);
-                        if (isBalanceCheck(throwable)) {
+                        if (isIntegrationBalanceCheck(throwable)) {
                             return;
                         }
                         mRootView.showSnackErrorMessage(mContext.getString(R.string.bill_doing_fialed));

@@ -1,7 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.circle.publish.choose_circle;
 
 import com.zhiyicx.baseproject.base.TSActivity;
-import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.modules.circle.mine.joined.BaseCircleListPresenter;
 
 /**
  * @author Jliuer
@@ -9,7 +9,7 @@ import com.zhiyicx.thinksnsplus.base.AppApplication;
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class ChooseCircleActivity extends TSActivity<ChooseCirclePresenter, ChooseCircleFragment> {
+public class ChooseCircleActivity extends TSActivity<BaseCircleListPresenter, ChooseCircleFragment> {
     @Override
     protected ChooseCircleFragment getFragment() {
         return ChooseCircleFragment.newInstance(getIntent().getExtras());
@@ -17,9 +17,6 @@ public class ChooseCircleActivity extends TSActivity<ChooseCirclePresenter, Choo
 
     @Override
     protected void componentInject() {
-        DaggerChooseCircleComponent.builder()
-                .appComponent(AppApplication.AppComponentHolder.getAppComponent())
-                .chooseCirclePresenterModule(new ChooseCirclePresenterModule(mContanierFragment))
-                .build().inject(this);
+
     }
 }

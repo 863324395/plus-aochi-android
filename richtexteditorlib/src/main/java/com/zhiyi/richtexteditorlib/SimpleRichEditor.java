@@ -397,7 +397,6 @@ public class SimpleRichEditor extends RichEditor {
                         ItemIndex.BOLD,
                         (item, isSelected) -> {
                             setBold();
-                            LogUtils.d("onItemClick", item.getId() + "");
                             //不拦截不在选择控制器中的元素让Menu自己控制选择显示效果
                             return isInSelectController(item.getId());
                         }) : null)
@@ -406,8 +405,6 @@ public class SimpleRichEditor extends RichEditor {
                         ItemIndex.ITALIC,
                         (item, isSelected) -> {
                             setItalic();
-                            LogUtils.d("onItemClick", item.getId() + "");
-
                             return isInSelectController(item.getId());
                         }) : null)
                 .addItem(ItemIndex.A, needStrikeThrough ? getBaseItemFactory().generateItem(
@@ -415,8 +412,6 @@ public class SimpleRichEditor extends RichEditor {
                         ItemIndex.STRIKE_THROUGH,
                         (item, isSelected) -> {
                             setStrikeThrough();
-                            LogUtils.d("onItemClick", item.getId() + "");
-
                             return isInSelectController(item.getId());
                         }) : null)
                 .addItem(ItemIndex.A, needBlockQuote ? getBaseItemFactory().generateItem(
@@ -424,8 +419,6 @@ public class SimpleRichEditor extends RichEditor {
                         ItemIndex.BLOCK_QUOTE,
                         (item, isSelected) -> {
                             setBlockquote(!isSelected);
-                            LogUtils.d("onItemClick", item.getId() + "");
-
                             //mSelectController.changeState(ItemIndex.BLOCK_QUOTE);
                             return isInSelectController(item.getId());
                         }) : null)
@@ -435,8 +428,6 @@ public class SimpleRichEditor extends RichEditor {
                         ItemIndex.H1,
                         (item, isSelected) -> {
                             setHeading(1, !isSelected);
-                            LogUtils.d("onItemClick", item.getId() + "");
-
                             //mSelectController.changeState(ItemIndex.H1);
                             return isInSelectController(item.getId());
                         }) : null)

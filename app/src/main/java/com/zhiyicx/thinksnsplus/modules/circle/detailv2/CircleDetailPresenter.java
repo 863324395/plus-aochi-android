@@ -463,12 +463,13 @@ public class CircleDetailPresenter extends AppBasePresenter<CircleDetailContract
             mRootView.showSnackErrorMessage(mContext.getString(R.string.reviewing_circle));
             return;
         }
-        boolean isJoined = circleInfo.getJoined() != null;
+        boolean isJoined = circleInfo.getJoined() != null && circleInfo.getJoined().getAudit() == CircleJoinedBean.AuditStatus.PASS.value;
+
         boolean isPaid = CircleInfo.CirclePayMode.PAID.value.equals(circleInfo.getMode());
 
         Observable<BaseJsonV2<Object>> observable;
         if (isPaid && !isJoined) {
-            observable = handleWalletBlance(circleInfo.getMoney())
+            observable = handleIntegrationBlance(circleInfo.getMoney())
                     .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R
                             .string.pay_alert_ing)))
                     .flatMap(o -> mBaseCircleRepository.dealCircleJoinOrExit(circleInfo));
@@ -521,7 +522,7 @@ public class CircleDetailPresenter extends AppBasePresenter<CircleDetailContract
                     @Override
                     protected void onException(Throwable throwable) {
                         super.onException(throwable);
-                        if (isBalanceCheck(throwable)) {
+                        if (isIntegrationBalanceCheck(throwable)) {
                             return;
                         }
                         mRootView.showSnackErrorMessage(mContext.getString(R.string.bill_doing_fialed));
@@ -595,7 +596,7 @@ public class CircleDetailPresenter extends AppBasePresenter<CircleDetailContract
      * @param searchContent
      */
     private void saveSearhDatq(String searchContent) {
-        CircleSearchHistoryBean cricleSearchHistoryBean = new CircleSearchHistoryBean(searchContent, CircleSearchHistoryBean.TYPE_CIRCLE);
+        CircleSearchHistoryBean cricleSearchHistoryBean = new CircleSearchHistoryBean(searchContent, CircleSearchHistoryBean.TYPE_CIRCLE_POST);
         cricleSearchHistoryBean.setOutSideCircle(mRootView.isOutsideSerach());
         mCircleSearchBeanGreenDao.saveHistoryDataByType(cricleSearchHistoryBean, CircleSearchHistoryBean.TYPE_CIRCLE);
     }
@@ -603,7 +604,7 @@ public class CircleDetailPresenter extends AppBasePresenter<CircleDetailContract
 
     @Override
     public List<CircleSearchHistoryBean> getFirstShowHistory() {
-        return mCircleSearchBeanGreenDao.getFristShowData(DEFAULT_FIRST_SHOW_HISTORY_SIZE, QASearchHistoryBean.TYPE_QA, mRootView.isOutsideSerach());
+        return mCircleSearchBeanGreenDao.getFristShowData(DEFAULT_FIRST_SHOW_HISTORY_SIZE, CircleSearchHistoryBean.TYPE_CIRCLE_POST, mRootView.isOutsideSerach());
     }
 
     @Override
@@ -613,7 +614,7 @@ public class CircleDetailPresenter extends AppBasePresenter<CircleDetailContract
 
     @Override
     public List<CircleSearchHistoryBean> getAllSearchHistory() {
-        return mCircleSearchBeanGreenDao.getCircleSearchHistory();
+        return mCircleSearchBeanGreenDao.getCirclePostSearchHistory();
     }
 
     @Override

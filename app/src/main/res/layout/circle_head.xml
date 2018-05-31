@@ -39,6 +39,7 @@
             android:includeFontPadding="false"
             android:maxLines="1"
             android:text="啦啦啦"
+            style="@style/TextShadowStyle"
             android:textColor="@color/general_for_bg_light"
             android:textSize="@dimen/size_sub_title"/>
 
@@ -50,6 +51,7 @@
             android:layout_marginBottom="@dimen/spacing_mid_small_8dp"
             android:layout_toRightOf="@+id/iv_circle_head"
             android:text="23"
+            style="@style/TextShadowStyle"
             android:textColor="@color/general_for_bg_light"
             android:textSize="@dimen/size_icon_assist"/>
 
@@ -60,6 +62,7 @@
             android:layout_alignBottom="@+id/iv_circle_head"
             android:layout_toRightOf="@+id/iv_circle_head"
             android:ellipsize="end"
+            style="@style/TextShadowStyle"
             android:layout_toLeftOf="@+id/tv_circle_subscrib"
             android:maxLines="1"
             android:text="秒速5毫米"

@@ -4,6 +4,7 @@ import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.thinksnsplus.data.beans.PayStrV2Bean;
 import com.zhiyicx.thinksnsplus.data.beans.RechargeSuccessBean;
 import com.zhiyicx.thinksnsplus.data.beans.RechargeSuccessV2Bean;
+import com.zhiyicx.thinksnsplus.data.beans.WXPayInfo;
 import com.zhiyicx.thinksnsplus.data.beans.WalletConfigBean;
 import com.zhiyicx.thinksnsplus.data.beans.WithdrawResultBean;
 import com.zhiyicx.thinksnsplus.data.beans.WithdrawalsListBean;
@@ -23,6 +24,8 @@ import static com.zhiyicx.baseproject.config.ApiConfig.APP_PAHT_INTEGRATION_CONF
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PAHT_INTEGRATION_ORDERS;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PAHT_INTEGRATION_RECHARGE;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PAHT_INTEGRATION_RECHARGE_SUCCESS;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PAHT_INTEGRATION_RECHARGE_V2;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PAHT_INTEGRATION_VERIFY_V2;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PAHT_INTEGRATION_WITHDRAWALS;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PAHT_WALLET_BALANCE_TO_INTEGRATION;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PAHT_WALLET_CONFIG;
@@ -30,6 +33,8 @@ import static com.zhiyicx.baseproject.config.ApiConfig.APP_PAHT_WALLET_RECHARGE;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PAHT_WALLET_RECHARGE_SUCCESS;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PAHT_WALLET_RECHARGE_SUCCESS_CALLBACK;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PAHT_WALLET_RECHARGE_SUCCESS_LIST;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PAHT_WALLET_RECHARGE_V2;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PAHT_WALLET_VERIFY_V2;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PAHT_WALLET_WITHDRAW;
 
 
@@ -96,6 +101,42 @@ public interface WalletClient {
     Observable<PayStrV2Bean> getPayStr(@Field("type") String channel, @Field("amount") long amount, @Field("extra") String extra);
 
     /**
+     * 发起充值V2 2018-5-21 09:55:47 by tym
+     */
+    @FormUrlEncoded
+    @POST(APP_PAHT_WALLET_RECHARGE_V2)
+    Observable<BaseJsonV2<String>> getAliPayStr(@Field("type") String channel, @Field("amount") long amount, @Field("from") String from);
+
+    @FormUrlEncoded
+    @POST(APP_PAHT_INTEGRATION_RECHARGE_V2)
+    Observable<BaseJsonV2<String>> getIntegrationAliPayStr(@Field("type") String channel, @Field("amount") long amount, @Field("from") String from);
+
+    @FormUrlEncoded
+    @POST(APP_PAHT_WALLET_RECHARGE_V2)
+    Observable<BaseJsonV2<WXPayInfo>> getWXPayStr(@Field("type") String channel, @Field("amount") long amount, @Field("from") String from);
+
+    @FormUrlEncoded
+    @POST(APP_PAHT_INTEGRATION_RECHARGE_V2)
+    Observable<BaseJsonV2<WXPayInfo>> getIntegrationWXPayStr(@Field("type") String channel, @Field("amount") long amount, @Field("from") String from);
+
+
+    /**
+     * 支付宝充值余额验证V2 2018-5-21 09:55:47 by tym
+     * 三个参数信息是支付宝返回来的
+     */
+    @FormUrlEncoded
+    @POST(APP_PAHT_WALLET_VERIFY_V2)
+    Observable<BaseJsonV2<String>> aliPayVerify(@Field("memo") String memo, @Field("result") String result, @Field("resultStatus") String resultStatus);
+
+    /**
+     * 支付宝充值积分验证V2 2018-5-21 09:55:47 by tym
+     * 三个参数信息是支付宝返回来的
+     */
+    @FormUrlEncoded
+    @POST(APP_PAHT_INTEGRATION_VERIFY_V2)
+    Observable<BaseJsonV2<String>> aliPayIntegrationVerify(@Field("memo") String memo, @Field("result") String result, @Field("resultStatus") String resultStatus);
+
+    /**
      * 钱包余额转积分
      *
      * @param amount 转账金额，分单位
@@ -119,12 +160,12 @@ public interface WalletClient {
     /**
      * @param type   充值方式 （见「启动信息接口」或者「钱包信息」）
      * @param amount 用户充值金额，单位为真实货币「分」单位，充值完成后会根据积分兑换比例增加相应数量的积分
-     * @param extra  object,array 拓展信息字段，见 支付渠道-extra-参数说明
+     * @param from  来自
      * @return
      */
     @FormUrlEncoded
-    @POST(APP_PAHT_INTEGRATION_RECHARGE)
-    Observable<PayStrV2Bean> getIntegrationPayStr(@Field("type") String type, @Field("amount") long amount, @Field("extra") String extra);
+    @POST(APP_PAHT_INTEGRATION_RECHARGE_V2)
+    Observable<PayStrV2Bean> getIntegrationPayStr(@Field("type") String type, @Field("amount") long amount, @Field("from") String from);
 
 
     /**
