@@ -872,7 +872,6 @@ public class DeviceUtils {
     public static int getHeight(Activity mAc) {
         View decorView = mAc.getWindow().getDecorView();
         if (decorView != null) {
-            LogUtils.d(android.os.Build.VERSION.SDK_INT);
             if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
                 WindowInsets windowInsets = decorView.getRootWindowInsets();
                 if (windowInsets != null) {

@@ -36,6 +36,7 @@ import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.StatusBarUtils;
 import com.zhiyicx.common.utils.UIUtils;
+import com.zhiyicx.common.utils.log.LogUtils;
 
 import java.util.concurrent.TimeUnit;
 
@@ -752,6 +753,7 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
                     // 向左移动一定距离
                     int rightX = ConvertUtils.dp2px(getContext(), 24) + ConvertUtils.dp2px(getContext(), 10);
                     view.setTag(rightX);
+                    LogUtils.d("musicWindowsStatus::"+view.getPaddingTop());
                     view.setPadding(view.getPaddingLeft(), view.getPaddingTop(), view.getPaddingRight() + rightX, view
                             .getPaddingBottom());
                     rightViewHadTranslated = true;
@@ -759,14 +761,6 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
                     rightViewHadTranslated = false;
                 }
             }
-
-//            mViewTreeSubscription = RxView.globalLayouts(getRightViewOfMusicWindow())
-//                    .subscribe(new Action1<Void>() {
-//                        @Override
-//                        public void call(Void aVoid) {
-//
-//                        }
-//                    });
         }
     }
 
