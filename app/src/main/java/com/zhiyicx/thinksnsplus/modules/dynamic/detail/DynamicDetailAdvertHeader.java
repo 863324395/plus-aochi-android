@@ -94,7 +94,7 @@ public class DynamicDetailAdvertHeader {
     }
 
     public void setHeight(int height) {
-        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams
                 .MATCH_PARENT, height);
         int space= mContext.getResources().getDimensionPixelOffset(R.dimen.spacing_normal);
         params.setMargins(space, space, space, space);
