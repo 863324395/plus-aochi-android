@@ -122,11 +122,10 @@ constructor(rootView: IntegrationRechargeContract.View) : AppBasePresenter<Integ
                     Observable.just(alipay.payV2(orderInfo, true))
                 }
                 .flatMap { stringStringMap ->
-                    if (TSPayClient.CHANNEL_ALIPAY_SUCCESS == stringStringMap["resultStatus"]) {
+                     if (TSPayClient.CHANNEL_ALIPAY_SUCCESS == stringStringMap["resultStatus"]) {
                         mBillRepository.aliPayIntegrationVerify(stringStringMap["memo"],
                                 stringStringMap["result"], stringStringMap["resultStatus"])
-                    }
-                    Observable.error<BaseJsonV2<String>>(IllegalArgumentException(stringStringMap["memo"]))
+                    } else Observable.error<BaseJsonV2<String>>(IllegalArgumentException(stringStringMap["memo"]))
                 }
                 .flatMap { mUserInfoRepository.currentLoginUserInfo }
                 .subscribe(object : BaseSubscribeForV2<UserInfoBean>() {
