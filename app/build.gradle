@@ -49,16 +49,16 @@ android {
 
     signingConfigs {
         release {
-            storeFile file('../thinksnsplus.jks')
-            storePassword 'thinksnsplus2017'
-            keyAlias 'thinksnsplus'
-            keyPassword 'thinksnsplus2017'
+            storeFile file('../aochi.jks')
+            storePassword 'aochi2018'
+            keyAlias 'aochi'
+            keyPassword 'aochi2018'
         }
         debug {
-            storeFile file('../thinksnsplus.jks')
-            storePassword 'thinksnsplus2017'
-            keyAlias 'thinksnsplus'
-            keyPassword 'thinksnsplus2017'
+            storeFile file('../aochi.jks')
+            storePassword 'aochi2018'
+            keyAlias 'aochi'
+            keyPassword 'aochi2018'
         }
     }
 
