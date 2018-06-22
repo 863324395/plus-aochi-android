@@ -107,7 +107,7 @@
             android:name=".modules.login.LoginActivity"
             android:screenOrientation="portrait">
             <intent-filter>
-                <action android:name="zhiyicx.intent.action.LOGIN"/>
+                <action android:name="aochi.intent.action.LOGIN"/>
 
                 <category android:name="android.intent.category.DEFAULT"/>
 
