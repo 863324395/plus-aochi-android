@@ -801,8 +801,8 @@
     <string name="current_location">当前定位</string>
     <string name="unlocation">未定位</string>
     <string name="hot_location">热门城市</string>
-    <string name="contact_had_add_ts_plust">已加入TS+的好友</string>
-    <string name="contact_not_add_ts_plust">通讯录未加入TS+的好友</string>
+    <string name="contact_had_add_ts_plust">已加入啵鸽的好友</string>
+    <string name="contact_not_add_ts_plust">通讯录未加入啵鸽的好友</string>
     <string name="not_find_qa_to_publish">未找到相关问题，去提问？</string>
     <string name="not_find_qa_topic_to_publish">没找到相关话题~</string>
     <string name="request_to_publish_topic">向官方建议创建新话题</string>
@@ -851,7 +851,7 @@
     <string name="default_certify_format">认证：%s</string>
     <string name="default_location_format">地址：%s</string>
     <string name="default_certify">当前用户还没有认证呢</string>
-    <string name="invite_friend">邀请您的好友使用TS+吧！http://www.thinksns.com/</string>
+    <string name="invite_friend">邀请您的好友使用啵鸽吧！http://www.ipocoo.com/</string>
     <string name="reward_type_error">打赏类型错误</string>
     <!--评论的、赞的-->
     <string name="digg_format_feed">%s 赞了你的动态</string>
