@@ -12,8 +12,8 @@ jacoco {
 
 android {
     def gConfig = rootProject.extensions.getByName("ext")
-    compileSdkVersion gConfig["compileSdkVersion"]
-    buildToolsVersion gConfig["buildToolsVersion"]
+    compileSdkVersion 27
+    buildToolsVersion '27.0.3'
     defaultConfig {
 //       this for AnnotationProcessors
 //        javaCompileOptions {
@@ -40,7 +40,7 @@ android {
         // 极光推送
         manifestPlaceholders = [
                 JPUSH_PKGNAME: applicationId,
-                JPUSH_APPKEY : "85f8e1049e913108b9d9bc67", //JPush上注册的包名对应的appkey.
+                JPUSH_APPKEY : "d656e16febcd035914b0c713", //JPush上注册的包名对应的appkey.
                 JPUSH_CHANNEL: "developer-default", //暂时填写默认值即可.
         ]
 
@@ -180,7 +180,6 @@ dependencies {
     def dataDependences = rootProject.ext.dataDependencies
     def supportDependences = rootProject.ext.sdksoupportDependencies
     def testDependences = rootProject.ext.testDependencies
-
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     //support
     implementation supportDependences.appcompatV7
@@ -234,7 +233,7 @@ dependencies {
     compile dataDependences.flowlayout
     implementation dataDependences.kotlin
     implementation dataDependences.ankoCommon
-//    compile dataDependences.bigImageViewer
-//    compile dataDependences.bigGlideImageLoader 内部s使用了glide4.5
-//    compile project(':GlideImageLoader')
+    //    compile dataDependences.bigImageViewer
+    //    compile dataDependences.bigGlideImageLoader 内部s使用了glide4.5
+    //    compile project(':GlideImageLoader')
 }

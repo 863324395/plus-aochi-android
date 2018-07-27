@@ -11,17 +11,17 @@ public class UmengConfig {
     /**
      * QQ
      */
-    public static String QQ_APPID = "1105978541";
-    public static String QQ_SECRETKEY = "Q47tAluWzkd0v4Rp";
+    public static String QQ_APPID = "1106977330";
+    public static String QQ_SECRETKEY = "ua4s6qOmfTab97fk";
     /**
      * 微信
      */
-    public static String WEIXIN_APPID = "wx970d230ad5ab3b23";
-    public static String WEIXIN_SECRETKEY = "b2a61add26e0ef3c4bf24ac9387a02d2";
+    public static String WEIXIN_APPID = "wxd5de74ba0c51e838";
+    public static String WEIXIN_SECRETKEY = "0d2e8a1d72fa7fdad7a11fe477537839";
     /**
      * 新浪
      */
-    public static String SINA_APPID = "732480598";
-    public static String SINA_SECRETKEY = "51c1d72c618224a469531d39fa313ec7";
-    public static String SINA_RESULT_RUL = "https://sns.whalecloud.com/sina2/callback";
+    public static String SINA_APPID = "3937286678";
+    public static String SINA_SECRETKEY = "205d7e271f3015c2b16a2882f5dcecac";
+    public static String SINA_RESULT_RUL = "http://open.weibo.com/apps/3937286678/privilege/oauth";
 }
